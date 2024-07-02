@@ -38,20 +38,32 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<String> slotTileTexts = [];
-  final Uuid uuid = Uuid();
+  List<SlotTile> listSlotTile = [];
   String slotId = '';
 
-  void _addSlotTile() {
+  void _addSlot() {
     String currentDateTime =
         DateFormat('yyyy-MM-dd – kk:mm:ss').format(DateTime.now());
     String userName = "Jayanta Debnath";
     currentDateTime = "$currentDateTime \n$userName";
+
+    final String id = const Uuid().v4(); // Corrected the name to Uuid().v4()
+    var slotTile = SlotTile(
+      id: id,
+      buttonText: currentDateTime,
+    );
+
     setState(() {
-      slotTileTexts.insert(0, currentDateTime);
+      listSlotTile.insert(0, slotTile);
     });
   }
 
+  void _deleteSlot(String id) {
+    setState(() {
+      listSlotTile.removeWhere((element) => element.id == id);
+    });
+  }
+  
   void _onDeleteSlotTile(id) {
     setState(() {
       
@@ -90,23 +102,13 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: ListView.builder(
-          itemCount: slotTileTexts.length,
-          itemBuilder: (context, index) {
-            final String id = uuid.v4(); // Generate a unique ID
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SlotTile(
-                id: id,
-                buttonText: slotTileTexts[index],
-                onSelected: onSlotTileSelected,
-              ),
-            );
-          },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: listSlotTile.map((widget) => Padding(padding: EdgeInsets.all(8.0), child: widget)).toList(),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _addSlotTile,
+        onPressed: _addSlot,
         tooltip: 'Add slot',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
