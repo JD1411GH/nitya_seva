@@ -52,14 +52,10 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void onEditSlotTile(id) {
-    // Your button action here
-    print("edit $id");
-  }
-
-  void onDeleteSlotTile(id) {
-    // Your button action here
-    print("delete $id");
+  void _onDeleteSlotTile(id) {
+    setState(() {
+      
+    });
   }
 
   void onSlotTileSelected(bool selected, String id) {
@@ -86,13 +82,9 @@ class _HomePageState extends State<HomePage> {
         title: Text(widget.title),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: slotId.isNotEmpty ? () => onEditSlotTile(slotId) : null,
-          ),
-          IconButton(
             icon: Icon(Icons.delete),
             onPressed:
-                slotId.isNotEmpty ? () => onDeleteSlotTile(slotId) : null,
+                slotId.isNotEmpty ? () => _onDeleteSlotTile(slotId) : null,
           ),
         ],
       ),
