@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 class SlotTile extends StatefulWidget {
   final String id;
   final String buttonText;
-  final Function(String)? onLongPressed;
+  final Function(bool, String)? onSelected;
   const SlotTile({
     super.key,
     required this.id,
     required this.buttonText,
-    this.onLongPressed,
+    this.onSelected,
   });
 
   @override
@@ -24,14 +24,21 @@ class _SlotTileState extends State<SlotTile> {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () {
-          // Your button action here
+          if (_isInverted) {
+            setState(() {
+              _isInverted = false;
+            });
+            if (widget.onSelected != null) {
+              widget.onSelected!(false, widget.id);
+            }
+          }
         },
         onLongPress: () {
           setState(() {
             _isInverted = !_isInverted;
           });
-          if (widget.onLongPressed != null) {
-            widget.onLongPressed!(widget.id);
+          if (widget.onSelected != null) {
+            widget.onSelected!(true, widget.id);
           }
         },
         style: ElevatedButton.styleFrom(

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:nitya_seva_calculation/slot_tile.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
+
 void main() {
   runApp(const NityaSevaApp());
 }
@@ -18,7 +19,8 @@ class NityaSevaApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
-        colorScheme: ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 222, 150, 67)),
+        colorScheme:
+            ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 222, 150, 67)),
         useMaterial3: true,
       ),
       home: const HomePage(title: 'VK Hill Nitya Seva'),
@@ -60,8 +62,20 @@ class _HomePageState extends State<HomePage> {
     print("delete $id");
   }
 
-  void onSlotTileLongPressed(id) {
-    slotId = id;
+  void onSlotTileSelected(bool selected, String id) {
+    if (selected) {
+      setState(() {
+        if (slotId.isNotEmpty) {
+          slotId = '';
+        } else {
+          slotId = id;
+        }
+      });
+    } else {
+      setState(() {
+        slotId = '';
+      });
+    }
   }
 
   @override
@@ -73,15 +87,12 @@ class _HomePageState extends State<HomePage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.edit),
-            onPressed: () {
-              onEditSlotTile(slotId);
-            },
+            onPressed: slotId.isNotEmpty ? () => onEditSlotTile(slotId) : null,
           ),
           IconButton(
             icon: Icon(Icons.delete),
-            onPressed: () {
-              onDeleteSlotTile(slotId);
-            },
+            onPressed:
+                slotId.isNotEmpty ? () => onDeleteSlotTile(slotId) : null,
           ),
         ],
       ),
@@ -94,10 +105,10 @@ class _HomePageState extends State<HomePage> {
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: SlotTile(
-                id: id, 
+                id: id,
                 buttonText: slotTileTexts[index],
-                onLongPressed: onSlotTileLongPressed,
-                ),
+                onSelected: onSlotTileSelected,
+              ),
             );
           },
         ),
