@@ -48,9 +48,11 @@ class _HomePageState extends State<HomePage> {
     currentDateTime = "$currentDateTime \n$userName";
 
     final String id = const Uuid().v4(); // Corrected the name to Uuid().v4()
+    print("adding $id");
     var slotTile = SlotTile(
       id: id,
       buttonText: currentDateTime,
+      onSelected: onSlotTileSelected,
     );
 
     setState(() {
@@ -59,17 +61,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _deleteSlot(String id) {
+    print("deleting $id");
     setState(() {
       listSlotTile.removeWhere((element) => element.id == id);
     });
   }
   
-  void _onDeleteSlotTile(id) {
-    setState(() {
-      
-    });
-  }
-
   void onSlotTileSelected(bool selected, String id) {
     if (selected) {
       setState(() {
@@ -96,7 +93,7 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             icon: Icon(Icons.delete),
             onPressed:
-                slotId.isNotEmpty ? () => _onDeleteSlotTile(slotId) : null,
+                slotId.isNotEmpty ? () => _deleteSlot(slotId) : null,
           ),
         ],
       ),
