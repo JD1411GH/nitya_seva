@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 
-class SlotTile extends StatelessWidget {
-  final String buttonText; // Add a final String variable to hold the text input
-  const SlotTile({super.key, required this.buttonText}); // Modify the constructor to require the text input
+class SlotTile extends StatefulWidget {
+  final String buttonText;
+  const SlotTile({super.key, required this.buttonText});
+
+  @override
+  _SlotTileState createState() => _SlotTileState();
+}
+
+class _SlotTileState extends State<SlotTile> {
+  bool _isInverted = false;
 
   @override
   Widget build(BuildContext context) {
@@ -12,10 +19,17 @@ class SlotTile extends StatelessWidget {
         onPressed: () {
           // Your button action here
         },
+        onLongPress: () {
+          setState(() {
+            _isInverted = !_isInverted;
+          });
+        },
         style: ElevatedButton.styleFrom(
-          alignment: Alignment.centerLeft, // Aligns the button text to the left
+          alignment: Alignment.centerLeft,
+          backgroundColor: _isInverted ? Theme.of(context).colorScheme.primary : null, // Matched to theme's primary color
+          foregroundColor: _isInverted ? Theme.of(context).colorScheme.onPrimary : null, // Matched to text color on primary
         ),
-        child: Text(buttonText), // Use the buttonText variable here
+        child: Text(widget.buttonText),
       ),
     );
   }

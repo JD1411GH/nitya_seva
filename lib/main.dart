@@ -18,7 +18,7 @@ class NityaSevaApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 222, 150, 67)),
         useMaterial3: true,
       ),
       home: const HomePage(title: 'VK Hill Nitya Seva'),
@@ -39,9 +39,12 @@ class _HomePageState extends State<HomePage> {
   List<String> slotTileTexts = [];
 
   void _addSlotTile() {
-    String currentDateTime = DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.now());
+    String currentDateTime =
+        DateFormat('yyyy-MM-dd – kk:mm:ss').format(DateTime.now());
+    String userName = "Jayanta Debnath";
+    currentDateTime = "$currentDateTime \n$userName";
     setState(() {
-      slotTileTexts.add(currentDateTime);
+      slotTileTexts.insert(0, currentDateTime);
     });
   }
 
@@ -51,19 +54,29 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: null,
+          ),
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: null,
+          ),
+        ],
       ),
       body: Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ListView.builder(
-        itemCount: slotTileTexts.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SlotTile(buttonText: slotTileTexts[index]),
-          );
-        },
+        padding: const EdgeInsets.all(8.0),
+        child: ListView.builder(
+          itemCount: slotTileTexts.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SlotTile(buttonText: slotTileTexts[index]),
+            );
+          },
+        ),
       ),
-    ),
       floatingActionButton: FloatingActionButton(
         onPressed: _addSlotTile,
         tooltip: 'Add slot',
