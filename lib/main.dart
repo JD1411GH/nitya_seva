@@ -38,6 +38,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<String> slotTileTexts = [];
   final Uuid uuid = Uuid();
+  String slotId = '';
 
   void _addSlotTile() {
     String currentDateTime =
@@ -49,6 +50,20 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void onEditSlotTile(id) {
+    // Your button action here
+    print("edit $id");
+  }
+
+  void onDeleteSlotTile(id) {
+    // Your button action here
+    print("delete $id");
+  }
+
+  void onSlotTileLongPressed(id) {
+    slotId = id;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,11 +73,15 @@ class _HomePageState extends State<HomePage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.edit),
-            onPressed: null,
+            onPressed: () {
+              onEditSlotTile(slotId);
+            },
           ),
           IconButton(
             icon: Icon(Icons.delete),
-            onPressed: null,
+            onPressed: () {
+              onDeleteSlotTile(slotId);
+            },
           ),
         ],
       ),
@@ -74,7 +93,11 @@ class _HomePageState extends State<HomePage> {
             final String id = uuid.v4(); // Generate a unique ID
             return Padding(
               padding: const EdgeInsets.all(8.0),
-              child: SlotTile(id: id, buttonText: slotTileTexts[index]),
+              child: SlotTile(
+                id: id, 
+                buttonText: slotTileTexts[index],
+                onLongPressed: onSlotTileLongPressed,
+                ),
             );
           },
         ),
