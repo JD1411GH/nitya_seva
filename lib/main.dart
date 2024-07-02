@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:nitya_seva_calculation/slot_tile.dart';
 import 'package:intl/intl.dart';
-
+import 'package:uuid/uuid.dart';
 void main() {
   runApp(const NityaSevaApp());
 }
@@ -37,6 +37,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<String> slotTileTexts = [];
+  final Uuid uuid = Uuid();
 
   void _addSlotTile() {
     String currentDateTime =
@@ -70,9 +71,10 @@ class _HomePageState extends State<HomePage> {
         child: ListView.builder(
           itemCount: slotTileTexts.length,
           itemBuilder: (context, index) {
+            final String id = uuid.v4(); // Generate a unique ID
             return Padding(
               padding: const EdgeInsets.all(8.0),
-              child: SlotTile(buttonText: slotTileTexts[index]),
+              child: SlotTile(id: id, buttonText: slotTileTexts[index]),
             );
           },
         ),

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 class SlotTile extends StatefulWidget {
+  final String id;
   final String buttonText;
-  const SlotTile({super.key, required this.buttonText});
+  const SlotTile({super.key, required this.id, required this.buttonText});
 
   @override
   _SlotTileState createState() => _SlotTileState();
