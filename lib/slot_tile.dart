@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
 
 class SlotTile extends StatefulWidget {
   final String id;
   final String buttonText;
-  final Function(bool, String)? onSelected;
+  final Function()? callback;
+
   const SlotTile({
     super.key,
     required this.id,
     required this.buttonText,
-    this.onSelected,
+    this.callback,
   });
 
   @override
-  _SlotTileState createState() => _SlotTileState();
+  _listSlotTiletate createState() => _listSlotTiletate();
 }
 
-class _SlotTileState extends State<SlotTile> {
+class _listSlotTiletate extends State<SlotTile> {
   bool _isInverted = false;
 
   @override
@@ -28,8 +31,8 @@ class _SlotTileState extends State<SlotTile> {
             setState(() {
               _isInverted = false;
             });
-            if (widget.onSelected != null) {
-              widget.onSelected!(false, widget.id);
+            if (widget.callback != null) {
+              widget.callback!();
             }
           }
         },
@@ -37,8 +40,8 @@ class _SlotTileState extends State<SlotTile> {
           setState(() {
             _isInverted = !_isInverted;
           });
-          if (widget.onSelected != null) {
-            widget.onSelected!(true, widget.id);
+          if (widget.callback != null) {
+            widget.callback!();
           }
         },
         style: ElevatedButton.styleFrom(
@@ -55,3 +58,33 @@ class _SlotTileState extends State<SlotTile> {
     );
   }
 }
+
+class SlotTileList {
+  List<SlotTile> listSlotTile = [];
+  final Function() callback;
+
+  SlotTileList(this.callback);
+
+  void addSlotTile() {
+    String text = DateFormat('yyyy-MM-dd – kk:mm:ss').format(DateTime.now());
+    text = "$text \nJayanta Debnath";
+
+    SlotTile slotTile = SlotTile(
+      id: const Uuid().v4(),
+      buttonText: text,
+      callback: callback,
+    );
+
+    listSlotTile.insert(0, slotTile);
+  }
+
+  void removeSlotTile(String id) {
+    listSlotTile.removeWhere((element) => element.id == id);
+  }
+
+  List<SlotTile> getSlotList() {
+    return listSlotTile;
+  }
+
+}
+

@@ -38,49 +38,23 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<SlotTile> listSlotTile = [];
-  String slotId = '';
+  late SlotTileList slotTileList; // Declare slotTileList here without initializing
 
-  void _addSlot() {
-    String currentDateTime =
-        DateFormat('yyyy-MM-dd – kk:mm:ss').format(DateTime.now());
-    String userName = "Jayanta Debnath";
-    currentDateTime = "$currentDateTime \n$userName";
-
-    final String id = const Uuid().v4(); // Corrected the name to Uuid().v4()
-    print("adding $id");
-    var slotTile = SlotTile(
-      id: id,
-      buttonText: currentDateTime,
-      onSelected: onSlotTileSelected,
-    );
-
-    setState(() {
-      listSlotTile.insert(0, slotTile);
-    });
+  @override
+  void initState() {
+    super.initState();
+    // Initialize slotTileList here, where onSlotSelected can be accessed
+    slotTileList = SlotTileList(onSlotSelected);
   }
 
-  void _deleteSlot(String id) {
-    print("deleting $id");
-    setState(() {
-      listSlotTile.removeWhere((element) => element.id == id);
-    });
+  void onSlotSelected() {
+    print('Slot selected');
   }
-  
-  void onSlotTileSelected(bool selected, String id) {
-    if (selected) {
-      setState(() {
-        if (slotId.isNotEmpty) {
-          slotId = '';
-        } else {
-          slotId = id;
-        }
-      });
-    } else {
-      setState(() {
-        slotId = '';
-      });
-    }
+
+  void _addSlotNew() {
+    setState(() {
+      slotTileList.addSlotTile();
+    });
   }
 
   @override
@@ -92,8 +66,7 @@ class _HomePageState extends State<HomePage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.delete),
-            onPressed:
-                slotId.isNotEmpty ? () => _deleteSlot(slotId) : null,
+            onPressed: null,
           ),
         ],
       ),
@@ -101,11 +74,14 @@ class _HomePageState extends State<HomePage> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: listSlotTile.map((widget) => Padding(padding: EdgeInsets.all(8.0), child: widget)).toList(),
+          children: slotTileList.listSlotTile
+              .map((widget) =>
+                  Padding(padding: EdgeInsets.all(8.0), child: widget))
+              .toList(),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _addSlot,
+        onPressed: _addSlotNew,
         tooltip: 'Add slot',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
