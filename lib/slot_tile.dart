@@ -7,7 +7,9 @@ class SlotTile extends StatefulWidget {
   final String buttonText;
   final SlotTileCallbacks callback;
 
-  const SlotTile({
+  bool isInverted = false; // Add the isInverted setter here
+
+  SlotTile({
     super.key,
     required this.id,
     required this.buttonText,
@@ -19,33 +21,31 @@ class SlotTile extends StatefulWidget {
 }
 
 class _listSlotTilestate extends State<SlotTile> {
-  bool _isInverted = false;
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () {
-          if (_isInverted) {
+          if (widget.isInverted) { // Update the reference to widget.isInverted
             setState(() {
-              _isInverted = false;
+              widget.isInverted = false; // Update the reference to widget.isInverted
             });
             widget.callback.onSlotDeselected(widget.id);
           }
         },
         onLongPress: () {
           setState(() {
-            _isInverted = !_isInverted;
+            widget.isInverted = !widget.isInverted; // Update the reference to widget.isInverted
           });
           widget.callback.onSlotSelected(widget.id);
         },
         style: ElevatedButton.styleFrom(
           alignment: Alignment.centerLeft,
-          backgroundColor: _isInverted
+          backgroundColor: widget.isInverted // Update the reference to widget.isInverted
               ? Theme.of(context).colorScheme.primary
               : null, // Matched to theme's primary color
-          foregroundColor: _isInverted
+          foregroundColor: widget.isInverted // Update the reference to widget.isInverted
               ? Theme.of(context).colorScheme.onPrimary
               : null, // Matched to text color on primary
         ),
@@ -80,6 +80,12 @@ class SlotTileList {
 
   List<SlotTile> getSlotList() {
     return listSlotTiles;
+  }
+
+  void clearSelection() {
+    for (var slotTile in listSlotTiles) {
+      slotTile.isInverted = false;
+    }
   }
 }
 

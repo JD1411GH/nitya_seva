@@ -71,6 +71,8 @@ class _HomePageState extends State<HomePage> {
       for (var id in listSelectedSlots) {
         slotTileList.removeSlotTile(id);
       }
+      listSelectedSlots.clear();
+      slotTileList.clearSelection();
     });
   }
 
