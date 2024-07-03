@@ -5,20 +5,20 @@ import 'package:uuid/uuid.dart';
 class SlotTile extends StatefulWidget {
   final String id;
   final String buttonText;
-  final Function()? callback;
+  final SlotTileCallbacks callback;
 
   const SlotTile({
     super.key,
     required this.id,
     required this.buttonText,
-    this.callback,
+    required this.callback,
   });
 
   @override
-  _listSlotTiletate createState() => _listSlotTiletate();
+  _listSlotTilestate createState() => _listSlotTilestate();
 }
 
-class _listSlotTiletate extends State<SlotTile> {
+class _listSlotTilestate extends State<SlotTile> {
   bool _isInverted = false;
 
   @override
@@ -31,18 +31,14 @@ class _listSlotTiletate extends State<SlotTile> {
             setState(() {
               _isInverted = false;
             });
-            if (widget.callback != null) {
-              widget.callback!();
-            }
+            widget.callback.onSlotDeselected(widget.id);
           }
         },
         onLongPress: () {
           setState(() {
             _isInverted = !_isInverted;
           });
-          if (widget.callback != null) {
-            widget.callback!();
-          }
+          widget.callback.onSlotSelected(widget.id);
         },
         style: ElevatedButton.styleFrom(
           alignment: Alignment.centerLeft,
@@ -60,9 +56,9 @@ class _listSlotTiletate extends State<SlotTile> {
 }
 
 class SlotTileList {
-  List<SlotTile> listSlotTile = [];
-  final Function() callback;
+  List<SlotTile> listSlotTiles = [];
 
+  final SlotTileCallbacks callback;
   SlotTileList(this.callback);
 
   void addSlotTile() {
@@ -75,16 +71,25 @@ class SlotTileList {
       callback: callback,
     );
 
-    listSlotTile.insert(0, slotTile);
+    listSlotTiles.insert(0, slotTile);
   }
 
   void removeSlotTile(String id) {
-    listSlotTile.removeWhere((element) => element.id == id);
+    listSlotTiles.removeWhere((element) => element.id == id);
   }
 
   List<SlotTile> getSlotList() {
-    return listSlotTile;
+    return listSlotTiles;
   }
-
 }
 
+class SlotTileCallbacks {
+  final Function(String id) onSlotSelected;
+  final Function(String id) onSlotDeselected;
+  // Add more callbacks as needed
+
+  SlotTileCallbacks({
+    required this.onSlotSelected,
+    required this.onSlotDeselected,
+  });
+}

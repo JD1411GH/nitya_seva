@@ -38,22 +38,39 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late SlotTileList slotTileList; // Declare slotTileList here without initializing
+  late SlotTileList slotTileList;
+  List<String> listSelectedSlots = [];
 
   @override
   void initState() {
     super.initState();
-    // Initialize slotTileList here, where onSlotSelected can be accessed
-    slotTileList = SlotTileList(onSlotSelected);
+    slotTileList = SlotTileList(SlotTileCallbacks(
+        onSlotSelected: onSlotSelected, onSlotDeselected: onSlotDeselected));
   }
 
-  void onSlotSelected() {
-    print('Slot selected');
+  void onSlotSelected(String id) {
+    setState(() {
+      listSelectedSlots.add(id);
+    });
+  }
+
+  void onSlotDeselected(String id) {
+    setState(() {
+      listSelectedSlots.remove(id);
+    });
   }
 
   void _addSlotNew() {
     setState(() {
       slotTileList.addSlotTile();
+    });
+  }
+
+  void _removeSlot() {
+    setState(() {
+      for (var id in listSelectedSlots) {
+        slotTileList.removeSlotTile(id);
+      }
     });
   }
 
@@ -66,7 +83,7 @@ class _HomePageState extends State<HomePage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.delete),
-            onPressed: null,
+            onPressed: listSelectedSlots.isEmpty ? null : _removeSlot,
           ),
         ],
       ),
@@ -74,7 +91,7 @@ class _HomePageState extends State<HomePage> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: slotTileList.listSlotTile
+          children: slotTileList.listSlotTiles
               .map((widget) =>
                   Padding(padding: EdgeInsets.all(8.0), child: widget))
               .toList(),
