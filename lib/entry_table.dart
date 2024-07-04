@@ -22,7 +22,7 @@ class _EntryTableState extends State<EntryTable> {
   Future<Widget> _buildTable() async {
     String slotId = await _fetchSelectedSlot().then((value) => value.id);
 
-    List<Entry> listEntries = [];
+    List<EntryData> listEntries = [];
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? str = prefs.getString(slotId);
@@ -30,8 +30,8 @@ class _EntryTableState extends State<EntryTable> {
       return const Center(child: Text('No entries found'));
     } else {
       listEntries = (jsonDecode(str) as List)
-          .map((e) => Entry.fromJson(e))
-          .toList(); // Convert JSON to List<Entry>
+          .map((e) => EntryData.fromJson(e))
+          .toList(); // Convert JSON to List<EntryData>
     }
 
     return ListView.builder(
@@ -91,7 +91,10 @@ class _EntryTableState extends State<EntryTable> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: null,
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const EntryWidget()));
+        },
         tooltip: 'Add new entry',
         child: const Icon(Icons.add),
       ),
