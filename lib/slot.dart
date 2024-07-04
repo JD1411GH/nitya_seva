@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:nitya_seva_calculation/slotdb.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
@@ -67,10 +66,17 @@ class _listSlotTilestate extends State<SlotTile> {
 
 class SlotTileList {
   List<SlotTile> listSlotTiles = [];
-  DBSlot dbSlot = DBSlot();
 
   final SlotTileCallbacks callback;
   SlotTileList(this.callback);
+
+  void _save() async {
+    String slotsJson =
+        jsonEncode(listSlotTiles.map((slot) => slot.toJson()).toList());
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('dbSlots', slotsJson);
+  }
 
   void addSlotTile() async {
     String text = DateFormat('yyyy-MM-dd – kk:mm:ss').format(DateTime.now());
@@ -83,16 +89,12 @@ class SlotTileList {
     );
 
     listSlotTiles.insert(0, slotTile);
-
-    // save to database
-    String dbSlot = jsonEncode( listSlotTiles.map((slot) => slot.toJson()).toList() );
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('dbSlots', dbSlot);
+    _save();
   }
 
   void removeSlotTile(String id) {
     listSlotTiles.removeWhere((element) => element.id == id);
-    dbSlot.removeSlot(listSlotTiles.firstWhere((slotTile) => slotTile.id == id));
+    _save();
   }
 
   List<SlotTile> getSlotList() {
