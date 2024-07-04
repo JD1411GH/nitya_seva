@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:nitya_seva_calculation/slot.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DBSlotEntry {
   final String id;
@@ -24,26 +25,25 @@ class DBSlot {
   factory DBSlot() {
     return _singleton;
   }
-  List<DBSlotEntry> slots = [];
+  List<DBSlotEntry> listSlotEntries = [];
 
-  _save() {
+  _save() async {
     // Save to database
-    String slotsJson = jsonEncode(slots.map((slot) => slot.toJson()).toList());
+    String slotsJson =
+        jsonEncode(listSlotEntries.map((slot) => slot.toJson()).toList());
 
-    print(slotsJson); // This prints the JSON string representation of the list
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('slotsJson', slotsJson);
   }
 
   void addSlot(SlotTile slot) {
     DBSlotEntry entry = DBSlotEntry(id: slot.id, text: slot.buttonText);
-    slots.insert(0, entry);
+    listSlotEntries.insert(0, entry);
     _save();
   }
 
-  void removeSlot(SlotTile slot) {
-    slots.removeWhere((element) => element.id == slot.id);
-  }
+  void removeSlot(SlotTile slot) =>
+      listSlotEntries.removeWhere((element) => element.id == slot.id);
 
-  void showSlots() {
-    print(slots);
-  }
+  void showSlots() => print("");
 }
