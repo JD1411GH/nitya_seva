@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nitya_seva_calculation/slotdb.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 class SlotTile extends StatefulWidget {
@@ -16,6 +19,12 @@ class SlotTile extends StatefulWidget {
     required this.buttonText,
     required this.callback,
   });
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'text': buttonText,
+        // Convert other fields as necessary
+      };
 
   @override
   _listSlotTilestate createState() => _listSlotTilestate();
@@ -63,7 +72,7 @@ class SlotTileList {
   final SlotTileCallbacks callback;
   SlotTileList(this.callback);
 
-  void addSlotTile() {
+  void addSlotTile() async {
     String text = DateFormat('yyyy-MM-dd – kk:mm:ss').format(DateTime.now());
     text = "$text \nJayanta Debnath";
 
@@ -74,8 +83,11 @@ class SlotTileList {
     );
 
     listSlotTiles.insert(0, slotTile);
-    dbSlot.addSlot(slotTile);
-    dbSlot.showSlots();
+
+    // save to database
+    String dbSlot = jsonEncode( listSlotTiles.map((slot) => slot.toJson()).toList() );
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('dbSlots', dbSlot);
   }
 
   void removeSlotTile(String id) {
