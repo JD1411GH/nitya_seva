@@ -130,6 +130,10 @@ class SlotTileList {
     return listSlotTiles;
   }
 
+  SlotTile getSlotTileById(String id) {
+    return listSlotTiles.firstWhere((slotTile) => slotTile.id == id);
+  }
+
   void clearSelection() {
     for (var slotTile in listSlotTiles) {
       slotTile.isInverted = false;

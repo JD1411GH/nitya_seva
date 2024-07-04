@@ -1,9 +1,12 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:nitya_seva/entries.dart';
 import 'package:nitya_seva/slot.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 void main() {
@@ -73,7 +76,10 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void onSlotClicked(String id) {
+  Future<void> onSlotClicked(String id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String selectedSlot = jsonEncode( slotTileList.getSlotTileById(id).toJson() );
+    prefs.setString('selectedSlot', selectedSlot);
     Navigator.push(context, MaterialPageRoute(builder: (context) => Entries() ));
   }
 
@@ -106,6 +112,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
+      drawer: Drawer(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
