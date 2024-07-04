@@ -77,9 +77,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> onSlotClicked(String id) async {
+    // store the selected slot
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String selectedSlot = jsonEncode( slotTileList.getSlotTileById(id).toJson() );
     prefs.setString('selectedSlot', selectedSlot);
+
+    // navigate to the entry table
     Navigator.push(context, MaterialPageRoute(builder: (context) => EntryTable() ));
   }
 
