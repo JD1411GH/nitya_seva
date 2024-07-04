@@ -13,6 +13,21 @@ class EntryTable extends StatefulWidget {
 }
 
 class _EntryTableState extends State<EntryTable> {
+  List<EntryData> listEntries = [];
+
+  void onNewEntry(EntryData entry) async {
+    setState(() {
+      listEntries.insert(0, entry);
+    });
+
+    String slotId = await _fetchSelectedSlot().then((value) => value.id);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(
+      slotId,
+      jsonEncode(listEntries.map((e) => e.toJson()).toList()),
+    );
+  }
+
   Future<SlotTile> _fetchSelectedSlot() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? str = prefs.getString("selectedSlot");
@@ -21,8 +36,6 @@ class _EntryTableState extends State<EntryTable> {
 
   Future<Widget> _buildTable() async {
     String slotId = await _fetchSelectedSlot().then((value) => value.id);
-
-    List<EntryData> listEntries = [];
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? str = prefs.getString(slotId);
@@ -39,7 +52,7 @@ class _EntryTableState extends State<EntryTable> {
       itemBuilder: (context, index) {
         final item = listEntries[index];
         return Card(
-          margin: EdgeInsets.all(8.0),
+          margin: const EdgeInsets.all(8.0),
           child: ListTile(
             title: Text(
                 'Amount: ${item.amount.toStringAsFixed(2)}, Mode: ${item.mode}, Ticket: ${item.ticket}'),
@@ -50,10 +63,6 @@ class _EntryTableState extends State<EntryTable> {
             ),
             onTap: () {
               // Define your action upon clicking an item here
-              // For example, showing a snackbar with the item's author
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text('Selected author: ${item.author}'),
-              ));
             },
           ),
         );
@@ -92,8 +101,10 @@ class _EntryTableState extends State<EntryTable> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const EntryWidget()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => EntryWidget(onSave: onNewEntry)));
         },
         tooltip: 'Add new entry',
         child: const Icon(Icons.add),
