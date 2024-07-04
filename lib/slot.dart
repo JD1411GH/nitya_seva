@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:nitya_seva_calculation/slotdb.dart';
 import 'package:uuid/uuid.dart';
 
 class SlotTile extends StatefulWidget {
@@ -57,6 +58,7 @@ class _listSlotTilestate extends State<SlotTile> {
 
 class SlotTileList {
   List<SlotTile> listSlotTiles = [];
+  DBSlot dbSlot = DBSlot();
 
   final SlotTileCallbacks callback;
   SlotTileList(this.callback);
@@ -72,10 +74,13 @@ class SlotTileList {
     );
 
     listSlotTiles.insert(0, slotTile);
+    dbSlot.addSlot(slotTile);
+    dbSlot.showSlots();
   }
 
   void removeSlotTile(String id) {
     listSlotTiles.removeWhere((element) => element.id == id);
+    dbSlot.removeSlot(listSlotTiles.firstWhere((slotTile) => slotTile.id == id));
   }
 
   List<SlotTile> getSlotList() {
