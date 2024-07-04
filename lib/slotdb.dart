@@ -33,7 +33,7 @@ class DBSlot {
         jsonEncode(listSlotEntries.map((slot) => slot.toJson()).toList());
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('slotsJson', slotsJson);
+    await prefs.setString('dbSlots', slotsJson);
   }
 
   void addSlot(SlotTile slot) {
@@ -45,5 +45,9 @@ class DBSlot {
   void removeSlot(SlotTile slot) =>
       listSlotEntries.removeWhere((element) => element.id == slot.id);
 
-  void showSlots() => print("");
+  void showSlots() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? dbSlots = await prefs.getString('dbSlots');
+    print(dbSlots);
+  }
 }
