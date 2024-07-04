@@ -46,6 +46,16 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     slotTileList = SlotTileList(SlotTileCallbacks(
         onSlotSelected: onSlotSelected, onSlotDeselected: onSlotDeselected));
+    _initListSlotTiles();
+  }
+
+  Future<void> _initListSlotTiles() async {
+    await slotTileList.initListSlotTiles(); // Load data from SharedPreferences
+    setState(() {
+      // This call to setState will trigger a rebuild once the data is loaded.
+      // You don't need to do anything here if slotTileList.initListSlotTiles() already updates the list.
+      // The purpose of calling setState() is just to ensure the widget rebuilds.
+    });
   }
 
   void onSlotSelected(String id) {

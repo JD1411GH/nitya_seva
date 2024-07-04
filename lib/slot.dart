@@ -8,7 +8,7 @@ import 'package:uuid/uuid.dart';
 class SlotTile extends StatefulWidget {
   final String id;
   final String buttonText;
-  final SlotTileCallbacks callback;
+  SlotTileCallbacks? callback;
 
   bool isInverted = false; // Add the isInverted setter here
 
@@ -16,14 +16,22 @@ class SlotTile extends StatefulWidget {
     super.key,
     required this.id,
     required this.buttonText,
-    required this.callback,
+    this.callback,
   });
 
   Map<String, dynamic> toJson() => {
         'id': id,
-        'text': buttonText,
+        'buttonText': buttonText,
         // Convert other fields as necessary
       };
+
+  factory SlotTile.fromJson(Map<String, dynamic> json) {
+    return SlotTile(
+      id: json['id'],
+      buttonText: json['buttonText'],
+      // Initialize other fields
+    );
+  }
 
   @override
   _listSlotTilestate createState() => _listSlotTilestate();
@@ -36,27 +44,32 @@ class _listSlotTilestate extends State<SlotTile> {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () {
-          if (widget.isInverted) { // Update the reference to widget.isInverted
+          if (widget.isInverted) {
+            // Update the reference to widget.isInverted
             setState(() {
-              widget.isInverted = false; // Update the reference to widget.isInverted
+              widget.isInverted =
+                  false; // Update the reference to widget.isInverted
             });
-            widget.callback.onSlotDeselected(widget.id);
+            widget.callback!.onSlotDeselected(widget.id);
           }
         },
         onLongPress: () {
           setState(() {
-            widget.isInverted = !widget.isInverted; // Update the reference to widget.isInverted
+            widget.isInverted =
+                !widget.isInverted; // Update the reference to widget.isInverted
           });
-          widget.callback.onSlotSelected(widget.id);
+          widget.callback!.onSlotSelected(widget.id);
         },
         style: ElevatedButton.styleFrom(
           alignment: Alignment.centerLeft,
-          backgroundColor: widget.isInverted // Update the reference to widget.isInverted
-              ? Theme.of(context).colorScheme.primary
-              : null, // Matched to theme's primary color
-          foregroundColor: widget.isInverted // Update the reference to widget.isInverted
-              ? Theme.of(context).colorScheme.onPrimary
-              : null, // Matched to text color on primary
+          backgroundColor:
+              widget.isInverted // Update the reference to widget.isInverted
+                  ? Theme.of(context).colorScheme.primary
+                  : null, // Matched to theme's primary color
+          foregroundColor:
+              widget.isInverted // Update the reference to widget.isInverted
+                  ? Theme.of(context).colorScheme.onPrimary
+                  : null, // Matched to text color on primary
         ),
         child: Text(widget.buttonText),
       ),
@@ -70,7 +83,7 @@ class SlotTileList {
   final SlotTileCallbacks callback;
   SlotTileList(this.callback);
 
-  void _save() async {
+  Future<void> _save() async {
     String slotsJson =
         jsonEncode(listSlotTiles.map((slot) => slot.toJson()).toList());
 
@@ -78,7 +91,7 @@ class SlotTileList {
     await prefs.setString('dbSlots', slotsJson);
   }
 
-  void addSlotTile() async {
+  void addSlotTile() {
     String text = DateFormat('yyyy-MM-dd – kk:mm:ss').format(DateTime.now());
     text = "$text \nJayanta Debnath";
 
@@ -95,6 +108,20 @@ class SlotTileList {
   void removeSlotTile(String id) {
     listSlotTiles.removeWhere((element) => element.id == id);
     _save();
+  }
+
+  Future<void> initListSlotTiles() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? slotsJson = prefs.getString('dbSlots');
+
+    if(slotsJson != null) {
+      List<dynamic> slots = jsonDecode(slotsJson);
+      listSlotTiles = slots.map((slot) => SlotTile.fromJson(slot)).toList();
+
+      for (var slotTile in listSlotTiles) {
+        slotTile.callback = callback;
+      }
+    }
   }
 
   List<SlotTile> getSlotList() {
