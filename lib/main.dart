@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:nitya_seva/entries.dart';
 import 'package:nitya_seva/slot.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
@@ -45,7 +46,9 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     slotTileList = SlotTileList(SlotTileCallbacks(
-        onSlotSelected: onSlotSelected, onSlotDeselected: onSlotDeselected));
+        onSlotSelected: onSlotSelected,
+        onSlotDeselected: onSlotDeselected,
+        onSlotClicked: onSlotClicked));
     _initListSlotTiles();
   }
 
@@ -68,6 +71,10 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       listSelectedSlots.remove(id);
     });
+  }
+
+  void onSlotClicked(String id) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => Entries() ));
   }
 
   void _addSlotNew() {
