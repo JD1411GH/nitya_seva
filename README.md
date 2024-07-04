@@ -1,4 +1,4 @@
-# nitya_seva_calculation
+# nitya_seva
 
 A new Flutter project.
 
