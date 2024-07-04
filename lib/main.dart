@@ -3,7 +3,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:nitya_seva/entries.dart';
+import 'package:nitya_seva/entry_table.dart';
 import 'package:nitya_seva/slot.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -80,7 +80,7 @@ class _HomePageState extends State<HomePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String selectedSlot = jsonEncode( slotTileList.getSlotTileById(id).toJson() );
     prefs.setString('selectedSlot', selectedSlot);
-    Navigator.push(context, MaterialPageRoute(builder: (context) => Entries() ));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => EntryTable() ));
   }
 
   void _addSlotNew() {

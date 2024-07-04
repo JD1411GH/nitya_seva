@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:nitya_seva/slot.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Entries extends StatefulWidget {
-  Entries({super.key});
+class EntryTable extends StatefulWidget {
+  EntryTable({super.key});
 
   SlotTile selectedSlot = SlotTile(id: "unknown id", buttonText: 'unknown slot'); 
 
   @override
-  State<Entries> createState() => _EntriesState();
+  State<EntryTable> createState() => _EntryTableState();
 }
 
-class _EntriesState extends State<Entries> {
+class _EntryTableState extends State<EntryTable> {
   @override
   void initState() {
     _fetchSelectedSlot();
@@ -42,7 +42,7 @@ class _EntriesState extends State<Entries> {
         ],
       ),
       body: Center(
-        child: Text('Entries'),
+        child: Text('EntryTable'),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: null,
