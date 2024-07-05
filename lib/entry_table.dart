@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:nitya_seva/entry.dart';
@@ -14,16 +15,26 @@ class EntryTable extends StatefulWidget {
 
 class _EntryTableState extends State<EntryTable> {
   List<EntryData> listEntries = [];
+  late String selectedSlotId;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchSelectedSlotId().then((value) {
+      selectedSlotId = value;
+    });
+  }
 
   void onNewEntry(EntryData entry) async {
     setState(() {
       listEntries.insert(0, entry);
     });
 
-    String slotId = await _fetchSelectedSlot().then((value) => value.id);
+    String selectedSlotId =
+        await _fetchSelectedSlot().then((value) => value.id);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(
-      slotId,
+      selectedSlotId,
       jsonEncode(listEntries.map((e) => e.toJson()).toList()),
     );
   }
@@ -34,11 +45,26 @@ class _EntryTableState extends State<EntryTable> {
     return SlotTile.fromJson(jsonDecode(str!));
   }
 
-  Future<Widget> _buildTable() async {
-    String slotId = await _fetchSelectedSlot().then((value) => value.id);
-
+  Future<String> _fetchSelectedSlotId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? str = prefs.getString(slotId);
+    String? str = prefs.getString("selectedSlot");
+    return SlotTile.fromJson(jsonDecode(str!)).id;
+  }
+
+  int getNextTicket(amount) {
+    List<EntryData> filteredEntries =
+        listEntries.where((entry) => entry.amount == amount).toList();
+
+    if (filteredEntries.isEmpty) {
+      return 1;
+    } else {
+      return filteredEntries.map((entry) => entry.ticket).reduce(max) + 1;
+    }
+  }
+
+  Future<Widget> _buildTable() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? str = prefs.getString(selectedSlotId);
     if (str == null) {
       return const Center(child: Text('No entries found'));
     } else {
@@ -104,7 +130,12 @@ class _EntryTableState extends State<EntryTable> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => EntryWidget(onSave: onNewEntry)));
+                  builder: (context) => EntryWidget(
+                        callbacks: EntryWidgetCallbacks(
+                          onSave: onNewEntry,
+                          getNextTicket: getNextTicket,
+                        ),
+                      )));
         },
         tooltip: 'Add new entry',
         child: const Icon(Icons.add),

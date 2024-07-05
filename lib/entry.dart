@@ -38,9 +38,8 @@ class EntryData {
 }
 
 class EntryWidget extends StatefulWidget {
-  final Function(EntryData) onSave;
-  final int? nextTicket;
-  const EntryWidget({super.key, required this.onSave, this.nextTicket});
+  final EntryWidgetCallbacks callbacks;
+  const EntryWidget({super.key, required this.callbacks});
 
   @override
   State<EntryWidget> createState() => _EntryWidgetState();
@@ -49,21 +48,41 @@ class EntryWidget extends StatefulWidget {
 class _EntryWidgetState extends State<EntryWidget> {
   int _amount = 400;
   String _mode = "UPI";
-  int? _ticket;
-
+  late int _ticket;
+  late TextEditingController _ticketController;
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    _ticket = widget.callbacks.getNextTicket(400);
+    _ticketController = TextEditingController(text: _ticket.toString());
+  }
+
+  @override
+  void dispose() {
+    _ticketController.dispose();
+    super.dispose();
+  }
+
+  void _updateTicket() {
+    setState(() {
+      _ticket = widget.callbacks.getNextTicket(_amount);
+      _ticketController.text = _ticket.toString();
+    });
+  }
 
   void _onSave() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    widget.onSave(EntryData(
+    widget.callbacks.onSave(EntryData(
       time: DateTime.now().toString(),
       author: "Jayanta Debnath",
       amount: _amount,
       mode: _mode,
-      ticket: _ticket!,
+      ticket: _ticket,
     ));
 
     Navigator.pop(context);
@@ -71,8 +90,6 @@ class _EntryWidgetState extends State<EntryWidget> {
 
   @override
   Widget build(BuildContext context) {
-    _ticket = widget.nextTicket;
-
     return Scaffold(
         appBar: AppBar(
           title: const Text('New Entry'),
@@ -99,6 +116,7 @@ class _EntryWidgetState extends State<EntryWidget> {
                       // Handle change
                       if (value != null) {
                         _amount = value;
+                        _updateTicket();
                       }
                     },
                     decoration: const InputDecoration(
@@ -129,7 +147,7 @@ class _EntryWidgetState extends State<EntryWidget> {
                 Padding(
                   padding: const EdgeInsets.all(16.0), // Increased padding
                   child: TextFormField(
-                    initialValue: _ticket == null ? "" : _ticket.toString(),
+                    controller: _ticketController,
                     decoration: const InputDecoration(
                       labelText: 'Ticket Number',
                     ),
@@ -191,3 +209,11 @@ class _EntryWidgetState extends State<EntryWidget> {
         ));
   }
 } // class _EntryWidgetState
+
+class EntryWidgetCallbacks {
+  final Function(EntryData) onSave;
+  final Function(int) getNextTicket;
+
+  const EntryWidgetCallbacks(
+      {required this.onSave, required this.getNextTicket});
+}
