@@ -48,7 +48,7 @@ class EntryWidget extends StatefulWidget {
 class _EntryWidgetState extends State<EntryWidget> {
   int _amount = 400;
   String _mode = "UPI";
-  late int _ticket;
+  late int? _ticket;
   late TextEditingController _ticketController;
   final _formKey = GlobalKey<FormState>();
 
@@ -56,7 +56,11 @@ class _EntryWidgetState extends State<EntryWidget> {
   void initState() {
     super.initState();
     _ticket = widget.callbacks.getNextTicket(400);
-    _ticketController = TextEditingController(text: _ticket.toString());
+    if (_ticket != null) {
+      _ticketController = TextEditingController(text: _ticket.toString());
+    } else {
+      _ticketController = TextEditingController();
+    }
   }
 
   @override
@@ -68,7 +72,11 @@ class _EntryWidgetState extends State<EntryWidget> {
   void _updateTicket() {
     setState(() {
       _ticket = widget.callbacks.getNextTicket(_amount);
-      _ticketController.text = _ticket.toString();
+      if (_ticket != null) {
+        _ticketController.text = _ticket.toString();
+      } else {
+        _ticketController.clear();
+      }
     });
   }
 
@@ -82,7 +90,7 @@ class _EntryWidgetState extends State<EntryWidget> {
       author: "Jayanta Debnath",
       amount: _amount,
       mode: _mode,
-      ticket: _ticket,
+      ticket: _ticket!,
     ));
 
     Navigator.pop(context);
@@ -92,7 +100,8 @@ class _EntryWidgetState extends State<EntryWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('New Entry'),
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: const Text("New Entry"),
         ),
         body: Padding(
           padding:
@@ -152,8 +161,10 @@ class _EntryWidgetState extends State<EntryWidget> {
                       labelText: 'Ticket Number',
                     ),
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter ticket number';
+                      if (value == null ||
+                          value.isEmpty ||
+                          !RegExp(r'^[0-9]+$').hasMatch(value)) {
+                        return 'Please enter a valid ticket number';
                       }
                       return null;
                     },

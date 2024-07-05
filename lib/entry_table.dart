@@ -51,12 +51,12 @@ class _EntryTableState extends State<EntryTable> {
     return SlotTile.fromJson(jsonDecode(str!)).id;
   }
 
-  int getNextTicket(amount) {
+  int? getNextTicket(amount) {
     List<EntryData> filteredEntries =
         listEntries.where((entry) => entry.amount == amount).toList();
 
     if (filteredEntries.isEmpty) {
-      return 1;
+      return null;
     } else {
       return filteredEntries.map((entry) => entry.ticket).reduce(max) + 1;
     }
