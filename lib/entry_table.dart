@@ -90,8 +90,8 @@ class _EntryTableState extends State<EntryTable> {
                 'Amount: ${item.amount.toStringAsFixed(2)}, Mode: ${item.mode}, Ticket: ${item.ticket}'),
             subtitle: Text("Time: ${item.time}, Author: ${item.author}"),
             leading: CircleAvatar(
-              child:
-                  Text("1"), // total tickets sold, not individual amount-wise
+              child: Text(item.count
+                  .toString()), // total tickets sold, not individual amount-wise
             ),
             onTap: () {
               // Define your action upon clicking an item here
@@ -140,6 +140,7 @@ class _EntryTableState extends State<EntryTable> {
                         callbacks: EntryWidgetCallbacks(
                           onSave: onNewEntry,
                           getNextTicket: getNextTicket,
+                          getCount: () => listEntries.length + 1,
                         ),
                       )));
         },

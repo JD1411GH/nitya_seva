@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class EntryData {
+  final int count;
   final String time;
   final String author;
   final int amount;
@@ -8,6 +9,7 @@ class EntryData {
   final int ticket;
 
   EntryData({
+    required this.count,
     required this.time,
     required this.author,
     required this.amount,
@@ -16,6 +18,7 @@ class EntryData {
   });
 
   Map<String, dynamic> toJson() => {
+        'count': count,
         'time': time,
         'author': author,
         'amount': amount,
@@ -25,6 +28,7 @@ class EntryData {
 
   factory EntryData.fromJson(Map<String, dynamic> json) {
     return EntryData(
+      count: json['count'],
       time: json['time'],
       author: json['author'],
       amount: json['amount'],
@@ -83,6 +87,7 @@ class _EntryWidgetState extends State<EntryWidget> {
     }
 
     widget.callbacks.onSave(EntryData(
+      count: widget.callbacks.getCount(),
       time: DateTime.now().toString(),
       author: "Jayanta Debnath",
       amount: _amount,
@@ -221,7 +226,10 @@ class _EntryWidgetState extends State<EntryWidget> {
 class EntryWidgetCallbacks {
   final Function(EntryData) onSave;
   final Function(int) getNextTicket;
+  final Function() getCount;
 
   const EntryWidgetCallbacks(
-      {required this.onSave, required this.getNextTicket});
+      {required this.onSave,
+      required this.getNextTicket,
+      required this.getCount});
 }
