@@ -39,7 +39,8 @@ class EntryData {
 
 class EntryWidget extends StatefulWidget {
   final Function(EntryData) onSave;
-  const EntryWidget({super.key, required this.onSave});
+  final int? nextTicket;
+  const EntryWidget({super.key, required this.onSave, this.nextTicket});
 
   @override
   State<EntryWidget> createState() => _EntryWidgetState();
@@ -48,15 +49,21 @@ class EntryWidget extends StatefulWidget {
 class _EntryWidgetState extends State<EntryWidget> {
   int _amount = 400;
   String _mode = "UPI";
-  int _ticket = 0;
+  int? _ticket;
+
+  final _formKey = GlobalKey<FormState>();
 
   void _onSave() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
     widget.onSave(EntryData(
       time: DateTime.now().toString(),
       author: "Jayanta Debnath",
       amount: _amount,
       mode: _mode,
-      ticket: _ticket,
+      ticket: _ticket!,
     ));
 
     Navigator.pop(context);
@@ -64,6 +71,8 @@ class _EntryWidgetState extends State<EntryWidget> {
 
   @override
   Widget build(BuildContext context) {
+    _ticket = widget.nextTicket;
+
     return Scaffold(
         appBar: AppBar(
           title: const Text('New Entry'),
@@ -72,6 +81,7 @@ class _EntryWidgetState extends State<EntryWidget> {
           padding:
               const EdgeInsets.all(16.0), // Adjust the padding value as needed
           child: Form(
+            key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -119,6 +129,7 @@ class _EntryWidgetState extends State<EntryWidget> {
                 Padding(
                   padding: const EdgeInsets.all(16.0), // Increased padding
                   child: TextFormField(
+                    initialValue: _ticket == null ? "" : _ticket.toString(),
                     decoration: const InputDecoration(
                       labelText: 'Ticket Number',
                     ),
