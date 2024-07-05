@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:nitya_seva/db.dart';
 import 'package:nitya_seva/entry.dart';
 import 'package:nitya_seva/slot.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,23 +33,28 @@ class _EntryTableState extends State<EntryTable> {
 
     String selectedSlotId =
         await _fetchSelectedSlot().then((value) => value.id);
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString(
+    DB().write(
       selectedSlotId,
       jsonEncode(listEntries.map((e) => e.toJson()).toList()),
     );
   }
 
   Future<SlotTile> _fetchSelectedSlot() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? str = prefs.getString("selectedSlot");
-    return SlotTile.fromJson(jsonDecode(str!));
+    String? str = await DB().read("selectedSlot");
+    if (str == null) {
+      throw Exception('Selected slot is null');
+    }
+
+    return SlotTile.fromJson(jsonDecode(str));
   }
 
   Future<String> _fetchSelectedSlotId() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? str = prefs.getString("selectedSlot");
-    return SlotTile.fromJson(jsonDecode(str!)).id;
+    String? str = await DB().read("selectedSlot");
+    if (str == null) {
+      throw Exception('Selected slot is null');
+    }
+
+    return SlotTile.fromJson(jsonDecode(str)).id;
   }
 
   int? getNextTicket(amount) {

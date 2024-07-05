@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:nitya_seva/db.dart';
 import 'package:nitya_seva/entry_table.dart';
 import 'package:nitya_seva/slot.dart';
 import 'package:intl/intl.dart';
@@ -78,12 +79,12 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> onSlotClicked(String id) async {
     // store the selected slot
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String selectedSlot = jsonEncode( slotTileList.getSlotTileById(id).toJson() );
-    prefs.setString('selectedSlot', selectedSlot);
+    String selectedSlot = jsonEncode(slotTileList.getSlotTileById(id).toJson());
+    await DB().write('selectedSlot', selectedSlot);
 
     // navigate to the entry table
-    Navigator.push(context, MaterialPageRoute(builder: (context) => EntryTable() ));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => EntryTable()));
   }
 
   void _addSlotNew() {

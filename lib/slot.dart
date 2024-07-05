@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:nitya_seva/db.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
@@ -47,8 +48,7 @@ class _listSlotTilestate extends State<SlotTile> {
           // Deselect if slot tile is selected
           if (widget.isInverted) {
             setState(() {
-              widget.isInverted =
-                  false;
+              widget.isInverted = false;
             });
             widget.callback!.onSlotDeselected(widget.id);
           }
@@ -89,8 +89,7 @@ class SlotTileList {
     String slotsJson =
         jsonEncode(listSlotTiles.map((slot) => slot.toJson()).toList());
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('dbSlots', slotsJson);
+    DB().write('dbSlots', slotsJson);
   }
 
   void addSlotTile() {
@@ -113,10 +112,9 @@ class SlotTileList {
   }
 
   Future<void> initListSlotTiles() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? slotsJson = prefs.getString('dbSlots');
+    String? slotsJson = await DB().read('dbSlots');
 
-    if(slotsJson != null) {
+    if (slotsJson != null) {
       List<dynamic> slots = jsonDecode(slotsJson);
       listSlotTiles = slots.map((slot) => SlotTile.fromJson(slot)).toList();
 
