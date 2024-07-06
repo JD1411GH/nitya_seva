@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:nitya_seva/auth.dart';
 import 'package:nitya_seva/db.dart';
 import 'package:nitya_seva/entry_table.dart';
 import 'package:nitya_seva/slot.dart';
@@ -11,6 +12,8 @@ import 'package:firebase_core/firebase_core.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await loginUser("+918050645849");
+
   runApp(const NityaSevaApp());
 }
 
