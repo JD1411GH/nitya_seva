@@ -89,12 +89,15 @@ class _HomePageState extends State<HomePage> {
       drawer: Drawer(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: slotTileList.listSlotTiles
-              .map((widget) =>
-                  Padding(padding: EdgeInsets.all(8.0), child: widget))
-              .toList(),
+        child: SingleChildScrollView(
+          // Wrap the Column in a SingleChildScrollView
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: slotTileList.listSlotTiles
+                .map((widget) =>
+                    Padding(padding: EdgeInsets.all(8.0), child: widget))
+                .toList(),
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
