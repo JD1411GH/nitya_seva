@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:nitya_seva/db.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -74,8 +75,8 @@ class _LoginScreenState extends State<LoginScreen> {
       User? user = result.user;
 
       if (user != null) {
-        // Navigate to your desired screen
-        print("Verfication Completed $user");
+        print("Verfication Completed ${user.uid}");
+        DB().write('user', user.toString());
       } else {
         print("Error");
       }

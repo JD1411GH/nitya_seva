@@ -19,6 +19,16 @@ Future<void> main() async {
 class NityaSevaApp extends StatelessWidget {
   const NityaSevaApp({super.key});
 
+  Future<Widget> _getStartPage() async {
+    final user = await DB().read('user');
+    print(user);
+    if (user != null) {
+      return HomePage(title: "VK Hill Nitya Seva");
+    } else {
+      return LoginScreen();
+    }
+  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -31,7 +41,22 @@ class NityaSevaApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // home: const HomePage(title: 'VK Hill Nitya Seva'),
-      home: const LoginScreen(),
+      home: FutureBuilder(
+        future: _getStartPage(),
+        builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasData) {
+              return snapshot.data!;
+            } else {
+              // Handle the case where snapshot.data is null
+              return const LoginScreen(); // Fallback to LoginScreen if data is null
+            }
+          } else {
+            // Show a loading indicator while waiting for the Future to complete
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
     );
   }
 }
