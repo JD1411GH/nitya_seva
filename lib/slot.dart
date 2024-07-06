@@ -90,6 +90,7 @@ class SlotTileList {
         jsonEncode(listSlotTiles.map((slot) => slot.toJson()).toList());
 
     DB().write('dbSlots', slotsJson);
+    DB().writeCloud('dbSlots', slotsJson);
   }
 
   void addSlotTile() {
