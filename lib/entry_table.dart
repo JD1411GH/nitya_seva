@@ -16,14 +16,10 @@ class EntryTable extends StatefulWidget {
 
 class _EntryTableState extends State<EntryTable> {
   List<EntryData> listEntries = [];
-  late String selectedSlotId;
 
   @override
   void initState() {
     super.initState();
-    _fetchSelectedSlotId().then((value) {
-      selectedSlotId = value;
-    });
   }
 
   void onNewEntry(EntryData entry) async {
@@ -33,7 +29,7 @@ class _EntryTableState extends State<EntryTable> {
 
     String selectedSlotId =
         await _fetchSelectedSlot().then((value) => value.id);
-    DB().write(
+    DB().writeCloud(
       selectedSlotId,
       jsonEncode(listEntries.map((e) => e.toJson()).toList()),
     );
@@ -69,14 +65,16 @@ class _EntryTableState extends State<EntryTable> {
   }
 
   Future<Widget> _buildTable() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? str = prefs.getString(selectedSlotId);
-    if (str == null) {
-      return const Center(child: Text('No entries found'));
-    } else {
-      listEntries = (jsonDecode(str) as List)
-          .map((e) => EntryData.fromJson(e))
-          .toList(); // Convert JSON to List<EntryData>
+    if (listEntries.isEmpty) {
+      String selectedSlotId = await _fetchSelectedSlotId();
+      String? str = await DB().readCloud(selectedSlotId);
+      if (str == null) {
+        return const Center(child: Text('No entries found'));
+      } else {
+        listEntries = (jsonDecode(str) as List)
+            .map((e) => EntryData.fromJson(e))
+            .toList(); // Convert JSON to List<EntryData>
+      }
     }
 
     return ListView.builder(
@@ -125,6 +123,9 @@ class _EntryTableState extends State<EntryTable> {
         future: _buildTable(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.data == null) {
+              return const Center(child: Text('No entries found'));
+            }
             return snapshot.data!;
           } else {
             return const Center(child: CircularProgressIndicator());

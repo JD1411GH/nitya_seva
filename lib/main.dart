@@ -21,7 +21,6 @@ class NityaSevaApp extends StatelessWidget {
 
   Future<Widget> _getStartPage() async {
     final user = await DB().read('user');
-    print(user);
     if (user != null) {
       return HomePage(title: "VK Hill Nitya Seva");
     } else {

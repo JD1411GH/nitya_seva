@@ -15,6 +15,12 @@ class DB {
     return prefs.getString(key);
   }
 
+  Future<String?> readCloud(String key) async {
+    final databaseReference = FirebaseDatabase.instance.ref();
+    DataSnapshot snapshot = await databaseReference.child(key).get();
+    return snapshot.value.toString();
+  }
+
   Future<void> write(String key, String value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(key, value);
@@ -29,7 +35,6 @@ class DB {
     final databaseReference = FirebaseDatabase.instance.ref();
     try {
       await databaseReference.child(key).set(value);
-      print("write successful");
       return true; // Write was successful
     } catch (e) {
       print(e.toString()); // Optionally log the error

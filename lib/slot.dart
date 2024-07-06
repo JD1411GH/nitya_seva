@@ -89,7 +89,6 @@ class SlotTileList {
     String slotsJson =
         jsonEncode(listSlotTiles.map((slot) => slot.toJson()).toList());
 
-    DB().write('dbSlots', slotsJson);
     DB().writeCloud('dbSlots', slotsJson);
   }
 
@@ -113,7 +112,7 @@ class SlotTileList {
   }
 
   Future<void> initListSlotTiles() async {
-    String? slotsJson = await DB().read('dbSlots');
+    String? slotsJson = await DB().readCloud('dbSlots');
 
     if (slotsJson != null) {
       List<dynamic> slots = jsonDecode(slotsJson);
