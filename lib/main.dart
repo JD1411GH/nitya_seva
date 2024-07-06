@@ -12,7 +12,6 @@ import 'package:firebase_core/firebase_core.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await loginUser("+918050645849");
 
   runApp(const NityaSevaApp());
 }
@@ -31,7 +30,8 @@ class NityaSevaApp extends StatelessWidget {
             ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 222, 150, 67)),
         useMaterial3: true,
       ),
-      home: const HomePage(title: 'VK Hill Nitya Seva'),
+      // home: const HomePage(title: 'VK Hill Nitya Seva'),
+      home: const LoginScreen(),
     );
   }
 }
