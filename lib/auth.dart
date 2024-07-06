@@ -143,15 +143,16 @@ Future<void> loginUser(String phone, LoginUserCallbacks callbacks) async {
     phoneNumber: phone,
     timeout: const Duration(seconds: 60),
     verificationCompleted: (AuthCredential credential) async {
-      UserCredential result = await _auth.signInWithCredential(credential);
+      print("Auto verification disabled");
+      // UserCredential result = await _auth.signInWithCredential(credential);
 
-      User? user = result.user;
+      // User? user = result.user;
 
-      if (user != null) {
-        print("Auto Verfication Completed $user");
-      } else {
-        print("Error");
-      }
+      // if (user != null) {
+      //   print("Auto Verfication Completed $user");
+      // } else {
+      //   print("Error");
+      // }
     },
     verificationFailed: (FirebaseAuthException exception) {
       print("Verification failed: $exception");
