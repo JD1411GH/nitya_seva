@@ -13,39 +13,54 @@ class WritingBoard extends StatefulWidget {
 }
 
 class _WritingBoardState extends State<WritingBoard> {
-  List<Text> texts = [];
+  List<TableRow> listRows = [];
 
   @override
   void initState() {
     super.initState();
-    _populateBoard();
+    _populateTable();
   }
 
-  void _appendText(String newText) {
+  void _appendRow(String col1, String col2) {
     setState(() {
-      texts.add(Text(
-        newText,
-        style: const TextStyle(fontSize: 16),
+      listRows.add(TableRow(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0), // Add left padding
+            child: Text(col1, style: const TextStyle(fontSize: 16)),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0), // Add left padding
+            child: Text(col2, style: const TextStyle(fontSize: 16)),
+          ),
+        ],
       ));
     });
   }
 
-  void _appendHeadline(String newText) {
+  void _appendHeadline(String col1) {
     setState(() {
-      texts.add(Text(
-        newText,
-        style: const TextStyle(fontSize: 24),
+      listRows.add(TableRow(
+        children: [
+          Text(col1, style: const TextStyle(fontSize: 24)),
+          const Text("", style: TextStyle(fontSize: 24)),
+        ],
       ));
     });
   }
 
   void _appendSpace() {
     setState(() {
-      texts.add(Text("\n\n"));
+      listRows.add(const TableRow(
+        children: [
+          Text("", style: TextStyle(fontSize: 16)),
+          Text("", style: TextStyle(fontSize: 16)),
+        ],
+      ));
     });
   }
 
-  Future<void> _populateBoard() async {
+  Future<void> _populateTable() async {
     // get the selected slot
     String? str = await DB().read("selectedSlot");
     String slotId = SlotTile.fromJson(jsonDecode(str!)).id;
@@ -79,10 +94,10 @@ class _WritingBoardState extends State<WritingBoard> {
       }
 
       _appendHeadline("Seva value: $amount");
-      _appendText("Starting no: $entryWithLowestTicket");
-      _appendText("Ending no: $entryWithHighestTicket");
+      _appendRow("Starting no", entryWithLowestTicket.toString());
+      _appendRow("Ending no", entryWithHighestTicket.toString());
       int total = entryWithHighestTicket - entryWithLowestTicket + 1;
-      _appendText("Total tickets sold: $total");
+      _appendRow("Total tickets sold", total.toString());
 
       int numUpi = listFiltered.where((e) => e.mode == "UPI").length;
       int numCash = listFiltered.where((e) => e.mode == "Cash").length;
@@ -98,9 +113,11 @@ class _WritingBoardState extends State<WritingBoard> {
           .where((e) => e.mode == "Card")
           .fold(0, (previousValue, element) => previousValue + element.amount);
 
-      _appendText("UPI transactions: $numUpi -> Rs. $amountUpi");
-      _appendText("Cash transactions: $numCash -> Rs. $amountCash");
-      _appendText("Card transactions: $numCard -> Rs. $amountCard");
+      _appendRow("UPI transactions", "count: $numUpi \nRs. $amountUpi");
+      _appendRow("Cash transactions", "count: $numCash \nRs. $amountCash");
+      _appendRow("Card transactions", "count: $numCard \nRs. $amountCard");
+
+      _appendSpace();
     }
   }
 
@@ -112,9 +129,21 @@ class _WritingBoardState extends State<WritingBoard> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: texts,
+        // child: Column(
+        //   crossAxisAlignment: CrossAxisAlignment.start,
+        //   children: texts,
+        // ),
+        child: Table(
+          columnWidths: const {
+            0: FlexColumnWidth(),
+            1: FlexColumnWidth(),
+          },
+          border: TableBorder.all(
+            color: const Color.fromARGB(
+                255, 205, 203, 203), // Use a very light grey color
+            width: 0.5, // Make the border thin
+          ),
+          children: listRows,
         ),
       ),
     );
