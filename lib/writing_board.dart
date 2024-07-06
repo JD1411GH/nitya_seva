@@ -38,12 +38,34 @@ class _WritingBoardState extends State<WritingBoard> {
     });
   }
 
-  void _appendHeadline(String col1) {
+  void _appendHeadline(String col1, String col2) {
     setState(() {
       listRows.add(TableRow(
         children: [
-          Text(col1, style: const TextStyle(fontSize: 24)),
-          const Text("", style: TextStyle(fontSize: 24)),
+          Container(
+            color:
+                const Color.fromARGB(255, 163, 98, 32), // Dark background color
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(col1,
+                  style: const TextStyle(
+                      fontSize: 24,
+                      color: Colors
+                          .white)), // Assuming a light text color for contrast
+            ),
+          ),
+          Container(
+            color:
+                const Color.fromARGB(255, 163, 98, 32), // Dark background color
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(col2,
+                  style: const TextStyle(
+                      fontSize: 24,
+                      color: Colors
+                          .white)), // Assuming a light text color for contrast
+            ),
+          ),
         ],
       ));
     });
@@ -93,7 +115,7 @@ class _WritingBoardState extends State<WritingBoard> {
         entryWithHighestTicket = entry.ticket;
       }
 
-      _appendHeadline("Seva value: $amount");
+      _appendHeadline("Seva value", amount.toString());
       _appendRow("Starting no", entryWithLowestTicket.toString());
       _appendRow("Ending no", entryWithHighestTicket.toString());
       int total = entryWithHighestTicket - entryWithLowestTicket + 1;
@@ -125,7 +147,7 @@ class _WritingBoardState extends State<WritingBoard> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Summary'),
+        title: const Text('Summary'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: SingleChildScrollView(
