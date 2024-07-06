@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:nitya_seva/db.dart';
 import 'package:nitya_seva/entry_table.dart';
 import 'package:nitya_seva/slot.dart';
-import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uuid/uuid.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const NityaSevaApp());
 }
 
