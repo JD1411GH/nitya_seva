@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nitya_seva/db.dart';
+import 'package:nitya_seva/home.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,6 +14,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _mobileNumberController = TextEditingController();
   final TextEditingController _otpController = TextEditingController();
   bool _isOtpFieldEnabled = false;
@@ -20,10 +22,12 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isSendOtpButtonEnabled = false;
   String? _verificationId;
   FirebaseAuth? _auth;
+  String username = 'Unknown User';
 
   @override
   void initState() {
     super.initState();
+    _usernameController.addListener(_onUsernameChanged);
     _mobileNumberController.addListener(_onMobileNumberChanged);
     _otpController.addListener(_onOtpChanged);
   }
@@ -33,6 +37,14 @@ class _LoginScreenState extends State<LoginScreen> {
     _mobileNumberController.dispose();
     _otpController.dispose();
     super.dispose();
+  }
+
+  void _onUsernameChanged() {
+    username = _usernameController.text;
+    final isValidUsername = username.isNotEmpty;
+    setState(() {
+      _isSendOtpButtonEnabled = isValidUsername;
+    });
   }
 
   void _onMobileNumberChanged() {
@@ -75,10 +87,16 @@ class _LoginScreenState extends State<LoginScreen> {
       User? user = result.user;
 
       if (user != null) {
-        print("Verfication Completed ${user.uid}");
-        DB().write('user', user.toString());
+        await DB().write('user', user.toString());
+        await DB().write(
+          'username',
+          username,
+        );
+
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const HomePage()));
       } else {
-        print("Error");
+        print("Verfication error");
       }
     }
   }
@@ -95,6 +113,17 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            TextFormField(
+              controller:
+                  _usernameController, // Define this controller in your class
+              decoration: const InputDecoration(
+                labelText: 'Username',
+              ),
+              keyboardType: TextInputType.text,
+            ),
+            const SizedBox(
+                height:
+                    16.0), // Spacing between username and mobile number fields
             TextFormField(
               controller: _mobileNumberController,
               decoration: const InputDecoration(
