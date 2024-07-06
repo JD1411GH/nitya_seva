@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nitya_seva/db.dart';
 
 class EntryData {
   final int count;
@@ -86,10 +87,12 @@ class _EntryWidgetState extends State<EntryWidget> {
       return;
     }
 
-    widget.callbacks.onSave(EntryData(
+    String? username = await DB().read('username');
+
+    await widget.callbacks.onSave(EntryData(
       count: widget.callbacks.getCount(),
       time: DateTime.now().toString(),
-      author: "Jayanta Debnath",
+      author: username!,
       amount: _amount,
       mode: _mode,
       ticket: _ticket!,

@@ -92,9 +92,10 @@ class SlotTileList {
     DB().writeCloud('dbSlots', slotsJson);
   }
 
-  void addSlotTile() {
+  Future<void> addSlotTile() async {
     String text = DateFormat('yyyy-MM-dd – kk:mm:ss').format(DateTime.now());
-    text = "$text \nJayanta Debnath";
+    String? username = await DB().read('username');
+    text = "$text \n$username";
 
     SlotTile slotTile = SlotTile(
       id: const Uuid().v4(),
