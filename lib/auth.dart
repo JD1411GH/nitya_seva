@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,6 +17,8 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isOtpFieldEnabled = false;
   bool _isSubmitButtonEnabled = false;
   bool _isSendOtpButtonEnabled = false;
+  String? _verificationId;
+  FirebaseAuth? _auth;
 
   @override
   void initState() {
@@ -47,54 +50,84 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _sendOTP() {
-    // Your logic to send OTP
-    setState(() {
-      _isOtpFieldEnabled = true;
-    });
+    final mobileNumber = '+91${_mobileNumberController.text}';
+
+    loginUser(mobileNumber, LoginUserCallbacks(
+      codeSent: (String verificationId, FirebaseAuth auth) {
+        _verificationId = verificationId;
+        _auth = auth;
+        setState(() {
+          _isOtpFieldEnabled = true;
+        });
+      },
+    ));
   }
 
-  void _submitOTP() {
-    // Your logic to submit OTP
+  Future<void> _submitOTP() async {
+    if (_verificationId != null) {
+      final code = _otpController.text.trim();
+      AuthCredential credential = PhoneAuthProvider.credential(
+          verificationId: _verificationId!, smsCode: code);
+
+      UserCredential result = await _auth!.signInWithCredential(credential);
+
+      User? user = result.user;
+
+      if (user != null) {
+        // Navigate to your desired screen
+        print("Verfication Completed $user");
+      } else {
+        print("Error");
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: const Text('Login'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Container(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextFormField(
               controller: _mobileNumberController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Mobile Number',
                 prefixText: '+91',
               ),
               keyboardType: TextInputType.phone,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                LengthLimitingTextInputFormatter(10),
+              ],
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: _isSendOtpButtonEnabled ? _sendOTP : null,
-              child: Text('Send OTP'),
+              child: const Text('Send OTP'),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             TextFormField(
               controller: _otpController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'OTP',
               ),
               keyboardType: TextInputType.number,
               enabled: _isOtpFieldEnabled,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                LengthLimitingTextInputFormatter(6),
+              ],
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: _isSubmitButtonEnabled ? _submitOTP : null,
-              child: Text('Submit OTP'),
+              child: const Text('Submit OTP'),
             ),
           ],
         ),
@@ -103,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-Future<void> loginUser(String phone) async {
+Future<void> loginUser(String phone, LoginUserCallbacks callbacks) async {
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   _auth.verifyPhoneNumber(
@@ -115,32 +148,27 @@ Future<void> loginUser(String phone) async {
       User? user = result.user;
 
       if (user != null) {
-        print("Verfication Completed");
+        print("Auto Verfication Completed $user");
       } else {
         print("Error");
       }
     },
     verificationFailed: (FirebaseAuthException exception) {
-      print(exception);
+      print("Verification failed: $exception");
     },
     codeSent: (String verificationId, int? resendToken) async {
-      final code = stdin.readLineSync()!.trim();
-      AuthCredential credential = PhoneAuthProvider.credential(
-          verificationId: verificationId, smsCode: code);
-
-      UserCredential result = await _auth.signInWithCredential(credential);
-
-      User? user = result.user;
-
-      if (user != null) {
-        // Navigate to your desired screen
-        print("codeSent");
-      } else {
-        print("Error");
-      }
+      callbacks.codeSent(verificationId, _auth);
     },
     codeAutoRetrievalTimeout: (String verificationId) {
       print("codeAutoRetrievalTimeout");
     },
   );
+}
+
+class LoginUserCallbacks {
+  void Function(String verificationId, FirebaseAuth auth) codeSent;
+
+  LoginUserCallbacks({
+    required this.codeSent,
+  });
 }
