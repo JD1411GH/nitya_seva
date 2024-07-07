@@ -6,8 +6,6 @@ import 'package:nitya_seva/db.dart';
 import 'package:nitya_seva/entry.dart';
 import 'package:nitya_seva/slot.dart';
 import 'package:nitya_seva/summary.dart';
-import 'package:nitya_seva/writing_board.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class EntryTable extends StatefulWidget {
   EntryTable({super.key});
@@ -124,10 +122,8 @@ class _EntryTableState extends State<EntryTable> {
           IconButton(
             icon: const Icon(Icons.summarize),
             onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const WritingBoard()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Summary()));
             },
           ),
         ],
