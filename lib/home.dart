@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
 
     // navigate to the entry table
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => EntryTable()));
+        context, MaterialPageRoute(builder: (context) => const EntryTable()));
   }
 
   void _addSlotNew() {
@@ -78,15 +78,15 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("ISKCON VK Hill Nitya Seva"),
+        title: const Text("ISKCON VK Hill Nitya Seva"),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.delete),
+            icon: const Icon(Icons.delete),
             onPressed: listSelectedSlots.isEmpty ? null : _removeSlot,
           ),
         ],
       ),
-      drawer: Drawer(),
+      drawer: const Drawer(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: SingleChildScrollView(
@@ -95,7 +95,7 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: slotTileList.listSlotTiles
                 .map((widget) =>
-                    Padding(padding: EdgeInsets.all(8.0), child: widget))
+                    Padding(padding: const EdgeInsets.all(8.0), child: widget))
                 .toList(),
           ),
         ),

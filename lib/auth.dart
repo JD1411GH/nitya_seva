@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -167,9 +166,9 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 Future<void> loginUser(String phone, LoginUserCallbacks callbacks) async {
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseAuth auth = FirebaseAuth.instance;
 
-  _auth.verifyPhoneNumber(
+  auth.verifyPhoneNumber(
     phoneNumber: phone,
     timeout: const Duration(seconds: 60),
     verificationCompleted: (AuthCredential credential) async {
@@ -188,7 +187,7 @@ Future<void> loginUser(String phone, LoginUserCallbacks callbacks) async {
       print("Verification failed: $exception");
     },
     codeSent: (String verificationId, int? resendToken) async {
-      callbacks.codeSent(verificationId, _auth);
+      callbacks.codeSent(verificationId, auth);
     },
     codeAutoRetrievalTimeout: (String verificationId) {
       print("codeAutoRetrievalTimeout");

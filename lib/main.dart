@@ -1,13 +1,10 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:nitya_seva/auth.dart';
 import 'package:nitya_seva/db.dart';
-import 'package:nitya_seva/entry_table.dart';
 import 'package:nitya_seva/home.dart';
-import 'package:nitya_seva/slot.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {

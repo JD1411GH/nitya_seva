@@ -8,7 +8,7 @@ import 'package:nitya_seva/slot.dart';
 import 'package:nitya_seva/summary.dart';
 
 class EntryTable extends StatefulWidget {
-  EntryTable({super.key});
+  const EntryTable({super.key});
 
   @override
   State<EntryTable> createState() => _EntryTableState();
