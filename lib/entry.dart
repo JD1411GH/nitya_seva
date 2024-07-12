@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:nitya_seva/db.dart';
+import 'package:uuid/uuid.dart';
 
 class EntryData {
+  final String entryId;
   final int count;
   final String time;
   final String author;
@@ -10,6 +12,7 @@ class EntryData {
   final int ticket;
 
   EntryData({
+    required this.entryId,
     required this.count,
     required this.time,
     required this.author,
@@ -19,6 +22,7 @@ class EntryData {
   });
 
   Map<String, dynamic> toJson() => {
+        'entryId': entryId,
         'count': count,
         'time': time,
         'author': author,
@@ -29,6 +33,7 @@ class EntryData {
 
   factory EntryData.fromJson(Map<String, dynamic> json) {
     return EntryData(
+      entryId: json['entryId'],
       count: json['count'],
       time: json['time'],
       author: json['author'],
@@ -41,7 +46,8 @@ class EntryData {
 
 class EntryWidget extends StatefulWidget {
   final EntryWidgetCallbacks callbacks;
-  const EntryWidget({super.key, required this.callbacks});
+  final EntryData? data;
+  const EntryWidget({super.key, required this.callbacks, this.data});
 
   @override
   State<EntryWidget> createState() => _EntryWidgetState();
@@ -89,14 +95,17 @@ class _EntryWidgetState extends State<EntryWidget> {
 
     String? username = await DB().read('username');
 
-    await widget.callbacks.onSave(EntryData(
+    EntryData _data = EntryData(
+      entryId: const Uuid().v4(),
       count: widget.callbacks.getCount(),
       time: DateTime.now().toString(),
       author: username!,
       amount: _amount,
       mode: _mode,
       ticket: _ticket!,
-    ));
+    );
+
+    await widget.callbacks.onSave(_data);
 
     Navigator.pop(context);
   }
