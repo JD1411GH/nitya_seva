@@ -6,6 +6,7 @@ import 'package:nitya_seva/auth.dart';
 import 'package:nitya_seva/db.dart';
 import 'package:nitya_seva/home.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +20,10 @@ class NityaSevaApp extends StatelessWidget {
 
   Future<Widget> _getStartPage() async {
     final user = await DB().read('user');
+
+    // checking if user has logged in before in this device
     if (user != null) {
+      // checking if user has access to read and write to the database
       String? read = await DB().readCloudFromPath("access_check", 'read');
       bool? write =
           await DB().writeCloudToPath("access_check", 'write', "true");

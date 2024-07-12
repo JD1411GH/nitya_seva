@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:nitya_seva/db.dart';
 import 'package:nitya_seva/entry.dart';
 import 'package:nitya_seva/slot.dart';
+import 'package:nitya_seva/toaster.dart';
 
 class Summary extends StatefulWidget {
   const Summary({super.key});
@@ -99,7 +100,7 @@ class _SummaryState extends State<Summary> {
     List<EntryData> listEntries = [];
     str = await DB().readCloud(slotId);
     if (str == null) {
-      print('No entries found');
+      showToast('No entries found');
     } else {
       listEntries = (jsonDecode(str) as List)
           .map((e) => EntryData.fromJson(e))

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nitya_seva/db.dart';
 import 'package:nitya_seva/home.dart';
+import 'package:nitya_seva/toaster.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -80,7 +81,13 @@ class _LoginScreenState extends State<LoginScreen> {
       AuthCredential credential = PhoneAuthProvider.credential(
           verificationId: _verificationId!, smsCode: code);
 
-      UserCredential result = await _auth!.signInWithCredential(credential);
+      UserCredential result;
+      try {
+        result = await _auth!.signInWithCredential(credential);
+      } on FirebaseAuthException catch (e) {
+        showToast("Error: $e");
+        return;
+      }
 
       User? user = result.user;
 
@@ -94,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => const HomePage()));
       } else {
-        print("Verfication error");
+        showToast("Verfication error");
       }
     }
   }
@@ -173,7 +180,7 @@ Future<void> loginUser(String phone, LoginUserCallbacks callbacks) async {
     phoneNumber: phone,
     timeout: const Duration(seconds: 60),
     verificationCompleted: (AuthCredential credential) async {
-      print("Auto verification disabled");
+      showToast("Auto verification disabled");
       // UserCredential result = await _auth.signInWithCredential(credential);
 
       // User? user = result.user;
@@ -185,13 +192,13 @@ Future<void> loginUser(String phone, LoginUserCallbacks callbacks) async {
       // }
     },
     verificationFailed: (FirebaseAuthException exception) {
-      print("Verification failed: $exception");
+      showToast("Verification failed: $exception");
     },
     codeSent: (String verificationId, int? resendToken) async {
       callbacks.codeSent(verificationId, auth);
     },
     codeAutoRetrievalTimeout: (String verificationId) {
-      print("codeAutoRetrievalTimeout");
+      showToast("codeAutoRetrievalTimeout");
     },
   );
 }
