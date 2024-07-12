@@ -20,8 +20,10 @@ class NityaSevaApp extends StatelessWidget {
   Future<Widget> _getStartPage() async {
     final user = await DB().read('user');
     if (user != null) {
-      String? data = await DB().read('dbSlots');
-      if (data == null) {
+      String? read = await DB().readCloudFromPath("access_check", 'read');
+      bool? write =
+          await DB().writeCloudToPath("access_check", 'write', "true");
+      if (read == null || write == false) {
         return AccessDenied();
       } else {
         return HomePage();

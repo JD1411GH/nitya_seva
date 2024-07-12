@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:nitya_seva/auth.dart';
 import 'package:nitya_seva/db.dart';
 import 'package:nitya_seva/entry_table.dart';
 import 'package:nitya_seva/slot.dart';
@@ -84,6 +85,15 @@ class _HomePageState extends State<HomePage> {
             icon: const Icon(Icons.delete),
             onPressed: listSelectedSlots.isEmpty ? null : _removeSlot,
           ),
+          IconButton(
+              icon: const Icon(Icons.exit_to_app),
+              onPressed: () {
+                DB().delete('user');
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LoginScreen()));
+              }),
         ],
       ),
       drawer: const Drawer(),

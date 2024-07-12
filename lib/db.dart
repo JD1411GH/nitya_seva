@@ -36,8 +36,29 @@ class DB {
     }
   }
 
+  Future<String?> readCloudFromPath(String path, String key) async {
+    final databaseReference = FirebaseDatabase.instance.ref(path);
+
+    try {
+      DataSnapshot snapshot = await databaseReference.child(key).get();
+      return snapshot.value.toString();
+    } catch (e) {
+      return null;
+    }
+  }
+
   Future<bool> writeCloud(String key, String value) async {
     final databaseReference = FirebaseDatabase.instance.ref();
+    try {
+      await databaseReference.child(key).set(value);
+      return true; // Write was successful
+    } catch (e) {
+      return false; // Write failed
+    }
+  }
+
+  Future<bool> writeCloudToPath(String path, String key, String value) async {
+    final databaseReference = FirebaseDatabase.instance.ref(path);
     try {
       await databaseReference.child(key).set(value);
       return true; // Write was successful
