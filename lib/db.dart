@@ -15,12 +15,6 @@ class DB {
     return prefs.getString(key);
   }
 
-  Future<String?> readCloud(String key) async {
-    final databaseReference = FirebaseDatabase.instance.ref();
-    DataSnapshot snapshot = await databaseReference.child(key).get();
-    return snapshot.value.toString();
-  }
-
   Future<void> write(String key, String value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(key, value);
@@ -31,6 +25,17 @@ class DB {
     prefs.remove(key);
   }
 
+  Future<String?> readCloud(String key) async {
+    final databaseReference = FirebaseDatabase.instance.ref();
+
+    try {
+      DataSnapshot snapshot = await databaseReference.child(key).get();
+      return snapshot.value.toString();
+    } catch (e) {
+      return null;
+    }
+  }
+
   Future<bool> writeCloud(String key, String value) async {
     final databaseReference = FirebaseDatabase.instance.ref();
     try {
@@ -38,6 +43,16 @@ class DB {
       return true; // Write was successful
     } catch (e) {
       return false; // Write failed
+    }
+  }
+
+  Future<bool> deleteCloud(String key) async {
+    final databaseReference = FirebaseDatabase.instance.ref();
+    try {
+      await databaseReference.child(key).remove();
+      return true; // Delete was successful
+    } catch (e) {
+      return false; // Delete failed
     }
   }
 }

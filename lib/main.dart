@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-
 import 'package:flutter/material.dart';
+import 'package:nitya_seva/access_denied.dart';
 import 'package:nitya_seva/auth.dart';
 import 'package:nitya_seva/db.dart';
 import 'package:nitya_seva/home.dart';
@@ -20,7 +20,12 @@ class NityaSevaApp extends StatelessWidget {
   Future<Widget> _getStartPage() async {
     final user = await DB().read('user');
     if (user != null) {
-      return HomePage();
+      String? data = await DB().read('dbSlots');
+      if (data == null) {
+        return AccessDenied();
+      } else {
+        return HomePage();
+      }
     } else {
       return LoginScreen();
     }

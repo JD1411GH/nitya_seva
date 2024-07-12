@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -107,58 +106,60 @@ class _LoginScreenState extends State<LoginScreen> {
         title: const Text('Login'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: Container(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextFormField(
-              controller:
-                  _usernameController, // Define this controller in your class
-              decoration: const InputDecoration(
-                labelText: 'Username',
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextFormField(
+                controller:
+                    _usernameController, // Define this controller in your class
+                decoration: const InputDecoration(
+                  labelText: 'Username',
+                ),
+                keyboardType: TextInputType.text,
               ),
-              keyboardType: TextInputType.text,
-            ),
-            const SizedBox(
-                height:
-                    16.0), // Spacing between username and mobile number fields
-            TextFormField(
-              controller: _mobileNumberController,
-              decoration: const InputDecoration(
-                labelText: 'Mobile Number',
-                prefixText: '+91',
+              const SizedBox(
+                  height:
+                      16.0), // Spacing between username and mobile number fields
+              TextFormField(
+                controller: _mobileNumberController,
+                decoration: const InputDecoration(
+                  labelText: 'Mobile Number',
+                  prefixText: '+91',
+                ),
+                keyboardType: TextInputType.phone,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(10),
+                ],
               ),
-              keyboardType: TextInputType.phone,
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-                LengthLimitingTextInputFormatter(10),
-              ],
-            ),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: _isSendOtpButtonEnabled ? _sendOTP : null,
-              child: const Text('Send OTP'),
-            ),
-            const SizedBox(height: 16.0),
-            TextFormField(
-              controller: _otpController,
-              decoration: const InputDecoration(
-                labelText: 'OTP',
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: _isSendOtpButtonEnabled ? _sendOTP : null,
+                child: const Text('Send OTP'),
               ),
-              keyboardType: TextInputType.number,
-              enabled: _isOtpFieldEnabled,
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-                LengthLimitingTextInputFormatter(6),
-              ],
-            ),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: _isSubmitButtonEnabled ? _submitOTP : null,
-              child: const Text('Submit OTP'),
-            ),
-          ],
+              const SizedBox(height: 16.0),
+              TextFormField(
+                controller: _otpController,
+                decoration: const InputDecoration(
+                  labelText: 'OTP',
+                ),
+                keyboardType: TextInputType.number,
+                enabled: _isOtpFieldEnabled,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(6),
+                ],
+              ),
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: _isSubmitButtonEnabled ? _submitOTP : null,
+                child: const Text('Submit OTP'),
+              ),
+            ],
+          ),
         ),
       ),
     );
