@@ -63,7 +63,11 @@ class _EntryWidgetState extends State<EntryWidget> {
   @override
   void initState() {
     super.initState();
-    _ticket = widget.callbacks.getNextTicket(400);
+    if (widget.data == null) {
+      _ticket = widget.callbacks.getNextTicket(400);
+    } else {
+      _ticket = widget.data!.ticket;
+    }
     if (_ticket != null) {
       _ticketController = TextEditingController(text: _ticket.toString());
     } else {
@@ -95,8 +99,8 @@ class _EntryWidgetState extends State<EntryWidget> {
 
     String? username = await DB().read('username');
 
-    EntryData _data = EntryData(
-      entryId: const Uuid().v4(),
+    EntryData data = EntryData(
+      entryId: widget.data == null ? const Uuid().v4() : widget.data!.entryId,
       count: widget.callbacks.getCount(),
       time: DateTime.now().toString(),
       author: username!,
@@ -105,7 +109,7 @@ class _EntryWidgetState extends State<EntryWidget> {
       ticket: _ticket!,
     );
 
-    await widget.callbacks.onSave(_data);
+    await widget.callbacks.onSave(data);
 
     Navigator.pop(context);
   }
@@ -115,7 +119,9 @@ class _EntryWidgetState extends State<EntryWidget> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text("New Entry"),
+          title: widget.data == null
+              ? const Text("New Entry")
+              : const Text("Update Entry"),
         ),
         body: Padding(
           padding:
@@ -128,7 +134,7 @@ class _EntryWidgetState extends State<EntryWidget> {
                 Padding(
                   padding: const EdgeInsets.all(16.0), // Increased padding
                   child: DropdownButtonFormField<int>(
-                    value: 400,
+                    value: widget.data == null ? 400 : widget.data!.amount,
                     items: const [
                       DropdownMenuItem(value: 400, child: Text("400")),
                       DropdownMenuItem(value: 500, child: Text("500")),
@@ -150,7 +156,7 @@ class _EntryWidgetState extends State<EntryWidget> {
                 Padding(
                   padding: const EdgeInsets.all(16.0), // Increased padding
                   child: DropdownButtonFormField<String>(
-                    value: "UPI",
+                    value: widget.data == null ? "UPI" : widget.data!.mode,
                     items: const [
                       DropdownMenuItem(value: "UPI", child: Text("UPI")),
                       DropdownMenuItem(value: "Cash", child: Text("Cash")),

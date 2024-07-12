@@ -22,10 +22,20 @@ class _EntryTableState extends State<EntryTable> {
     super.initState();
   }
 
-  void onNewEntry(EntryData entry) async {
-    setState(() {
-      listEntries.insert(0, entry);
-    });
+  void onSaveEntry(EntryData entry) async {
+    int index = listEntries.indexWhere((e) => e.entryId == entry.entryId);
+    if (index != -1) {
+      // Replace the existing entry with the new one
+      setState(() {
+        listEntries[index] = entry;
+      });
+    } else {
+      // Insert the new entry at the beginning of the list
+      setState(() {
+        listEntries.insert(0, entry);
+      });
+    }
+    print(listEntries);
 
     String selectedSlotId =
         await _fetchSelectedSlot().then((value) => value.id);
@@ -92,7 +102,17 @@ class _EntryTableState extends State<EntryTable> {
                   .toString()), // total tickets sold, not individual amount-wise
             ),
             onTap: () {
-              // Define your action upon clicking an item here
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => EntryWidget(
+                            data: item,
+                            callbacks: EntryWidgetCallbacks(
+                              onSave: onSaveEntry,
+                              getNextTicket: getNextTicket,
+                              getCount: () => listEntries.length + 1,
+                            ),
+                          )));
             },
           ),
         );
@@ -148,7 +168,7 @@ class _EntryTableState extends State<EntryTable> {
               MaterialPageRoute(
                   builder: (context) => EntryWidget(
                         callbacks: EntryWidgetCallbacks(
-                          onSave: onNewEntry,
+                          onSave: onSaveEntry,
                           getNextTicket: getNextTicket,
                           getCount: () => listEntries.length + 1,
                         ),
