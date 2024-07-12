@@ -101,7 +101,9 @@ class _EntryWidgetState extends State<EntryWidget> {
 
     EntryData data = EntryData(
       entryId: widget.data == null ? const Uuid().v4() : widget.data!.entryId,
-      count: widget.callbacks.getCount(),
+      count: widget.data == null
+          ? widget.callbacks.getCount()
+          : widget.data!.count,
       time: DateTime.now().toString(),
       author: username!,
       amount: _amount,
