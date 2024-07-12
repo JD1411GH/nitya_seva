@@ -52,6 +52,13 @@ class _EntryTableState extends State<EntryTable> {
       });
     }
 
+    // serialize count inside listEntries
+    for (int i = listEntries.length - 1; i >= 0; i--) {
+      setState(() {
+        listEntries[i].count = listEntries.length - i;
+      });
+    }
+
     String selectedSlotId =
         await _fetchSelectedSlot().then((value) => value.id);
     DB().writeCloud(

@@ -4,7 +4,7 @@ import 'package:uuid/uuid.dart';
 
 class EntryData {
   final String entryId;
-  final int count;
+  int count; // Changed to non-final to allow modification
   final String time;
   final String author;
   final int amount;
