@@ -220,6 +220,8 @@ class _EntryWidgetState extends State<EntryWidget> {
                     decoration: const InputDecoration(
                       labelText: 'Ticket Number',
                     ),
+                    keyboardType:
+                        TextInputType.number, // Set the keyboard type to number
                     validator: (value) {
                       if (value == null ||
                           value.isEmpty ||
