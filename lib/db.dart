@@ -37,7 +37,6 @@ class DB {
       await databaseReference.child(key).set(value);
       return true; // Write was successful
     } catch (e) {
-      print(e.toString()); // Optionally log the error
       return false; // Write failed
     }
   }

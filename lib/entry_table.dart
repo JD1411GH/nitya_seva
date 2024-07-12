@@ -35,7 +35,22 @@ class _EntryTableState extends State<EntryTable> {
         listEntries.insert(0, entry);
       });
     }
-    print(listEntries);
+
+    String selectedSlotId =
+        await _fetchSelectedSlot().then((value) => value.id);
+    DB().writeCloud(
+      selectedSlotId,
+      jsonEncode(listEntries.map((e) => e.toJson()).toList()),
+    );
+  }
+
+  void onDeleteEntry(String entryId) async {
+    int index = listEntries.indexWhere((e) => e.entryId == entryId);
+    if (index != -1) {
+      setState(() {
+        listEntries.removeAt(index);
+      });
+    }
 
     String selectedSlotId =
         await _fetchSelectedSlot().then((value) => value.id);
@@ -109,6 +124,7 @@ class _EntryTableState extends State<EntryTable> {
                             data: item,
                             callbacks: EntryWidgetCallbacks(
                               onSave: onSaveEntry,
+                              onDelete: onDeleteEntry,
                               getNextTicket: getNextTicket,
                               getCount: () => listEntries.length + 1,
                             ),
@@ -169,6 +185,7 @@ class _EntryTableState extends State<EntryTable> {
                   builder: (context) => EntryWidget(
                         callbacks: EntryWidgetCallbacks(
                           onSave: onSaveEntry,
+                          onDelete: onDeleteEntry,
                           getNextTicket: getNextTicket,
                           getCount: () => listEntries.length + 1,
                         ),

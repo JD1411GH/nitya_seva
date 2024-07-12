@@ -124,6 +124,44 @@ class _EntryWidgetState extends State<EntryWidget> {
           title: widget.data == null
               ? const Text("New Entry")
               : const Text("Update Entry"),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: widget.data != null
+                  ? () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text("Confirm Delete"),
+                            content: const Text(
+                                "Are you sure you want to delete this entry?"),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .pop(); // Close the dialog
+                                },
+                                child: const Text("No"),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  widget.callbacks
+                                      .onDelete(widget.data!.entryId);
+                                  Navigator.of(context)
+                                      .pop(); // Close the dialog
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text("Yes"),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
+                  : null, // This disables the button when widget.data is null
+            ),
+          ],
         ),
         body: Padding(
           padding:
@@ -245,11 +283,13 @@ class _EntryWidgetState extends State<EntryWidget> {
 
 class EntryWidgetCallbacks {
   final Function(EntryData) onSave;
+  final Function(String) onDelete;
   final Function(int) getNextTicket;
   final Function() getCount;
 
   const EntryWidgetCallbacks(
       {required this.onSave,
+      required this.onDelete,
       required this.getNextTicket,
       required this.getCount});
 }
