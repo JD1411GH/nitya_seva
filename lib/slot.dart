@@ -44,22 +44,7 @@ class _listSlotTilestate extends State<SlotTile> {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () {
-          // Deselect if slot tile is selected
-          if (widget.isInverted) {
-            setState(() {
-              widget.isInverted = false;
-            });
-            widget.callback!.onSlotDeselected(widget.id);
-          }
-
           widget.callback!.onSlotClicked(widget.id);
-        },
-        onLongPress: () {
-          setState(() {
-            widget.isInverted =
-                !widget.isInverted; // Update the reference to widget.isInverted
-          });
-          widget.callback!.onSlotSelected(widget.id);
         },
         style: ElevatedButton.styleFrom(
           alignment: Alignment.centerLeft,
@@ -108,6 +93,7 @@ class SlotTileList {
 
   void removeSlotTile(String id) {
     listSlotTiles.removeWhere((element) => element.id == id);
+    DB().deleteCloud(id);
     _save();
   }
 
@@ -140,13 +126,9 @@ class SlotTileList {
 }
 
 class SlotTileCallbacks {
-  final Function(String id) onSlotSelected;
-  final Function(String id) onSlotDeselected;
   final Function(String id) onSlotClicked;
 
   SlotTileCallbacks({
-    required this.onSlotSelected,
-    required this.onSlotDeselected,
     required this.onSlotClicked,
   });
 }

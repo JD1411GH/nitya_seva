@@ -15,15 +15,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late SlotTileList slotTileList;
-  List<String> listSelectedSlots = [];
 
   @override
   void initState() {
     super.initState();
-    slotTileList = SlotTileList(SlotTileCallbacks(
-        onSlotSelected: onSlotSelected,
-        onSlotDeselected: onSlotDeselected,
-        onSlotClicked: onSlotClicked));
+    slotTileList =
+        SlotTileList(SlotTileCallbacks(onSlotClicked: onSlotClicked));
     _initListSlotTiles();
   }
 
@@ -36,18 +33,6 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void onSlotSelected(String id) {
-    setState(() {
-      listSelectedSlots.add(id);
-    });
-  }
-
-  void onSlotDeselected(String id) {
-    setState(() {
-      listSelectedSlots.remove(id);
-    });
-  }
-
   Future<void> onSlotClicked(String id) async {
     // store the selected slot
     String selectedSlot = jsonEncode(slotTileList.getSlotTileById(id).toJson());
@@ -55,7 +40,11 @@ class _HomePageState extends State<HomePage> {
 
     // navigate to the entry table
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const EntryTable()));
+        // ignore: use_build_context_synchronously
+        context,
+        MaterialPageRoute(
+            builder: (context) => EntryTable(
+                callbacks: EntryTableCallbacks(onSlotDelete: _removeSlot))));
   }
 
   void _addSlotNew() {
@@ -64,12 +53,9 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _removeSlot() {
+  void _removeSlot(String slotId) {
     setState(() {
-      for (var id in listSelectedSlots) {
-        slotTileList.removeSlotTile(id);
-      }
-      listSelectedSlots.clear();
+      slotTileList.removeSlotTile(slotId); // this care of writing to database
       slotTileList.clearSelection();
     });
   }
@@ -79,12 +65,8 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("ISKCON VK Hill Nitya Seva"),
+        title: const Text("Nitya Seva - ISKCON VK Hills"),
         actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: listSelectedSlots.isEmpty ? null : _removeSlot,
-          ),
           IconButton(
               icon: const Icon(Icons.exit_to_app),
               onPressed: () {

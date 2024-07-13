@@ -6,7 +6,6 @@ import 'package:nitya_seva/auth.dart';
 import 'package:nitya_seva/db.dart';
 import 'package:nitya_seva/home.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

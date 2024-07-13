@@ -8,7 +8,8 @@ import 'package:nitya_seva/slot.dart';
 import 'package:nitya_seva/summary.dart';
 
 class EntryTable extends StatefulWidget {
-  const EntryTable({super.key});
+  final EntryTableCallbacks callbacks;
+  const EntryTable({super.key, required this.callbacks});
 
   @override
   State<EntryTable> createState() => _EntryTableState();
@@ -61,6 +62,7 @@ class _EntryTableState extends State<EntryTable> {
 
     String selectedSlotId =
         await _fetchSelectedSlot().then((value) => value.id);
+
     DB().writeCloud(
       selectedSlotId,
       jsonEncode(listEntries.map((e) => e.toJson()).toList()),
@@ -169,6 +171,14 @@ class _EntryTableState extends State<EntryTable> {
                   MaterialPageRoute(builder: (context) => const Summary()));
             },
           ),
+          IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () async {
+                String id = await _fetchSelectedSlotId();
+                widget.callbacks.onSlotDelete(id);
+                // ignore: use_build_context_synchronously
+                Navigator.pop(context);
+              }),
         ],
       ),
       body: FutureBuilder<Widget>(
@@ -203,4 +213,12 @@ class _EntryTableState extends State<EntryTable> {
       ),
     );
   }
+}
+
+class EntryTableCallbacks {
+  final Function(String SlotId) onSlotDelete;
+
+  EntryTableCallbacks({
+    required this.onSlotDelete,
+  });
 }
