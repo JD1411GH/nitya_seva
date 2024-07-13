@@ -61,6 +61,8 @@ class _HomePageState extends State<HomePage> {
       slotTileList.removeSlotTile(slotId); // this care of writing to database
       slotTileList.clearSelection();
     });
+
+    Toaster().info("Deleted slot");
   }
 
   @override

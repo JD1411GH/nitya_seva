@@ -6,6 +6,7 @@ import 'package:nitya_seva/db.dart';
 import 'package:nitya_seva/entry.dart';
 import 'package:nitya_seva/slot.dart';
 import 'package:nitya_seva/summary.dart';
+import 'package:nitya_seva/toaster.dart';
 
 class EntryTable extends StatefulWidget {
   final EntryTableCallbacks callbacks;
@@ -63,10 +64,12 @@ class _EntryTableState extends State<EntryTable> {
     String selectedSlotId =
         await _fetchSelectedSlot().then((value) => value.id);
 
-    DB().writeCloud(
+    await DB().writeCloud(
       selectedSlotId,
       jsonEncode(listEntries.map((e) => e.toJson()).toList()),
     );
+
+    Toaster().info("Deleted entry");
   }
 
   Future<SlotTile> _fetchSelectedSlot() async {
