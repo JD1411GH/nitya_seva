@@ -5,6 +5,7 @@ import 'package:nitya_seva/auth.dart';
 import 'package:nitya_seva/db.dart';
 import 'package:nitya_seva/entry_table.dart';
 import 'package:nitya_seva/slot.dart';
+import 'package:nitya_seva/toaster.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -51,6 +52,8 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       slotTileList.addSlotTile();
     });
+
+    Toaster().info("Added new slot");
   }
 
   void _removeSlot(String slotId) {

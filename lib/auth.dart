@@ -85,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
       try {
         result = await _auth!.signInWithCredential(credential);
       } on FirebaseAuthException catch (e) {
-        showToast("Error: $e");
+        Toaster().error("Error: $e");
         return;
       }
 
@@ -98,10 +98,14 @@ class _LoginScreenState extends State<LoginScreen> {
           username,
         );
 
+        Toaster().info("Login successful");
+
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => const HomePage()));
+            // ignore: use_build_context_synchronously
+            context,
+            MaterialPageRoute(builder: (context) => const HomePage()));
       } else {
-        showToast("Verfication error");
+        Toaster().error("Verfication error");
       }
     }
   }
@@ -180,7 +184,7 @@ Future<void> loginUser(String phone, LoginUserCallbacks callbacks) async {
     phoneNumber: phone,
     timeout: const Duration(seconds: 60),
     verificationCompleted: (AuthCredential credential) async {
-      showToast("Auto verification disabled");
+      Toaster().error("Auto verification disabled");
       // UserCredential result = await _auth.signInWithCredential(credential);
 
       // User? user = result.user;
@@ -192,13 +196,13 @@ Future<void> loginUser(String phone, LoginUserCallbacks callbacks) async {
       // }
     },
     verificationFailed: (FirebaseAuthException exception) {
-      showToast("Verification failed: $exception");
+      Toaster().error("Verification failed: $exception");
     },
     codeSent: (String verificationId, int? resendToken) async {
       callbacks.codeSent(verificationId, auth);
     },
     codeAutoRetrievalTimeout: (String verificationId) {
-      showToast("codeAutoRetrievalTimeout");
+      Toaster().error("codeAutoRetrievalTimeout");
     },
   );
 }

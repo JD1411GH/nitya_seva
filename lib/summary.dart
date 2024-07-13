@@ -100,7 +100,7 @@ class _SummaryState extends State<Summary> {
     List<EntryData> listEntries = [];
     str = await DB().readCloud(slotId);
     if (str == null) {
-      showToast('No entries found');
+      Toaster().error('No entries found');
     } else {
       listEntries = (jsonDecode(str) as List)
           .map((e) => EntryData.fromJson(e))
