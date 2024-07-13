@@ -77,9 +77,10 @@ class SlotTileList {
   }
 
   Future<void> addSlotTile() async {
-    String text = DateFormat('yyyy-MM-dd – kk:mm:ss').format(DateTime.now());
+    String text = "Seva slot: ";
+    String date = DateFormat('yyyy-MM-dd – kk:mm:ss').format(DateTime.now());
     String? username = await DB().read('username');
-    text = "$text \n$username";
+    text = "$text $date \nSeva karta: $username";
 
     SlotTile slotTile = SlotTile(
       id: const Uuid().v4(),

@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
                 callbacks: EntryTableCallbacks(onSlotDelete: _removeSlot))));
   }
 
-  void _addSlotNew() {
+  void _addNewSlot() {
     setState(() {
       slotTileList.addSlotTile();
     });
@@ -93,7 +93,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _addSlotNew,
+        onPressed: _addNewSlot,
         tooltip: 'Add slot',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.

@@ -120,7 +120,7 @@ class _EntryTableState extends State<EntryTable> {
           child: ListTile(
             title: Text(
                 'Amount: ${item.amount.toStringAsFixed(2)}, Mode: ${item.mode}, Ticket: ${item.ticket}'),
-            subtitle: Text("Time: ${item.time}, Author: ${item.author}"),
+            subtitle: Text("Time: ${item.time}, Seva karta: ${item.author}"),
             leading: CircleAvatar(
               child: Text(item.count
                   .toString()), // total tickets sold, not individual amount-wise
@@ -173,12 +173,45 @@ class _EntryTableState extends State<EntryTable> {
           ),
           IconButton(
               icon: const Icon(Icons.delete),
-              onPressed: () async {
-                String id = await _fetchSelectedSlotId();
-                widget.callbacks.onSlotDelete(id);
-                // ignore: use_build_context_synchronously
-                Navigator.pop(context);
-              }),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text("Confirm Delete"),
+                      content: const Text(
+                          "Are you sure you want to delete this page?"),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(); // Close the dialog
+                          },
+                          child: const Text("No"),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            // ignore: use_build_context_synchronously
+                            Navigator.of(context).pop(); // Close the dialog
+                            // ignore: use_build_context_synchronously
+                            Navigator.of(context).pop();
+
+                            String id = await _fetchSelectedSlotId();
+                            widget.callbacks.onSlotDelete(id);
+                          },
+                          child: const Text("Yes"),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              } //onPressed
+              ), // IconButton
+          // onPressed: () async {
+          //   String id = await _fetchSelectedSlotId();
+          //   widget.callbacks.onSlotDelete(id);
+          //   // ignore: use_build_context_synchronously
+          //   Navigator.pop(context);
+          // }
         ],
       ),
       body: FutureBuilder<Widget>(
