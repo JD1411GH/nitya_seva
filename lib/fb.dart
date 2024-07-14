@@ -40,6 +40,14 @@ class FB {
 
     if (snapshot.value != null) {
       sevaSlots = (snapshot.value as Map).values.toList();
+
+      for (var slot in sevaSlots) {
+        if (slot['sevaTickets'] != null) {
+          slot['sevaTickets'] = (slot['sevaTickets'] as Map).values.toList();
+        } else {
+          slot['sevaTickets'] = [];
+        }
+      }
     }
 
     return sevaSlots;
@@ -88,7 +96,7 @@ class FB {
     if (selectedSlotKey.isEmpty) {
       Toaster().error("Unable to add to database");
     } else {
-      DatabaseReference ref = dbRef.child(selectedSlotKey);
+      DatabaseReference ref = dbRef.child(selectedSlotKey).child("sevaTickets");
       await ref.push().set(ticket);
     }
   }

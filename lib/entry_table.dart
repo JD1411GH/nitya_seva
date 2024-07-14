@@ -28,12 +28,14 @@ class _EntryTableState extends State<EntryTable> {
 
     LS().read('selectedSlot').then((slotTimestamp) {
       selectedSlot = slotTimestamp!;
-      SevaSlot slot = Record().getSevaSlot(slotTimestamp!);
-      sevaTickets = slot.sevaTickets;
+      SevaSlot slot = Record().getSevaSlot(slotTimestamp);
+      setState(() {
+        sevaTickets = slot.sevaTickets;
+      });
     });
   }
 
-  void onSaveEntry(SevaTicket entry) async {
+  void onAddEntry(SevaTicket entry) async {
     Record().getSevaSlot(selectedSlot).addSevaTicket(entry);
 
     // int index = listEntries.indexWhere((e) => e.entryId == entry.entryId);
@@ -146,7 +148,7 @@ class _EntryTableState extends State<EntryTable> {
   //                     builder: (context) => EntryWidget(
   //                           data: item,
   //                           callbacks: EntryWidgetCallbacks(
-  //                             onSave: onSaveEntry,
+  //                             onSave: onAddEntry,
   //                             onDelete: onDeleteEntry,
   //                             getNextTicket: getNextTicket,
   //                             getCount: () => listEntries.length + 1,
@@ -255,7 +257,7 @@ class _EntryTableState extends State<EntryTable> {
                   selectedPaymentMode,
                   int.tryParse(ticketNumberController.text) ?? 0,
                 );
-                onSaveEntry(ticket);
+                onAddEntry(ticket);
                 Navigator.of(context).pop();
               },
               child: const Text('Add'),
@@ -270,7 +272,7 @@ class _EntryTableState extends State<EntryTable> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _widgetAppbar(),
-      body: null,
+      body: Text(sevaTickets[0].amount.toString()),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _showEntryDialog(context);

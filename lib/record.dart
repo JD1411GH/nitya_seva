@@ -95,6 +95,12 @@ class Record {
     for (var element in value) {
       Map<String, dynamic> elementMap =
           Map<String, dynamic>.from(element as Map);
+
+      List<Map<String, dynamic>> sevaTickets = List<Map<String, dynamic>>.from(
+          elementMap['sevaTickets']
+              .map((ticket) => Map<String, dynamic>.from(ticket)));
+      elementMap['sevaTickets'] = sevaTickets;
+
       sevaSlots.add(SevaSlot.fromJson(elementMap));
     }
 
