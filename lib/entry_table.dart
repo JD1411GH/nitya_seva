@@ -154,6 +154,20 @@ class _EntryTableState extends State<EntryTable> {
             date,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
+          if (date == DateFormat('dd/MM').format(DateTime.now()))
+            Container(
+              margin: const EdgeInsets.only(left: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
+              decoration: BoxDecoration(
+                color: Colors.green,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: const Text(
+                'Today',
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+            ),
+          const Spacer(),
           Text(
             time,
             style: const TextStyle(fontWeight: FontWeight.bold),
