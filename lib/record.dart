@@ -41,11 +41,14 @@ class SevaSlot {
 
   void addSevaTicket(SevaTicket ticket) {
     sevaTickets.add(ticket);
+    sevaTickets.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
     FB().addSevaTicket(timestamp.toIso8601String(), ticket.toJson());
   }
 
   void removeSevaTicket(DateTime timestamp) {
     sevaTickets.removeWhere((ticket) => ticket.timestamp == timestamp);
+    sevaTickets.sort((a, b) => b.timestamp.compareTo(a.timestamp));
   }
 
   void updateSevaTicket(DateTime timestamp, SevaTicket ticket) {
@@ -53,6 +56,7 @@ class SevaSlot {
     if (index != -1) {
       sevaTickets[index] = ticket;
     }
+    sevaTickets.sort((a, b) => b.timestamp.compareTo(a.timestamp));
   }
 
   Map<String, dynamic> toJson() {
