@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:nitya_seva/const.dart';
 import 'package:nitya_seva/local_storage.dart';
 import 'package:nitya_seva/login.dart';
@@ -19,6 +20,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<SevaSlot> sevaSlots = Record().sevaSlots;
+
   @override
   void initState() {
     super.initState();
@@ -30,6 +33,56 @@ class _HomePageState extends State<HomePage> {
     Record().addSevaSlot(slot);
 
     // refresh homepage
+    setState(() {
+      sevaSlots = Record().sevaSlots;
+    });
+  }
+
+  Widget _itemBuilderSlots(context, index) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Theme.of(context)
+              .colorScheme
+              .surfaceContainerHighest, // Border color
+          width: 1.0, // Border width
+        ),
+        borderRadius: BorderRadius.circular(4.0), // Border radius
+      ),
+      margin: const EdgeInsets.symmetric(
+          vertical: 4.0, horizontal: 8.0), // Margin around the container
+      child: ListTile(
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: Text(
+                    DateFormat('yyyy-MM-dd').format(sevaSlots[index]
+                        .timestamp), // Extract and format the date
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    DateFormat('HH:mm:ss').format(sevaSlots[index]
+                        .timestamp), // Extract and format the time
+                    textAlign: TextAlign.right, // Align the time to the right
+                    style: TextStyle(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withOpacity(0.6)),
+                  ),
+                ),
+              ],
+            ),
+            Text(sevaSlots[index].sevakarta), // Display sevakarta
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -43,9 +96,12 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       drawer: const Drawer(),
-      body: const Padding(
-        padding: EdgeInsets.all(8.0),
-        child: null,
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListView.builder(
+          itemCount: sevaSlots.length,
+          itemBuilder: _itemBuilderSlots,
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _addNewSlot,
