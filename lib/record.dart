@@ -32,10 +32,21 @@ class SevaSlot {
 }
 
 class Record {
+  static final Record _instance = Record._internal();
   List<SevaSlot> sevaSlots = [];
+
+  // Private constructor
+  Record._internal();
+
+  // Public factory constructor to return the instance
+  factory Record() {
+    return _instance;
+  }
 
   void addSevaSlot(SevaSlot slot) {
     sevaSlots.add(slot);
+
+    // write to FB
   }
 
   void removeSevaSlot(DateTime timestamp) {

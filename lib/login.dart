@@ -92,9 +92,8 @@ class _LoginScreenState extends State<LoginScreen> {
       User? user = result.user;
 
       if (user != null) {
-        await DB().write('user', user.toString());
         await DB().write(
-          'username',
+          'user',
           username,
         );
 

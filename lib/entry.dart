@@ -97,7 +97,7 @@ class _EntryWidgetState extends State<EntryWidget> {
       return;
     }
 
-    String? username = await DB().read('username');
+    String? username = await DB().read('user');
 
     EntryData data = EntryData(
       entryId: widget.data == null ? const Uuid().v4() : widget.data!.entryId,

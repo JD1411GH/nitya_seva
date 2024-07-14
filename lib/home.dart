@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:nitya_seva/const.dart';
+import 'package:nitya_seva/local_storage.dart';
 import 'package:nitya_seva/login.dart';
 import 'package:nitya_seva/db.dart';
 import 'package:nitya_seva/entry_table.dart';
@@ -22,6 +23,10 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
+  Future<void> _addNewSlot() async {
+    print(await LS().read("user"));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,11 +42,10 @@ class _HomePageState extends State<HomePage> {
         padding: EdgeInsets.all(8.0),
         child: null,
       ),
-      floatingActionButton: const FloatingActionButton(
-        // onPressed: _addNewSlot,
-        onPressed: null,
+      floatingActionButton: FloatingActionButton(
+        onPressed: _addNewSlot,
         tooltip: 'Add slot',
-        child: Icon(Icons.add),
+        child: const Icon(Icons.create_new_folder),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
