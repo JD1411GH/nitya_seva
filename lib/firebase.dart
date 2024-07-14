@@ -17,7 +17,7 @@ class FB {
   // returns "-", "r", "rw"
   Future<String> checkAccess() async {
     String ret = "-";
-    final dbref = FirebaseDatabase.instance.ref("records");
+    final dbref = FirebaseDatabase.instance.ref("record");
 
     try {
       String dateTimeString = DateTime.now().toString();
@@ -35,7 +35,9 @@ class FB {
     return "-";
   }
 
-  Future<void> addSevaSlot() async {
+  Future<void> addSevaSlot(String _sevaSlot) async {
     // Add a new seva slot
+    final dbref = FirebaseDatabase.instance.ref("record/sevaSlots");
+    await dbref.push().set(_sevaSlot);
   }
 }

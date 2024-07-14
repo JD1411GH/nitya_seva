@@ -1,20 +1,39 @@
 import 'package:nitya_seva/firebase.dart';
 
 class SevaTicket {
-  final DateTime timestamp = DateTime.now();
+  DateTime timestamp;
   final int amount;
   final String mode;
   final int ticket;
 
-  SevaTicket(this.amount, this.mode, this.ticket);
+  SevaTicket(this.amount, this.mode, this.ticket) : timestamp = DateTime.now();
+
+  Map<String, dynamic> toJson() {
+    return {
+      'timestamp': timestamp.toIso8601String(),
+      'amount': amount,
+      'mode': mode,
+      'ticket': ticket,
+    };
+  }
+
+  static SevaTicket fromJson(Map<String, dynamic> json) {
+    return SevaTicket(
+      json['amount'] as int,
+      json['mode'] as String,
+      json['ticket'] as int,
+    )..timestamp = DateTime.parse(json['timestamp'] as String);
+  }
 }
 
 class SevaSlot {
-  final DateTime timestamp = DateTime.now();
+  DateTime timestamp;
   final String sevakarta;
-  final List<SevaTicket> sevaTickets = [];
+  final List<SevaTicket> sevaTickets;
 
-  SevaSlot(this.sevakarta);
+  SevaSlot(this.sevakarta)
+      : timestamp = DateTime.now(),
+        sevaTickets = [];
 
   void addSevaTicket(SevaTicket ticket) {
     sevaTickets.add(ticket);
@@ -25,9 +44,34 @@ class SevaSlot {
   }
 
   void updateSevaTicket(DateTime timestamp, SevaTicket ticket) {
-    final index =
-        sevaTickets.indexWhere((ticket) => ticket.timestamp == timestamp);
-    sevaTickets[index] = ticket;
+    final index = sevaTickets.indexWhere((t) => t.timestamp == timestamp);
+    if (index != -1) {
+      sevaTickets[index] = ticket;
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'timestamp': timestamp.toIso8601String(),
+      'sevakarta': sevakarta,
+      'sevaTickets': sevaTickets.map((ticket) => ticket.toJson()).toList(),
+    };
+  }
+
+  static SevaSlot fromJson(Map<String, dynamic> json) {
+    SevaSlot slot = SevaSlot(
+      json['sevakarta'] as String,
+    )..timestamp = DateTime.parse(json['timestamp'] as String);
+
+    if (json['sevaTickets'] != null) {
+      var ticketsList = json['sevaTickets'] as List;
+      slot.sevaTickets.addAll(
+        ticketsList.map((ticketJson) =>
+            SevaTicket.fromJson(ticketJson as Map<String, dynamic>)),
+      );
+    }
+
+    return slot;
   }
 }
 
@@ -49,8 +93,7 @@ class Record {
 
   void addSevaSlot(SevaSlot slot) {
     sevaSlots.add(slot);
-
-    // write to FB
+    FB().addSevaSlot(slot.toJson().toString());
   }
 
   void removeSevaSlot(DateTime timestamp) {
