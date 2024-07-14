@@ -38,9 +38,33 @@ class _HomePageState extends State<HomePage> {
       sevaSlots = Record().sevaSlots;
       sevaSlots.sort((a, b) => b.timestamp.compareTo(a.timestamp));
     });
+
+    Toaster().info("New slot added");
   }
 
-  Widget _itemBuilderSlots(context, index) {
+  Widget _widgetDate(index) {
+    return Expanded(
+      child: Text(
+        DateFormat('yyyy-MM-dd')
+            .format(sevaSlots[index].timestamp), // Extract and format the date
+        style: const TextStyle(fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  Widget _widgetTime(index) {
+    return Expanded(
+      child: Text(
+        DateFormat('HH:mm:ss')
+            .format(sevaSlots[index].timestamp), // Extract and format the time
+        textAlign: TextAlign.right, // Align the time to the right
+        style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
+      ),
+    );
+  }
+
+  Widget _widgetSlots(context, index) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
@@ -59,25 +83,8 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             Row(
               children: <Widget>[
-                Expanded(
-                  child: Text(
-                    DateFormat('yyyy-MM-dd').format(sevaSlots[index]
-                        .timestamp), // Extract and format the date
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    DateFormat('HH:mm:ss').format(sevaSlots[index]
-                        .timestamp), // Extract and format the time
-                    textAlign: TextAlign.right, // Align the time to the right
-                    style: TextStyle(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withOpacity(0.6)),
-                  ),
-                ),
+                _widgetDate(index),
+                _widgetTime(index),
               ],
             ),
             Text(sevaSlots[index].sevakarta), // Display sevakarta
@@ -102,7 +109,7 @@ class _HomePageState extends State<HomePage> {
         padding: const EdgeInsets.all(8.0),
         child: ListView.builder(
           itemCount: sevaSlots.length,
-          itemBuilder: _itemBuilderSlots,
+          itemBuilder: _widgetSlots,
         ),
       ),
       floatingActionButton: FloatingActionButton(
