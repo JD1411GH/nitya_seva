@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nitya_seva/const.dart';
+import 'package:nitya_seva/loading.dart';
 
 Future<void> main() async {
   runApp(const NityaSevaApp());
@@ -19,7 +20,7 @@ class NityaSevaApp extends StatelessWidget {
             seedColor: const Color.fromARGB(255, 222, 150, 67)),
         useMaterial3: true,
       ),
-      home: Text(Const().appName),
+      home: LoadingScreen(),
     );
   }
 }
