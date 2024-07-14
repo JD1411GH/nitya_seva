@@ -52,6 +52,27 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget _widgetToday(index) {
+    if (DateTime.now().difference(sevaSlots[index].timestamp).inDays == 0 &&
+        DateTime.now().day == sevaSlots[index].timestamp.day) {
+      // Check if the timestamp is for today
+      return Container(
+        margin: const EdgeInsets.only(left: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        decoration: BoxDecoration(
+          color: Colors.green, // Choose a color that fits your app theme
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: const Text(
+          'Today',
+          style: TextStyle(color: Colors.white, fontSize: 12),
+        ),
+      );
+    } else {
+      return Container(); // Return an empty container if the timestamp is not for today
+    }
+  }
+
   Widget _widgetTime(index) {
     return Expanded(
       child: Text(
@@ -84,10 +105,13 @@ class _HomePageState extends State<HomePage> {
             Row(
               children: <Widget>[
                 _widgetDate(index),
+                _widgetToday(index),
                 _widgetTime(index),
               ],
             ),
-            Text(sevaSlots[index].sevakarta), // Display sevakarta
+            Row(children: [
+              Text(sevaSlots[index].sevakarta), // Display sevakarta
+            ])
           ],
         ),
       ),
