@@ -3,7 +3,7 @@ import 'package:nitya_seva/access_denied.dart';
 import 'package:nitya_seva/login.dart';
 import 'package:nitya_seva/home.dart';
 import 'package:nitya_seva/local_storage.dart';
-import 'package:nitya_seva/firebase.dart';
+import 'package:nitya_seva/fb.dart';
 import 'package:nitya_seva/record.dart';
 
 // Convert LoadingScreen to StatefulWidget
@@ -28,16 +28,18 @@ class _LoadingScreenState extends State<LoadingScreen> {
         // User is already logged in
 
         // check if user has access to database
-        FB().checkAccess().then((value) {
+        FB().checkAccess().then((value) async {
           if (value == "rw") {
             // initialize local database
-            Record().init();
+            await Record().init();
 
             // User has access to database
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
-            );
+            if (mounted) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const HomePage()),
+              );
+            }
           } else {
             // User does not have access to database
             Navigator.pushReplacement(

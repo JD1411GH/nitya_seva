@@ -1,4 +1,4 @@
-import 'package:nitya_seva/firebase.dart';
+import 'package:nitya_seva/fb.dart';
 
 class SevaTicket {
   DateTime timestamp;
@@ -77,7 +77,7 @@ class SevaSlot {
 
 class Record {
   static final Record _instance = Record._internal();
-  List<SevaSlot> sevaSlots = [];
+  List<SevaSlot> sevaSlots = []; // unsorted
 
   // Private constructor
   Record._internal();
@@ -87,8 +87,15 @@ class Record {
     return _instance;
   }
 
-  void init() {
+  Future<void> init() async {
     // read from FB
+    var value = await FB().getSevaSlots();
+
+    for (var element in value) {
+      Map<String, dynamic> elementMap =
+          Map<String, dynamic>.from(element as Map);
+      sevaSlots.add(SevaSlot.fromJson(elementMap));
+    }
   }
 
   void addSevaSlot(SevaSlot slot) {

@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
+typedef JsonMapSevaSlot = Map<String, dynamic>;
+
 class FB {
   static FB? _instance;
 
@@ -28,6 +30,19 @@ class FB {
     }
 
     return ret;
+  }
+
+  Future<List<dynamic>> getSevaSlots() async {
+    final dbRef = FirebaseDatabase.instance.ref('record/sevaSlots');
+    DatabaseEvent event = await dbRef.once();
+    DataSnapshot snapshot = event.snapshot;
+    List<dynamic> sevaSlots = [];
+
+    if (snapshot.value != null) {
+      sevaSlots = (snapshot.value as Map).values.toList();
+    }
+
+    return sevaSlots;
   }
 
   Future<String> checkAdminAccess() async {
