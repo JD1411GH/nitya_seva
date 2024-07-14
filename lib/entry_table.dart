@@ -290,7 +290,6 @@ class _EntryTableState extends State<EntryTable> {
       IconData icon;
       Color backgroundColor;
       Color backgroundShade;
-      Color backgroundShade;
 
       switch (entry.mode) {
         case 'UPI':
@@ -310,7 +309,6 @@ class _EntryTableState extends State<EntryTable> {
         case 400:
           backgroundColor = Colors.lightBlue.shade100;
           backgroundShade = const Color.fromARGB(255, 1, 169, 247);
-          backgroundShade = const Color.fromARGB(255, 1, 169, 247);
           break;
         case 500:
           backgroundColor = Colors.yellow.shade100;
@@ -323,47 +321,13 @@ class _EntryTableState extends State<EntryTable> {
         case 2500:
           backgroundColor = Colors.pink.shade100;
           backgroundShade = const Color.fromARGB(255, 249, 3, 89);
-          backgroundShade = const Color.fromARGB(255, 249, 3, 89);
           break;
         default:
           backgroundColor = Colors.grey.shade200;
           backgroundShade = const Color.fromARGB(255, 8, 8, 8);
-          backgroundShade = const Color.fromARGB(255, 8, 8, 8);
       }
 
       return ListTile(
-        leading: Container(
-          width: 30,
-          height: 30,
-          decoration: BoxDecoration(
-            color: backgroundShade,
-            shape: BoxShape.circle,
-            // border: Border.all(color: Colors.black),
-          ),
-          child: Center(
-            child: Text(
-              '${sevaTickets.length - index}',
-              style: const TextStyle(fontSize: 20, color: Colors.white),
-            ),
-          ),
-        ),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Ticket #: ${entry.ticket}',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Text(DateFormat('HH:mm').format(entry.timestamp)),
-          ],
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Seva karta: ${entry.user}'),
-            Text('Amount: ${entry.amount}, Mode: ${entry.mode}'),
-          ],
-        ),
         leading: Container(
           width: 30,
           height: 30,
@@ -411,7 +375,6 @@ class _EntryTableState extends State<EntryTable> {
         itemBuilder: (context, index) => _createTilesFromEntries()[index],
         separatorBuilder: (context, index) =>
             const Divider(color: Color.fromARGB(40, 0, 0, 0), height: 1),
-        const Divider(color: Color.fromARGB(40, 0, 0, 0), height: 1),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
