@@ -1,4 +1,5 @@
 import 'package:nitya_seva/fb.dart';
+import 'package:nitya_seva/local_storage.dart';
 
 class SevaTicket {
   DateTime timestamp;
@@ -46,9 +47,13 @@ class SevaSlot {
     FB().addSevaTicket(timestamp.toIso8601String(), ticket.toJson());
   }
 
-  void removeSevaTicket(DateTime timestamp) {
-    sevaTickets.removeWhere((ticket) => ticket.timestamp == timestamp);
+  Future<void> removeSevaTicket(DateTime timestampTicket) async {
+    sevaTickets.removeWhere((ticket) => ticket.timestamp == timestampTicket);
     sevaTickets.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+    String? timestampSlot = await LS().read('selectedSlot');
+
+    FB().removeSevaTicket(timestampSlot!, timestampTicket.toIso8601String());
   }
 
   void updateSevaTicket(DateTime timestamp, SevaTicket ticket) {
@@ -107,6 +112,8 @@ class Record {
       List<Map<String, dynamic>> sevaTickets = List<Map<String, dynamic>>.from(
           elementMap['sevaTickets']
               .map((ticket) => Map<String, dynamic>.from(ticket)));
+
+      sevaTickets.sort((a, b) => b['timestamp'].compareTo(a['timestamp']));
       elementMap['sevaTickets'] = sevaTickets;
 
       sevaSlots.add(SevaSlot.fromJson(elementMap));

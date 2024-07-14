@@ -46,41 +46,26 @@ class _EntryTableState extends State<EntryTable> {
     }).catchError((error) {
       print('Error fetching selectedSlot: $error');
     });
-    ;
   }
 
-  void onAddEntry(SevaTicket entry) async {
-    Record().getSevaSlot(timestampSlot).addSevaTicket(entry);
+  Future<void> _reload() async {
     SevaSlot slot = Record().getSevaSlot(timestampSlot);
     setState(() {
       sevaTickets = slot.sevaTickets;
     });
+    print(sevaTickets);
   }
 
-  void onDeleteEntry(String entryId) async {
-    // int index = listEntries.indexWhere((e) => e.entryId == entryId);
-    // if (index != -1) {
-    //   setState(() {
-    //     listEntries.removeAt(index);
-    //   });
-    // }
+  void onAddEntry(SevaTicket entry) async {
+    Record().getSevaSlot(timestampSlot).addSevaTicket(entry);
 
-    // // serialize count inside listEntries
-    // for (int i = listEntries.length - 1; i >= 0; i--) {
-    //   setState(() {
-    //     listEntries[i].count = listEntries.length - i;
-    //   });
-    // }
+    _reload();
+  }
 
-    // String selectedSlotId =
-    //     await _fetchSelectedSlot().then((value) => value.id);
+  void onDeleteEntry(DateTime timestampTicket) async {
+    Record().getSevaSlot(timestampSlot).removeSevaTicket(timestampTicket);
 
-    // await DB().writeCloud(
-    //   selectedSlotId,
-    //   jsonEncode(listEntries.map((e) => e.toJson()).toList()),
-    // );
-
-    // Toaster().info("Deleted entry");
+    _reload();
   }
 
   // Future<SlotTile> _fetchSelectedSlot() async {
@@ -187,13 +172,18 @@ class _EntryTableState extends State<EntryTable> {
     );
   }
 
-  Future<void> _showEntryDialog(BuildContext context) async {
-    String selectedSevaAmount = '400';
+  Future<void> _showEntryDialog(
+      BuildContext context, SevaTicket? ticket) async {
+    String selectedSevaAmount =
+        ticket != null ? ticket.amount.toString() : '400';
     List<String> sevaAmounts = ['400', '500', '1000', '2500'];
-    String selectedPaymentMode = 'UPI';
+    String selectedPaymentMode = ticket != null ? ticket.mode : 'UPI';
     List<String> paymentModes = ['UPI', 'Cash', 'Card'];
+    String ticketNumber = ticket != null
+        ? ticket.ticket.toString()
+        : getNextTicket(int.parse('400')).toString();
     TextEditingController ticketNumberController =
-        TextEditingController(text: getNextTicket(int.parse('400')).toString());
+        TextEditingController(text: ticketNumber);
 
     String user = await LS().read('user') ?? 'Unknown';
 
@@ -202,7 +192,9 @@ class _EntryTableState extends State<EntryTable> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('New Entry'),
+          title: ticket != null
+              ? const Text('Edit Entry')
+              : const Text('New Entry'),
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
               return Column(
@@ -259,6 +251,15 @@ class _EntryTableState extends State<EntryTable> {
             },
           ),
           actions: <Widget>[
+            if (ticket != null)
+              TextButton(
+                onPressed: () {
+                  // Add your delete logic here
+                  onDeleteEntry(ticket.timestamp);
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Delete'),
+              ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
@@ -276,7 +277,7 @@ class _EntryTableState extends State<EntryTable> {
                 onAddEntry(ticket);
                 Navigator.of(context).pop();
               },
-              child: const Text('Add'),
+              child: ticket != null ? const Text('Update') : const Text('Add'),
             ),
           ],
         );
@@ -362,6 +363,10 @@ class _EntryTableState extends State<EntryTable> {
         ),
         trailing: Icon(icon),
         tileColor: backgroundColor,
+        onTap: () {
+          SevaTicket entry = sevaTickets[index];
+          _showEntryDialog(context, entry);
+        },
       );
     });
   }
@@ -378,7 +383,7 @@ class _EntryTableState extends State<EntryTable> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showEntryDialog(context);
+          _showEntryDialog(context, null);
         },
         tooltip: 'Add new entry',
         child: const Icon(Icons.add),

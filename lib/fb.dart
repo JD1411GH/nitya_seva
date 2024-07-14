@@ -100,4 +100,25 @@ class FB {
       await ref.push().set(ticket);
     }
   }
+
+  Future<void> removeSevaTicket(
+      String timestampSlot, String iso8601string) async {
+    final DatabaseReference dbRef =
+        FirebaseDatabase.instance.ref('record/sevaSlots');
+
+    String key = await _getSelectedSlotKey(dbRef, timestampSlot);
+    if (key.isEmpty) {
+      Toaster().error("Unable to remove from database");
+    } else {
+      DatabaseReference ref = dbRef.child(key).child("sevaTickets");
+      DataSnapshot snapshot = await ref.get();
+      Map<String, dynamic> entries =
+          Map<String, dynamic>.from(snapshot.value as Map);
+      entries.forEach((key, value) {
+        if (value['timestamp'] == iso8601string) {
+          ref.child(key).remove();
+        }
+      });
+    }
+  }
 }
