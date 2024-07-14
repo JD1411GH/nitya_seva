@@ -2,11 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:nitya_seva/access_denied.dart';
-import 'package:nitya_seva/auth.dart';
+import 'package:nitya_seva/login.dart';
 import 'package:nitya_seva/db.dart';
 import 'package:nitya_seva/home.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:nitya_seva/record_firebase.dart';
+import 'package:nitya_seva/firebase.dart';
 
 Future<void> main() async {
   runApp(const NityaSevaApp());

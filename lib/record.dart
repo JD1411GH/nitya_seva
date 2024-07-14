@@ -1,4 +1,4 @@
-import 'package:nitya_seva/record_firebase.dart';
+import 'package:nitya_seva/firebase.dart';
 
 class SevaTicket {
   final DateTime timestamp = DateTime.now();

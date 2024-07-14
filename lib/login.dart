@@ -1,8 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:nitya_seva/access_denied.dart';
 import 'package:nitya_seva/db.dart';
+import 'package:nitya_seva/firebase.dart';
 import 'package:nitya_seva/home.dart';
+import 'package:nitya_seva/loading.dart';
 import 'package:nitya_seva/toaster.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -100,10 +103,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
         Toaster().info("Login successful");
 
-        Navigator.push(
-            // ignore: use_build_context_synchronously
-            context,
-            MaterialPageRoute(builder: (context) => const HomePage()));
+        if (mounted) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const LoadingScreen()));
+        } else {
+          Toaster().error("Error: context not mounted");
+        }
       } else {
         Toaster().error("Verfication error");
       }
@@ -184,7 +189,7 @@ Future<void> loginUser(String phone, LoginUserCallbacks callbacks) async {
     phoneNumber: phone,
     timeout: const Duration(seconds: 60),
     verificationCompleted: (AuthCredential credential) async {
-      Toaster().error("Auto verification disabled");
+      Toaster().info("Auto verification disabled");
       // UserCredential result = await _auth.signInWithCredential(credential);
 
       // User? user = result.user;

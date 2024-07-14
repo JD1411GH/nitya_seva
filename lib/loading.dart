@@ -1,10 +1,11 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:nitya_seva/access_denied.dart';
-import 'package:nitya_seva/auth.dart';
+import 'package:nitya_seva/login.dart';
 import 'package:nitya_seva/db.dart';
 import 'package:nitya_seva/home.dart';
 import 'package:nitya_seva/local_storage.dart';
-import 'package:nitya_seva/record_firebase.dart';
+import 'package:nitya_seva/firebase.dart';
 import 'package:nitya_seva/toaster.dart';
 
 // Convert LoadingScreen to StatefulWidget
@@ -39,11 +40,10 @@ class _LoadingScreenState extends State<LoadingScreen> {
             // );
           } else {
             // User does not have access to database
-            Toaster().info("AccessDenied");
-            // Navigator.pushReplacement(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => const AccessDenied()),
-            // );
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const AccessDenied()),
+            );
           }
         });
       } else {

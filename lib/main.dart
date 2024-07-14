@@ -1,8 +1,12 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:nitya_seva/const.dart';
 import 'package:nitya_seva/loading.dart';
 
-Future<void> main() async {
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  Firebase.initializeApp();
+
   runApp(const NityaSevaApp());
 }
 
@@ -20,7 +24,7 @@ class NityaSevaApp extends StatelessWidget {
             seedColor: const Color.fromARGB(255, 222, 150, 67)),
         useMaterial3: true,
       ),
-      home: LoadingScreen(),
+      home: const LoadingScreen(),
     );
   }
 }
