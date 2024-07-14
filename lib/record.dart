@@ -5,8 +5,10 @@ class SevaTicket {
   final int amount;
   final String mode;
   final int ticket;
+  final String user;
 
-  SevaTicket(this.amount, this.mode, this.ticket) : timestamp = DateTime.now();
+  SevaTicket(this.amount, this.mode, this.ticket, this.user)
+      : timestamp = DateTime.now();
 
   Map<String, dynamic> toJson() {
     return {
@@ -14,6 +16,7 @@ class SevaTicket {
       'amount': amount,
       'mode': mode,
       'ticket': ticket,
+      'user': user,
     };
   }
 
@@ -22,6 +25,7 @@ class SevaTicket {
       json['amount'] as int,
       json['mode'] as String,
       json['ticket'] as int,
+      json['user'] as String,
     )..timestamp = DateTime.parse(json['timestamp'] as String);
   }
 }

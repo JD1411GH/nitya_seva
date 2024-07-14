@@ -20,43 +20,32 @@ class EntryTable extends StatefulWidget {
 
 class _EntryTableState extends State<EntryTable> {
   List<SevaTicket> sevaTickets = [];
-  late String selectedSlot; // timestamp is stored
+  late String timestampSlot; // timestamp is stored
 
   @override
   void initState() {
     super.initState();
 
-    LS().read('selectedSlot').then((slotTimestamp) {
-      selectedSlot = slotTimestamp!;
-      SevaSlot slot = Record().getSevaSlot(slotTimestamp);
+    asyncInit().then((value) {
+      SevaSlot slot = Record().getSevaSlot(timestampSlot);
       setState(() {
         sevaTickets = slot.sevaTickets;
       });
     });
   }
 
+  Future<void> asyncInit() async {
+    LS().read('selectedSlot').then((selectedSlot) {
+      timestampSlot = selectedSlot!;
+    });
+  }
+
   void onAddEntry(SevaTicket entry) async {
-    Record().getSevaSlot(selectedSlot).addSevaTicket(entry);
-
-    // int index = listEntries.indexWhere((e) => e.entryId == entry.entryId);
-    // if (index != -1) {
-    //   // Replace the existing entry with the new one
-    //   setState(() {
-    //     listEntries[index] = entry;
-    //   });
-    // } else {
-    //   // Insert the new entry at the beginning of the list
-    //   setState(() {
-    //     listEntries.insert(0, entry);
-    //   });
-    // }
-
-    // String selectedSlotId =
-    //     await _fetchSelectedSlot().then((value) => value.id);
-    // DB().writeCloud(
-    //   selectedSlotId,
-    //   jsonEncode(listEntries.map((e) => e.toJson()).toList()),
-    // );
+    Record().getSevaSlot(timestampSlot).addSevaTicket(entry);
+    SevaSlot slot = Record().getSevaSlot(timestampSlot);
+    setState(() {
+      sevaTickets = slot.sevaTickets;
+    });
   }
 
   void onDeleteEntry(String entryId) async {
@@ -185,6 +174,8 @@ class _EntryTableState extends State<EntryTable> {
     TextEditingController ticketNumberController =
         TextEditingController(text: getNextTicket(int.parse('400')).toString());
 
+    String user = await LS().read('user') ?? 'Unknown';
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -253,10 +244,10 @@ class _EntryTableState extends State<EntryTable> {
               onPressed: () {
                 // Add your add logic here
                 SevaTicket ticket = SevaTicket(
-                  int.parse(selectedSevaAmount),
-                  selectedPaymentMode,
-                  int.tryParse(ticketNumberController.text) ?? 0,
-                );
+                    int.parse(selectedSevaAmount),
+                    selectedPaymentMode,
+                    int.tryParse(ticketNumberController.text) ?? 0,
+                    user);
                 onAddEntry(ticket);
                 Navigator.of(context).pop();
               },
@@ -268,11 +259,60 @@ class _EntryTableState extends State<EntryTable> {
     );
   }
 
+  List<Widget> _createTilesFromEntries() {
+    return List.generate(sevaTickets.length, (index) {
+      SevaTicket entry = sevaTickets[index];
+      IconData icon;
+      Color backgroundColor;
+
+      switch (entry.mode) {
+        case 'UPI':
+          icon = Icons.account_balance_wallet;
+          break;
+        case 'Cash':
+          icon = Icons.money;
+          break;
+        case 'Card':
+          icon = Icons.credit_card;
+          break;
+        default:
+          icon = Icons.error;
+      }
+
+      switch (entry.amount) {
+        case 400:
+          backgroundColor = Colors.lightBlue.shade100;
+          break;
+        case 500:
+          backgroundColor = Colors.yellow.shade100;
+          break;
+        case 1000:
+          backgroundColor = Colors.lightGreen.shade100;
+          break;
+        case 2500:
+          backgroundColor = Colors.pink.shade100;
+          break;
+        default:
+          backgroundColor = Colors.grey.shade200;
+      }
+
+      return ListTile(
+        leading: Text('${index + 1}'),
+        title: Text('Ticket #: ${entry.ticket}'),
+        subtitle: Text('User: ${entry.user}'),
+        trailing: Icon(icon),
+        tileColor: backgroundColor,
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _widgetAppbar(),
-      body: Text(sevaTickets[0].amount.toString()),
+      body: ListView(
+        children: _createTilesFromEntries(),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _showEntryDialog(context);
