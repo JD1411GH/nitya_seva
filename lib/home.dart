@@ -33,24 +33,15 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       drawer: const Drawer(),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        // child: SingleChildScrollView(
-        //   // Wrap the Column in a SingleChildScrollView
-        //   child: Column(
-        //     mainAxisAlignment: MainAxisAlignment.start,
-        //     children: slotTileList.listSlotTiles
-        //         .map((widget) =>
-        //             Padding(padding: const EdgeInsets.all(8.0), child: widget))
-        //         .toList(),
-        //   ),
-        // ),
+      body: const Padding(
+        padding: EdgeInsets.all(8.0),
+        child: null,
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: const FloatingActionButton(
         // onPressed: _addNewSlot,
         onPressed: null,
         tooltip: 'Add slot',
-        child: const Icon(Icons.add),
+        child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
