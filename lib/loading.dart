@@ -1,12 +1,9 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:nitya_seva/access_denied.dart';
 import 'package:nitya_seva/login.dart';
-import 'package:nitya_seva/db.dart';
 import 'package:nitya_seva/home.dart';
 import 'package:nitya_seva/local_storage.dart';
 import 'package:nitya_seva/firebase.dart';
-import 'package:nitya_seva/toaster.dart';
 
 // Convert LoadingScreen to StatefulWidget
 class LoadingScreen extends StatefulWidget {
@@ -33,11 +30,10 @@ class _LoadingScreenState extends State<LoadingScreen> {
         FB().checkAccess().then((value) {
           if (value == "rw") {
             // User has access to database
-            Toaster().info("HomePage");
-            // Navigator.pushReplacement(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => const HomePage()),
-            // );
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+            );
           } else {
             // User does not have access to database
             Navigator.pushReplacement(

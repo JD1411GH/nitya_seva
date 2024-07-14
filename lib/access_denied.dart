@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nitya_seva/login.dart';
 import 'package:nitya_seva/db.dart';
+import 'package:nitya_seva/logout.dart';
 
 class AccessDenied extends StatelessWidget {
   const AccessDenied({super.key});
@@ -11,15 +12,8 @@ class AccessDenied extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Access Denied'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.exit_to_app),
-            onPressed: () {
-              DB().delete('user');
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const LoginScreen()));
-            },
-          ),
+        actions: const <Widget>[
+          LogoutButton(),
         ],
       ),
       body: const Center(
