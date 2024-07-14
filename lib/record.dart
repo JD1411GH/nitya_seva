@@ -1,3 +1,5 @@
+import 'package:nitya_seva/record_firebase.dart';
+
 class SevaTicket {
   final DateTime timestamp = DateTime.now();
   final int amount;
