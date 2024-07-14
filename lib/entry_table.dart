@@ -4,10 +4,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nitya_seva/db.dart';
-import 'package:nitya_seva/entry.dart';
 import 'package:nitya_seva/fb.dart';
 import 'package:nitya_seva/local_storage.dart';
-import 'package:nitya_seva/slot.dart';
 import 'package:nitya_seva/summary.dart';
 import 'package:nitya_seva/toaster.dart';
 import 'package:nitya_seva/record.dart';
@@ -22,6 +20,8 @@ class EntryTable extends StatefulWidget {
 class _EntryTableState extends State<EntryTable> {
   List<SevaTicket> sevaTickets = [];
   late String timestampSlot; // timestamp is stored
+  String date = '';
+  String time = '';
 
   @override
   void initState() {
@@ -31,6 +31,10 @@ class _EntryTableState extends State<EntryTable> {
       SevaSlot slot = Record().getSevaSlot(timestampSlot);
       setState(() {
         sevaTickets = slot.sevaTickets;
+
+        DateTime timestamp = Record().getSevaSlot(timestampSlot).timestamp;
+        date = DateFormat('dd/MM').format(timestamp);
+        time = DateFormat('HH:mm').format(timestamp);
       });
     });
   }
@@ -38,7 +42,10 @@ class _EntryTableState extends State<EntryTable> {
   Future<void> asyncInit() async {
     LS().read('selectedSlot').then((selectedSlot) {
       timestampSlot = selectedSlot!;
+    }).catchError((error) {
+      print('Error fetching selectedSlot: $error');
     });
+    ;
   }
 
   void onAddEntry(SevaTicket entry) async {
@@ -94,8 +101,8 @@ class _EntryTableState extends State<EntryTable> {
   // }
 
   int getNextTicket(amount) {
-    List<EntryData> filteredEntries = [];
-    // listEntries.where((entry) => entry.amount == amount).toList();
+    List<SevaTicket> filteredEntries =
+        sevaTickets.where((entry) => entry.amount == amount).toList();
 
     if (filteredEntries.isEmpty) {
       return 0;
@@ -154,7 +161,19 @@ class _EntryTableState extends State<EntryTable> {
   PreferredSizeWidget? _widgetAppbar() {
     return AppBar(
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      title: null,
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            date,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Text(
+            time,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
       actions: <Widget>[
         IconButton(
           icon: const Icon(Icons.summarize),
@@ -178,6 +197,7 @@ class _EntryTableState extends State<EntryTable> {
     String user = await LS().read('user') ?? 'Unknown';
 
     showDialog(
+      // ignore: use_build_context_synchronously
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -195,6 +215,9 @@ class _EntryTableState extends State<EntryTable> {
                     onChanged: (String? newValue) {
                       setState(() {
                         selectedSevaAmount = newValue!;
+                        ticketNumberController.text =
+                            getNextTicket(int.parse(selectedSevaAmount))
+                                .toString();
                       });
                     },
                     items: sevaAmounts

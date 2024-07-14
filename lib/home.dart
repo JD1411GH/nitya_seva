@@ -8,7 +8,6 @@ import 'package:nitya_seva/login.dart';
 import 'package:nitya_seva/db.dart';
 import 'package:nitya_seva/entry_table.dart';
 import 'package:nitya_seva/logout.dart';
-import 'package:nitya_seva/slot.dart';
 import 'package:nitya_seva/toaster.dart';
 import 'package:nitya_seva/record.dart';
 
@@ -43,7 +42,7 @@ class _HomePageState extends State<HomePage> {
   Widget _widgetDate(index) {
     return Expanded(
       child: Text(
-        DateFormat('yyyy-MM-dd')
+        DateFormat('dd-MM-yyyy')
             .format(sevaSlots[index].timestamp), // Extract and format the date
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
