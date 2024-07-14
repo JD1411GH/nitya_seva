@@ -37,6 +37,7 @@ class SevaSlot {
 
   void addSevaTicket(SevaTicket ticket) {
     sevaTickets.add(ticket);
+    FB().addSevaTicket(timestamp.toIso8601String(), ticket.toJson());
   }
 
   void removeSevaTicket(DateTime timestamp) {
@@ -103,6 +104,7 @@ class Record {
   void addSevaSlot(SevaSlot slot) {
     sevaSlots.add(slot);
     sevaSlots.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
     FB().addSevaSlot(slot.toJson());
   }
 

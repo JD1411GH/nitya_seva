@@ -20,18 +20,22 @@ class EntryTable extends StatefulWidget {
 
 class _EntryTableState extends State<EntryTable> {
   List<SevaTicket> sevaTickets = [];
+  late String selectedSlot; // timestamp is stored
 
   @override
   void initState() {
     super.initState();
 
     LS().read('selectedSlot').then((slotTimestamp) {
+      selectedSlot = slotTimestamp!;
       SevaSlot slot = Record().getSevaSlot(slotTimestamp!);
       sevaTickets = slot.sevaTickets;
     });
   }
 
-  void onSaveEntry(EntryData entry) async {
+  void onSaveEntry(SevaTicket entry) async {
+    Record().getSevaSlot(selectedSlot).addSevaTicket(entry);
+
     // int index = listEntries.indexWhere((e) => e.entryId == entry.entryId);
     // if (index != -1) {
     //   // Replace the existing entry with the new one
@@ -97,12 +101,12 @@ class _EntryTableState extends State<EntryTable> {
   //   return SlotTile.fromJson(jsonDecode(str)).id;
   // }
 
-  int? getNextTicket(amount) {
+  int getNextTicket(amount) {
     List<EntryData> filteredEntries = [];
     // listEntries.where((entry) => entry.amount == amount).toList();
 
     if (filteredEntries.isEmpty) {
-      return null;
+      return 0;
     } else {
       return filteredEntries.map((entry) => entry.ticket).reduce(max) + 1;
     }
@@ -246,6 +250,12 @@ class _EntryTableState extends State<EntryTable> {
             TextButton(
               onPressed: () {
                 // Add your add logic here
+                SevaTicket ticket = SevaTicket(
+                  int.parse(selectedSevaAmount),
+                  selectedPaymentMode,
+                  int.tryParse(ticketNumberController.text) ?? 0,
+                );
+                onSaveEntry(ticket);
                 Navigator.of(context).pop();
               },
               child: const Text('Add'),
