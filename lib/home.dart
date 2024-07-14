@@ -134,9 +134,9 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(Const().appName),
-        actions: const <Widget>[
-          LogoutButton(),
-        ],
+        // actions: const <Widget>[
+        //   LogoutButton(),
+        // ],
       ),
       drawer: const Drawer(),
       body: Padding(
