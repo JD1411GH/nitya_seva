@@ -3,10 +3,9 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:nitya_seva/toaster.dart';
 
-typedef JsonMapSevaSlot = Map<String, dynamic>;
-
 class FB {
   static FB? _instance;
+  static Map<String, String> keyCache = {};
 
   factory FB() {
     _instance ??= FB._();
@@ -59,7 +58,11 @@ class FB {
   }
 
   Future<String> _getSelectedSlotKey(
-      DatabaseReference dbRef, String selectedSlot) async {
+      DatabaseReference dbRef, String timestamp) async {
+    if (keyCache.containsKey(timestamp)) {
+      return keyCache[timestamp]!;
+    }
+
     String ret = '';
     DataSnapshot snapshot = await dbRef.get();
 
@@ -67,8 +70,9 @@ class FB {
       Map<String, dynamic> entries =
           Map<String, dynamic>.from(snapshot.value as Map);
       entries.forEach((key, value) {
-        if (value['timestamp'] == selectedSlot) {
+        if (value['timestamp'] == timestamp) {
           ret = key;
+          keyCache[timestamp] = key;
         }
       });
     }
