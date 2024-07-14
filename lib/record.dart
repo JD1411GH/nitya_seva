@@ -96,15 +96,19 @@ class Record {
           Map<String, dynamic>.from(element as Map);
       sevaSlots.add(SevaSlot.fromJson(elementMap));
     }
+
+    sevaSlots.sort((a, b) => b.timestamp.compareTo(a.timestamp));
   }
 
   void addSevaSlot(SevaSlot slot) {
     sevaSlots.add(slot);
+    sevaSlots.sort((a, b) => b.timestamp.compareTo(a.timestamp));
     FB().addSevaSlot(slot.toJson());
   }
 
   void removeSevaSlot(DateTime timestamp) {
     sevaSlots.removeWhere((slot) => slot.timestamp == timestamp);
+    sevaSlots.sort((a, b) => b.timestamp.compareTo(a.timestamp));
   }
 
   void display() {
