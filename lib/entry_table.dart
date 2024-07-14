@@ -62,6 +62,14 @@ class _EntryTableState extends State<EntryTable> {
     _reload();
   }
 
+  void onEditEntry(DateTime timestampTicket, SevaTicket entry) async {
+    Record()
+        .getSevaSlot(timestampSlot)
+        .updateSevaTicket(timestampTicket, entry);
+
+    _reload();
+  }
+
   void onDeleteEntry(DateTime timestampTicket) async {
     Record().getSevaSlot(timestampSlot).removeSevaTicket(timestampTicket);
 
@@ -283,12 +291,18 @@ class _EntryTableState extends State<EntryTable> {
             TextButton(
               onPressed: () {
                 // Add your add logic here
-                SevaTicket ticket = SevaTicket(
+                SevaTicket t = SevaTicket(
                     int.parse(selectedSevaAmount),
                     selectedPaymentMode,
                     int.tryParse(ticketNumberController.text) ?? 0,
                     user);
-                onAddEntry(ticket);
+
+                if (ticket == null) {
+                  onAddEntry(t);
+                } else {
+                  onEditEntry(ticket.timestamp, t);
+                }
+
                 Navigator.of(context).pop();
               },
               child: ticket != null ? const Text('Update') : const Text('Add'),

@@ -87,6 +87,34 @@ class FB {
     return ret;
   }
 
+  Future<String> _getSelectedTicketKey(DatabaseReference dbRef,
+      String timestampSlot, String timestampTicket) async {
+    if (keyCache.containsKey(timestampTicket)) {
+      return keyCache[timestampTicket]!;
+    }
+
+    String ret = '';
+
+    String key = await _getSelectedSlotKey(dbRef, timestampSlot);
+    if (key.isEmpty) {
+      Toaster().error("Unable to update database");
+    } else {
+      DatabaseReference ref = dbRef.child(key).child("sevaTickets");
+      DataSnapshot snapshot = await ref.get();
+
+      Map<String, dynamic> entries =
+          Map<String, dynamic>.from(snapshot.value as Map);
+
+      entries.forEach((key, value) {
+        if (value['timestamp'] == timestampTicket) {
+          keyCache[timestampTicket] = key;
+          ret = key;
+        }
+      });
+    }
+    return ret;
+  }
+
   Future<void> addSevaTicket(
       String selectedSlot, Map<String, dynamic> ticket) async {
     final DatabaseReference dbRef =
@@ -119,6 +147,22 @@ class FB {
           ref.child(key).remove();
         }
       });
+    }
+  }
+
+  Future<void> updateSevaTicket(String timestampSlot, String timestampTicket,
+      Map<String, dynamic> json) async {
+    final DatabaseReference dbRef =
+        FirebaseDatabase.instance.ref('record/sevaSlots');
+
+    String key = await _getSelectedSlotKey(dbRef, timestampSlot);
+    if (key.isEmpty) {
+      Toaster().error("Unable to update database");
+    } else {
+      String keyTicket =
+          await _getSelectedTicketKey(dbRef, timestampSlot, timestampTicket);
+
+      await dbRef.child(key).child("sevaTickets").child(keyTicket).set(json);
     }
   }
 }

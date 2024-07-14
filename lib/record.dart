@@ -56,12 +56,16 @@ class SevaSlot {
     FB().removeSevaTicket(timestampSlot!, timestampTicket.toIso8601String());
   }
 
-  void updateSevaTicket(DateTime timestamp, SevaTicket ticket) {
-    final index = sevaTickets.indexWhere((t) => t.timestamp == timestamp);
+  Future<void> updateSevaTicket(
+      DateTime timestampTicket, SevaTicket ticket) async {
+    final index = sevaTickets.indexWhere((t) => t.timestamp == timestampTicket);
     if (index != -1) {
       sevaTickets[index] = ticket;
     }
     sevaTickets.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+    await FB().updateSevaTicket(timestamp.toIso8601String(),
+        timestampTicket.toIso8601String(), ticket.toJson());
   }
 
   Map<String, dynamic> toJson() {
