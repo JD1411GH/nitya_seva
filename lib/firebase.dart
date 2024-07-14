@@ -35,9 +35,13 @@ class FB {
     return "-";
   }
 
-  Future<void> addSevaSlot(String _sevaSlot) async {
+  Future<void> addSevaSlot(Map<String, dynamic> _sevaSlot) async {
     // Add a new seva slot
-    final dbref = FirebaseDatabase.instance.ref("record/sevaSlots");
-    await dbref.push().set(_sevaSlot);
+    // final dbref = FirebaseDatabase.instance.ref("record/sevaSlots");
+    // await dbref.push().set(_sevaSlot);
+
+    final DatabaseReference _dbRef = FirebaseDatabase.instance.ref('record');
+    DatabaseReference ref = _dbRef.child('sevaSlots').push();
+    await ref.set(_sevaSlot);
   }
 }

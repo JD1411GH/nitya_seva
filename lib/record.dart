@@ -93,7 +93,7 @@ class Record {
 
   void addSevaSlot(SevaSlot slot) {
     sevaSlots.add(slot);
-    FB().addSevaSlot(slot.toJson().toString());
+    FB().addSevaSlot(slot.toJson());
   }
 
   void removeSevaSlot(DateTime timestamp) {
