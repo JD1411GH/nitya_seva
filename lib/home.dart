@@ -9,6 +9,7 @@ import 'package:nitya_seva/entry_table.dart';
 import 'package:nitya_seva/logout.dart';
 import 'package:nitya_seva/slot.dart';
 import 'package:nitya_seva/toaster.dart';
+import 'package:nitya_seva/record.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -24,7 +25,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _addNewSlot() async {
-    print(await LS().read("user"));
+    String? user = await LS().read('user');
+    SevaSlot slot = SevaSlot(user!);
+    Record().addSevaSlot(slot);
+
+    // refresh homepage
   }
 
   @override

@@ -43,6 +43,10 @@ class Record {
     return _instance;
   }
 
+  void init() {
+    // read from FB
+  }
+
   void addSevaSlot(SevaSlot slot) {
     sevaSlots.add(slot);
 

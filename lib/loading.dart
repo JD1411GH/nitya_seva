@@ -4,6 +4,7 @@ import 'package:nitya_seva/login.dart';
 import 'package:nitya_seva/home.dart';
 import 'package:nitya_seva/local_storage.dart';
 import 'package:nitya_seva/firebase.dart';
+import 'package:nitya_seva/record.dart';
 
 // Convert LoadingScreen to StatefulWidget
 class LoadingScreen extends StatefulWidget {
@@ -29,6 +30,9 @@ class _LoadingScreenState extends State<LoadingScreen> {
         // check if user has access to database
         FB().checkAccess().then((value) {
           if (value == "rw") {
+            // initialize local database
+            Record().init();
+
             // User has access to database
             Navigator.pushReplacement(
               context,
