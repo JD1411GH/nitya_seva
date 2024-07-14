@@ -32,7 +32,7 @@ class FB {
     return ret;
   }
 
-  Future<List<dynamic>> getSevaSlots() async {
+  Future<List<dynamic>> readSevaSlots() async {
     final dbRef = FirebaseDatabase.instance.ref('record/sevaSlots');
     DatabaseEvent event = await dbRef.once();
     DataSnapshot snapshot = event.snapshot;

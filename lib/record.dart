@@ -89,7 +89,7 @@ class Record {
 
   Future<void> init() async {
     // read from FB
-    var value = await FB().getSevaSlots();
+    var value = await FB().readSevaSlots();
 
     for (var element in value) {
       Map<String, dynamic> elementMap =
@@ -115,5 +115,10 @@ class Record {
             'Ticket: ${ticket.ticket}, Amount: ${ticket.amount}, Mode: ${ticket.mode}');
       }
     }
+  }
+
+  SevaSlot getSevaSlot(String timestamp) {
+    return sevaSlots
+        .firstWhere((slot) => slot.timestamp.toIso8601String() == timestamp);
   }
 }

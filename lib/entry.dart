@@ -45,9 +45,8 @@ class EntryData {
 }
 
 class EntryWidget extends StatefulWidget {
-  final EntryWidgetCallbacks callbacks;
   final EntryData? data;
-  const EntryWidget({super.key, required this.callbacks, this.data});
+  const EntryWidget({super.key, this.data});
 
   @override
   State<EntryWidget> createState() => _EntryWidgetState();
@@ -64,7 +63,7 @@ class _EntryWidgetState extends State<EntryWidget> {
   void initState() {
     super.initState();
     if (widget.data == null) {
-      _ticket = widget.callbacks.getNextTicket(400);
+      // _ticket = widget.callbacks.getNextTicket(400);
     } else {
       _ticket = widget.data!.ticket;
     }
@@ -83,7 +82,7 @@ class _EntryWidgetState extends State<EntryWidget> {
 
   void _updateTicket() {
     setState(() {
-      _ticket = widget.callbacks.getNextTicket(_amount);
+      // _ticket = widget.callbacks.getNextTicket(_amount);
       if (_ticket != null) {
         _ticketController.text = _ticket.toString();
       } else {
@@ -101,9 +100,10 @@ class _EntryWidgetState extends State<EntryWidget> {
 
     EntryData data = EntryData(
       entryId: widget.data == null ? const Uuid().v4() : widget.data!.entryId,
-      count: widget.data == null
-          ? widget.callbacks.getCount()
-          : widget.data!.count,
+      count: 0,
+      // count: widget.data == null
+      //     ? widget.callbacks.getCount()
+      //     : widget.data!.count,
       time: DateTime.now().toString(),
       author: username!,
       amount: _amount,
@@ -111,7 +111,7 @@ class _EntryWidgetState extends State<EntryWidget> {
       ticket: _ticket!,
     );
 
-    await widget.callbacks.onSave(data);
+    // await widget.callbacks.onSave(data);
 
     Navigator.pop(context);
   }
@@ -146,8 +146,8 @@ class _EntryWidgetState extends State<EntryWidget> {
                               ),
                               TextButton(
                                 onPressed: () {
-                                  widget.callbacks
-                                      .onDelete(widget.data!.entryId);
+                                  // widget.callbacks
+                                  //     .onDelete(widget.data!.entryId);
                                   Navigator.of(context)
                                       .pop(); // Close the dialog
                                   Navigator.of(context).pop();
@@ -283,15 +283,3 @@ class _EntryWidgetState extends State<EntryWidget> {
   }
 } // class _EntryWidgetState
 
-class EntryWidgetCallbacks {
-  final Function(EntryData) onSave;
-  final Function(String) onDelete;
-  final Function(int) getNextTicket;
-  final Function() getCount;
-
-  const EntryWidgetCallbacks(
-      {required this.onSave,
-      required this.onDelete,
-      required this.getNextTicket,
-      required this.getCount});
-}

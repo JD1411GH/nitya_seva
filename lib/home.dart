@@ -86,33 +86,46 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _widgetSlots(context, index) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Theme.of(context)
-              .colorScheme
-              .surfaceContainerHighest, // Border color
-          width: 1.0, // Border width
+    return InkWell(
+      onTap: () {
+        // Define your action here
+        LS()
+            .write('selectedSlot', sevaSlots[index].timestamp.toIso8601String())
+            .then((value) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const EntryTable()),
+          );
+        });
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Theme.of(context)
+                .colorScheme
+                .surfaceContainerHighest, // Border color
+            width: 1.0, // Border width
+          ),
+          borderRadius: BorderRadius.circular(4.0), // Border radius
         ),
-        borderRadius: BorderRadius.circular(4.0), // Border radius
-      ),
-      margin: const EdgeInsets.symmetric(
-          vertical: 4.0, horizontal: 8.0), // Margin around the container
-      child: ListTile(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                _widgetDate(index),
-                _widgetToday(index),
-                _widgetTime(index),
-              ],
-            ),
-            Row(children: [
-              Text(sevaSlots[index].sevakarta), // Display sevakarta
-            ])
-          ],
+        margin: const EdgeInsets.symmetric(
+            vertical: 4.0, horizontal: 8.0), // Margin around the container
+        child: ListTile(
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  _widgetDate(index),
+                  _widgetToday(index),
+                  _widgetTime(index),
+                ],
+              ),
+              Row(children: [
+                Text(sevaSlots[index].sevakarta), // Display sevakarta
+              ])
+            ],
+          ),
         ),
       ),
     );
