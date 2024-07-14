@@ -1,33 +1,82 @@
 import 'package:flutter/material.dart';
+import 'package:nitya_seva/access_denied.dart';
+import 'package:nitya_seva/auth.dart';
+import 'package:nitya_seva/db.dart';
+import 'package:nitya_seva/home.dart';
+import 'package:nitya_seva/local_storage.dart';
+import 'package:nitya_seva/record_firebase.dart';
+import 'package:nitya_seva/toaster.dart';
 
-class LoadingScreen extends StatelessWidget {
+// Convert LoadingScreen to StatefulWidget
+class LoadingScreen extends StatefulWidget {
   const LoadingScreen({super.key});
+
+  @override
+  State<LoadingScreen> createState() => _LoadingScreenState();
+}
+
+class _LoadingScreenState extends State<LoadingScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _navigateToHome();
+  }
+
+  // this function will either load the login screen, homepage or access denied
+  Future<void> _navigateToHome() async {
+    LS().read('user').then((value) {
+      if (value != null) {
+        // User is already logged in
+
+        // check if user has access to database
+        FB().checkAccess().then((value) {
+          if (value == "rw") {
+            // User has access to database
+            Toaster().info("HomePage");
+            // Navigator.pushReplacement(
+            //   context,
+            //   MaterialPageRoute(builder: (context) => const HomePage()),
+            // );
+          } else {
+            // User does not have access to database
+            Toaster().info("AccessDenied");
+            // Navigator.pushReplacement(
+            //   context,
+            //   MaterialPageRoute(builder: (context) => const AccessDenied()),
+            // );
+          }
+        });
+      } else {
+        // User is not logged in
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
       body: Stack(
-        fit: StackFit.expand, // Ensure the stack fills the screen
+        fit: StackFit.expand,
         children: <Widget>[
-          // Background image
           DecoratedBox(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(
-                    "assets/images/ic_launcher_hires.png"), // Replace with your image path
-                fit: BoxFit
-                    .cover, // Cover the entire screen, cropping as necessary
+                image: AssetImage("assets/images/ic_launcher_hires.png"),
+                fit: BoxFit.cover,
               ),
             ),
           ),
-          // Centered CircularProgressIndicator
           Center(
             child: SizedBox(
-              width: 80, // Specify the width
-              height: 80, // Specify the height
+              width: 80,
+              height: 80,
               child: CircularProgressIndicator(
-                strokeWidth: 8, // Make the stroke wider
-                color: Colors.white, // Set the color to white
+                strokeWidth: 8,
+                color: Colors.white,
               ),
             ),
           ),

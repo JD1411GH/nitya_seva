@@ -1,15 +1,15 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-class RecordFirebase {
-  static RecordFirebase? _instance;
+class FB {
+  static FB? _instance;
 
-  factory RecordFirebase() {
-    _instance ??= RecordFirebase._();
+  factory FB() {
+    _instance ??= FB._();
     return _instance!;
   }
 
-  RecordFirebase._() {
+  FB._() {
     // Code to be executed when first instantiated
     WidgetsFlutterBinding.ensureInitialized();
     Firebase.initializeApp();

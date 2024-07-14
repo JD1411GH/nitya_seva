@@ -21,7 +21,7 @@ class NityaSevaApp extends StatelessWidget {
     // checking if user has logged in before in this device
     if (user != null) {
       // checking if user has access to read and write to the database
-      if (RecordFirebase().checkAccess() == 'rw') {
+      if (FB().checkAccess() == 'rw') {
         return AccessDenied();
       } else {
         return HomePage();
