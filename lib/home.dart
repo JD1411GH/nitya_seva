@@ -25,6 +25,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    sevaSlots.sort((a, b) => b.timestamp.compareTo(a.timestamp));
   }
 
   Future<void> _addNewSlot() async {
@@ -35,6 +36,7 @@ class _HomePageState extends State<HomePage> {
     // refresh homepage
     setState(() {
       sevaSlots = Record().sevaSlots;
+      sevaSlots.sort((a, b) => b.timestamp.compareTo(a.timestamp));
     });
   }
 
