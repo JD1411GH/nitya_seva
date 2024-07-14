@@ -310,8 +310,11 @@ class _EntryTableState extends State<EntryTable> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _widgetAppbar(),
-      body: ListView(
-        children: _createTilesFromEntries(),
+      body: ListView.separated(
+        itemCount: _createTilesFromEntries().length,
+        itemBuilder: (context, index) => _createTilesFromEntries()[index],
+        separatorBuilder: (context, index) =>
+            Divider(color: Color.fromARGB(40, 0, 0, 0), height: 1),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
