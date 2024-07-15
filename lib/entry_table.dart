@@ -277,8 +277,32 @@ class _EntryTableState extends State<EntryTable> {
               TextButton(
                 onPressed: () {
                   // Add your delete logic here
-                  onDeleteEntry(ticket.timestamp);
-                  Navigator.of(context).pop();
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Confirm'),
+                        content: const Text(
+                            'Are you sure you want to delete this entry?'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () =>
+                                Navigator.of(context).pop(), // Dismiss dialog
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              onDeleteEntry(ticket.timestamp);
+                              Navigator.of(context)
+                                  .pop(); // Dismiss dialog after action
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Delete'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 },
                 child: const Text('Delete'),
               ),
