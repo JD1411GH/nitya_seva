@@ -23,19 +23,17 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   // this function will either load the login screen, homepage or access denied
   Future<void> _navigateToHome() async {
-    print("Loading Screen: _navigateToHome()");
+    
     LS().read('user').then((value) {
-      print("Loading Screen: _navigateToHome() -> LS().read('user') -> $value");
+      
       if (value != null) {
-        print(
-            "Loading Screen: _navigateToHome() -> LS().read('user') -> User is already logged in");
+        
         // User is already logged in
 
         // check if user has access to database
         FB().checkAccess().then((value) async {
           if (value == "rw") {
-            print(
-                "Loading Screen: _navigateToHome() -> FB().checkAccess() -> User has access to database");
+            
             // initialize local database
             await Record().init();
 
@@ -47,8 +45,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
               );
             }
           } else {
-            print(
-                "Loading Screen: _navigateToHome() -> FB().checkAccess() -> User does not have access to database");
+            
             // User does not have access to database
             Navigator.pushReplacement(
               context,
@@ -57,8 +54,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
           }
         });
       } else {
-        print(
-            "Loading Screen: _navigateToHome() -> LS().read('user') -> User is not logged in");
+        
         // User is not logged in
         Navigator.pushReplacement(
           context,
