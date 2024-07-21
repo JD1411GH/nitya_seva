@@ -190,6 +190,23 @@ class FB {
       callbacks.onChange("REMOVE_SEVA_SLOT", event.snapshot.value);
     });
   }
+
+  Future<void> listenForSevaTicketsChange(FBCallbacks callbacks) async {
+    final dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/sevaTickets');
+
+    dbRef.onChildAdded.listen((event) {
+      callbacks.onChange("ADD_SEVA_TICKET", event.snapshot.value);
+    });
+
+    dbRef.onChildChanged.listen((event) {
+      callbacks.onChange("UPDATE_SEVA_TICKET", event.snapshot.value);
+    });
+
+    dbRef.onChildRemoved.listen((event) {
+      callbacks.onChange("REMOVE_SEVA_TICKET", event.snapshot.value);
+    });
+  }
 }
 
 class FBCallbacks {

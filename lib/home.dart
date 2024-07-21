@@ -20,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    Record().registerCallbacks(RecordCallbacks(onChange: refresh));
+    Record().registerCallbacks(RecordCallbacks(onSlotChange: refresh));
   }
 
   Future<void> _addNewSlot() async {

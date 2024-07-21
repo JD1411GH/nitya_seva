@@ -286,7 +286,7 @@ class _TicketListState extends State<TicketTable> {
                           ),
                           TextButton(
                             onPressed: () {
-                              onDeleteEntry(ticket.timestamp);
+                              onDeleteEntry(ticket.timestampTicket);
                               Navigator.of(context)
                                   .pop(); // Dismiss dialog after action
                               Navigator.of(context).pop();
@@ -313,14 +313,14 @@ class _TicketListState extends State<TicketTable> {
                   mode: selectedPaymentMode,
                   ticket: int.tryParse(ticketNumberController.text) ?? 0,
                   user: user,
-                  timestamp: DateTime.now(),
+                  timestampTicket: DateTime.now(),
                   note: '',
                 );
 
                 if (ticket == null) {
                   onAddEntry(t);
                 } else {
-                  onEditEntry(ticket.timestamp, t);
+                  onEditEntry(ticket.timestampTicket, t);
                 }
 
                 Navigator.of(context).pop();
@@ -399,7 +399,7 @@ class _TicketListState extends State<TicketTable> {
               'Ticket #: ${entry.ticket}',
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            Text(DateFormat('HH:mm').format(entry.timestamp)),
+            Text(DateFormat('HH:mm').format(entry.timestampTicket)),
           ],
         ),
         subtitle: Column(

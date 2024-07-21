@@ -2,7 +2,7 @@ import 'package:nitya_seva/fb.dart';
 import 'package:nitya_seva/toaster.dart';
 
 class SevaTicket {
-  final DateTime timestamp;
+  final DateTime timestampTicket;
   final int amount;
   final String mode;
   final int ticket;
@@ -14,13 +14,13 @@ class SevaTicket {
     required this.mode,
     required this.ticket,
     required this.user,
-    required this.timestamp,
+    required this.timestampTicket,
     required this.note,
   });
 
   factory SevaTicket.fromJson(Map<String, dynamic> json) {
     return SevaTicket(
-      timestamp: DateTime.parse(json['timestamp']),
+      timestampTicket: DateTime.parse(json['timestampTicket']),
       amount: json['amount'],
       mode: json['mode'],
       ticket: json['ticket'],
@@ -31,7 +31,7 @@ class SevaTicket {
 
   Map<String, dynamic> toJson() {
     return {
-      'timestamp': timestamp.toIso8601String(),
+      'timestampTicket': timestampTicket.toIso8601String(),
       'amount': amount,
       'mode': mode,
       'ticket': ticket,
@@ -121,19 +121,19 @@ class Record {
 
     FB().addSevaSlot(timestampSlot.toIso8601String(), slot.toJson());
 
-    if (callbacks != null) {
-      callbacks!.onChange();
+    if (callbacks != null && callbacks!.onSlotChange != null) {
+      callbacks!.onSlotChange!();
     }
   }
 
   void removeSevaSlot(DateTime timestampSlot) {
+    FB().removeSevaSlot(timestampSlot.toIso8601String());
+
     sevaSlots.removeWhere((slot) => slot.timestampSlot == timestampSlot);
     sevaSlots.sort((a, b) => b.timestampSlot.compareTo(a.timestampSlot));
 
-    FB().removeSevaSlot(timestampSlot.toIso8601String());
-
-    if (callbacks != null) {
-      callbacks!.onChange();
+    if (callbacks != null && callbacks!.onSlotChange != null) {
+      callbacks!.onSlotChange!();
     }
 
     Toaster().info("Slot removed");
@@ -141,13 +141,21 @@ class Record {
 
   void addSevaTicket(DateTime timestampSlot, SevaTicket ticket) {
     FB().addSevaTicket(timestampSlot.toIso8601String(),
-        ticket.timestamp.toIso8601String(), ticket.toJson());
-  }
+        ticket.timestampTicket.toIso8601String(), ticket.toJson());
 
-  // SevaSlot getSevaSlot(String timestampSlot) {
-  //   return sevaSlots.firstWhere(
-  //       (slot) => slot.timestampSlot.toIso8601String() == timestampSlot);
-  // }
+    if (!sevaTickets.containsKey(timestampSlot)) {
+      sevaTickets[timestampSlot] =
+          []; // Initialize with an empty list if the key doesn't exist
+    }
+    sevaTickets[timestampSlot]!.add(ticket);
+
+    sevaTickets[timestampSlot]!
+        .sort((a, b) => b.timestampTicket.compareTo(a.timestampTicket));
+
+    if (callbacks != null && callbacks!.onTicketChange != null) {
+      callbacks!.onTicketChange!();
+    }
+  }
 
   void registerCallbacks(RecordCallbacks callbacks) {
     this.callbacks = callbacks;
@@ -155,7 +163,8 @@ class Record {
 }
 
 class RecordCallbacks {
-  void Function() onChange;
+  void Function()? onSlotChange;
+  void Function()? onTicketChange;
 
-  RecordCallbacks({required this.onChange});
+  RecordCallbacks({this.onSlotChange, this.onTicketChange});
 }
