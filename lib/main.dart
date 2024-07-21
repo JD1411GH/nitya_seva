@@ -4,9 +4,6 @@ import 'package:nitya_seva/const.dart';
 import 'package:nitya_seva/loading.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-
   runApp(const NityaSevaApp());
 }
 

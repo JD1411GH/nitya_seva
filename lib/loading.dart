@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:nitya_seva/access_denied.dart';
 import 'package:nitya_seva/login.dart';
@@ -23,17 +24,17 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   // this function will either load the login screen, homepage or access denied
   Future<void> _navigateToHome() async {
-    
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+    FB().listenForNewChildAdded();
+
     LS().read('user').then((value) {
-      
       if (value != null) {
-        
         // User is already logged in
 
         // check if user has access to database
         FB().checkAccess().then((value) async {
           if (value == "rw") {
-            
             // initialize local database
             await Record().init();
 
@@ -45,7 +46,6 @@ class _LoadingScreenState extends State<LoadingScreen> {
               );
             }
           } else {
-            
             // User does not have access to database
             Navigator.pushReplacement(
               context,
@@ -54,7 +54,6 @@ class _LoadingScreenState extends State<LoadingScreen> {
           }
         });
       } else {
-        
         // User is not logged in
         Navigator.pushReplacement(
           context,

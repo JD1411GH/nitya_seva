@@ -165,4 +165,13 @@ class FB {
       await dbRef.child(key).child("sevaTickets").child(keyTicket).set(json);
     }
   }
+
+  Future<void> listenForNewChildAdded() async {
+    final dbRef = FirebaseDatabase.instance.ref('record/sevaSlots');
+    dbRef.onChildAdded.listen((event) {
+      print('New child added: ${event.snapshot.key}');
+      // Add your desired logic here
+      print(event.snapshot.value);
+    });
+  }
 }
