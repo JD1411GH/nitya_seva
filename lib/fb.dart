@@ -196,14 +196,17 @@ class FB {
         .ref('record_db${Const().dbVersion}/sevaTickets');
 
     dbRef.onChildAdded.listen((event) {
+      print("add");
       callbacks.onChange("ADD_SEVA_TICKET", event.snapshot.value);
     });
 
     dbRef.onChildChanged.listen((event) {
+      print("change");
       callbacks.onChange("UPDATE_SEVA_TICKET", event.snapshot.value);
     });
 
     dbRef.onChildRemoved.listen((event) {
+      print("remove");
       callbacks.onChange("REMOVE_SEVA_TICKET", event.snapshot.value);
     });
   }

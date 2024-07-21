@@ -78,8 +78,7 @@ class SevaSlot {
 class Record {
   static final Record _instance = Record._internal();
   List<SevaSlot> sevaSlots = [];
-  // List<Map<DateTime, SevaTicket>> sevaTickets = [];
-  Map<DateTime, List<SevaTicket>> sevaTickets = {};
+  Map<DateTime, List<SevaTicket>> sevaTickets = {}; // to FB from List to Map
   RecordCallbacks? callbacks;
 
   // Private constructor
@@ -121,10 +120,10 @@ class Record {
     }
   }
 
-  void onSevaTicketChange(String changeType, dynamic sevaTicket) {
+  void onSevaTicketChange(String changeType, dynamic sevaTicketMap) {
     switch (changeType) {
       case 'ADD_SEVA_TICKET':
-        sevaTicket.forEach((dynamic timestampTicket, dynamic ticketData) {
+        sevaTicketMap.forEach((dynamic timestampTicket, dynamic ticketData) {
           SevaTicket ticket =
               SevaTicket.fromJson(Map<String, dynamic>.from(ticketData));
 
@@ -141,9 +140,42 @@ class Record {
 
         break;
       case 'REMOVE_SEVA_TICKET':
+        sevaTicketMap.forEach((dynamic timestampTicket, dynamic ticketData) {
+          SevaTicket ticket =
+              SevaTicket.fromJson(Map<String, dynamic>.from(ticketData));
+
+          DateTime timestampSlot = ticket.timestampSlot;
+          DateTime timestampTicket = ticket.timestampTicket;
+
+          removeSevaTicket(ticket.timestampSlot, ticket.timestampTicket);
+        });
         break;
       case 'UPDATE_SEVA_TICKET':
+        bool flagOnce = false;
+        sevaTicketMap.forEach((dynamic timestampTicket, dynamic ticketData) {
+          SevaTicket ticket =
+              SevaTicket.fromJson(Map<String, dynamic>.from(ticketData));
+
+          DateTime timestampSlot = ticket.timestampSlot;
+
+          if (flagOnce == false) {
+            sevaTickets[timestampSlot]!.clear();
+            flagOnce = true;
+          }
+
+          if (sevaTickets.containsKey(ticket.timestampSlot)) {
+            if (sevaTickets[ticket.timestampSlot]!.any((element) =>
+                element.timestampTicket == ticket.timestampTicket)) {
+              // "Ticket already exists"
+              return;
+            }
+          }
+
+          addSevaTicket(ticket.timestampSlot, ticket);
+        });
+        Toaster().info("Ticket updated");
         break;
+
       default:
         Toaster().error('Unknown change type: $changeType');
     }
