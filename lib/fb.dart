@@ -61,6 +61,15 @@ class FB {
     await ref.set(sevaSlot);
   }
 
+  Future<void> removeSevaSlot(String timestampSlot) async {
+    // Remove a seva slot
+    final DatabaseReference dbRef =
+        FirebaseDatabase.instance.ref('record_db${Const().dbVersion}');
+    DatabaseReference ref =
+        dbRef.child('sevaSlots').child(timestampSlot.replaceAll(".", "^"));
+    await ref.remove();
+  }
+
   Future<String> _getSelectedSlotKey(
       DatabaseReference dbRef, String timestamp) async {
     if (keyCache.containsKey(timestamp)) {

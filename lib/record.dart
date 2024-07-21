@@ -64,6 +64,7 @@ class SevaSlot {
 class Record {
   static final Record _instance = Record._internal();
   List<SevaSlot> sevaSlots = []; // unsorted
+  RecordCallbacks? callbacks;
 
   // Private constructor
   Record._internal();
@@ -75,13 +76,13 @@ class Record {
 
   Future<void> init() async {
     // read list of SevaSlots from FB
-    var value = await FB().readSevaSlots();
-    for (var element in value) {
-      Map<String, dynamic> elementMap =
-          Map<String, dynamic>.from(element as Map);
-      sevaSlots.add(SevaSlot.fromJson(elementMap));
-    }
-    sevaSlots.sort((a, b) => b.timestampSlot.compareTo(a.timestampSlot));
+    // var value = await FB().readSevaSlots();
+    // for (var element in value) {
+    //   Map<String, dynamic> elementMap =
+    //       Map<String, dynamic>.from(element as Map);
+    //   sevaSlots.add(SevaSlot.fromJson(elementMap));
+    // }
+    // sevaSlots.sort((a, b) => b.timestampSlot.compareTo(a.timestampSlot));
 
     // register callback for any change in seva slot - add, remove, update
     FB().listenForSevaSlotChange(FBCallbacks(onChange: onSevaSlotChange));
@@ -90,8 +91,20 @@ class Record {
   void onSevaSlotChange(String changeType, dynamic sevaSlot) {
     switch (changeType) {
       case 'ADD_SEVA_SLOT':
+        SevaSlot slot = SevaSlot.fromJson(Map<String, dynamic>.from(sevaSlot));
+
+        if (sevaSlots
+            .any((element) => element.timestampSlot == slot.timestampSlot)) {
+          // "Slot already exists"
+          return;
+        }
+
+        addSevaSlot(slot.timestampSlot, slot);
+
         break;
       case 'REMOVE_SEVA_SLOT':
+        SevaSlot slot = SevaSlot.fromJson(Map<String, dynamic>.from(sevaSlot));
+        removeSevaSlot(slot.timestampSlot);
         break;
       case 'UPDATE_SEVA_SLOT':
         break;
@@ -105,15 +118,39 @@ class Record {
     sevaSlots.sort((a, b) => b.timestampSlot.compareTo(a.timestampSlot));
 
     FB().addSevaSlot(timestampSlot.toIso8601String(), slot.toJson());
+
+    if (callbacks != null) {
+      callbacks!.onChange();
+    }
+
+    Toaster().info("New slot added");
   }
 
   void removeSevaSlot(DateTime timestampSlot) {
     sevaSlots.removeWhere((slot) => slot.timestampSlot == timestampSlot);
     sevaSlots.sort((a, b) => b.timestampSlot.compareTo(a.timestampSlot));
+
+    FB().removeSevaSlot(timestampSlot.toIso8601String());
+
+    if (callbacks != null) {
+      callbacks!.onChange();
+    }
+
+    Toaster().info("Slot removed");
   }
 
   SevaSlot getSevaSlot(String timestampSlot) {
     return sevaSlots.firstWhere(
         (slot) => slot.timestampSlot.toIso8601String() == timestampSlot);
   }
+
+  void registerCallbacks(RecordCallbacks callbacks) {
+    this.callbacks = callbacks;
+  }
+}
+
+class RecordCallbacks {
+  void Function() onChange;
+
+  RecordCallbacks({required this.onChange});
 }

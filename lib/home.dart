@@ -20,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    FB().listenForSevaSlotChange(FBCallbacks(onChange: onSevaSlotChange));
+    Record().registerCallbacks(RecordCallbacks(onChange: refresh));
   }
 
   Future<void> _addNewSlot() async {
@@ -31,16 +31,9 @@ class _HomePageState extends State<HomePage> {
         title: 'Seva Slot',
         sevakartaSlot: username!);
     Record().addSevaSlot(timestampSlot, slot);
-
-    // refresh homepage
-    setState(() {
-      sevaSlots = Record().sevaSlots;
-    });
-
-    Toaster().info("New slot added");
   }
 
-  void onSevaSlotChange(String changeType, dynamic sevaSlot) {
+  void refresh() {
     setState(() {
       sevaSlots = Record().sevaSlots;
     });
