@@ -23,6 +23,8 @@ class _TicketListState extends State<TicketTable> {
   void initState() {
     super.initState();
 
+    Record().registerCallbacks(RecordCallbacks(onTicketChange: refresh));
+
     // Initialize SevaSlot data asynchronously and updates UI with the slot's date, time, and tickets.
     asyncInit().then((value) {
       setState(() {
@@ -314,6 +316,7 @@ class _TicketListState extends State<TicketTable> {
                   ticket: int.tryParse(ticketNumberController.text) ?? 0,
                   user: user,
                   timestampTicket: DateTime.now(),
+                  timestampSlot: timestampSlot,
                   note: '',
                 );
 

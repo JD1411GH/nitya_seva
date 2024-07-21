@@ -191,7 +191,7 @@ class FB {
     });
   }
 
-  Future<void> listenForSevaTicketsChange(FBCallbacks callbacks) async {
+  Future<void> listenForSevaTicketChange(FBCallbacks callbacks) async {
     final dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/sevaTickets');
 

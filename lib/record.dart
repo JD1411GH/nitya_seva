@@ -3,6 +3,7 @@ import 'package:nitya_seva/toaster.dart';
 
 class SevaTicket {
   final DateTime timestampTicket;
+  final DateTime timestampSlot; // Added new member
   final int amount;
   final String mode;
   final int ticket;
@@ -15,12 +16,15 @@ class SevaTicket {
     required this.ticket,
     required this.user,
     required this.timestampTicket,
+    required this.timestampSlot, // Initialize new member
     required this.note,
   });
 
   factory SevaTicket.fromJson(Map<String, dynamic> json) {
     return SevaTicket(
-      timestampTicket: DateTime.parse(json['timestampTicket']),
+      timestampTicket: DateTime.parse(json['timestampTicket'] as String),
+      timestampSlot:
+          DateTime.parse(json['timestampSlot'] as String), // Parse new member
       amount: json['amount'],
       mode: json['mode'],
       ticket: json['ticket'],
@@ -32,6 +36,7 @@ class SevaTicket {
   Map<String, dynamic> toJson() {
     return {
       'timestampTicket': timestampTicket.toIso8601String(),
+      'timestampSlot': timestampSlot.toIso8601String(), // Serialize new member
       'amount': amount,
       'mode': mode,
       'ticket': ticket,
@@ -88,6 +93,7 @@ class Record {
   Future<void> init() async {
     // register callback for any change in seva slot - add, remove, update
     FB().listenForSevaSlotChange(FBCallbacks(onChange: onSevaSlotChange));
+    FB().listenForSevaTicketChange(FBCallbacks(onChange: onSevaTicketChange));
   }
 
   void onSevaSlotChange(String changeType, dynamic sevaSlot) {
@@ -109,6 +115,34 @@ class Record {
         removeSevaSlot(slot.timestampSlot);
         break;
       case 'UPDATE_SEVA_SLOT':
+        break;
+      default:
+        Toaster().error('Unknown change type: $changeType');
+    }
+  }
+
+  void onSevaTicketChange(String changeType, dynamic sevaTicket) {
+    switch (changeType) {
+      case 'ADD_SEVA_TICKET':
+        sevaTicket.forEach((dynamic timestampTicket, dynamic ticketData) {
+          SevaTicket ticket =
+              SevaTicket.fromJson(Map<String, dynamic>.from(ticketData));
+
+          if (sevaTickets.containsKey(ticket.timestampSlot)) {
+            if (sevaTickets[ticket.timestampSlot]!.any((element) =>
+                element.timestampTicket == ticket.timestampTicket)) {
+              // "Ticket already exists"
+              return;
+            }
+          }
+
+          addSevaTicket(ticket.timestampSlot, ticket);
+        });
+
+        break;
+      case 'REMOVE_SEVA_TICKET':
+        break;
+      case 'UPDATE_SEVA_TICKET':
         break;
       default:
         Toaster().error('Unknown change type: $changeType');
@@ -140,9 +174,6 @@ class Record {
   }
 
   void addSevaTicket(DateTime timestampSlot, SevaTicket ticket) {
-    FB().addSevaTicket(timestampSlot.toIso8601String(),
-        ticket.timestampTicket.toIso8601String(), ticket.toJson());
-
     if (!sevaTickets.containsKey(timestampSlot)) {
       sevaTickets[timestampSlot] =
           []; // Initialize with an empty list if the key doesn't exist
@@ -155,6 +186,27 @@ class Record {
     if (callbacks != null && callbacks!.onTicketChange != null) {
       callbacks!.onTicketChange!();
     }
+
+    FB().addSevaTicket(timestampSlot.toIso8601String(),
+        ticket.timestampTicket.toIso8601String(), ticket.toJson());
+  }
+
+  void removeSevaTicket(DateTime timestampSlot, DateTime timestampTicket) {
+    FB().removeSevaTicket(
+        timestampSlot.toIso8601String(), timestampTicket.toIso8601String());
+
+    if (sevaTickets.containsKey(timestampSlot)) {
+      sevaTickets[timestampSlot]!
+          .removeWhere((ticket) => ticket.timestampTicket == timestampTicket);
+      sevaTickets[timestampSlot]!
+          .sort((a, b) => b.timestampTicket.compareTo(a.timestampTicket));
+    }
+
+    if (callbacks != null && callbacks!.onTicketChange != null) {
+      callbacks!.onTicketChange!();
+    }
+
+    Toaster().info("Ticket removed");
   }
 
   void registerCallbacks(RecordCallbacks callbacks) {
