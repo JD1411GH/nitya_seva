@@ -120,24 +120,27 @@ class FB {
     return ret;
   }
 
-  Future<void> addSevaTicket(
-      String selectedSlot, Map<String, dynamic> ticket) async {
+  Future<void> addSevaTicket(String timestampSlot, String timestampTicket,
+      Map<String, dynamic> ticket) async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
-        .ref('record_db${Const().dbVersion}/sevaSlots');
+        .ref('record_db${Const().dbVersion}/sevaTickets');
 
-    String selectedSlotKey = await _getSelectedSlotKey(dbRef, selectedSlot);
+    String selectedSlotKey = timestampSlot.replaceAll(".", "^");
+
     if (selectedSlotKey.isEmpty) {
       Toaster().error("Unable to add to database");
     } else {
-      DatabaseReference ref = dbRef.child(selectedSlotKey).child("sevaTickets");
-      await ref.push().set(ticket);
+      DatabaseReference ref = dbRef
+          .child(selectedSlotKey.replaceAll(".", "^"))
+          .child(timestampTicket.replaceAll(".", "^"));
+      await ref.set(ticket);
     }
   }
 
   Future<void> removeSevaTicket(
       String timestampSlot, String iso8601string) async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
-        .ref('record_db${Const().dbVersion}/sevaSlots');
+        .ref('record_db${Const().dbVersion}/sevaTickets');
 
     String key = await _getSelectedSlotKey(dbRef, timestampSlot);
     if (key.isEmpty) {

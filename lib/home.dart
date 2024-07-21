@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:nitya_seva/const.dart';
 import 'package:nitya_seva/fb.dart';
 import 'package:nitya_seva/local_storage.dart';
-import 'package:nitya_seva/ticket.dart';
+import 'package:nitya_seva/ticket_page.dart';
 import 'package:nitya_seva/toaster.dart';
 import 'package:nitya_seva/record.dart';
 
@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
             .then((value) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const TicketList()),
+            MaterialPageRoute(builder: (context) => const TicketTable()),
           );
         });
       },

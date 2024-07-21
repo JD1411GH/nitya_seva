@@ -6,16 +6,16 @@ import 'package:nitya_seva/local_storage.dart';
 import 'package:nitya_seva/summary.dart';
 import 'package:nitya_seva/record.dart';
 
-class TicketList extends StatefulWidget {
-  const TicketList({super.key});
+class TicketTable extends StatefulWidget {
+  const TicketTable({super.key});
 
   @override
-  State<TicketList> createState() => _EntryTableState();
+  State<TicketTable> createState() => _TicketListState();
 }
 
-class _EntryTableState extends State<TicketList> {
+class _TicketListState extends State<TicketTable> {
   List<SevaTicket> sevaTickets = [];
-  late String timestampSlot; // timestamp is stored
+  late DateTime timestampSlot; // timestamp is stored
   String date = '';
   String time = '';
 
@@ -25,39 +25,35 @@ class _EntryTableState extends State<TicketList> {
 
     // Initialize SevaSlot data asynchronously and updates UI with the slot's date, time, and tickets.
     asyncInit().then((value) {
-      SevaSlot slot = Record().getSevaSlot(timestampSlot);
       setState(() {
-        sevaTickets = [];
-        // sevaTickets = slot.sevaTickets;
+        var st = Record().sevaTickets[timestampSlot];
+        if (st != null) {
+          sevaTickets = st;
+        }
 
-        DateTime timestamp = Record().getSevaSlot(timestampSlot).timestampSlot;
-        date = DateFormat('dd/MM').format(timestamp);
-        time = DateFormat('HH:mm').format(timestamp);
+        date = DateFormat('dd/MM').format(timestampSlot);
+        time = DateFormat('HH:mm').format(timestampSlot);
       });
     });
   }
 
   Future<void> asyncInit() async {
     LS().read('selectedSlot').then((selectedSlot) {
-      timestampSlot = selectedSlot!;
+      timestampSlot = DateTime.parse(selectedSlot!);
     }).catchError((error) {
       print('Error fetching selectedSlot: $error');
     });
   }
 
-  Future<void> _reload() async {
-    SevaSlot slot = Record().getSevaSlot(timestampSlot);
+  Future<void> refresh() async {
     setState(() {
-      // sevaTickets = slot.sevaTickets;
-      sevaTickets = [];
+      sevaTickets = Record().sevaTickets[timestampSlot]!;
     });
     print(sevaTickets);
   }
 
   void onAddEntry(SevaTicket entry) async {
-    // Record().getSevaSlot(timestampSlot).addSevaTicket(entry);
-
-    _reload();
+    Record().addSevaTicket(timestampSlot, entry);
   }
 
   void onEditEntry(DateTime timestampTicket, SevaTicket entry) async {
@@ -65,13 +61,13 @@ class _EntryTableState extends State<TicketList> {
     //     .getSevaSlot(timestampSlot)
     //     .updateSevaTicket(timestampTicket, entry);
 
-    _reload();
+    refresh();
   }
 
   void onDeleteEntry(DateTime timestampTicket) async {
     // Record().getSevaSlot(timestampSlot).removeSevaTicket(timestampTicket);
 
-    _reload();
+    refresh();
   }
 
   // Future<SlotTile> _fetchSelectedSlot() async {
@@ -312,12 +308,14 @@ class _EntryTableState extends State<TicketList> {
             ),
             TextButton(
               onPressed: () {
-                // Add your add logic here
                 SevaTicket t = SevaTicket(
-                    int.parse(selectedSevaAmount),
-                    selectedPaymentMode,
-                    int.tryParse(ticketNumberController.text) ?? 0,
-                    user);
+                  amount: int.parse(selectedSevaAmount),
+                  mode: selectedPaymentMode,
+                  ticket: int.tryParse(ticketNumberController.text) ?? 0,
+                  user: user,
+                  timestamp: DateTime.now(),
+                  note: '',
+                );
 
                 if (ticket == null) {
                   onAddEntry(t);

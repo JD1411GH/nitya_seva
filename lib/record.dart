@@ -1,16 +1,33 @@
 import 'package:nitya_seva/fb.dart';
-import 'package:nitya_seva/local_storage.dart';
 import 'package:nitya_seva/toaster.dart';
 
 class SevaTicket {
-  DateTime timestamp;
+  final DateTime timestamp;
   final int amount;
   final String mode;
   final int ticket;
   final String user;
+  final String note;
 
-  SevaTicket(this.amount, this.mode, this.ticket, this.user)
-      : timestamp = DateTime.now();
+  SevaTicket({
+    required this.amount,
+    required this.mode,
+    required this.ticket,
+    required this.user,
+    required this.timestamp,
+    required this.note,
+  });
+
+  factory SevaTicket.fromJson(Map<String, dynamic> json) {
+    return SevaTicket(
+      timestamp: DateTime.parse(json['timestamp']),
+      amount: json['amount'],
+      mode: json['mode'],
+      ticket: json['ticket'],
+      user: json['user'],
+      note: json['note'],
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -18,17 +35,9 @@ class SevaTicket {
       'amount': amount,
       'mode': mode,
       'ticket': ticket,
-      'username': user,
+      'user': user,
+      'note': note,
     };
-  }
-
-  static SevaTicket fromJson(Map<String, dynamic> json) {
-    return SevaTicket(
-      json['amount'] as int,
-      json['mode'] as String,
-      json['ticket'] as int,
-      json['username'] as String,
-    )..timestamp = DateTime.parse(json['timestamp'] as String);
   }
 }
 
@@ -63,7 +72,9 @@ class SevaSlot {
 
 class Record {
   static final Record _instance = Record._internal();
-  List<SevaSlot> sevaSlots = []; // unsorted
+  List<SevaSlot> sevaSlots = [];
+  // List<Map<DateTime, SevaTicket>> sevaTickets = [];
+  Map<DateTime, List<SevaTicket>> sevaTickets = {};
   RecordCallbacks? callbacks;
 
   // Private constructor
@@ -75,15 +86,6 @@ class Record {
   }
 
   Future<void> init() async {
-    // read list of SevaSlots from FB
-    // var value = await FB().readSevaSlots();
-    // for (var element in value) {
-    //   Map<String, dynamic> elementMap =
-    //       Map<String, dynamic>.from(element as Map);
-    //   sevaSlots.add(SevaSlot.fromJson(elementMap));
-    // }
-    // sevaSlots.sort((a, b) => b.timestampSlot.compareTo(a.timestampSlot));
-
     // register callback for any change in seva slot - add, remove, update
     FB().listenForSevaSlotChange(FBCallbacks(onChange: onSevaSlotChange));
   }
@@ -122,8 +124,6 @@ class Record {
     if (callbacks != null) {
       callbacks!.onChange();
     }
-
-    Toaster().info("New slot added");
   }
 
   void removeSevaSlot(DateTime timestampSlot) {
@@ -139,10 +139,15 @@ class Record {
     Toaster().info("Slot removed");
   }
 
-  SevaSlot getSevaSlot(String timestampSlot) {
-    return sevaSlots.firstWhere(
-        (slot) => slot.timestampSlot.toIso8601String() == timestampSlot);
+  void addSevaTicket(DateTime timestampSlot, SevaTicket ticket) {
+    FB().addSevaTicket(timestampSlot.toIso8601String(),
+        ticket.timestamp.toIso8601String(), ticket.toJson());
   }
+
+  // SevaSlot getSevaSlot(String timestampSlot) {
+  //   return sevaSlots.firstWhere(
+  //       (slot) => slot.timestampSlot.toIso8601String() == timestampSlot);
+  // }
 
   void registerCallbacks(RecordCallbacks callbacks) {
     this.callbacks = callbacks;
