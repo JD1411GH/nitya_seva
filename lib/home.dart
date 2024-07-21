@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:nitya_seva/const.dart';
 import 'package:nitya_seva/fb.dart';
 import 'package:nitya_seva/local_storage.dart';
-import 'package:nitya_seva/entry_table.dart';
+import 'package:nitya_seva/ticket.dart';
 import 'package:nitya_seva/toaster.dart';
 import 'package:nitya_seva/record.dart';
 
@@ -24,8 +24,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _addNewSlot() async {
-    String? user = await LS().read('user');
-    SevaSlot slot = SevaSlot(user!);
+    String? username = await LS().read('username');
+    SevaSlot slot = SevaSlot(
+        timestamp: DateTime.now(),
+        title: 'Seva Slot',
+        sevakartaSlot: username!);
     Record().addSevaSlot(slot);
 
     // refresh homepage
@@ -94,7 +97,7 @@ class _HomePageState extends State<HomePage> {
             .then((value) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const EntryTable()),
+            MaterialPageRoute(builder: (context) => const TicketList()),
           );
         });
       },
@@ -122,7 +125,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
               Row(children: [
-                Text(sevaSlots[index].sevakarta), // Display sevakarta
+                Text(sevaSlots[index].sevakartaSlot), // Display sevakarta
               ])
             ],
           ),

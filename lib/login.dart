@@ -93,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (user != null) {
         await DB().write(
-          'user',
+          'username',
           username,
         );
 

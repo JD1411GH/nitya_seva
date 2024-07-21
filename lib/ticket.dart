@@ -6,14 +6,14 @@ import 'package:nitya_seva/local_storage.dart';
 import 'package:nitya_seva/summary.dart';
 import 'package:nitya_seva/record.dart';
 
-class EntryTable extends StatefulWidget {
-  const EntryTable({super.key});
+class TicketList extends StatefulWidget {
+  const TicketList({super.key});
 
   @override
-  State<EntryTable> createState() => _EntryTableState();
+  State<TicketList> createState() => _EntryTableState();
 }
 
-class _EntryTableState extends State<EntryTable> {
+class _EntryTableState extends State<TicketList> {
   List<SevaTicket> sevaTickets = [];
   late String timestampSlot; // timestamp is stored
   String date = '';
@@ -27,7 +27,8 @@ class _EntryTableState extends State<EntryTable> {
     asyncInit().then((value) {
       SevaSlot slot = Record().getSevaSlot(timestampSlot);
       setState(() {
-        sevaTickets = slot.sevaTickets;
+        sevaTickets = [];
+        // sevaTickets = slot.sevaTickets;
 
         DateTime timestamp = Record().getSevaSlot(timestampSlot).timestamp;
         date = DateFormat('dd/MM').format(timestamp);
@@ -47,27 +48,28 @@ class _EntryTableState extends State<EntryTable> {
   Future<void> _reload() async {
     SevaSlot slot = Record().getSevaSlot(timestampSlot);
     setState(() {
-      sevaTickets = slot.sevaTickets;
+      // sevaTickets = slot.sevaTickets;
+      sevaTickets = [];
     });
     print(sevaTickets);
   }
 
   void onAddEntry(SevaTicket entry) async {
-    Record().getSevaSlot(timestampSlot).addSevaTicket(entry);
+    // Record().getSevaSlot(timestampSlot).addSevaTicket(entry);
 
     _reload();
   }
 
   void onEditEntry(DateTime timestampTicket, SevaTicket entry) async {
-    Record()
-        .getSevaSlot(timestampSlot)
-        .updateSevaTicket(timestampTicket, entry);
+    // Record()
+    //     .getSevaSlot(timestampSlot)
+    //     .updateSevaTicket(timestampTicket, entry);
 
     _reload();
   }
 
   void onDeleteEntry(DateTime timestampTicket) async {
-    Record().getSevaSlot(timestampSlot).removeSevaTicket(timestampTicket);
+    // Record().getSevaSlot(timestampSlot).removeSevaTicket(timestampTicket);
 
     _reload();
   }
@@ -203,7 +205,7 @@ class _EntryTableState extends State<EntryTable> {
     TextEditingController ticketNumberController =
         TextEditingController(text: ticketNumber);
 
-    String user = await LS().read('user') ?? 'Unknown';
+    String user = await LS().read('username') ?? 'Unknown';
 
     showDialog(
       // ignore: use_build_context_synchronously

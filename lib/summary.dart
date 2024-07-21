@@ -1,9 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:nitya_seva/db.dart';
 import 'package:nitya_seva/local_storage.dart';
-import 'package:nitya_seva/toaster.dart';
 import 'package:nitya_seva/record.dart';
 
 class Summary extends StatefulWidget {
@@ -97,12 +94,14 @@ class _SummaryState extends State<Summary> {
     int totalCardAmount = 0;
 
     // // get all entries for selected slot
-    List<SevaTicket> listEntries =
-        Record().getSevaSlot(selectedSlot).sevaTickets;
+    // List<SevaTicket> listEntries =
+    //     Record().getSevaSlot(selectedSlot).sevaTickets;
 
     for (int amount in [400, 500, 1000, 2500]) {
-      List<SevaTicket> listFiltered =
-          listEntries.where((e) => e.amount == amount).toList();
+      // List<SevaTicket> listFiltered =
+      //     listEntries.where((e) => e.amount == amount).toList();
+
+      List<SevaTicket> listFiltered = [];
 
       // highest and lowest ticket numbers
       int entryWithLowestTicket = 0;

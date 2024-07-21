@@ -18,7 +18,7 @@ class SevaTicket {
       'amount': amount,
       'mode': mode,
       'ticket': ticket,
-      'user': user,
+      'username': user,
     };
   }
 
@@ -27,70 +27,37 @@ class SevaTicket {
       json['amount'] as int,
       json['mode'] as String,
       json['ticket'] as int,
-      json['user'] as String,
+      json['username'] as String,
     )..timestamp = DateTime.parse(json['timestamp'] as String);
   }
 }
 
 class SevaSlot {
   DateTime timestamp;
-  final String sevakarta;
-  final List<SevaTicket> sevaTickets;
+  final String title;
+  final String sevakartaSlot;
 
-  SevaSlot(this.sevakarta)
-      : timestamp = DateTime.now(),
-        sevaTickets = [];
+  SevaSlot(
+      {required this.timestamp,
+      required this.title,
+      required this.sevakartaSlot});
 
-  void addSevaTicket(SevaTicket ticket) {
-    sevaTickets.add(ticket);
-    sevaTickets.sort((a, b) => b.timestamp.compareTo(a.timestamp));
-
-    FB().addSevaTicket(timestamp.toIso8601String(), ticket.toJson());
-  }
-
-  Future<void> removeSevaTicket(DateTime timestampTicket) async {
-    sevaTickets.removeWhere((ticket) => ticket.timestamp == timestampTicket);
-    sevaTickets.sort((a, b) => b.timestamp.compareTo(a.timestamp));
-
-    String? timestampSlot = await LS().read('selectedSlot');
-
-    FB().removeSevaTicket(timestampSlot!, timestampTicket.toIso8601String());
-  }
-
-  Future<void> updateSevaTicket(
-      DateTime timestampTicket, SevaTicket ticket) async {
-    final index = sevaTickets.indexWhere((t) => t.timestamp == timestampTicket);
-    if (index != -1) {
-      sevaTickets[index] = ticket;
-    }
-    sevaTickets.sort((a, b) => b.timestamp.compareTo(a.timestamp));
-
-    await FB().updateSevaTicket(timestamp.toIso8601String(),
-        timestampTicket.toIso8601String(), ticket.toJson());
-  }
-
+  // Convert a SevaSlot instance to a Map
   Map<String, dynamic> toJson() {
     return {
       'timestamp': timestamp.toIso8601String(),
-      'sevakarta': sevakarta,
-      'sevaTickets': sevaTickets.map((ticket) => ticket.toJson()).toList(),
+      'title': title,
+      'sevakartaSlot': sevakartaSlot,
     };
   }
 
-  static SevaSlot fromJson(Map<String, dynamic> json) {
-    SevaSlot slot = SevaSlot(
-      json['sevakarta'] as String,
-    )..timestamp = DateTime.parse(json['timestamp'] as String);
-
-    if (json['sevaTickets'] != null) {
-      var ticketsList = json['sevaTickets'] as List;
-      slot.sevaTickets.addAll(
-        ticketsList.map((ticketJson) =>
-            SevaTicket.fromJson(ticketJson as Map<String, dynamic>)),
-      );
-    }
-
-    return slot;
+  // Create a SevaSlot instance from a Map
+  factory SevaSlot.fromJson(Map<String, dynamic> json) {
+    return SevaSlot(
+      timestamp: DateTime.parse(json['timestamp'] as String),
+      title: json['title'] as String,
+      sevakartaSlot: json['sevakartaSlot'] as String,
+    );
   }
 }
 
@@ -107,19 +74,11 @@ class Record {
   }
 
   Future<void> init() async {
-    // read from FB
+    // read list of SevaSlots from FB
     var value = await FB().readSevaSlots();
     for (var element in value) {
       Map<String, dynamic> elementMap =
           Map<String, dynamic>.from(element as Map);
-
-      List<Map<String, dynamic>> sevaTickets = List<Map<String, dynamic>>.from(
-          elementMap['sevaTickets']
-              .map((ticket) => Map<String, dynamic>.from(ticket)));
-
-      sevaTickets.sort((a, b) => b['timestamp'].compareTo(a['timestamp']));
-      elementMap['sevaTickets'] = sevaTickets;
-
       sevaSlots.add(SevaSlot.fromJson(elementMap));
     }
     sevaSlots.sort((a, b) => b.timestamp.compareTo(a.timestamp));
@@ -151,16 +110,6 @@ class Record {
   void removeSevaSlot(DateTime timestamp) {
     sevaSlots.removeWhere((slot) => slot.timestamp == timestamp);
     sevaSlots.sort((a, b) => b.timestamp.compareTo(a.timestamp));
-  }
-
-  void display() {
-    for (var slot in sevaSlots) {
-      print('Sevakarta: ${slot.sevakarta}');
-      for (var ticket in slot.sevaTickets) {
-        print(
-            'Ticket: ${ticket.ticket}, Amount: ${ticket.amount}, Mode: ${ticket.mode}');
-      }
-    }
   }
 
   SevaSlot getSevaSlot(String timestamp) {

@@ -10,7 +10,7 @@ class LogoutButton extends StatelessWidget {
     return IconButton(
         icon: const Icon(Icons.exit_to_app),
         onPressed: () {
-          LS().delete('user');
+          LS().delete('username');
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const LoginScreen()));
         });

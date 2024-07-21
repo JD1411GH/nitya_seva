@@ -1,4 +1,4 @@
-<mxfile host="Electron" modified="2024-07-21T12:30:09.240Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.5.3 Chrome/124.0.6367.207 Electron/30.0.6 Safari/537.36" etag="YD20MjIHk6yUJmv2zgal" version="24.5.3" type="device">
+<mxfile host="Electron" modified="2024-07-21T13:42:13.401Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.5.3 Chrome/124.0.6367.207 Electron/30.0.6 Safari/537.36" etag="-FW6XyLlD_89UWfeEoVQ" version="24.5.3" type="device">
   <diagram name="Page-1" id="wVdX0WD1TyPJ9-E__dBb">
     <mxGraphModel dx="1108" dy="990" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
@@ -51,11 +51,6 @@
         <mxCell id="4l_IxL3fGbMhA8SE03FP-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="iC9zaxTuzrl_rOdKwf2p-16" target="4l_IxL3fGbMhA8SE03FP-3" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="4l_IxL3fGbMhA8SE03FP-7" value="navigate" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="iC9zaxTuzrl_rOdKwf2p-16" target="4l_IxL3fGbMhA8SE03FP-4" edge="1">
-          <mxGeometry x="0.2788" relative="1" as="geometry">
-            <mxPoint y="1" as="offset" />
-          </mxGeometry>
-        </mxCell>
         <mxCell id="iC9zaxTuzrl_rOdKwf2p-16" value="HomePage" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="480" y="361.5" width="120" height="52" as="geometry" />
         </mxCell>
@@ -67,9 +62,6 @@
         </mxCell>
         <mxCell id="4l_IxL3fGbMhA8SE03FP-3" value="Record" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#e1d5e7;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;strokeColor=#9673a6;" parent="1" vertex="1">
           <mxGeometry x="720" y="400" width="120" height="52" as="geometry" />
-        </mxCell>
-        <mxCell id="4l_IxL3fGbMhA8SE03FP-4" value="EntryTable" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="720" y="480" width="120" height="52" as="geometry" />
         </mxCell>
         <mxCell id="4l_IxL3fGbMhA8SE03FP-8" value="singleton" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#e1d5e7;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;strokeColor=#9673a6;" parent="1" vertex="1">
           <mxGeometry x="80" y="600" width="120" height="52" as="geometry" />

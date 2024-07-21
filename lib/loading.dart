@@ -27,7 +27,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
 
-    LS().read('user').then((value) {
+    LS().read('username').then((value) {
       if (value != null) {
         // User is already logged in
 

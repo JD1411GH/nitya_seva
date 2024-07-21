@@ -1,6 +1,5 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/material.dart';
+import 'package:nitya_seva/const.dart';
 import 'package:nitya_seva/toaster.dart';
 
 class FB {
@@ -19,7 +18,8 @@ class FB {
   // returns "-", "r", "rw"
   Future<String> checkAccess() async {
     String ret = "-";
-    final dbref = FirebaseDatabase.instance.ref("record");
+    final dbref =
+        FirebaseDatabase.instance.ref("record_db${Const().dbVersion}");
 
     try {
       String dateTimeString = DateTime.now().toString();
@@ -33,21 +33,14 @@ class FB {
   }
 
   Future<List<dynamic>> readSevaSlots() async {
-    final dbRef = FirebaseDatabase.instance.ref('record/sevaSlots');
+    final dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/sevaSlots');
     DatabaseEvent event = await dbRef.once();
     DataSnapshot snapshot = event.snapshot;
     List<dynamic> sevaSlots = [];
 
     if (snapshot.value != null) {
       sevaSlots = (snapshot.value as Map).values.toList();
-
-      for (var slot in sevaSlots) {
-        if (slot['sevaTickets'] != null) {
-          slot['sevaTickets'] = (slot['sevaTickets'] as Map).values.toList();
-        } else {
-          slot['sevaTickets'] = [];
-        }
-      }
     }
 
     return sevaSlots;
@@ -60,7 +53,8 @@ class FB {
 
   Future<void> addSevaSlot(Map<String, dynamic> _sevaSlot) async {
     // Add a new seva slot
-    final DatabaseReference _dbRef = FirebaseDatabase.instance.ref('record');
+    final DatabaseReference _dbRef =
+        FirebaseDatabase.instance.ref('record_db${Const().dbVersion}');
     DatabaseReference ref = _dbRef.child('sevaSlots').push();
     await ref.set(_sevaSlot);
   }
@@ -117,8 +111,8 @@ class FB {
 
   Future<void> addSevaTicket(
       String selectedSlot, Map<String, dynamic> ticket) async {
-    final DatabaseReference dbRef =
-        FirebaseDatabase.instance.ref('record/sevaSlots');
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/sevaSlots');
 
     String selectedSlotKey = await _getSelectedSlotKey(dbRef, selectedSlot);
     if (selectedSlotKey.isEmpty) {
@@ -131,8 +125,8 @@ class FB {
 
   Future<void> removeSevaTicket(
       String timestampSlot, String iso8601string) async {
-    final DatabaseReference dbRef =
-        FirebaseDatabase.instance.ref('record/sevaSlots');
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/sevaSlots');
 
     String key = await _getSelectedSlotKey(dbRef, timestampSlot);
     if (key.isEmpty) {
@@ -152,8 +146,8 @@ class FB {
 
   Future<void> updateSevaTicket(String timestampSlot, String timestampTicket,
       Map<String, dynamic> json) async {
-    final DatabaseReference dbRef =
-        FirebaseDatabase.instance.ref('record/sevaSlots');
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/sevaSlots');
 
     String key = await _getSelectedSlotKey(dbRef, timestampSlot);
     if (key.isEmpty) {
@@ -167,7 +161,8 @@ class FB {
   }
 
   Future<void> listenForSevaSlotChange(FBCallbacks callbacks) async {
-    final dbRef = FirebaseDatabase.instance.ref('record/sevaSlots');
+    final dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/sevaSlots');
 
     dbRef.onChildAdded.listen((event) {
       callbacks.onChange("ADD_SEVA_SLOT", event.snapshot.value);
