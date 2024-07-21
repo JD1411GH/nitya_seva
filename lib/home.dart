@@ -25,11 +25,12 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _addNewSlot() async {
     String? username = await LS().read('username');
+    DateTime timestampSlot = DateTime.now();
     SevaSlot slot = SevaSlot(
-        timestamp: DateTime.now(),
+        timestampSlot: timestampSlot,
         title: 'Seva Slot',
         sevakartaSlot: username!);
-    Record().addSevaSlot(slot);
+    Record().addSevaSlot(timestampSlot, slot);
 
     // refresh homepage
     setState(() {
@@ -48,16 +49,16 @@ class _HomePageState extends State<HomePage> {
   Widget _widgetDate(index) {
     return Expanded(
       child: Text(
-        DateFormat('dd-MM-yyyy')
-            .format(sevaSlots[index].timestamp), // Extract and format the date
+        DateFormat('dd-MM-yyyy').format(
+            sevaSlots[index].timestampSlot), // Extract and format the date
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
     );
   }
 
   Widget _widgetToday(index) {
-    if (DateTime.now().difference(sevaSlots[index].timestamp).inDays == 0 &&
-        DateTime.now().day == sevaSlots[index].timestamp.day) {
+    if (DateTime.now().difference(sevaSlots[index].timestampSlot).inDays == 0 &&
+        DateTime.now().day == sevaSlots[index].timestampSlot.day) {
       // Check if the timestamp is for today
       return Container(
         margin: const EdgeInsets.only(left: 8),
@@ -79,8 +80,8 @@ class _HomePageState extends State<HomePage> {
   Widget _widgetTime(index) {
     return Expanded(
       child: Text(
-        DateFormat('HH:mm:ss')
-            .format(sevaSlots[index].timestamp), // Extract and format the time
+        DateFormat('HH:mm:ss').format(
+            sevaSlots[index].timestampSlot), // Extract and format the time
         textAlign: TextAlign.right, // Align the time to the right
         style: TextStyle(
             color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
@@ -93,7 +94,8 @@ class _HomePageState extends State<HomePage> {
       onTap: () {
         // Define your action here
         LS()
-            .write('selectedSlot', sevaSlots[index].timestamp.toIso8601String())
+            .write('selectedSlot',
+                sevaSlots[index].timestampSlot.toIso8601String())
             .then((value) {
           Navigator.push(
             context,

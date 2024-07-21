@@ -51,12 +51,14 @@ class FB {
     return "-";
   }
 
-  Future<void> addSevaSlot(Map<String, dynamic> _sevaSlot) async {
+  Future<void> addSevaSlot(
+      String timestampSlot, Map<String, dynamic> sevaSlot) async {
     // Add a new seva slot
-    final DatabaseReference _dbRef =
+    final DatabaseReference dbRef =
         FirebaseDatabase.instance.ref('record_db${Const().dbVersion}');
-    DatabaseReference ref = _dbRef.child('sevaSlots').push();
-    await ref.set(_sevaSlot);
+    DatabaseReference ref =
+        dbRef.child('sevaSlots').child(timestampSlot.replaceAll(".", "^"));
+    await ref.set(sevaSlot);
   }
 
   Future<String> _getSelectedSlotKey(

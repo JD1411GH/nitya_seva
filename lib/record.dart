@@ -33,19 +33,19 @@ class SevaTicket {
 }
 
 class SevaSlot {
-  DateTime timestamp;
+  DateTime timestampSlot;
   final String title;
   final String sevakartaSlot;
 
   SevaSlot(
-      {required this.timestamp,
+      {required this.timestampSlot,
       required this.title,
       required this.sevakartaSlot});
 
   // Convert a SevaSlot instance to a Map
   Map<String, dynamic> toJson() {
     return {
-      'timestamp': timestamp.toIso8601String(),
+      'timestampSlot': timestampSlot.toIso8601String(),
       'title': title,
       'sevakartaSlot': sevakartaSlot,
     };
@@ -54,7 +54,7 @@ class SevaSlot {
   // Create a SevaSlot instance from a Map
   factory SevaSlot.fromJson(Map<String, dynamic> json) {
     return SevaSlot(
-      timestamp: DateTime.parse(json['timestamp'] as String),
+      timestampSlot: DateTime.parse(json['timestampSlot'] as String),
       title: json['title'] as String,
       sevakartaSlot: json['sevakartaSlot'] as String,
     );
@@ -81,7 +81,7 @@ class Record {
           Map<String, dynamic>.from(element as Map);
       sevaSlots.add(SevaSlot.fromJson(elementMap));
     }
-    sevaSlots.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+    sevaSlots.sort((a, b) => b.timestampSlot.compareTo(a.timestampSlot));
 
     // register callback for any change in seva slot - add, remove, update
     FB().listenForSevaSlotChange(FBCallbacks(onChange: onSevaSlotChange));
@@ -100,20 +100,20 @@ class Record {
     }
   }
 
-  void addSevaSlot(SevaSlot slot) {
+  void addSevaSlot(DateTime timestampSlot, SevaSlot slot) {
     sevaSlots.add(slot);
-    sevaSlots.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+    sevaSlots.sort((a, b) => b.timestampSlot.compareTo(a.timestampSlot));
 
-    FB().addSevaSlot(slot.toJson());
+    FB().addSevaSlot(timestampSlot.toIso8601String(), slot.toJson());
   }
 
-  void removeSevaSlot(DateTime timestamp) {
-    sevaSlots.removeWhere((slot) => slot.timestamp == timestamp);
-    sevaSlots.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+  void removeSevaSlot(DateTime timestampSlot) {
+    sevaSlots.removeWhere((slot) => slot.timestampSlot == timestampSlot);
+    sevaSlots.sort((a, b) => b.timestampSlot.compareTo(a.timestampSlot));
   }
 
-  SevaSlot getSevaSlot(String timestamp) {
-    return sevaSlots
-        .firstWhere((slot) => slot.timestamp.toIso8601String() == timestamp);
+  SevaSlot getSevaSlot(String timestampSlot) {
+    return sevaSlots.firstWhere(
+        (slot) => slot.timestampSlot.toIso8601String() == timestampSlot);
   }
 }

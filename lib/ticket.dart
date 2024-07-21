@@ -30,7 +30,7 @@ class _EntryTableState extends State<TicketList> {
         sevaTickets = [];
         // sevaTickets = slot.sevaTickets;
 
-        DateTime timestamp = Record().getSevaSlot(timestampSlot).timestamp;
+        DateTime timestamp = Record().getSevaSlot(timestampSlot).timestampSlot;
         date = DateFormat('dd/MM').format(timestamp);
         time = DateFormat('HH:mm').format(timestamp);
       });
