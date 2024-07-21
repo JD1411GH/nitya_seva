@@ -1,5 +1,6 @@
 import 'package:nitya_seva/fb.dart';
 import 'package:nitya_seva/local_storage.dart';
+import 'package:nitya_seva/toaster.dart';
 
 class SevaTicket {
   DateTime timestamp;
@@ -127,8 +128,17 @@ class Record {
     FB().listenForSevaSlotChange(FBCallbacks(onChange: onSevaSlotChange));
   }
 
-  void onSevaSlotChange(String changeType, dynamic sevaSlotId) {
-    print("Seva slot change: $changeType, $sevaSlotId");
+  void onSevaSlotChange(String changeType, dynamic sevaSlot) {
+    switch (changeType) {
+      case 'ADD_SEVA_SLOT':
+        break;
+      case 'REMOVE_SEVA_SLOT':
+        break;
+      case 'UPDATE_SEVA_SLOT':
+        break;
+      default:
+        Toaster().error('Unknown change type: $changeType');
+    }
   }
 
   void addSevaSlot(SevaSlot slot) {

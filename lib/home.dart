@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nitya_seva/const.dart';
+import 'package:nitya_seva/fb.dart';
 import 'package:nitya_seva/local_storage.dart';
 import 'package:nitya_seva/entry_table.dart';
 import 'package:nitya_seva/toaster.dart';
@@ -19,6 +20,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    FB().listenForSevaSlotChange(FBCallbacks(onChange: onSevaSlotChange));
   }
 
   Future<void> _addNewSlot() async {
@@ -32,6 +34,12 @@ class _HomePageState extends State<HomePage> {
     });
 
     Toaster().info("New slot added");
+  }
+
+  void onSevaSlotChange(String changeType, dynamic sevaSlot) {
+    setState(() {
+      sevaSlots = Record().sevaSlots;
+    });
   }
 
   Widget _widgetDate(index) {
