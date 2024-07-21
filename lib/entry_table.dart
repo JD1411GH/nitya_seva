@@ -1,14 +1,9 @@
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:intl/intl.dart';
-import 'package:nitya_seva/db.dart';
-import 'package:nitya_seva/fb.dart';
 import 'package:nitya_seva/local_storage.dart';
 import 'package:nitya_seva/summary.dart';
-import 'package:nitya_seva/toaster.dart';
 import 'package:nitya_seva/record.dart';
 
 class EntryTable extends StatefulWidget {
@@ -28,6 +23,7 @@ class _EntryTableState extends State<EntryTable> {
   void initState() {
     super.initState();
 
+    // Initialize SevaSlot data asynchronously and updates UI with the slot's date, time, and tickets.
     asyncInit().then((value) {
       SevaSlot slot = Record().getSevaSlot(timestampSlot);
       setState(() {

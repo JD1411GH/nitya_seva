@@ -166,12 +166,27 @@ class FB {
     }
   }
 
-  Future<void> listenForNewChildAdded() async {
+  Future<void> listenForSevaSlotChange(FBCallbacks callbacks) async {
     final dbRef = FirebaseDatabase.instance.ref('record/sevaSlots');
+
     dbRef.onChildAdded.listen((event) {
-      print('New child added: ${event.snapshot.key}');
-      // Add your desired logic here
-      print(event.snapshot.value);
+      callbacks.onChange("ADD_SEVA_SLOT", event.snapshot.value);
+    });
+
+    dbRef.onChildChanged.listen((event) {
+      callbacks.onChange("UPDATE_SEVA_SLOT", event.snapshot.value);
+    });
+
+    dbRef.onChildRemoved.listen((event) {
+      callbacks.onChange("REMOVE_SEVA_SLOT", event.snapshot.value);
     });
   }
+}
+
+class FBCallbacks {
+  void Function(String changeType, dynamic data) onChange;
+
+  FBCallbacks({
+    required this.onChange,
+  });
 }

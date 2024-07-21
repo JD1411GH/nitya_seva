@@ -108,7 +108,6 @@ class Record {
   Future<void> init() async {
     // read from FB
     var value = await FB().readSevaSlots();
-
     for (var element in value) {
       Map<String, dynamic> elementMap =
           Map<String, dynamic>.from(element as Map);
@@ -122,8 +121,14 @@ class Record {
 
       sevaSlots.add(SevaSlot.fromJson(elementMap));
     }
-
     sevaSlots.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+    // register callback for any change in seva slot - add, remove, update
+    FB().listenForSevaSlotChange(FBCallbacks(onChange: onSevaSlotChange));
+  }
+
+  void onSevaSlotChange(String changeType, dynamic sevaSlotId) {
+    print("Seva slot change: $changeType, $sevaSlotId");
   }
 
   void addSevaSlot(SevaSlot slot) {

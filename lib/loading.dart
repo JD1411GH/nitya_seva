@@ -26,7 +26,6 @@ class _LoadingScreenState extends State<LoadingScreen> {
   Future<void> _navigateToHome() async {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
-    FB().listenForNewChildAdded();
 
     LS().read('user').then((value) {
       if (value != null) {
