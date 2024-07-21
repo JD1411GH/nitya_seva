@@ -82,7 +82,6 @@ class _SummaryState extends State<Summary> {
 
   Future<void> _populateTable() async {
     // // get the selected slot
-    String? str = await DB().read("selectedSlot");
     String selectedSlot = await LS().read('selectedSlot') ?? "";
     int totalTickets = 0;
     int totalUpi = 0;
@@ -94,14 +93,12 @@ class _SummaryState extends State<Summary> {
     int totalCardAmount = 0;
 
     // // get all entries for selected slot
-    // List<SevaTicket> listEntries =
-    //     Record().getSevaSlot(selectedSlot).sevaTickets;
+    List<SevaTicket> listEntries =
+        Record().sevaTickets[DateTime.parse(selectedSlot)] ?? [];
 
     for (int amount in [400, 500, 1000, 2500]) {
-      // List<SevaTicket> listFiltered =
-      //     listEntries.where((e) => e.amount == amount).toList();
-
-      List<SevaTicket> listFiltered = [];
+      List<SevaTicket> listFiltered =
+          listEntries.where((e) => e.amount == amount).toList();
 
       // highest and lowest ticket numbers
       int entryWithLowestTicket = 0;
