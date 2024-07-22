@@ -112,7 +112,11 @@ class _TicketListState extends State<TicketTable> {
           icon: const Icon(Icons.summarize),
           onPressed: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const Summary()));
+                    MaterialPageRoute(builder: (context) => const Summary()))
+                .then((_) {
+              Record()
+                  .registerCallbacks(RecordCallbacks(onTicketChange: refresh));
+            });
           },
         ),
       ],

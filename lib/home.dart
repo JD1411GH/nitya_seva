@@ -91,7 +91,9 @@ class _HomePageState extends State<HomePage> {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const TicketTable()),
-          );
+          ).then((_) {
+            Record().registerCallbacks(RecordCallbacks(onSlotChange: refresh));
+          });
         });
       },
       child: Container(
@@ -131,12 +133,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(Const().appName),
-        // actions: const <Widget>[
-        //   LogoutButton(),
-        // ],
-      ),
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: Text(Const().appName)),
       drawer: const Drawer(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
