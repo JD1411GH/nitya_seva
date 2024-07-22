@@ -63,28 +63,8 @@ class _TicketListState extends State<TicketTable> {
   }
 
   void onDeleteEntry(DateTime timestampTicket) async {
-    // Record().getSevaSlot(timestampSlot).removeSevaTicket(timestampTicket);
-
-    refresh();
+    Record().removeSevaTicket(timestampSlot, timestampTicket);
   }
-
-  // Future<SlotTile> _fetchSelectedSlot() async {
-  //   String? str = await DB().read("selectedSlot");
-  //   if (str == null) {
-  //     throw Exception('Selected slot is null');
-  //   }
-
-  //   return SlotTile.fromJson(jsonDecode(str));
-  // }
-
-  // Future<String> _fetchSelectedSlotId() async {
-  //   String? str = await DB().read("selectedSlot");
-  //   if (str == null) {
-  //     throw Exception('Selected slot is null');
-  //   }
-
-  //   return SlotTile.fromJson(jsonDecode(str)).id;
-  // }
 
   int getNextTicket(amount) {
     List<SevaTicket> filteredEntries =
@@ -96,53 +76,6 @@ class _TicketListState extends State<TicketTable> {
       return filteredEntries.map((entry) => entry.ticket).reduce(max) + 1;
     }
   }
-
-  // Future<Widget> _buildTable() async {
-  //   if (listEntries.isEmpty) {
-  //     String selectedSlotId = await _fetchSelectedSlotId();
-  //     String? str = await DB().readCloud(selectedSlotId);
-  //     if (str == null) {
-  //       return const Center(child: Text('No entries found'));
-  //     } else {
-  //       listEntries = (jsonDecode(str) as List)
-  //           .map((e) => EntryData.fromJson(e))
-  //           .toList(); // Convert JSON to List<EntryData>
-  //     }
-  //   }
-
-  //   return ListView.builder(
-  //     itemCount: listEntries.length,
-  //     itemBuilder: (context, index) {
-  //       final item = listEntries[index];
-  //       return Card(
-  //         margin: const EdgeInsets.all(8.0),
-  //         child: ListTile(
-  //           title: Text(
-  //               'Amount: ${item.amount.toStringAsFixed(2)}, Mode: ${item.mode}, Ticket: ${item.ticket}'),
-  //           subtitle: Text("Time: ${item.time}, Seva karta: ${item.author}"),
-  //           leading: CircleAvatar(
-  //             child: Text(item.count
-  //                 .toString()), // total tickets sold, not individual amount-wise
-  //           ),
-  //           onTap: () {
-  //             Navigator.push(
-  //                 context,
-  //                 MaterialPageRoute(
-  //                     builder: (context) => EntryWidget(
-  //                           data: item,
-  //                           callbacks: EntryWidgetCallbacks(
-  //                             onSave: onAddEntry,
-  //                             onDelete: onDeleteEntry,
-  //                             getNextTicket: getNextTicket,
-  //                             getCount: () => listEntries.length + 1,
-  //                           ),
-  //                         )));
-  //           },
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
 
   PreferredSizeWidget? _widgetAppbar() {
     return AppBar(

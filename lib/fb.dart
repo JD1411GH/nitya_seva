@@ -97,37 +97,25 @@ class FB {
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/sevaTickets');
 
-    String selectedSlotKey = timestampSlot.replaceAll(".", "^");
-
-    if (selectedSlotKey.isEmpty) {
+    if (timestampSlot.isEmpty) {
       Toaster().error("Unable to add to database");
     } else {
       DatabaseReference ref = dbRef
-          .child(selectedSlotKey.replaceAll(".", "^"))
+          .child(timestampSlot.replaceAll(".", "^"))
           .child(timestampTicket.replaceAll(".", "^"));
       await ref.set(ticket);
     }
   }
 
   Future<void> removeSevaTicket(
-      String timestampSlot, String iso8601string) async {
+      String timestampSlot, String timestampTicket) async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/sevaTickets');
 
-    String key = await _getSelectedSlotKey(dbRef, timestampSlot);
-    if (key.isEmpty) {
-      Toaster().error("Unable to remove from database");
-    } else {
-      DatabaseReference ref = dbRef.child(key).child("sevaTickets");
-      DataSnapshot snapshot = await ref.get();
-      Map<String, dynamic> entries =
-          Map<String, dynamic>.from(snapshot.value as Map);
-      entries.forEach((key, value) {
-        if (value['timestamp'] == iso8601string) {
-          ref.child(key).remove();
-        }
-      });
-    }
+    DatabaseReference ref = dbRef
+        .child(timestampSlot.replaceAll(".", "^"))
+        .child(timestampTicket.replaceAll(".", "^"));
+    await ref.remove();
   }
 
   Future<void> updateSevaTicket(String timestampSlot, String timestampTicket,
