@@ -223,6 +223,33 @@ class Record {
         ticket.timestampTicket.toIso8601String(), ticket.toJson());
   }
 
+  void updateSevaTicket(DateTime timestampSlot, SevaTicket ticket) {
+    if (sevaTickets[timestampSlot] == null) {
+      Toaster().error("No tickets found for the slot");
+      return;
+    }
+
+    List<SevaTicket> tickets = sevaTickets[timestampSlot]!;
+    int index = tickets.indexWhere(
+        (element) => element.timestampTicket == ticket.timestampTicket);
+
+    if (index == -1) {
+      Toaster().error("Ticket not found");
+      return;
+    }
+
+    sevaTickets[timestampSlot]![index] = ticket;
+    sevaTickets[timestampSlot]!
+        .sort((a, b) => b.timestampTicket.compareTo(a.timestampTicket));
+
+    if (callbacks != null && callbacks!.onTicketChange != null) {
+      callbacks!.onTicketChange!();
+    }
+
+    FB().updateSevaTicket(timestampSlot.toIso8601String(),
+        ticket.timestampTicket.toIso8601String(), ticket.toJson());
+  }
+
   void removeSevaTicket(DateTime timestampSlot, DateTime timestampTicket) {
     FB().removeSevaTicket(
         timestampSlot.toIso8601String(), timestampTicket.toIso8601String());

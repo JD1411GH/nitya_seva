@@ -92,34 +92,6 @@ class FB {
     return ret;
   }
 
-  Future<String> _getSelectedTicketKey(DatabaseReference dbRef,
-      String timestampSlot, String timestampTicket) async {
-    if (keyCache.containsKey(timestampTicket)) {
-      return keyCache[timestampTicket]!;
-    }
-
-    String ret = '';
-
-    String key = await _getSelectedSlotKey(dbRef, timestampSlot);
-    if (key.isEmpty) {
-      Toaster().error("Unable to update database");
-    } else {
-      DatabaseReference ref = dbRef.child(key).child("sevaTickets");
-      DataSnapshot snapshot = await ref.get();
-
-      Map<String, dynamic> entries =
-          Map<String, dynamic>.from(snapshot.value as Map);
-
-      entries.forEach((key, value) {
-        if (value['timestamp'] == timestampTicket) {
-          keyCache[timestampTicket] = key;
-          ret = key;
-        }
-      });
-    }
-    return ret;
-  }
-
   Future<void> addSevaTicket(String timestampSlot, String timestampTicket,
       Map<String, dynamic> ticket) async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
@@ -161,17 +133,12 @@ class FB {
   Future<void> updateSevaTicket(String timestampSlot, String timestampTicket,
       Map<String, dynamic> json) async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
-        .ref('record_db${Const().dbVersion}/sevaSlots');
+        .ref('record_db${Const().dbVersion}/sevaTickets');
 
-    String key = await _getSelectedSlotKey(dbRef, timestampSlot);
-    if (key.isEmpty) {
-      Toaster().error("Unable to update database");
-    } else {
-      String keyTicket =
-          await _getSelectedTicketKey(dbRef, timestampSlot, timestampTicket);
-
-      await dbRef.child(key).child("sevaTickets").child(keyTicket).set(json);
-    }
+    DatabaseReference ref = dbRef
+        .child(timestampSlot.replaceAll(".", "^"))
+        .child(timestampTicket.replaceAll(".", "^"));
+    await ref.set(json);
   }
 
   Future<void> listenForSevaSlotChange(FBCallbacks callbacks) async {
@@ -196,17 +163,14 @@ class FB {
         .ref('record_db${Const().dbVersion}/sevaTickets');
 
     dbRef.onChildAdded.listen((event) {
-      print("add");
       callbacks.onChange("ADD_SEVA_TICKET", event.snapshot.value);
     });
 
     dbRef.onChildChanged.listen((event) {
-      print("change");
       callbacks.onChange("UPDATE_SEVA_TICKET", event.snapshot.value);
     });
 
     dbRef.onChildRemoved.listen((event) {
-      print("remove");
       callbacks.onChange("REMOVE_SEVA_TICKET", event.snapshot.value);
     });
   }

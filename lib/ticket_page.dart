@@ -58,12 +58,8 @@ class _TicketListState extends State<TicketTable> {
     Record().addSevaTicket(timestampSlot, entry);
   }
 
-  void onEditEntry(DateTime timestampTicket, SevaTicket entry) async {
-    // Record()
-    //     .getSevaSlot(timestampSlot)
-    //     .updateSevaTicket(timestampTicket, entry);
-
-    refresh();
+  void onEditEntry(SevaTicket entry) async {
+    Record().updateSevaTicket(timestampSlot, entry);
   }
 
   void onDeleteEntry(DateTime timestampTicket) async {
@@ -315,7 +311,8 @@ class _TicketListState extends State<TicketTable> {
                   mode: selectedPaymentMode,
                   ticket: int.tryParse(ticketNumberController.text) ?? 0,
                   user: user,
-                  timestampTicket: DateTime.now(),
+                  timestampTicket:
+                      ticket == null ? DateTime.now() : ticket.timestampTicket,
                   timestampSlot: timestampSlot,
                   note: '',
                 );
@@ -323,7 +320,7 @@ class _TicketListState extends State<TicketTable> {
                 if (ticket == null) {
                   onAddEntry(t);
                 } else {
-                  onEditEntry(ticket.timestampTicket, t);
+                  onEditEntry(t);
                 }
 
                 Navigator.of(context).pop();
@@ -415,7 +412,7 @@ class _TicketListState extends State<TicketTable> {
         trailing: Icon(icon),
         tileColor: backgroundColor,
         onTap: () {
-          SevaTicket entry = sevaTickets[index];
+          SevaTicket entry = Record().sevaTickets[timestampSlot]![index];
           _showEntryDialog(context, entry);
         },
       );
