@@ -125,6 +125,11 @@ class _TicketListState extends State<TicketTable> {
 
   Future<void> _showEntryDialog(
       BuildContext context, SevaTicket? ticket) async {
+    // TODO: Function is too big. unable to refactor because of cross dependencies
+
+    // local variables: default values in the dialog
+    // when update entry is desired the default values are replaced
+    // with the values from passed ticket
     String selectedSevaAmount =
         ticket != null ? ticket.amount.toString() : '400';
     List<String> sevaAmounts = ['400', '500', '1000', '2500'];
@@ -137,6 +142,8 @@ class _TicketListState extends State<TicketTable> {
         TextEditingController(text: ticketNumber);
 
     String user = await LS().read('username') ?? 'Unknown';
+    final formKeyTicketNumber =
+        GlobalKey<FormState>(); // used for validation of the ticket number
 
     showDialog(
       // ignore: use_build_context_synchronously
@@ -151,6 +158,7 @@ class _TicketListState extends State<TicketTable> {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
+                  // seva amount dropdown
                   DropdownButtonFormField<String>(
                     value: selectedSevaAmount,
                     decoration: const InputDecoration(
@@ -172,6 +180,8 @@ class _TicketListState extends State<TicketTable> {
                       );
                     }).toList(),
                   ),
+
+                  // mode of payment dropdown
                   DropdownButtonFormField<String>(
                     value: selectedPaymentMode,
                     decoration: const InputDecoration(
@@ -190,12 +200,32 @@ class _TicketListState extends State<TicketTable> {
                       );
                     }).toList(),
                   ),
-                  TextField(
-                    controller: ticketNumberController,
-                    decoration: const InputDecoration(
-                      labelText: 'Ticket number', // Label already exists
+
+                  // ticket number text field
+                  Form(
+                    key: formKeyTicketNumber, // Use the GlobalKey here
+                    child: Column(
+                      children: <Widget>[
+                        TextFormField(
+                          controller: ticketNumberController,
+                          decoration: const InputDecoration(
+                            labelText: 'Ticket number',
+                          ),
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a ticket number';
+                            }
+                            final number = int.tryParse(value);
+                            if (number == null || number <= 0) {
+                              return 'Please enter a valid ticket number';
+                            }
+                            return null;
+                          },
+                        ),
+                        // Other form fields or widgets
+                      ],
                     ),
-                    keyboardType: TextInputType.number,
                   ),
                 ],
               );
@@ -203,6 +233,7 @@ class _TicketListState extends State<TicketTable> {
           ),
           actions: <Widget>[
             if (ticket != null)
+              // delete button
               TextButton(
                 onPressed: () {
                   // Add your delete logic here
@@ -235,32 +266,40 @@ class _TicketListState extends State<TicketTable> {
                 },
                 child: const Text('Delete'),
               ),
+
+            // cancel button
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
               child: const Text('Cancel'),
             ),
+
+            // add/update button
             TextButton(
               onPressed: () {
-                SevaTicket t = SevaTicket(
-                  amount: int.parse(selectedSevaAmount),
-                  mode: selectedPaymentMode,
-                  ticket: int.tryParse(ticketNumberController.text) ?? 0,
-                  user: user,
-                  timestampTicket:
-                      ticket == null ? DateTime.now() : ticket.timestampTicket,
-                  timestampSlot: timestampSlot,
-                  note: '',
-                );
+                // validate the ticket number before adding/updating
+                if (formKeyTicketNumber.currentState!.validate()) {
+                  SevaTicket t = SevaTicket(
+                    amount: int.parse(selectedSevaAmount),
+                    mode: selectedPaymentMode,
+                    ticket: int.tryParse(ticketNumberController.text) ?? 0,
+                    user: user,
+                    timestampTicket: ticket == null
+                        ? DateTime.now()
+                        : ticket.timestampTicket,
+                    timestampSlot: timestampSlot,
+                    note: '',
+                  );
 
-                if (ticket == null) {
-                  onAddEntry(t);
-                } else {
-                  onEditEntry(t);
+                  if (ticket == null) {
+                    onAddEntry(t);
+                  } else {
+                    onEditEntry(t);
+                  }
+
+                  Navigator.of(context).pop();
                 }
-
-                Navigator.of(context).pop();
               },
               child: ticket != null ? const Text('Update') : const Text('Add'),
             ),
