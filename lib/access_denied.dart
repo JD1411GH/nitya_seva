@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nitya_seva/login.dart';
-import 'package:nitya_seva/db.dart';
 import 'package:nitya_seva/logout.dart';
 
 class AccessDenied extends StatelessWidget {
