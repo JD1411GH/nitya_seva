@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:nitya_seva/local_storage.dart';
 import 'package:nitya_seva/record.dart';
 
@@ -11,11 +12,27 @@ class Summary extends StatefulWidget {
 
 class _SummaryState extends State<Summary> {
   List<TableRow> listRows = [];
+  String? _selectedSlot;
+  List<SevaTicket>? _listEntries;
 
   @override
   void initState() {
     super.initState();
-    _populateTable();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    LS().read('selectedSlot').then((value) {
+      if (value != null) {
+        _selectedSlot = value;
+        _listEntries = Record().sevaTickets[DateTime.parse(value)];
+
+        if (_validateEntries()) {
+          _populateTable();
+        }
+      }
+    });
   }
 
   void _appendRow(String col1, String col2) {
@@ -79,9 +96,75 @@ class _SummaryState extends State<Summary> {
     });
   }
 
+  bool _validateEntries() {
+    bool errorOccurred = false;
+
+    // check if no entries are present
+    if (_listEntries == null || _listEntries!.isEmpty) {
+      errorOccurred = true;
+      _appendRow("no entries found", "");
+    } else {
+      for (int amount in [400, 500, 1000, 2500]) {
+        List<SevaTicket> listFiltered =
+            _listEntries!.where((e) => e.amount == amount).toList();
+
+        // check if all entries have contiguous ticket numbers
+        if (listFiltered.isNotEmpty) {
+          List<SevaTicket> sortedList = List.from(listFiltered);
+          sortedList.sort((a, b) => a.ticket.compareTo(b.ticket));
+          int previousTicket = sortedList[0].ticket;
+          for (int i = 1; i < sortedList.length; i++) {
+            if (sortedList[i].ticket != previousTicket + 1) {
+              errorOccurred = true;
+              _appendRow("Ticket numbers not contiguous",
+                  "Ticket# ${sortedList[i].ticket}");
+              break;
+            }
+            previousTicket = sortedList[i].ticket;
+          }
+        }
+
+        // check for duplicate ticket numbers
+        List<int> ticketNumbers = listFiltered.map((e) => e.ticket).toList();
+        Set<int> ticketSet = ticketNumbers.toSet();
+
+        if (ticketNumbers.length != ticketSet.length) {
+          errorOccurred = true;
+
+          // Identify extra tickets
+          Map<int, int> ticketCount = {};
+          for (int ticket in ticketNumbers) {
+            if (ticketCount.containsKey(ticket)) {
+              ticketCount[ticket] = ticketCount[ticket]! + 1;
+            } else {
+              ticketCount[ticket] = 1;
+            }
+          }
+
+          List<int> extraTickets = ticketCount.entries
+              .where((entry) => entry.value > 1)
+              .map((entry) => entry.key)
+              .toList();
+
+          // Log or handle extra tickets as needed
+          for (int extraTicket in extraTickets) {
+            _appendRow(
+                "Duplicate ticket numbers found", "Ticket# $extraTicket");
+          }
+        }
+      }
+    }
+
+    if (errorOccurred) {
+      _appendHeadline("ERROR", "");
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   Future<void> _populateTable() async {
     // // get the selected slot
-    String selectedSlot = await LS().read('selectedSlot') ?? "";
     int totalTickets = 0;
     int totalUpi = 0;
     int totalCash = 0;
@@ -91,13 +174,9 @@ class _SummaryState extends State<Summary> {
     int totalCashAmount = 0;
     int totalCardAmount = 0;
 
-    // // get all entries for selected slot
-    List<SevaTicket> listEntries =
-        Record().sevaTickets[DateTime.parse(selectedSlot)] ?? [];
-
     for (int amount in [400, 500, 1000, 2500]) {
       List<SevaTicket> listFiltered =
-          listEntries.where((e) => e.amount == amount).toList();
+          _listEntries!.where((e) => e.amount == amount).toList();
 
       // highest and lowest ticket numbers
       int entryWithLowestTicket = 0;
@@ -165,6 +244,21 @@ class _SummaryState extends State<Summary> {
     _appendSpace();
   }
 
+  Widget _widgetTable() {
+    return Table(
+      columnWidths: const {
+        0: FlexColumnWidth(),
+        1: FlexColumnWidth(),
+      },
+      border: TableBorder.all(
+        color: const Color.fromARGB(
+            255, 205, 203, 203), // Use a very light grey color
+        width: 0.5, // Make the border thin
+      ),
+      children: listRows,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -173,18 +267,7 @@ class _SummaryState extends State<Summary> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: SingleChildScrollView(
-        child: Table(
-          columnWidths: const {
-            0: FlexColumnWidth(),
-            1: FlexColumnWidth(),
-          },
-          border: TableBorder.all(
-            color: const Color.fromARGB(
-                255, 205, 203, 203), // Use a very light grey color
-            width: 0.5, // Make the border thin
-          ),
-          children: listRows,
-        ),
+        child: _widgetTable(),
       ),
     );
   }
