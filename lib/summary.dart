@@ -35,17 +35,25 @@ class _SummaryState extends State<Summary> {
     });
   }
 
-  void _appendRow(String col1, String col2) {
+  void _appendRow(String col1, String col2, {bool bold = false}) {
     setState(() {
       listRows.add(TableRow(
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 8.0), // Add left padding
-            child: Text(col1, style: const TextStyle(fontSize: 16)),
+            child: Text(col1,
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight:
+                        bold == false ? FontWeight.normal : FontWeight.bold)),
           ),
           Padding(
             padding: const EdgeInsets.only(left: 8.0), // Add left padding
-            child: Text(col2, style: const TextStyle(fontSize: 16)),
+            child: Text(col2,
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight:
+                        bold == false ? FontWeight.normal : FontWeight.bold)),
           ),
         ],
       ));
@@ -225,22 +233,42 @@ class _SummaryState extends State<Summary> {
       totalCashAmount = totalCashAmount + amountCash;
       totalCardAmount = totalCardAmount + amountCard;
 
-      _appendRow("UPI transactions", "count: $numUpi \nRs. $amountUpi");
-      _appendRow("Cash transactions", "count: $numCash \nRs. $amountCash");
-      _appendRow("Card transactions", "count: $numCard \nRs. $amountCard");
+      _appendSpace();
+      _appendRow("No. of UPI transactions", numUpi.toString());
+      _appendRow("No. of Cash transactions", numCash.toString());
+      _appendRow("No. of Card transactions", numCard.toString());
+
+      _appendSpace();
+      _appendRow("Amount collected via UPI ", amountUpi.toString());
+      _appendRow("Amount collected via Cash ", amountCash.toString());
+      _appendRow("Amount collected via Card ", amountCard.toString());
+      _appendRow(
+          "Total collection", (amountUpi + amountCash + amountCard).toString(),
+          bold: true);
 
       _appendSpace();
     }
 
     _appendHeadline("Total", "");
-    _appendRow("Total tickets sold", totalTickets.toString());
+    _appendRow("Total tickets sold", totalTickets.toString(), bold: true);
+
+    _appendSpace();
     _appendRow("Total UPI transactions", totalUpi.toString());
     _appendRow("Total Cash transactions", totalCash.toString());
     _appendRow("Total Card transactions", totalCard.toString());
-    _appendRow("Total amount received", totalAmount.toString());
-    _appendRow("Total amount through UPI", totalUpiAmount.toString());
-    _appendRow("Total amount through Cash", totalCashAmount.toString());
-    _appendRow("Total amount through Card", totalCardAmount.toString());
+
+    _appendSpace();
+    _appendRow("Total amount via UPI", totalUpiAmount.toString());
+    _appendRow("Total amount via Cash", totalCashAmount.toString());
+    _appendRow("Total amount via Card", totalCardAmount.toString());
+
+    _appendSpace();
+    _appendRow("Total overall collection", totalAmount.toString(), bold: true);
+
+    _appendSpace();
+    _appendSpace();
+    _appendSpace();
+    _appendSpace();
     _appendSpace();
   }
 
