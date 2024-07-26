@@ -84,7 +84,11 @@ class _HomePageState extends State<HomePage> {
       child: Text(
         DateFormat('dd-MM-yyyy').format(
             sevaSlots[index].timestampSlot), // Extract and format the date
-        style: const TextStyle(fontWeight: FontWeight.bold),
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Theme.of(context)
+              .primaryColor, // Set text color to primary theme color
+        ),
       ),
     );
   }
@@ -95,77 +99,121 @@ class _HomePageState extends State<HomePage> {
         DateFormat('HH:mm:ss').format(
             sevaSlots[index].timestampSlot), // Extract and format the time
         textAlign: TextAlign.right, // Align the time to the right
-        style: TextStyle(
-            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
+        style: TextStyle(color: Theme.of(context).primaryColor),
       ),
     );
   }
 
   Widget _widgetSlots(context, index) {
     return InkWell(
-      onTap: () {
-        // Define your action here
-        LS()
-            .write('selectedSlot',
-                sevaSlots[index].timestampSlot.toIso8601String())
-            .then((value) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const TicketTable()),
-          ).then((_) {
-            Record().registerCallbacks(RecordCallbacks(onSlotChange: refresh));
+        // Define your action here for onTap
+        onTap: () {
+          LS()
+              .write('selectedSlot',
+                  sevaSlots[index].timestampSlot.toIso8601String())
+              .then((value) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const TicketTable()),
+            ).then((_) {
+              Record()
+                  .registerCallbacks(RecordCallbacks(onSlotChange: refresh));
+            });
           });
-        });
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: Theme.of(context)
-                .colorScheme
-                .surfaceContainerHighest, // Border color
-            width: 1.0, // Border width
+        },
+
+        // contents of the slot tile
+        child: Container(
+          margin: const EdgeInsets.symmetric(
+              vertical: 4.0, horizontal: 8.0), // Margin around the container
+          child: ListTile(
+            // title
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment
+                  .spaceBetween, // Space between title and icon
+              children: <Widget>[
+                Expanded(
+                  child: Text(
+                    sevaSlots[index].title,
+                    style: TextStyle(
+                      color: Theme.of(context)
+                          .primaryColor, // Use the primary color
+                      fontWeight: FontWeight.bold, // Bold font
+                      fontSize: 24.0, // Increase the font size
+                    ),
+                  ),
+                ),
+                Icon(
+                  sevaSlots[index].timestampSlot.hour < 12
+                      ? Icons.wb_sunny
+                      : Icons
+                          .nights_stay, // Use sun icon for morning and moon icon for evening
+                  color: Theme.of(context)
+                      .primaryColor, // Set icon color to primary theme color
+                ),
+              ],
+            ),
+
+            // subtitle
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    _widgetDate(index),
+                    _widgetTime(index),
+                  ],
+                ),
+                const SizedBox(height: 8.0), // Space between rows
+                Text(
+                  sevaSlots[index].sevakartaSlot,
+                  style: TextStyle(color: Const().colorPrimary),
+                ),
+              ],
+            ),
           ),
-          borderRadius: BorderRadius.circular(4.0), // Border radius
-        ),
-        margin: const EdgeInsets.symmetric(
-            vertical: 4.0, horizontal: 8.0), // Margin around the container
-        child: ListTile(
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  _widgetDate(index),
-                  _widgetTime(index),
-                ],
-              ),
-              Row(children: [
-                Text(sevaSlots[index].sevakartaSlot), // Display sevakarta
-              ])
-            ],
-          ),
-        ),
-      ),
-    );
+        ));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(Const().appName)),
+        backgroundColor: Theme.of(context).primaryColor,
+        title: Text(
+          Const().appName,
+          style: TextStyle(
+            color: Theme.of(context)
+                .canvasColor, // Set text color to match the theme
+            fontSize: 24.0, // Increase the font size
+            fontWeight: FontWeight.bold, // Make the font bold
+          ),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListView.builder(
           itemCount: sevaSlots.length,
-          itemBuilder: _widgetSlots,
+          itemBuilder: (context, index) {
+            return Card(
+              elevation: 4.0, // Adjust the elevation to control the shadow
+              margin: const EdgeInsets.symmetric(vertical: 8.0),
+              // Set the background color to the primary color of the app
+              child: _widgetSlots(context, index),
+            );
+          },
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _addNewSlot,
         tooltip: 'Add slot',
-        child: const Icon(Icons.create_new_folder),
+        backgroundColor: Theme.of(context)
+            .primaryColor, // Set background color to match AppBar
+        child: const Icon(
+          Icons.create_new_folder,
+          color: Colors
+              .white, // Set icon color to white to match the AppBar title text color
+        ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
