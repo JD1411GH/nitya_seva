@@ -3,7 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:nitya_seva/const.dart';
 import 'package:nitya_seva/local_storage.dart';
 import 'package:nitya_seva/record.dart';
-import 'package:nitya_seva/tally_notes.dart';
+import 'package:nitya_seva/tally_cash.dart';
+import 'package:nitya_seva/const.dart';
 
 class Summary extends StatefulWidget {
   const Summary({super.key});
@@ -293,7 +294,7 @@ class _SummaryState extends State<Summary> {
         onSelected: (String result) {
           // Handle menu item selection here
           switch (result) {
-            case 'Tally notes':
+            case 'Tally cash':
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => TallyNotesPage()));
               break;
@@ -304,26 +305,26 @@ class _SummaryState extends State<Summary> {
           }
         },
         itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-          const PopupMenuItem<String>(
-            value: 'Tally notes',
+          PopupMenuItem<String>(
+            value: 'Tally cash',
             child: Row(
               children: <Widget>[
-                Icon(Icons.money, color: Colors.brown), // Icon for note
-                SizedBox(
+                Icon(Icons.money, color: Const().colorPrimary), // Icon for note
+                const SizedBox(
                     width: 8), // Add some spacing between the icon and the text
-                Text('Tally notes'),
+                const Text('Tally cash'),
               ],
             ),
           ),
-          const PopupMenuItem<String>(
+          PopupMenuItem<String>(
             value: 'Tally UPI/Card',
             child: Row(
               children: <Widget>[
                 Icon(Icons.account_balance_wallet,
-                    color: Colors.brown), // Icon for note
-                SizedBox(
+                    color: Const().colorPrimary), // Icon for note
+                const SizedBox(
                     width: 8), // Add some spacing between the icon and the text
-                Text('Tally UPI/Card'),
+                const Text('Tally UPI/Card'),
               ],
             ),
           ),

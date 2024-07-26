@@ -55,6 +55,26 @@ class _TallyNotesPageState extends State<TallyNotesPage> {
         ),
         Row(
           children: [
+            // sum of the entries
+            Text(
+              _calculateTotal([
+                {'value': 500, 'controller': controller500},
+                {'value': 200, 'controller': controller200},
+                {'value': 100, 'controller': controller100},
+                {'value': 50, 'controller': controller50},
+                {'value': 20, 'controller': controller20},
+                {'value': 10, 'controller': controller10},
+              ]).toString(),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18.0, // Increase the font size
+              ),
+            ),
+
+            const SizedBox(
+                width:
+                    8), // Add some space between the icon and the total amount
+
             Container(
               // validation success icon
               decoration: BoxDecoration(
@@ -69,26 +89,6 @@ class _TallyNotesPageState extends State<TallyNotesPage> {
                 validationSuccess ? Icons.check : Icons.close,
                 color:
                     Colors.white, // Icon color to contrast with the background
-              ),
-            ),
-
-            const SizedBox(
-                width:
-                    8), // Add some space between the icon and the total amount
-
-            // sum of the entries
-            Text(
-              _calculateTotal([
-                {'value': 500, 'controller': controller500},
-                {'value': 200, 'controller': controller200},
-                {'value': 100, 'controller': controller100},
-                {'value': 50, 'controller': controller50},
-                {'value': 20, 'controller': controller20},
-                {'value': 10, 'controller': controller10},
-              ]).toString(),
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18.0, // Increase the font size
               ),
             ),
           ],
@@ -119,7 +119,7 @@ class _TallyNotesPageState extends State<TallyNotesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tally Notes'),
+        title: const Text('Tally Cash'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: SingleChildScrollView(
