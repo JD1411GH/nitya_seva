@@ -193,8 +193,8 @@ class FB {
 
   Future<void> addUpdateTallyUpi(
       DateTime timestampSlot, Map<String, int> json) async {
-    final DatabaseReference dbRef =
-        FirebaseDatabase.instance.ref('record_db${Const().dbVersion}/tallyUpi');
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/tallyUpiCard');
 
     String key = timestampSlot.toIso8601String().replaceAll(".", "^");
 
@@ -204,8 +204,8 @@ class FB {
   }
 
   Future<Map<String, int>> readTallyUpi(DateTime timestampSlot) async {
-    final DatabaseReference dbRef =
-        FirebaseDatabase.instance.ref('record_db${Const().dbVersion}/tallyUpi');
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/tallyUpiCard');
 
     String key = timestampSlot.toIso8601String().replaceAll(".", "^");
 

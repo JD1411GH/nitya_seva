@@ -5,7 +5,7 @@ import 'package:nitya_seva/local_storage.dart';
 import 'package:nitya_seva/record.dart';
 import 'package:nitya_seva/tally_cash.dart';
 import 'package:nitya_seva/const.dart';
-import 'package:nitya_seva/tally_upi.dart';
+import 'package:nitya_seva/tally_upi_card.dart';
 
 class Summary extends StatefulWidget {
   const Summary({super.key});

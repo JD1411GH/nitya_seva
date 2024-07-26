@@ -5,15 +5,15 @@ import 'package:nitya_seva/local_storage.dart';
 import 'package:nitya_seva/record.dart';
 import 'package:nitya_seva/toaster.dart';
 
-class TallyUpiPage extends StatefulWidget {
-  const TallyUpiPage({super.key});
+class TallyUpiCardPage extends StatefulWidget {
+  const TallyUpiCardPage({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
   _TallyNotesPageState createState() => _TallyNotesPageState();
 }
 
-class _TallyNotesPageState extends State<TallyUpiPage> {
+class _TallyNotesPageState extends State<TallyUpiCardPage> {
   final TextEditingController controller400 = TextEditingController(text: '0');
   final TextEditingController controller500 = TextEditingController(text: '0');
   final TextEditingController controller1000 = TextEditingController(text: '0');

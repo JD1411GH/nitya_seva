@@ -7,7 +7,7 @@ import 'package:nitya_seva/local_storage.dart';
 import 'package:nitya_seva/summary.dart';
 import 'package:nitya_seva/record.dart';
 import 'package:nitya_seva/tally_cash.dart';
-import 'package:nitya_seva/tally_upi.dart';
+import 'package:nitya_seva/tally_upi_card.dart';
 
 class TicketTable extends StatefulWidget {
   const TicketTable({super.key});
@@ -104,43 +104,41 @@ class _TicketListState extends State<TicketTable> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const TallyUpiPage()));
+                      builder: (context) => const TallyUpiCardPage()));
               break;
             // Add more cases as needed
           }
         },
         itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-          PopupMenuItem<String>(
+          const PopupMenuItem<String>(
             value: 'Summary',
             child: Row(
               children: <Widget>[
-                Icon(Icons.summarize, color: Const().colorPrimary),
-                const SizedBox(width: 8),
-                const Text('Summary'),
+                Icon(Icons.summarize),
+                SizedBox(width: 8),
+                Text('Summary'),
               ],
             ),
           ),
-          PopupMenuItem<String>(
+          const PopupMenuItem<String>(
             value: 'Tally cash',
             child: Row(
               children: <Widget>[
-                Icon(Icons.money,
-                    color: Const().colorPrimary), // Icon for remarks
-                const SizedBox(
+                Icon(Icons.money), // Icon for remarks
+                SizedBox(
                     width: 8), // Add some spacing between the icon and the text
-                const Text('Tally cash'),
+                Text('Tally cash'),
               ],
             ),
           ),
-          PopupMenuItem<String>(
+          const PopupMenuItem<String>(
             value: 'Tally UPI/Card',
             child: Row(
               children: <Widget>[
-                Icon(Icons.account_balance_wallet,
-                    color: Const().colorPrimary), // Icon for remarks
-                const SizedBox(
+                Icon(Icons.account_balance_wallet), // Icon for remarks
+                SizedBox(
                     width: 8), // Add some spacing between the icon and the text
-                const Text('Tally UPI/Card'),
+                Text('Tally UPI/Card'),
               ],
             ),
           ),
