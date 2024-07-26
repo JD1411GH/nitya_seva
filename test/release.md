@@ -1,0 +1,2 @@
+- update changelog
+- update app version
