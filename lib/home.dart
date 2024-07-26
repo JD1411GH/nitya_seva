@@ -14,6 +14,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<SevaSlot> sevaSlots = Record().sevaSlots;
+  final TextEditingController _slotNameController = TextEditingController();
 
   @override
   void initState() {
@@ -23,12 +24,53 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _addNewSlot() async {
     String? username = await LS().read('username');
+
+    // pre-fill the slot name with the time of day
     DateTime timestampSlot = DateTime.now();
-    SevaSlot slot = SevaSlot(
-        timestampSlot: timestampSlot,
-        title: 'Seva Slot',
-        sevakartaSlot: username!);
-    Record().addSevaSlot(timestampSlot, slot);
+    String dayName = DateFormat('EEE').format(timestampSlot);
+    int hour = timestampSlot.hour;
+    String timeOfDay;
+    if (hour >= 5 && hour < 14) {
+      timeOfDay = "Morning";
+    } else if (hour >= 15 && hour < 21) {
+      timeOfDay = "Evening";
+    } else {
+      timeOfDay = "Other";
+    }
+    _slotNameController.text = '$dayName $timeOfDay';
+
+    showDialog<void>(
+      // ignore: use_build_context_synchronously
+      context: context,
+      barrierDismissible: false, // User must tap button to dismiss
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Enter Slot Name'),
+          content: TextField(
+            controller: _slotNameController,
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                SevaSlot slot = SevaSlot(
+                    timestampSlot: timestampSlot,
+                    title: _slotNameController.text,
+                    sevakartaSlot: username!);
+                Record().addSevaSlot(timestampSlot, slot);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void refresh() {
@@ -45,27 +87,6 @@ class _HomePageState extends State<HomePage> {
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
     );
-  }
-
-  Widget _widgetToday(index) {
-    if (DateTime.now().difference(sevaSlots[index].timestampSlot).inDays == 0 &&
-        DateTime.now().day == sevaSlots[index].timestampSlot.day) {
-      // Check if the timestamp is for today
-      return Container(
-        margin: const EdgeInsets.only(left: 8),
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-        decoration: BoxDecoration(
-          color: Colors.green, // Choose a color that fits your app theme
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: const Text(
-          'Today',
-          style: TextStyle(color: Colors.white, fontSize: 12),
-        ),
-      );
-    } else {
-      return Container(); // Return an empty container if the timestamp is not for today
-    }
   }
 
   Widget _widgetTime(index) {
@@ -115,7 +136,6 @@ class _HomePageState extends State<HomePage> {
               Row(
                 children: <Widget>[
                   _widgetDate(index),
-                  _widgetToday(index),
                   _widgetTime(index),
                 ],
               ),
