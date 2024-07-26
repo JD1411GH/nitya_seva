@@ -308,7 +308,7 @@ class _TicketListState extends State<TicketTable> {
                         ? DateTime.now()
                         : ticket.timestampTicket,
                     timestampSlot: timestampSlot,
-                    note: '',
+                    remarks: '',
                   );
 
                   if (ticket == null) {

@@ -115,6 +115,61 @@ class _TallyNotesPageState extends State<TallyNotesPage> {
     });
   }
 
+  void _dialogSave(BuildContext context) {
+    var total = _calculateTotal([
+      {'value': 500, 'controller': controller500},
+      {'value': 200, 'controller': controller200},
+      {'value': 100, 'controller': controller100},
+      {'value': 50, 'controller': controller50},
+      {'value': 20, 'controller': controller20},
+      {'value': 10, 'controller': controller10},
+    ]);
+    var diff = total - sumCash!;
+    var msg = Text(
+      'Cash is matching.\nDo you want to save?',
+      style: TextStyle(color: Const().colorPrimary),
+    );
+    if (diff > 0) {
+      msg = Text(
+        'Cash is more by $diff.\nDo you want to save?',
+        style: TextStyle(color: Const().colorError),
+      );
+    } else if (diff < 0) {
+      msg = Text(
+        'Cash is less by ${diff.abs()}.\nDo you want to save?',
+        style: TextStyle(color: Const().colorError),
+      );
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmation'),
+          content: msg,
+          actions: <Widget>[
+            // No button
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('No'),
+            ),
+
+            // Yes button
+            TextButton(
+              onPressed: () {
+                // Add your save logic here
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('Yes'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -142,19 +197,9 @@ class _TallyNotesPageState extends State<TallyNotesPage> {
               // save button
               ElevatedButton(
                 onPressed: () {
-                  int total = _calculateTotal([
-                    {'value': 500, 'controller': controller500},
-                    {'value': 200, 'controller': controller200},
-                    {'value': 100, 'controller': controller100},
-                    {'value': 50, 'controller': controller50},
-                    {'value': 20, 'controller': controller20},
-                    {'value': 10, 'controller': controller10},
-                  ]);
-                  setState(() {
-                    validationSuccess = total > 0; // Example validation logic
-                  });
+                  _dialogSave(context);
                 },
-                child: const Text('Save'),
+                child: const Text('Verify & Save'),
               ),
             ],
           ),

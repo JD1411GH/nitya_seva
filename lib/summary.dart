@@ -309,7 +309,8 @@ class _SummaryState extends State<Summary> {
             value: 'Tally cash',
             child: Row(
               children: <Widget>[
-                Icon(Icons.money, color: Const().colorPrimary), // Icon for note
+                Icon(Icons.money,
+                    color: Const().colorPrimary), // Icon for remarks
                 const SizedBox(
                     width: 8), // Add some spacing between the icon and the text
                 const Text('Tally cash'),
@@ -321,7 +322,7 @@ class _SummaryState extends State<Summary> {
             child: Row(
               children: <Widget>[
                 Icon(Icons.account_balance_wallet,
-                    color: Const().colorPrimary), // Icon for note
+                    color: Const().colorPrimary), // Icon for remarks
                 const SizedBox(
                     width: 8), // Add some spacing between the icon and the text
                 const Text('Tally UPI/Card'),

@@ -8,7 +8,7 @@ class SevaTicket {
   final String mode;
   final int ticket;
   final String user;
-  final String note;
+  final String remarks;
 
   SevaTicket({
     required this.amount,
@@ -17,7 +17,7 @@ class SevaTicket {
     required this.user,
     required this.timestampTicket,
     required this.timestampSlot, // Initialize new member
-    required this.note, // TODO: rename to "remark"
+    required this.remarks, // TODO: rename to "remark"
   });
 
   factory SevaTicket.fromJson(Map<String, dynamic> json) {
@@ -29,7 +29,7 @@ class SevaTicket {
       mode: json['mode'],
       ticket: json['ticket'],
       user: json['user'],
-      note: json['note'],
+      remarks: json['remarks'],
     );
   }
 
@@ -41,7 +41,7 @@ class SevaTicket {
       'mode': mode,
       'ticket': ticket,
       'user': user,
-      'note': note,
+      'remarks': remarks,
     };
   }
 }
