@@ -17,7 +17,7 @@ class SevaTicket {
     required this.user,
     required this.timestampTicket,
     required this.timestampSlot, // Initialize new member
-    required this.note,
+    required this.note, // TODO: rename to "remark"
   });
 
   factory SevaTicket.fromJson(Map<String, dynamic> json) {

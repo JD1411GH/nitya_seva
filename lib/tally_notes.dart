@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:nitya_seva/const.dart';
+import 'package:nitya_seva/local_storage.dart';
+import 'package:nitya_seva/record.dart';
 
 class TallyNotesPage extends StatefulWidget {
   const TallyNotesPage({super.key});
@@ -17,6 +20,100 @@ class _TallyNotesPageState extends State<TallyNotesPage> {
   final TextEditingController controller10 = TextEditingController(text: '0');
 
   bool validationSuccess = false;
+  int? sumCash;
+
+  @override
+  void initState() {
+    super.initState();
+
+    LS().read("selectedSlot").then((value) {
+      sumCash = 0;
+      if (value != null) {
+        DateTime timestampSlot = DateTime.parse(value);
+        List<SevaTicket>? sevatickets = Record().sevaTickets[timestampSlot];
+        if (sevatickets != null) {
+          for (SevaTicket sevaticket in sevatickets) {
+            if (sevaticket.mode == 'Cash') {
+              sumCash = sumCash! + sevaticket.amount;
+            }
+          }
+        }
+      }
+    });
+  }
+
+  Widget _widgetTotal() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text(
+          'Total',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18.0, // Increase the font size
+          ),
+        ),
+        Row(
+          children: [
+            Container(
+              // validation success icon
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: validationSuccess
+                    ? Const().colorSuccess
+                    : Const().colorError,
+              ),
+              padding:
+                  const EdgeInsets.all(1.0), // Adjust the padding as needed
+              child: Icon(
+                validationSuccess ? Icons.check : Icons.close,
+                color:
+                    Colors.white, // Icon color to contrast with the background
+              ),
+            ),
+
+            const SizedBox(
+                width:
+                    8), // Add some space between the icon and the total amount
+
+            // sum of the entries
+            Text(
+              _calculateTotal([
+                {'value': 500, 'controller': controller500},
+                {'value': 200, 'controller': controller200},
+                {'value': 100, 'controller': controller100},
+                {'value': 50, 'controller': controller50},
+                {'value': 20, 'controller': controller20},
+                {'value': 10, 'controller': controller10},
+              ]).toString(),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18.0, // Increase the font size
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  void _validateTotal() {
+    setState(() {
+      if (sumCash != null) {
+        var total = _calculateTotal([
+          {'value': 500, 'controller': controller500},
+          {'value': 200, 'controller': controller200},
+          {'value': 100, 'controller': controller100},
+          {'value': 50, 'controller': controller50},
+          {'value': 20, 'controller': controller20},
+          {'value': 10, 'controller': controller10},
+        ]);
+        validationSuccess = (total == sumCash);
+      } else {
+        validationSuccess = false;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,28 +133,13 @@ class _TallyNotesPageState extends State<TallyNotesPage> {
               _buildDenominationField('50', controller50),
               _buildDenominationField('20', controller20),
               _buildDenominationField('10', controller10),
-              const SizedBox(height: 20),
-              if (validationSuccess)
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.check_circle, color: Colors.green),
-                    SizedBox(width: 8),
-                    Text('Validation Success',
-                        style: TextStyle(color: Colors.green)),
-                  ],
-                )
-              else
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.error, color: Colors.red),
-                    SizedBox(width: 8),
-                    Text('Validation Failed',
-                        style: TextStyle(color: Colors.red)),
-                  ],
-                ),
-              const SizedBox(height: 20),
+
+              // the sum total
+              const Divider(),
+              _widgetTotal(),
+              const Divider(),
+
+              // save button
               ElevatedButton(
                 onPressed: () {
                   int total = _calculateTotal([
@@ -87,11 +169,12 @@ class _TallyNotesPageState extends State<TallyNotesPage> {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         children: <Widget>[
+          // denomination label
           Container(
             width: 50, // Adjust the width as needed to fit 3 digits
             padding: const EdgeInsets.all(8.0),
             decoration: BoxDecoration(
-              color: Colors.brown, // Set background color to brown
+              color: Const().colorPrimary, // Set background color to brown
               border: Border.all(color: Colors.black),
               borderRadius: BorderRadius.circular(12.0),
             ),
@@ -105,6 +188,8 @@ class _TallyNotesPageState extends State<TallyNotesPage> {
               ),
             ),
           ),
+
+          // subtract button
           const SizedBox(width: 8),
           IconButton(
             icon: const Icon(Icons.remove),
@@ -115,8 +200,11 @@ class _TallyNotesPageState extends State<TallyNotesPage> {
                   controller.text = (currentValue - 1).toString();
                 });
               }
+              _validateTotal();
             },
           ),
+
+          // number of notes
           Expanded(
             child: TextField(
               controller: controller,
@@ -125,10 +213,14 @@ class _TallyNotesPageState extends State<TallyNotesPage> {
                 border: OutlineInputBorder(),
               ),
               onChanged: (value) {
-                setState(() {});
+                setState(() {
+                  _validateTotal();
+                });
               },
             ),
           ),
+
+          // add button
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () {
@@ -136,8 +228,11 @@ class _TallyNotesPageState extends State<TallyNotesPage> {
               setState(() {
                 controller.text = (currentValue + 1).toString();
               });
+              _validateTotal();
             },
           ),
+
+          // total amount
           const SizedBox(width: 8),
           Container(
             width: 60, // Adjust the width as needed to fit 5 digits
