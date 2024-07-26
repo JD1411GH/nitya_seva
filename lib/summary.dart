@@ -289,65 +289,13 @@ class _SummaryState extends State<Summary> {
     );
   }
 
-  List<PopupMenuButton<String>> _widgetSummaryMenu() {
-    return [
-      PopupMenuButton<String>(
-        onSelected: (String result) {
-          // Handle menu item selection here
-          switch (result) {
-            case 'Tally cash':
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const TallyCashPage()));
-              break;
-            case 'Tally UPI/Card':
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const TallyUpiPage()));
-              break;
-            // Add more cases as needed
-          }
-        },
-        itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-          PopupMenuItem<String>(
-            value: 'Tally cash',
-            child: Row(
-              children: <Widget>[
-                Icon(Icons.money,
-                    color: Const().colorPrimary), // Icon for remarks
-                const SizedBox(
-                    width: 8), // Add some spacing between the icon and the text
-                const Text('Tally cash'),
-              ],
-            ),
-          ),
-          PopupMenuItem<String>(
-            value: 'Tally UPI/Card',
-            child: Row(
-              children: <Widget>[
-                Icon(Icons.account_balance_wallet,
-                    color: Const().colorPrimary), // Icon for remarks
-                const SizedBox(
-                    width: 8), // Add some spacing between the icon and the text
-                const Text('Tally UPI/Card'),
-              ],
-            ),
-          ),
-          // Add more menu items as needed
-        ],
-      ),
-    ];
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Summary'),
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          actions: _widgetSummaryMenu()),
+        title: const Text('Summary'),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      ),
       body: SingleChildScrollView(
         child: _widgetTable(),
       ),

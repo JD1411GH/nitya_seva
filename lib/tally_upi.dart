@@ -43,7 +43,7 @@ class _TallyNotesPageState extends State<TallyUpiPage> {
         List<SevaTicket>? sevatickets = Record().sevaTickets[timestampSlot];
         if (sevatickets != null) {
           for (SevaTicket sevaticket in sevatickets) {
-            if (sevaticket.mode == 'Cash') {
+            if (sevaticket.mode == 'Card' || sevaticket.mode == 'UPI') {
               sumCash = sumCash! + sevaticket.amount;
             }
           }

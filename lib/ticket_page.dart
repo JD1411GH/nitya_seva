@@ -2,9 +2,12 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:nitya_seva/const.dart';
 import 'package:nitya_seva/local_storage.dart';
 import 'package:nitya_seva/summary.dart';
 import 'package:nitya_seva/record.dart';
+import 'package:nitya_seva/tally_cash.dart';
+import 'package:nitya_seva/tally_upi.dart';
 
 class TicketTable extends StatefulWidget {
   const TicketTable({super.key});
@@ -77,6 +80,76 @@ class _TicketListState extends State<TicketTable> {
     }
   }
 
+  List<PopupMenuButton<String>> _widgetTicketMenu() {
+    return [
+      PopupMenuButton<String>(
+        onSelected: (String result) {
+          // Handle menu item selection here
+          switch (result) {
+            case 'Summary':
+              Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const Summary()))
+                  .then((_) {
+                Record().registerCallbacks(
+                    RecordCallbacks(onTicketChange: refresh));
+              });
+              break;
+            case 'Tally cash':
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const TallyCashPage()));
+              break;
+            case 'Tally UPI/Card':
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const TallyUpiPage()));
+              break;
+            // Add more cases as needed
+          }
+        },
+        itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+          PopupMenuItem<String>(
+            value: 'Summary',
+            child: Row(
+              children: <Widget>[
+                Icon(Icons.summarize, color: Const().colorPrimary),
+                const SizedBox(width: 8),
+                const Text('Summary'),
+              ],
+            ),
+          ),
+          PopupMenuItem<String>(
+            value: 'Tally cash',
+            child: Row(
+              children: <Widget>[
+                Icon(Icons.money,
+                    color: Const().colorPrimary), // Icon for remarks
+                const SizedBox(
+                    width: 8), // Add some spacing between the icon and the text
+                const Text('Tally cash'),
+              ],
+            ),
+          ),
+          PopupMenuItem<String>(
+            value: 'Tally UPI/Card',
+            child: Row(
+              children: <Widget>[
+                Icon(Icons.account_balance_wallet,
+                    color: Const().colorPrimary), // Icon for remarks
+                const SizedBox(
+                    width: 8), // Add some spacing between the icon and the text
+                const Text('Tally UPI/Card'),
+              ],
+            ),
+          ),
+          // Add more menu items as needed
+        ],
+      ),
+    ];
+  }
+
   PreferredSizeWidget? _widgetAppbar() {
     return AppBar(
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -107,38 +180,7 @@ class _TicketListState extends State<TicketTable> {
           ),
         ],
       ),
-      actions: <Widget>[
-        PopupMenuButton<String>(
-          onSelected: (String result) {
-            // Handle menu item selection here
-            switch (result) {
-              case 'Summary':
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const Summary())).then((_) {
-                  Record().registerCallbacks(
-                      RecordCallbacks(onTicketChange: refresh));
-                });
-                break;
-            }
-          },
-          itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-            const PopupMenuItem<String>(
-              value: 'Summary',
-              child: Row(
-                children: <Widget>[
-                  Icon(Icons.summarize, color: Colors.black),
-                  SizedBox(width: 8),
-                  Text('Summary'),
-                ],
-              ),
-            ),
-
-            // Add more menu items as needed
-          ],
-        ),
-      ],
+      actions: _widgetTicketMenu(),
     );
   }
 
