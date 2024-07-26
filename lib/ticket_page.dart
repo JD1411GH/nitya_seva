@@ -108,16 +108,35 @@ class _TicketListState extends State<TicketTable> {
         ],
       ),
       actions: <Widget>[
-        IconButton(
-          icon: const Icon(Icons.summarize),
-          onPressed: () {
-            Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const Summary()))
-                .then((_) {
-              Record()
-                  .registerCallbacks(RecordCallbacks(onTicketChange: refresh));
-            });
+        PopupMenuButton<String>(
+          onSelected: (String result) {
+            // Handle menu item selection here
+            switch (result) {
+              case 'Summary':
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const Summary())).then((_) {
+                  Record().registerCallbacks(
+                      RecordCallbacks(onTicketChange: refresh));
+                });
+                break;
+            }
           },
+          itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+            const PopupMenuItem<String>(
+              value: 'Summary',
+              child: Row(
+                children: <Widget>[
+                  Icon(Icons.summarize, color: Colors.black),
+                  SizedBox(width: 8),
+                  Text('Summary'),
+                ],
+              ),
+            ),
+
+            // Add more menu items as needed
+          ],
         ),
       ],
     );

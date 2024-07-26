@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:nitya_seva/const.dart';
 import 'package:nitya_seva/local_storage.dart';
 import 'package:nitya_seva/record.dart';
+import 'package:nitya_seva/tally_notes.dart';
 
 class Summary extends StatefulWidget {
   const Summary({super.key});
@@ -65,8 +67,7 @@ class _SummaryState extends State<Summary> {
       listRows.add(TableRow(
         children: [
           Container(
-            color:
-                const Color.fromARGB(255, 163, 98, 32), // Dark background color
+            color: Const().colorPrimary, // Dark background color
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(col1,
@@ -77,8 +78,7 @@ class _SummaryState extends State<Summary> {
             ),
           ),
           Container(
-            color:
-                const Color.fromARGB(255, 163, 98, 32), // Dark background color
+            color: Const().colorPrimary, // Dark background color
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(col2,
@@ -287,13 +287,59 @@ class _SummaryState extends State<Summary> {
     );
   }
 
+  List<PopupMenuButton<String>> _widgetSummaryMenu() {
+    return [
+      PopupMenuButton<String>(
+        onSelected: (String result) {
+          // Handle menu item selection here
+          switch (result) {
+            case 'Tally notes':
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => TallyNotesPage()));
+              break;
+            case 'Tally UPI/Card':
+              // Do something for Tally UPI/Card
+              break;
+            // Add more cases as needed
+          }
+        },
+        itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+          const PopupMenuItem<String>(
+            value: 'Tally notes',
+            child: Row(
+              children: <Widget>[
+                Icon(Icons.money, color: Colors.brown), // Icon for note
+                SizedBox(
+                    width: 8), // Add some spacing between the icon and the text
+                Text('Tally notes'),
+              ],
+            ),
+          ),
+          const PopupMenuItem<String>(
+            value: 'Tally UPI/Card',
+            child: Row(
+              children: <Widget>[
+                Icon(Icons.account_balance_wallet,
+                    color: Colors.brown), // Icon for note
+                SizedBox(
+                    width: 8), // Add some spacing between the icon and the text
+                Text('Tally UPI/Card'),
+              ],
+            ),
+          ),
+          // Add more menu items as needed
+        ],
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Summary'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      ),
+          title: const Text('Summary'),
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          actions: _widgetSummaryMenu()),
       body: SingleChildScrollView(
         child: _widgetTable(),
       ),

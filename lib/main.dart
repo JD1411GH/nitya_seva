@@ -16,7 +16,7 @@ class NityaSevaApp extends StatelessWidget {
       title: Const().appName,
       theme: ThemeData(
         // This is the theme of your application.
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFAA6A2D)),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF3B4043)),
         useMaterial3: true,
       ),
       home: const LoadingScreen(),
