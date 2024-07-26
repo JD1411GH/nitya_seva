@@ -5,6 +5,7 @@ import 'package:nitya_seva/local_storage.dart';
 import 'package:nitya_seva/record.dart';
 import 'package:nitya_seva/tally_cash.dart';
 import 'package:nitya_seva/const.dart';
+import 'package:nitya_seva/tally_upi.dart';
 
 class Summary extends StatefulWidget {
   const Summary({super.key});
@@ -295,11 +296,16 @@ class _SummaryState extends State<Summary> {
           // Handle menu item selection here
           switch (result) {
             case 'Tally cash':
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => TallyNotesPage()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const TallyCashPage()));
               break;
             case 'Tally UPI/Card':
-              // Do something for Tally UPI/Card
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const TallyUpiPage()));
               break;
             // Add more cases as needed
           }

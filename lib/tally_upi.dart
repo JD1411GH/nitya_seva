@@ -5,21 +5,19 @@ import 'package:nitya_seva/local_storage.dart';
 import 'package:nitya_seva/record.dart';
 import 'package:nitya_seva/toaster.dart';
 
-class TallyCashPage extends StatefulWidget {
-  const TallyCashPage({super.key});
+class TallyUpiPage extends StatefulWidget {
+  const TallyUpiPage({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
   _TallyNotesPageState createState() => _TallyNotesPageState();
 }
 
-class _TallyNotesPageState extends State<TallyCashPage> {
+class _TallyNotesPageState extends State<TallyUpiPage> {
+  final TextEditingController controller400 = TextEditingController(text: '0');
   final TextEditingController controller500 = TextEditingController(text: '0');
-  final TextEditingController controller200 = TextEditingController(text: '0');
-  final TextEditingController controller100 = TextEditingController(text: '0');
-  final TextEditingController controller50 = TextEditingController(text: '0');
-  final TextEditingController controller20 = TextEditingController(text: '0');
-  final TextEditingController controller10 = TextEditingController(text: '0');
+  final TextEditingController controller1000 = TextEditingController(text: '0');
+  final TextEditingController controller2500 = TextEditingController(text: '0');
 
   bool validationSuccess = false;
   int? sumCash;
@@ -52,15 +50,12 @@ class _TallyNotesPageState extends State<TallyCashPage> {
         }
 
         // set the cash values
-        FB().readTallyCash(timestampSlot!).then((value) {
+        FB().readTallyUpi(timestampSlot!).then((value) {
           if (value.isNotEmpty) {
-            cash = value;
-            controller500.text = cash['500'].toString();
-            controller200.text = cash['200'].toString();
-            controller100.text = cash['100'].toString();
-            controller50.text = cash['50'].toString();
-            controller20.text = cash['20'].toString();
-            controller10.text = cash['10'].toString();
+            controller400.text = value['400'].toString();
+            controller500.text = value['500'].toString();
+            controller1000.text = value['1000'].toString();
+            controller2500.text = value['2500'].toString();
             _validateTotal();
           }
         });
@@ -84,12 +79,10 @@ class _TallyNotesPageState extends State<TallyCashPage> {
             // sum of the entries
             Text(
               _calculateTotal([
+                {'value': 400, 'controller': controller400},
                 {'value': 500, 'controller': controller500},
-                {'value': 200, 'controller': controller200},
-                {'value': 100, 'controller': controller100},
-                {'value': 50, 'controller': controller50},
-                {'value': 20, 'controller': controller20},
-                {'value': 10, 'controller': controller10},
+                {'value': 1000, 'controller': controller1000},
+                {'value': 2500, 'controller': controller2500},
               ]).toString(),
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
@@ -127,12 +120,10 @@ class _TallyNotesPageState extends State<TallyCashPage> {
     setState(() {
       if (sumCash != null) {
         var total = _calculateTotal([
+          {'value': 400, 'controller': controller400},
           {'value': 500, 'controller': controller500},
-          {'value': 200, 'controller': controller200},
-          {'value': 100, 'controller': controller100},
-          {'value': 50, 'controller': controller50},
-          {'value': 20, 'controller': controller20},
-          {'value': 10, 'controller': controller10},
+          {'value': 1000, 'controller': controller1000},
+          {'value': 2500, 'controller': controller2500},
         ]);
         validationSuccess = (total == sumCash);
       } else {
@@ -144,12 +135,10 @@ class _TallyNotesPageState extends State<TallyCashPage> {
   void _dialogSave(BuildContext context) {
     // decide the content of the dialog box
     var total = _calculateTotal([
+      {'value': 400, 'controller': controller400},
       {'value': 500, 'controller': controller500},
-      {'value': 200, 'controller': controller200},
-      {'value': 100, 'controller': controller100},
-      {'value': 50, 'controller': controller50},
-      {'value': 20, 'controller': controller20},
-      {'value': 10, 'controller': controller10},
+      {'value': 1000, 'controller': controller1000},
+      {'value': 2500, 'controller': controller2500},
     ]);
     var diff = total - sumCash!;
     var msg = Text(
@@ -189,15 +178,13 @@ class _TallyNotesPageState extends State<TallyCashPage> {
               onPressed: () {
                 if (timestampSlot != null) {
                   Map<String, int> json = {
+                    '400': int.tryParse(controller400.text) ?? 0,
                     '500': int.tryParse(controller500.text) ?? 0,
-                    '200': int.tryParse(controller200.text) ?? 0,
-                    '100': int.tryParse(controller100.text) ?? 0,
-                    '50': int.tryParse(controller50.text) ?? 0,
-                    '20': int.tryParse(controller20.text) ?? 0,
-                    '10': int.tryParse(controller10.text) ?? 0,
+                    '1000': int.tryParse(controller1000.text) ?? 0,
+                    '2500': int.tryParse(controller2500.text) ?? 0,
                   };
 
-                  FB().addUpdateTallyCash(timestampSlot!, json);
+                  FB().addUpdateTallyUpi(timestampSlot!, json);
                 } else {
                   Toaster().error('Unable to save');
                 }
@@ -217,7 +204,7 @@ class _TallyNotesPageState extends State<TallyCashPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tally Cash'),
+        title: const Text('Tally UPI / Card'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: SingleChildScrollView(
@@ -225,12 +212,10 @@ class _TallyNotesPageState extends State<TallyCashPage> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: <Widget>[
+              _buildDenominationField('400', controller400),
               _buildDenominationField('500', controller500),
-              _buildDenominationField('200', controller200),
-              _buildDenominationField('100', controller100),
-              _buildDenominationField('50', controller50),
-              _buildDenominationField('20', controller20),
-              _buildDenominationField('10', controller10),
+              _buildDenominationField('1000', controller1000),
+              _buildDenominationField('2500', controller2500),
 
               // the sum total
               const Divider(),
