@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:nitya_seva/const.dart';
 
 class Toaster {
   static final Toaster _instance = Toaster._internal();
@@ -16,7 +17,7 @@ class Toaster {
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
-        backgroundColor: Colors.red,
+        backgroundColor: Const().colorError,
         textColor: Colors.white,
         fontSize: 16.0);
   }
@@ -27,7 +28,7 @@ class Toaster {
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
-        backgroundColor: const Color.fromARGB(255, 30, 149, 63),
+        backgroundColor: Const().colorSuccess,
         textColor: Colors.white,
         fontSize: 16.0);
   }

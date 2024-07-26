@@ -172,6 +172,23 @@ class FB {
 
     DatabaseReference ref = dbRef.child(key);
     await ref.set(cash);
+    Toaster().info("Tally cash updated");
+  }
+
+  Future<Map<String, int>> readTallyCash(DateTime timestampSlot) async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/tallyCash');
+
+    String key = timestampSlot.toIso8601String().replaceAll(".", "^");
+
+    DataSnapshot snapshot = await dbRef.child(key).get();
+    Map<String, int> cash = {};
+
+    if (snapshot.exists) {
+      cash = Map<String, int>.from(snapshot.value as Map);
+    }
+
+    return cash;
   }
 }
 

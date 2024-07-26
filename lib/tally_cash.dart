@@ -24,15 +24,24 @@ class _TallyNotesPageState extends State<TallyNotesPage> {
   bool validationSuccess = false;
   int? sumCash;
   DateTime? timestampSlot;
+  late Map<String, int> cash;
 
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
     LS().read("selectedSlot").then((value) {
-      sumCash = 0;
       if (value != null) {
+        // get the selected slot
         timestampSlot = DateTime.parse(value);
+
+        // calculate the sum of cash
+        sumCash = 0;
         List<SevaTicket>? sevatickets = Record().sevaTickets[timestampSlot];
         if (sevatickets != null) {
           for (SevaTicket sevaticket in sevatickets) {
@@ -41,6 +50,18 @@ class _TallyNotesPageState extends State<TallyNotesPage> {
             }
           }
         }
+
+        // set the cash values
+        FB().readTallyCash(timestampSlot!).then((value) {
+          cash = value;
+          controller500.text = cash['500'].toString();
+          controller200.text = cash['200'].toString();
+          controller100.text = cash['100'].toString();
+          controller50.text = cash['50'].toString();
+          controller20.text = cash['20'].toString();
+          controller10.text = cash['10'].toString();
+          _validateTotal();
+        });
       }
     });
   }
@@ -130,17 +151,17 @@ class _TallyNotesPageState extends State<TallyNotesPage> {
     ]);
     var diff = total - sumCash!;
     var msg = Text(
-      'Cash is matching.\nDo you want to save?',
+      'Do you want to save?',
       style: TextStyle(color: Const().colorPrimary),
     );
     if (diff > 0) {
       msg = Text(
-        'Cash is more by $diff.\nDo you want to save?',
+        'Cash is excess by $diff.\nAre you sure you want to save?',
         style: TextStyle(color: Const().colorError),
       );
     } else if (diff < 0) {
       msg = Text(
-        'Cash is less by ${diff.abs()}.\nDo you want to save?',
+        'Cash is short by ${diff.abs()}.\nAre you sure you want to save?',
         style: TextStyle(color: Const().colorError),
       );
     }
