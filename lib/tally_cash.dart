@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:nitya_seva/const.dart';
+import 'package:nitya_seva/fb.dart';
 import 'package:nitya_seva/local_storage.dart';
 import 'package:nitya_seva/record.dart';
+import 'package:nitya_seva/toaster.dart';
 
 class TallyNotesPage extends StatefulWidget {
   const TallyNotesPage({super.key});
@@ -21,6 +23,7 @@ class _TallyNotesPageState extends State<TallyNotesPage> {
 
   bool validationSuccess = false;
   int? sumCash;
+  DateTime? timestampSlot;
 
   @override
   void initState() {
@@ -29,7 +32,7 @@ class _TallyNotesPageState extends State<TallyNotesPage> {
     LS().read("selectedSlot").then((value) {
       sumCash = 0;
       if (value != null) {
-        DateTime timestampSlot = DateTime.parse(value);
+        timestampSlot = DateTime.parse(value);
         List<SevaTicket>? sevatickets = Record().sevaTickets[timestampSlot];
         if (sevatickets != null) {
           for (SevaTicket sevaticket in sevatickets) {
@@ -116,6 +119,7 @@ class _TallyNotesPageState extends State<TallyNotesPage> {
   }
 
   void _dialogSave(BuildContext context) {
+    // decide the content of the dialog box
     var total = _calculateTotal([
       {'value': 500, 'controller': controller500},
       {'value': 200, 'controller': controller200},
@@ -141,6 +145,7 @@ class _TallyNotesPageState extends State<TallyNotesPage> {
       );
     }
 
+    // show the dialog box
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -159,8 +164,23 @@ class _TallyNotesPageState extends State<TallyNotesPage> {
             // Yes button
             TextButton(
               onPressed: () {
-                // Add your save logic here
+                if (timestampSlot != null) {
+                  Map<String, int> json = {
+                    '500': int.tryParse(controller500.text) ?? 0,
+                    '200': int.tryParse(controller200.text) ?? 0,
+                    '100': int.tryParse(controller100.text) ?? 0,
+                    '50': int.tryParse(controller50.text) ?? 0,
+                    '20': int.tryParse(controller20.text) ?? 0,
+                    '10': int.tryParse(controller10.text) ?? 0,
+                  };
+
+                  FB().addUpdateTallyCash(timestampSlot!, json);
+                } else {
+                  Toaster().error('Unable to save');
+                }
+
                 Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop(); // Go back to summary page
               },
               child: const Text('Yes'),
             ),

@@ -162,6 +162,17 @@ class FB {
       callbacks.onChange("REMOVE_SEVA_TICKET", event.snapshot.value);
     });
   }
+
+  Future<void> addUpdateTallyCash(
+      DateTime timestampSlot, Map<String, int> cash) async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/tallyCash');
+
+    String key = timestampSlot.toIso8601String().replaceAll(".", "^");
+
+    DatabaseReference ref = dbRef.child(key);
+    await ref.set(cash);
+  }
 }
 
 class FBCallbacks {
