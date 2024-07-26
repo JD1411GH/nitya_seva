@@ -182,12 +182,6 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Theme.of(context).primaryColor,
         title: Text(
           Const().appName,
-          style: TextStyle(
-            color: Theme.of(context)
-                .canvasColor, // Set text color to match the theme
-            fontSize: 24.0, // Increase the font size
-            fontWeight: FontWeight.bold, // Make the font bold
-          ),
         ),
       ),
       body: Padding(
@@ -211,8 +205,7 @@ class _HomePageState extends State<HomePage> {
             .primaryColor, // Set background color to match AppBar
         child: const Icon(
           Icons.create_new_folder,
-          color: Colors
-              .white, // Set icon color to white to match the AppBar title text color
+          color: Colors.white,
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );

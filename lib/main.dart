@@ -14,10 +14,23 @@ class NityaSevaApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: Const().appName,
+      // theme: ThemeData(
+      //   colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF3B4043)),
+      //   useMaterial3: true,
+      // ),
       theme: ThemeData(
-        // This is the theme of your application.
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF3B4043)),
-        useMaterial3: true,
+        primaryColor: Const().colorPrimary, // Example primary color
+        appBarTheme: AppBarTheme(
+          backgroundColor: Const().colorBackground, // Set the background color
+          titleTextStyle: const TextStyle(
+            color: Colors.white, // Set the text color to white for brightness
+            fontSize: 28.0, // Example font size
+            fontWeight: FontWeight.bold, // Example font weight
+          ),
+          iconTheme: const IconThemeData(
+            color: Colors.white, // Set the back arrow color to white
+          ),
+        ),
       ),
       home: const LoadingScreen(),
     );

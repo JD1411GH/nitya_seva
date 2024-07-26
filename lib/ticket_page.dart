@@ -150,7 +150,7 @@ class _TicketListState extends State<TicketTable> {
 
   PreferredSizeWidget? _widgetAppbar() {
     return AppBar(
-      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      backgroundColor: Theme.of(context).primaryColor,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -158,19 +158,6 @@ class _TicketListState extends State<TicketTable> {
             date,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          if (date == DateFormat('dd/MM').format(DateTime.now()))
-            Container(
-              margin: const EdgeInsets.only(left: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
-              decoration: BoxDecoration(
-                color: Colors.green,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: const Text(
-                'Today',
-                style: TextStyle(color: Colors.white, fontSize: 16),
-              ),
-            ),
           const Spacer(),
           Text(
             time,
@@ -184,8 +171,6 @@ class _TicketListState extends State<TicketTable> {
 
   Future<void> _showEntryDialog(
       BuildContext context, SevaTicket? ticket) async {
-    // TODO: Function is too big. unable to refactor because of cross dependencies
-
     // local variables: default values in the dialog
     // when update entry is desired the default values are replaced
     // with the values from passed ticket
@@ -469,6 +454,9 @@ class _TicketListState extends State<TicketTable> {
           _showEntryDialog(context, null);
         },
         tooltip: 'Add new entry',
+        backgroundColor: Theme.of(context)
+            .primaryColor, // Set background color to match AppBar
+        foregroundColor: Colors.white, // Set icon color to white
         child: const Icon(Icons.add),
       ),
     );
