@@ -116,12 +116,13 @@ class _SummaryState extends State<Summary> {
     _appendRow("Total Card transactions", totalCard.toString());
 
     _appendSpace();
-    _appendRow("Total amount via UPI", totalUpiAmount.toString());
-    _appendRow("Total amount via Cash", totalCashAmount.toString());
-    _appendRow("Total amount via Card", totalCardAmount.toString());
+    _appendRow("Total amount via UPI", "Rs. ${totalUpiAmount.toString()}");
+    _appendRow("Total amount via Cash", "Rs. ${totalCashAmount.toString()}");
+    _appendRow("Total amount via Card", "Rs. ${totalCardAmount.toString()}");
 
     _appendSpace();
-    _appendRow("Total overall collection", totalAmount.toString(), bold: true);
+    _appendRow("Total overall collection", "Rs. ${totalAmount.toString()}",
+        bold: true);
   }
 
   Future<void> _futureInit() async {
@@ -246,6 +247,7 @@ class _SummaryState extends State<Summary> {
                         ),
                       ),
 
+                      // display the remaining rows
                       const SizedBox(
                           height:
                               8.0), // Add some space between the title and the rows of text
