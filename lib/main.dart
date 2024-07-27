@@ -21,7 +21,7 @@ class NityaSevaApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Const().colorPrimary, // Example primary color
         appBarTheme: AppBarTheme(
-          backgroundColor: Const().colorBackground, // Set the background color
+          backgroundColor: Const().colorPrimary, // Set the background color
           titleTextStyle: const TextStyle(
             color: Colors.white, // Set the text color to white for brightness
             fontSize: 28.0, // Example font size
@@ -30,6 +30,33 @@ class NityaSevaApp extends StatelessWidget {
           iconTheme: const IconThemeData(
             color: Colors.white, // Set the back arrow color to white
           ),
+        ),
+        textTheme: const TextTheme(
+          bodyLarge: TextStyle(color: Colors.black), // Set default text color
+          bodyMedium: TextStyle(color: Colors.black), // Set default text color
+          bodySmall: TextStyle(color: Colors.black), // Set default text color
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            foregroundColor:
+                Const().colorPrimary, // Set default text color for TextButton
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor: Const()
+                .colorPrimary, // Set default background color for ElevatedButton
+          ),
+        ),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+            foregroundColor: Const()
+                .colorPrimary, // Set default text color for OutlinedButton
+          ),
+        ),
+        iconTheme: IconThemeData(
+          color: Const().colorPrimary, // Set default icon color
         ),
       ),
       home: const LoadingScreen(),

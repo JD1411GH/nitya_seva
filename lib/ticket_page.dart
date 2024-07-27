@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:nitya_seva/const.dart';
 import 'package:nitya_seva/local_storage.dart';
 import 'package:nitya_seva/summary.dart';
 import 'package:nitya_seva/record.dart';
@@ -149,19 +148,23 @@ class _TicketListState extends State<TicketTable> {
   }
 
   PreferredSizeWidget? _widgetAppbar() {
+    String title = 'Seva tickets';
+    // ignore: unused_local_variable
+    SevaSlot? sevaSlot = Record().sevaSlots.firstWhere(
+          (slot) => slot.timestampSlot == timestampSlot,
+        );
+    title = sevaSlot.title;
+
     return AppBar(
-      backgroundColor: Theme.of(context).primaryColor,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            date,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            title,
           ),
           const Spacer(),
           Text(
             time,
-            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ],
       ),
