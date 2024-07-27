@@ -88,8 +88,7 @@ class _TicketListState extends State<TicketTable> {
           switch (result) {
             case 'Summary':
               Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const Summary()))
-                  .then((_) {
+                  MaterialPageRoute(builder: (context) => Summary())).then((_) {
                 Record().registerCallbacks(
                     RecordCallbacks(onTicketChange: refresh));
               });
