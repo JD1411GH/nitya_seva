@@ -143,8 +143,10 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
+
+                // Icon for time of day
                 Icon(
-                  sevaSlots[index].timestampSlot.hour < 12
+                  sevaSlots[index].timestampSlot.hour < 15
                       ? Icons.wb_sunny
                       : Icons
                           .nights_stay, // Use sun icon for morning and moon icon for evening
@@ -167,7 +169,6 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(height: 8.0), // Space between rows
                 Text(
                   sevaSlots[index].sevakartaSlot,
-                  // style: TextStyle(color: Const().colorPrimary),
                 ),
               ],
             ),
