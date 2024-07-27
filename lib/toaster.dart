@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:nitya_seva/const.dart';
 
 class Toaster {
   static final Toaster _instance = Toaster._internal();

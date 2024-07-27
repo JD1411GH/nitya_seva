@@ -148,12 +148,12 @@ class _TallyNotesPageState extends State<TallyUpiCardPage> {
     if (diff > 0) {
       msg = Text(
         'Total money is excess by $diff.\nAre you sure you want to save?',
-        style: TextStyle(color: Colors.red),
+        style: const TextStyle(color: Colors.red),
       );
     } else if (diff < 0) {
       msg = Text(
         'Total money is short by ${diff.abs()}.\nAre you sure you want to save?',
-        style: TextStyle(color: Colors.red),
+        style: const TextStyle(color: Colors.red),
       );
     }
 

@@ -88,7 +88,7 @@ class _TicketListState extends State<TicketTable> {
           switch (result) {
             case 'Summary':
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => Summary())).then((_) {
+                  MaterialPageRoute(builder: (context) => const Summary())).then((_) {
                 Record().registerCallbacks(
                     RecordCallbacks(onTicketChange: refresh));
               });
@@ -478,7 +478,7 @@ class _TicketListState extends State<TicketTable> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('${entry.user}'),
+                        Text(entry.user),
                       ],
                     ),
                   ),

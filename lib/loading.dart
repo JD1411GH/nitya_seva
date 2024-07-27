@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:nitya_seva/access_denied.dart';
-import 'package:nitya_seva/const.dart';
 import 'package:nitya_seva/login.dart';
 import 'package:nitya_seva/home.dart';
 import 'package:nitya_seva/local_storage.dart';
@@ -65,11 +64,11 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Stack(
         fit: StackFit.expand,
         children: <Widget>[
-          const DecoratedBox(
+          DecoratedBox(
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("assets/images/Garuda.jpg"),

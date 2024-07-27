@@ -13,7 +13,7 @@ class Summary extends StatefulWidget {
 
 class _SummaryState extends State<Summary> {
   DateTime? timestampSlot;
-  List<List<String>> _items = [];
+  final List<List<String>> _items = [];
   List<SevaTicket>? _listEntries;
 
   void _appendRow(String col1, String col2, {bool bold = false}) {
