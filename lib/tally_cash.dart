@@ -141,6 +141,25 @@ class _TallyNotesPageState extends State<TallyCashPage> {
     });
   }
 
+  void _saveCash() {
+    if (timestampSlot != null) {
+      Map<String, int> json = {
+        '500': int.tryParse(controller500.text) ?? 0,
+        '200': int.tryParse(controller200.text) ?? 0,
+        '100': int.tryParse(controller100.text) ?? 0,
+        '50': int.tryParse(controller50.text) ?? 0,
+        '20': int.tryParse(controller20.text) ?? 0,
+        '10': int.tryParse(controller10.text) ?? 0,
+      };
+
+      FB().addUpdateTallyCash(timestampSlot!, json);
+    } else {
+      Toaster().error('Unable to save');
+    }
+
+    Navigator.of(context).pop(); // Close the dialog
+  }
+
   void _dialogSave(BuildContext context) {
     // decide the content of the dialog box
     var total = _calculateTotal([
@@ -168,6 +187,13 @@ class _TallyNotesPageState extends State<TallyCashPage> {
       );
     }
 
+    // dont show dialog if diff is 0
+    if (diff == 0) {
+      _saveCash();
+
+      return;
+    }
+
     // show the dialog box
     showDialog(
       context: context,
@@ -187,22 +213,7 @@ class _TallyNotesPageState extends State<TallyCashPage> {
             // Yes button
             TextButton(
               onPressed: () {
-                if (timestampSlot != null) {
-                  Map<String, int> json = {
-                    '500': int.tryParse(controller500.text) ?? 0,
-                    '200': int.tryParse(controller200.text) ?? 0,
-                    '100': int.tryParse(controller100.text) ?? 0,
-                    '50': int.tryParse(controller50.text) ?? 0,
-                    '20': int.tryParse(controller20.text) ?? 0,
-                    '10': int.tryParse(controller10.text) ?? 0,
-                  };
-
-                  FB().addUpdateTallyCash(timestampSlot!, json);
-                } else {
-                  Toaster().error('Unable to save');
-                }
-
-                Navigator.of(context).pop(); // Close the dialog
+                _saveCash();
                 Navigator.of(context).pop(); // Go back to summary page
               },
               child: const Text('Yes'),
@@ -210,44 +221,6 @@ class _TallyNotesPageState extends State<TallyCashPage> {
           ],
         );
       },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Tally Cash'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: <Widget>[
-              _buildDenominationField('500', controller500),
-              _buildDenominationField('200', controller200),
-              _buildDenominationField('100', controller100),
-              _buildDenominationField('50', controller50),
-              _buildDenominationField('20', controller20),
-              _buildDenominationField('10', controller10),
-
-              // the sum total
-              const Divider(),
-              _widgetTotal(),
-              const Divider(),
-
-              // save button
-              ElevatedButton(
-                onPressed: () {
-                  _dialogSave(context);
-                },
-                child: const Text('Verify & Save'),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 
@@ -346,5 +319,42 @@ class _TallyNotesPageState extends State<TallyCashPage> {
       total += value * count;
     }
     return total;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Tally Cash'),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: <Widget>[
+              _buildDenominationField('500', controller500),
+              _buildDenominationField('200', controller200),
+              _buildDenominationField('100', controller100),
+              _buildDenominationField('50', controller50),
+              _buildDenominationField('20', controller20),
+              _buildDenominationField('10', controller10),
+
+              // the sum total
+              const Divider(),
+              _widgetTotal(),
+              const Divider(),
+
+              // save button
+              ElevatedButton(
+                onPressed: () {
+                  _dialogSave(context);
+                },
+                child: const Text('Verify & Save'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

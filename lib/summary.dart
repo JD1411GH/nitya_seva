@@ -290,7 +290,6 @@ class _SummaryState extends State<Summary> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Summary'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: SingleChildScrollView(
         child: _widgetTable(),

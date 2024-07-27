@@ -200,42 +200,6 @@ class _TallyNotesPageState extends State<TallyUpiCardPage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Tally UPI / Card'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: <Widget>[
-              _buildDenominationField('400', controller400),
-              _buildDenominationField('500', controller500),
-              _buildDenominationField('1000', controller1000),
-              _buildDenominationField('2500', controller2500),
-
-              // the sum total
-              const Divider(),
-              _widgetTotal(),
-              const Divider(),
-
-              // save button
-              ElevatedButton(
-                onPressed: () {
-                  _dialogSave(context);
-                },
-                child: const Text('Verify & Save'),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildDenominationField(
       String denomination, TextEditingController controller) {
     return Padding(
@@ -331,5 +295,40 @@ class _TallyNotesPageState extends State<TallyUpiCardPage> {
       total += value * count;
     }
     return total;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Tally UPI / Card'),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: <Widget>[
+              _buildDenominationField('400', controller400),
+              _buildDenominationField('500', controller500),
+              _buildDenominationField('1000', controller1000),
+              _buildDenominationField('2500', controller2500),
+
+              // the sum total
+              const Divider(),
+              _widgetTotal(),
+              const Divider(),
+
+              // save button
+              ElevatedButton(
+                onPressed: () {
+                  _dialogSave(context);
+                },
+                child: const Text('Verify & Save'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

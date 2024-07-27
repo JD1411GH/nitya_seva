@@ -109,35 +109,43 @@ class _TicketListState extends State<TicketTable> {
           }
         },
         itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-          const PopupMenuItem<String>(
+          PopupMenuItem<String>(
             value: 'Summary',
             child: Row(
               children: <Widget>[
-                Icon(Icons.summarize),
-                SizedBox(width: 8),
-                Text('Summary'),
+                Icon(Icons.summarize, color: Theme.of(context).iconTheme.color),
+                const SizedBox(width: 8),
+                Text('Summary', style: Theme.of(context).textTheme.titleMedium),
               ],
             ),
           ),
-          const PopupMenuItem<String>(
+
+          PopupMenuItem<String>(
             value: 'Tally cash',
             child: Row(
               children: <Widget>[
-                Icon(Icons.money), // Icon for remarks
-                SizedBox(
+                Icon(Icons.money,
+                    color:
+                        Theme.of(context).iconTheme.color), // Icon for remarks
+                const SizedBox(
                     width: 8), // Add some spacing between the icon and the text
-                Text('Tally cash'),
+                Text('Tally cash',
+                    style: Theme.of(context).textTheme.titleMedium),
               ],
             ),
           ),
-          const PopupMenuItem<String>(
+
+          PopupMenuItem<String>(
             value: 'Tally UPI/Card',
             child: Row(
               children: <Widget>[
-                Icon(Icons.account_balance_wallet), // Icon for remarks
-                SizedBox(
+                Icon(Icons.account_balance_wallet,
+                    color:
+                        Theme.of(context).iconTheme.color), // Icon for remarks
+                const SizedBox(
                     width: 8), // Add some spacing between the icon and the text
-                Text('Tally UPI/Card'),
+                Text('Tally UPI/Card',
+                    style: Theme.of(context).textTheme.titleMedium),
               ],
             ),
           ),
