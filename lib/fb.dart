@@ -41,7 +41,11 @@ class FB {
     List<SevaSlot> sevaSlots = [];
 
     if (snapshot.value != null) {
-      sevaSlots = (snapshot.value as Map).values.toList().cast<SevaSlot>();
+      sevaSlots = (snapshot.value as Map)
+          .values
+          .map((value) =>
+              SevaSlot.fromJson(Map<String, dynamic>.from(value as Map)))
+          .toList();
     }
 
     return sevaSlots;
