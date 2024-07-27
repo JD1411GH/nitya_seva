@@ -43,6 +43,7 @@ dependencies:
   firebase_auth: ^5.1.1
   firebase_database: ^11.0.2
   fluttertoast: ^8.2.6
+  flutter_native_splash: ^2.0.6+1
 
 dev_dependencies:
   flutter_test:
@@ -73,6 +74,8 @@ flutter:
     - assets/images/icon_cash.png
     - assets/images/icon_card.png
 
+
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
@@ -98,3 +101,8 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_native_splash:
+  color: "#ffffff" # Background color for the splash screen
+  image: assets/images/Garuda.jpg # Path to your splash screen image
+  fullscreen: true # Make the splash screen full screen
