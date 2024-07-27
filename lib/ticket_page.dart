@@ -55,7 +55,11 @@ class _TicketListState extends State<TicketTable> {
     setState(() {
       sevaTickets = Record().sevaTickets[timestampSlot]!;
     });
-    print(sevaTickets);
+  }
+
+  Future<void> _refreshFull() async {
+    await Record().refreshSevaTickets(timestampSlot);
+    refresh();
   }
 
   void onAddEntry(SevaTicket entry) async {
@@ -590,22 +594,25 @@ class _TicketListState extends State<TicketTable> {
         } else {
           return Scaffold(
             appBar: _widgetAppbar(),
-            body: ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: const EdgeInsets.symmetric(
-                      vertical: 4.0,
-                      horizontal:
-                          8.0), // Optional: Add some margin around the box
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey), // Border color
-                    borderRadius: BorderRadius.circular(
-                        8.0), // Optional: Add rounded corners
-                  ),
-                  child: snapshot.data![index],
-                );
-              },
+            body: RefreshIndicator(
+              onRefresh: _refreshFull,
+              child: ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 4.0,
+                        horizontal:
+                            8.0), // Optional: Add some margin around the box
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey), // Border color
+                      borderRadius: BorderRadius.circular(
+                          8.0), // Optional: Add rounded corners
+                    ),
+                    child: snapshot.data![index],
+                  );
+                },
+              ),
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () {

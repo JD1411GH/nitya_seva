@@ -200,7 +200,14 @@ class Record {
   }
 
   Future<void> refreshSevaSlots() async {
-    sevaSlots = await FB().readSevaSlots() as List<SevaSlot>;
+    sevaSlots = await FB().readSevaSlots();
+    sevaSlots.sort((a, b) => b.timestampSlot.compareTo(a.timestampSlot));
+  }
+
+  Future<void> refreshSevaTickets(DateTime timestampSlot) async {
+    sevaTickets[timestampSlot] = await FB().readSevaTickets(timestampSlot);
+    sevaTickets[timestampSlot]!
+        .sort((a, b) => b.timestampTicket.compareTo(a.timestampTicket));
   }
 }
 

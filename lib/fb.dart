@@ -51,6 +51,25 @@ class FB {
     return sevaSlots;
   }
 
+  Future<List<SevaTicket>> readSevaTickets(DateTime timestampSlot) async {
+    final dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/sevaTickets');
+    DatabaseReference ref =
+        dbRef.child(timestampSlot.toIso8601String().replaceAll(".", "^"));
+
+    DataSnapshot snapshot = await ref.get();
+
+    if (snapshot.exists) {
+      return (snapshot.value as Map)
+          .values
+          .map((value) =>
+              SevaTicket.fromJson(Map<String, dynamic>.from(value as Map)))
+          .toList();
+    } else {
+      return [];
+    }
+  }
+
   Future<String> checkAdminAccess() async {
     // returns "-", "r", "rw"
     return "-";
