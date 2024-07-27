@@ -392,7 +392,6 @@ class _TicketListState extends State<TicketTable> {
   List<Widget> _createTilesFromEntries() {
     return List.generate(sevaTickets.length, (index) {
       SevaTicket entry = sevaTickets[index];
-      var icon;
       Color backgroundColor;
       Color backgroundShade;
       String iconPath = 'assets/images/Garuda.jpg'; // Default icon path
@@ -417,11 +416,11 @@ class _TicketListState extends State<TicketTable> {
       switch (entry.amount) {
         case 400:
           backgroundColor = Colors.lightBlue.shade100;
-          backgroundShade = const Color.fromARGB(255, 1, 169, 247);
+          backgroundShade = const Color.fromARGB(255, 5, 108, 156);
           break;
         case 500:
           backgroundColor = Colors.yellow.shade100;
-          backgroundShade = const Color.fromARGB(255, 173, 157, 8);
+          backgroundShade = const Color.fromARGB(255, 173, 107, 8);
           break;
         case 1000:
           backgroundColor = Colors.lightGreen.shade100;
