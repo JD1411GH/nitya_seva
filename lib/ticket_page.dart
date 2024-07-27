@@ -442,26 +442,45 @@ class _TicketListState extends State<TicketTable> {
     });
   }
 
+  Future<List<Widget>> _futureInit() async {
+    var selectedSlot = await LS().read('selectedSlot');
+    timestampSlot = DateTime.parse(selectedSlot!);
+
+    return _createTilesFromEntries();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _widgetAppbar(),
-      body: ListView.separated(
-        itemCount: _createTilesFromEntries().length,
-        itemBuilder: (context, index) => _createTilesFromEntries()[index],
-        separatorBuilder: (context, index) =>
-            const Divider(color: Color.fromARGB(40, 0, 0, 0), height: 1),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _showEntryDialog(context, null);
-        },
-        tooltip: 'Add new entry',
-        backgroundColor: Theme.of(context)
-            .primaryColor, // Set background color to match AppBar
-        foregroundColor: Colors.white, // Set icon color to white
-        child: const Icon(Icons.add),
-      ),
+    return FutureBuilder<List<Widget>>(
+      future: _futureInit(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('No data available'));
+        } else {
+          return Scaffold(
+            appBar: _widgetAppbar(),
+            body: ListView.separated(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) => snapshot.data![index],
+              separatorBuilder: (context, index) =>
+                  const Divider(color: Color.fromARGB(40, 0, 0, 0), height: 1),
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                _showEntryDialog(context, null);
+              },
+              tooltip: 'Add new entry',
+              backgroundColor: Theme.of(context).primaryColor,
+              foregroundColor: Colors.white,
+              child: const Icon(Icons.add),
+            ),
+          );
+        }
+      },
     );
   }
 }
