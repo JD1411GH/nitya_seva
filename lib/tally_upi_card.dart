@@ -4,6 +4,7 @@ import 'package:nitya_seva/fb.dart';
 import 'package:nitya_seva/local_storage.dart';
 import 'package:nitya_seva/record.dart';
 import 'package:nitya_seva/toaster.dart';
+import 'package:nitya_seva/datatypes.dart';
 
 class TallyUpiCardPage extends StatefulWidget {
   const TallyUpiCardPage({super.key});

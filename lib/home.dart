@@ -4,6 +4,7 @@ import 'package:nitya_seva/const.dart';
 import 'package:nitya_seva/local_storage.dart';
 import 'package:nitya_seva/ticket_page.dart';
 import 'package:nitya_seva/record.dart';
+import 'package:nitya_seva/datatypes.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -77,6 +78,11 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       sevaSlots = Record().sevaSlots;
     });
+  }
+
+  Future<void> _refreshFull() async {
+    Record().refreshSevaSlots();
+    refresh();
   }
 
   Widget _widgetDate(index) {
@@ -186,16 +192,19 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: ListView.builder(
-          itemCount: sevaSlots.length,
-          itemBuilder: (context, index) {
-            return Card(
-              elevation: 4.0, // Adjust the elevation to control the shadow
-              margin: const EdgeInsets.symmetric(vertical: 8.0),
-              // Set the background color to the primary color of the app
-              child: _widgetSlots(context, index),
-            );
-          },
+        child: RefreshIndicator(
+          onRefresh: _refreshFull,
+          child: ListView.builder(
+            itemCount: sevaSlots.length,
+            itemBuilder: (context, index) {
+              return Card(
+                elevation: 4.0, // Adjust the elevation to control the shadow
+                margin: const EdgeInsets.symmetric(vertical: 8.0),
+                // Set the background color to the primary color of the app
+                child: _widgetSlots(context, index),
+              );
+            },
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(

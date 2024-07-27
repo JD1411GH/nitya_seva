@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:nitya_seva/const.dart';
 import 'package:nitya_seva/toaster.dart';
+import 'package:nitya_seva/datatypes.dart';
 
 class FB {
   static FB? _instance;
@@ -32,15 +33,15 @@ class FB {
     return ret;
   }
 
-  Future<List<dynamic>> readSevaSlots() async {
+  Future<List<SevaSlot>> readSevaSlots() async {
     final dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/sevaSlots');
     DatabaseEvent event = await dbRef.once();
     DataSnapshot snapshot = event.snapshot;
-    List<dynamic> sevaSlots = [];
+    List<SevaSlot> sevaSlots = [];
 
     if (snapshot.value != null) {
-      sevaSlots = (snapshot.value as Map).values.toList();
+      sevaSlots = (snapshot.value as Map).values.toList().cast<SevaSlot>();
     }
 
     return sevaSlots;

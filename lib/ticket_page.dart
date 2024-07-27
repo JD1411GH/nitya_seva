@@ -8,6 +8,7 @@ import 'package:nitya_seva/summary.dart';
 import 'package:nitya_seva/record.dart';
 import 'package:nitya_seva/tally_cash.dart';
 import 'package:nitya_seva/tally_upi_card.dart';
+import 'package:nitya_seva/datatypes.dart';
 
 class TicketTable extends StatefulWidget {
   const TicketTable({super.key});
@@ -88,7 +89,8 @@ class _TicketListState extends State<TicketTable> {
           switch (result) {
             case 'Summary':
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const Summary())).then((_) {
+                      MaterialPageRoute(builder: (context) => const Summary()))
+                  .then((_) {
                 Record().registerCallbacks(
                     RecordCallbacks(onTicketChange: refresh));
               });

@@ -3,6 +3,7 @@ import 'package:nitya_seva/const.dart';
 import 'package:nitya_seva/local_storage.dart';
 import 'package:nitya_seva/record.dart';
 import 'package:nitya_seva/toaster.dart';
+import 'package:nitya_seva/datatypes.dart';
 
 class Summary extends StatefulWidget {
   const Summary({super.key});
