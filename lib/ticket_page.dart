@@ -392,22 +392,26 @@ class _TicketListState extends State<TicketTable> {
   List<Widget> _createTilesFromEntries() {
     return List.generate(sevaTickets.length, (index) {
       SevaTicket entry = sevaTickets[index];
-      IconData icon;
+      var icon;
       Color backgroundColor;
       Color backgroundShade;
+      String iconPath = 'assets/images/Garuda.jpg'; // Default icon path
 
       switch (entry.mode) {
         case 'UPI':
-          icon = Icons.account_balance_wallet;
+          iconPath =
+              'assets/images/icon_upi.png'; // Replace with your image path
           break;
         case 'Cash':
-          icon = Icons.money;
+          iconPath =
+              'assets/images/icon_cash.png'; // Replace with your image path
           break;
         case 'Card':
-          icon = Icons.credit_card;
+          iconPath =
+              'assets/images/icon_card.png'; // Replace with your image path
           break;
         default:
-          icon = Icons.error;
+          iconPath = 'assets/images/Garuda.jpg';
       }
 
       switch (entry.amount) {
@@ -488,16 +492,23 @@ class _TicketListState extends State<TicketTable> {
             // mode of payment icon
             trailing: Padding(
               padding: const EdgeInsets.only(
-                  top: 16.0,
-                  left: 8.0,
-                  right: 8.0,
-                  bottom: 8.0), // Adjust the padding values as needed
+                top: 16.0,
+                left: 8.0,
+                right: 8.0,
+                bottom: 8.0,
+              ), // Adjust the padding values as needed
               child: Column(
                 children: [
-                  Icon(icon),
+                  Flexible(
+                    child: Image.asset(
+                      iconPath,
+                      fit: BoxFit
+                          .contain, // Ensures the image shrinks to fit the parent container
+                    ),
+                  ),
                   const SizedBox(
-                      height:
-                          4.0), // Add some spacing between the icon and the text
+                    height: 4.0,
+                  ), // Add some spacing between the icon and the text
                 ],
               ),
             ), // Trailing icon: mode of payment
