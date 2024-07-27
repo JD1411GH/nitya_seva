@@ -479,13 +479,17 @@ class _TicketListState extends State<TicketTable> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('${entry.user}'),
-                        Text(
-                            'Time: ${DateFormat('HH:mm').format(entry.timestampTicket)}, Mode: ${entry.mode}'),
                       ],
                     ),
                   ),
                 ),
               ],
+            ),
+
+            subtitle: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                  'Time: ${DateFormat('HH:mm').format(entry.timestampTicket)}, Mode: ${entry.mode}'),
             ),
 
             // mode of payment icon
