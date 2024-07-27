@@ -156,19 +156,44 @@ class _TicketListState extends State<TicketTable> {
     title = sevaSlot.title;
 
     return AppBar(
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title,
+            style: const TextStyle(
+                fontSize: 18), // Reduced font size for the title
           ),
-          const Spacer(),
           Text(
-            time,
+            sevaSlot.sevakartaSlot, // Seva karta name
+            style: const TextStyle(
+                fontSize: 14), // Smaller font size than the title
           ),
         ],
       ),
-      actions: _widgetTicketMenu(),
+      actions: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              DateFormat('dd/MM')
+                  .format(timestampSlot), // Date in "DD/MM" format
+              style: Theme.of(context)
+                  .textTheme
+                  .titleSmall, // Smaller font size than the title
+            ),
+            Text(
+              DateFormat('HH:mm')
+                  .format(timestampSlot), // Time in "HH:MM" format
+              style: Theme.of(context)
+                  .textTheme
+                  .titleSmall, // Smaller font size than the title
+            ),
+          ],
+        ),
+        ..._widgetTicketMenu(),
+      ],
     );
   }
 
@@ -458,7 +483,7 @@ class _TicketListState extends State<TicketTable> {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+        } else if (!snapshot.hasData) {
           return const Center(child: Text('No data available'));
         } else {
           return Scaffold(

@@ -35,6 +35,7 @@ class NityaSevaApp extends StatelessWidget {
           bodyLarge: TextStyle(color: Colors.black), // Set default text color
           bodyMedium: TextStyle(color: Colors.black), // Set default text color
           bodySmall: TextStyle(color: Colors.black), // Set default text color
+          titleSmall: TextStyle(fontSize: 14, color: Colors.white),
         ),
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
