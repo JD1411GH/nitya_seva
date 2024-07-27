@@ -432,45 +432,123 @@ class _TicketListState extends State<TicketTable> {
           backgroundShade = const Color.fromARGB(255, 8, 8, 8);
       }
 
-      return ListTile(
-        leading: Container(
-          width: 30,
-          height: 30,
-          decoration: BoxDecoration(
-            color: backgroundShade,
-            shape: BoxShape.circle,
-            // border: Border.all(color: Colors.black),
+      return Stack(
+        children: [
+          ListTile(
+            contentPadding: const EdgeInsets.only(
+                top: 32.0), // Add padding to make space for the title band
+
+            // count of tickets
+            leading: Padding(
+              padding: const EdgeInsets.only(
+                  top: 16.0,
+                  left: 8.0,
+                  right: 8.0,
+                  bottom: 8.0), // Adjust the padding values as needed
+              child: CircleAvatar(
+                backgroundColor: backgroundShade, // Light background color
+                child: Container(
+                  width: 30,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    color: backgroundShade,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Text(
+                      '${sevaTickets.length - index}',
+                      style: const TextStyle(fontSize: 20, color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            // Other details
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('${entry.user}'),
+                        Text(
+                            'Time: ${DateFormat('HH:mm').format(entry.timestampTicket)}, Mode: ${entry.mode}'),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            // mode of payment icon
+            trailing: Padding(
+              padding: const EdgeInsets.only(
+                  top: 16.0,
+                  left: 8.0,
+                  right: 8.0,
+                  bottom: 8.0), // Adjust the padding values as needed
+              child: Column(
+                children: [
+                  Icon(icon),
+                  const SizedBox(
+                      height:
+                          4.0), // Add some spacing between the icon and the text
+                ],
+              ),
+            ), // Trailing icon: mode of payment
+
+            onTap: () {
+              SevaTicket entry = Record().sevaTickets[timestampSlot]![index];
+              _showEntryDialog(context, entry);
+            },
           ),
-          child: Center(
-            child: Text(
-              '${sevaTickets.length - index}',
-              style: const TextStyle(fontSize: 20, color: Colors.white),
+
+          // title band
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              decoration: BoxDecoration(
+                color: backgroundColor, // Dark background color
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(8.0), // Rounded top-left corner
+                  topRight: Radius.circular(8.0), // Rounded top-right corner
+                ),
+              ),
+              padding:
+                  const EdgeInsets.all(8.0), // Padding inside the title band
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // ticket number
+                  Text(
+                    'Ticket #: ${entry.ticket}',
+                    style: const TextStyle(
+                      color: Colors.black, // Light text color
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18, // Adjust font size as needed
+                    ),
+                  ),
+
+                  // amount
+                  Text(
+                    "Rs. ${entry.amount}",
+                    style: const TextStyle(
+                      color: Colors.black, // Light text color
+                      fontSize: 16, // Adjust font size as needed
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Ticket #: ${entry.ticket}',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Text(DateFormat('HH:mm').format(entry.timestampTicket)),
-          ],
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Seva karta: ${entry.user}'),
-            Text('Amount: ${entry.amount}, Mode: ${entry.mode}'),
-          ],
-        ),
-        trailing: Icon(icon),
-        tileColor: backgroundColor,
-        onTap: () {
-          SevaTicket entry = Record().sevaTickets[timestampSlot]![index];
-          _showEntryDialog(context, entry);
-        },
+        ],
       );
     });
   }
@@ -496,11 +574,22 @@ class _TicketListState extends State<TicketTable> {
         } else {
           return Scaffold(
             appBar: _widgetAppbar(),
-            body: ListView.separated(
+            body: ListView.builder(
               itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) => snapshot.data![index],
-              separatorBuilder: (context, index) =>
-                  const Divider(color: Color.fromARGB(40, 0, 0, 0), height: 1),
+              itemBuilder: (context, index) {
+                return Container(
+                  margin: const EdgeInsets.symmetric(
+                      vertical: 4.0,
+                      horizontal:
+                          8.0), // Optional: Add some margin around the box
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey), // Border color
+                    borderRadius: BorderRadius.circular(
+                        8.0), // Optional: Add rounded corners
+                  ),
+                  child: snapshot.data![index],
+                );
+              },
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
