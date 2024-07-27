@@ -105,9 +105,7 @@ class _TallyNotesPageState extends State<TallyCashPage> {
               // validation success icon
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: validationSuccess
-                    ? Const().colorSuccess
-                    : Const().colorError,
+                color: validationSuccess ? Colors.green : Colors.red,
               ),
               padding:
                   const EdgeInsets.all(1.0), // Adjust the padding as needed
@@ -178,12 +176,12 @@ class _TallyNotesPageState extends State<TallyCashPage> {
     if (diff > 0) {
       msg = Text(
         'Total money is excess by $diff.\nAre you sure you want to save?',
-        style: TextStyle(color: Const().colorError),
+        style: const TextStyle(color: Colors.red),
       );
     } else if (diff < 0) {
       msg = Text(
         'Total money is short by ${diff.abs()}.\nAre you sure you want to save?',
-        style: TextStyle(color: Const().colorError),
+        style: const TextStyle(color: Colors.red),
       );
     }
 

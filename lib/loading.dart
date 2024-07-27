@@ -84,7 +84,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
               height: 80,
               child: CircularProgressIndicator(
                 strokeWidth: 8,
-                color: Const().colorPrimaryVariant,
+                // color: Const().colorPrimaryVariant,
               ),
             ),
           ),

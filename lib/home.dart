@@ -167,7 +167,7 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(height: 8.0), // Space between rows
                 Text(
                   sevaSlots[index].sevakartaSlot,
-                  style: TextStyle(color: Const().colorPrimary),
+                  // style: TextStyle(color: Const().colorPrimary),
                 ),
               ],
             ),

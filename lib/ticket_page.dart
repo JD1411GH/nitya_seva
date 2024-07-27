@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:nitya_seva/const.dart';
 import 'package:nitya_seva/local_storage.dart';
 import 'package:nitya_seva/summary.dart';
 import 'package:nitya_seva/record.dart';
@@ -415,24 +416,24 @@ class _TicketListState extends State<TicketTable> {
 
       switch (entry.amount) {
         case 400:
-          backgroundColor = Colors.lightBlue.shade100;
-          backgroundShade = const Color.fromARGB(255, 5, 108, 156);
+          backgroundColor = Const().color400!;
+          backgroundShade = Const().color400variant!;
           break;
         case 500:
-          backgroundColor = Colors.yellow.shade100;
-          backgroundShade = const Color.fromARGB(255, 173, 107, 8);
+          backgroundColor = Const().color500!;
+          backgroundShade = Const().color500variant!;
           break;
         case 1000:
-          backgroundColor = Colors.lightGreen.shade100;
-          backgroundShade = const Color.fromARGB(255, 84, 153, 5);
+          backgroundColor = Const().color1000!;
+          backgroundShade = Const().color1000variant!;
           break;
         case 2500:
-          backgroundColor = Colors.pink.shade100;
-          backgroundShade = const Color.fromARGB(255, 249, 3, 89);
+          backgroundColor = Const().color2500!;
+          backgroundShade = Const().color2500variant!;
           break;
         default:
-          backgroundColor = Colors.grey.shade200;
-          backgroundShade = const Color.fromARGB(255, 8, 8, 8);
+          backgroundColor = Theme.of(context).colorScheme.primary;
+          backgroundShade = Theme.of(context).colorScheme.primaryContainer;
       }
 
       return Stack(
