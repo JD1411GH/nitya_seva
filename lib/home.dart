@@ -186,8 +186,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          Const().appName,
+        title: const Text(
+          "Pushpanjali Seva",
         ),
       ),
       body: Padding(

@@ -13,7 +13,7 @@ class Const {
     // init
   }
 
-  String appName = 'Nitya Seva';
+  String appName = 'Garuda';
   String appVersion = '1.0.0';
   String dbVersion = '1';
 
