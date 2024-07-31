@@ -41,4 +41,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+#misc files
 docs/.$class_diagram.drawio.bkp
