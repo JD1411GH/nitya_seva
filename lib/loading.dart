@@ -1,11 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:nitya_seva/access_denied.dart';
-import 'package:nitya_seva/login.dart';
-import 'package:nitya_seva/home.dart';
-import 'package:nitya_seva/local_storage.dart';
-import 'package:nitya_seva/fb.dart';
-import 'package:nitya_seva/record.dart';
+import 'package:garuda/access_denied.dart';
+import 'package:garuda/login.dart';
+import 'package:garuda/home.dart';
+import 'package:garuda/local_storage.dart';
+import 'package:garuda/fb.dart';
+import 'package:garuda/record.dart';
 
 // Convert LoadingScreen to StatefulWidget
 class LoadingScreen extends StatefulWidget {

@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "nitya_seva" "\0"
+            VALUE "CompanyName", "com.iskconvkhill" "\0"
+            VALUE "FileDescription", "garuda" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "nitya_seva" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "nitya_seva.exe" "\0"
-            VALUE "ProductName", "nitya_seva" "\0"
+            VALUE "InternalName", "garuda" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2024 com.iskconvkhill. All rights reserved." "\0"
+            VALUE "OriginalFilename", "garuda.exe" "\0"
+            VALUE "ProductName", "garuda" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

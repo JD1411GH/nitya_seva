@@ -1,6 +1,6 @@
-import 'package:nitya_seva/fb.dart';
-import 'package:nitya_seva/toaster.dart';
-import 'package:nitya_seva/datatypes.dart';
+import 'package:garuda/fb.dart';
+import 'package:garuda/toaster.dart';
+import 'package:garuda/datatypes.dart';
 
 class Record {
   static final Record _instance = Record._internal();

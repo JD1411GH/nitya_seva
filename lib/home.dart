@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:nitya_seva/local_storage.dart';
-import 'package:nitya_seva/ticket_page.dart';
-import 'package:nitya_seva/record.dart';
-import 'package:nitya_seva/datatypes.dart';
+import 'package:garuda/local_storage.dart';
+import 'package:garuda/ticket_page.dart';
+import 'package:garuda/record.dart';
+import 'package:garuda/datatypes.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

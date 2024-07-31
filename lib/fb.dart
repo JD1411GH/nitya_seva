@@ -1,7 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
-import 'package:nitya_seva/const.dart';
-import 'package:nitya_seva/toaster.dart';
-import 'package:nitya_seva/datatypes.dart';
+import 'package:garuda/const.dart';
+import 'package:garuda/toaster.dart';
+import 'package:garuda/datatypes.dart';
 
 class FB {
   static FB? _instance;

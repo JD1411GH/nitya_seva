@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:nitya_seva/const.dart';
-import 'package:nitya_seva/local_storage.dart';
-import 'package:nitya_seva/record.dart';
-import 'package:nitya_seva/toaster.dart';
-import 'package:nitya_seva/datatypes.dart';
+import 'package:garuda/const.dart';
+import 'package:garuda/local_storage.dart';
+import 'package:garuda/record.dart';
+import 'package:garuda/toaster.dart';
+import 'package:garuda/datatypes.dart';
 
 class Summary extends StatefulWidget {
   const Summary({super.key});

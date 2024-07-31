@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:nitya_seva/const.dart';
-import 'package:nitya_seva/fb.dart';
-import 'package:nitya_seva/local_storage.dart';
-import 'package:nitya_seva/record.dart';
-import 'package:nitya_seva/toaster.dart';
-import 'package:nitya_seva/datatypes.dart';
+import 'package:garuda/const.dart';
+import 'package:garuda/fb.dart';
+import 'package:garuda/local_storage.dart';
+import 'package:garuda/record.dart';
+import 'package:garuda/toaster.dart';
+import 'package:garuda/datatypes.dart';
 
 class TallyCashPage extends StatefulWidget {
   const TallyCashPage({super.key});

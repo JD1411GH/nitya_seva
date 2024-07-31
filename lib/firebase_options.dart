@@ -69,6 +69,6 @@ class DefaultFirebaseOptions {
     messagingSenderId: '391956643298',
     projectId: 'iskcon-vkhill-nitya-seva',
     storageBucket: 'iskcon-vkhill-nitya-seva.appspot.com',
-    iosBundleId: 'com.example.nityaSevaCalculation',
+    iosBundleId: 'com.iskconvkhill.nityaSevaCalculation',
   );
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nitya_seva/const.dart';
-import 'package:nitya_seva/loading.dart';
+import 'package:garuda/const.dart';
+import 'package:garuda/loading.dart';
 
 Future<void> main() async {
   runApp(const NityaSevaApp());

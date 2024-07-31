@@ -2,13 +2,13 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:nitya_seva/const.dart';
-import 'package:nitya_seva/local_storage.dart';
-import 'package:nitya_seva/summary.dart';
-import 'package:nitya_seva/record.dart';
-import 'package:nitya_seva/tally_cash.dart';
-import 'package:nitya_seva/tally_upi_card.dart';
-import 'package:nitya_seva/datatypes.dart';
+import 'package:garuda/const.dart';
+import 'package:garuda/local_storage.dart';
+import 'package:garuda/summary.dart';
+import 'package:garuda/record.dart';
+import 'package:garuda/tally_cash.dart';
+import 'package:garuda/tally_upi_card.dart';
+import 'package:garuda/datatypes.dart';
 
 class TicketTable extends StatefulWidget {
   const TicketTable({super.key});
