@@ -44,6 +44,8 @@ dependencies:
   firebase_database: ^11.0.2
   fluttertoast: ^8.2.6
   flutter_native_splash: ^2.0.0
+  flip_card: ^0.7.0
+  fl_chart: ^0.68.0
 
 dev_dependencies:
   flutter_test:

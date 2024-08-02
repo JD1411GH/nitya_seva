@@ -9,6 +9,7 @@ import 'package:garuda/record.dart';
 import 'package:garuda/tally_cash.dart';
 import 'package:garuda/tally_upi_card.dart';
 import 'package:garuda/datatypes.dart';
+import 'package:flip_card/flip_card.dart';
 
 class TicketTable extends StatefulWidget {
   const TicketTable({super.key});
@@ -206,6 +207,8 @@ class _TicketListState extends State<TicketTable> {
             ),
           ],
         ),
+
+        // action menu
         ..._widgetTicketMenu(),
       ],
     );
@@ -596,22 +599,29 @@ class _TicketListState extends State<TicketTable> {
             appBar: _widgetAppbar(),
             body: RefreshIndicator(
               onRefresh: _refreshFull,
-              child: ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 4.0,
-                        horizontal:
-                            8.0), // Optional: Add some margin around the box
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey), // Border color
-                      borderRadius: BorderRadius.circular(
-                          8.0), // Optional: Add rounded corners
+              child: Column(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          margin: const EdgeInsets.symmetric(
+                              vertical: 4.0,
+                              horizontal:
+                                  8.0), // Optional: Add some margin around the box
+                          decoration: BoxDecoration(
+                            border:
+                                Border.all(color: Colors.grey), // Border color
+                            borderRadius: BorderRadius.circular(
+                                8.0), // Optional: Add rounded corners
+                          ),
+                          child: snapshot.data![index],
+                        );
+                      },
                     ),
-                    child: snapshot.data![index],
-                  );
-                },
+                  ),
+                ],
               ),
             ),
             floatingActionButton: FloatingActionButton(

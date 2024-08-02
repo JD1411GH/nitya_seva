@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/dashboard.dart';
 import 'package:intl/intl.dart';
 import 'package:garuda/local_storage.dart';
 import 'package:garuda/ticket_page.dart';
 import 'package:garuda/record.dart';
 import 'package:garuda/datatypes.dart';
+import 'package:garuda/dashboard.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -193,16 +195,28 @@ class _HomePageState extends State<HomePage> {
         padding: const EdgeInsets.all(8.0),
         child: RefreshIndicator(
           onRefresh: _refreshFull,
-          child: ListView.builder(
-            itemCount: sevaSlots.length,
-            itemBuilder: (context, index) {
-              return Card(
-                elevation: 4.0, // Adjust the elevation to control the shadow
-                margin: const EdgeInsets.symmetric(vertical: 8.0),
-                // Set the background color to the primary color of the app
-                child: _widgetSlots(context, index),
-              );
-            },
+          child: Column(
+            children: [
+              Dashboard(),
+              const Divider(
+                color: Colors.grey,
+                thickness: 1.0,
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: sevaSlots.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      elevation:
+                          4.0, // Adjust the elevation to control the shadow
+                      margin: const EdgeInsets.symmetric(vertical: 8.0),
+                      // Set the background color to the primary color of the app
+                      child: _widgetSlots(context, index),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         ),
       ),
