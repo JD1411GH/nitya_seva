@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:garuda/db.dart';
 import 'package:garuda/loading.dart';
+import 'package:garuda/local_storage.dart';
 import 'package:garuda/toaster.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -63,24 +63,24 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _sendOTP() async {
     // Show the dialog
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Notice'),
-          content: const Text(
-              'You will be redirected to the browser for reCAPTCHA verification. After successful verification, come back to the app and enter the OTP received.'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+    // await showDialog(
+    //   context: context,
+    //   builder: (BuildContext context) {
+    //     return AlertDialog(
+    //       title: const Text('Notice'),
+    //       content: const Text(
+    //           'You will be redirected to the browser for reCAPTCHA verification. After successful verification, come back to the app and enter the OTP received.'),
+    //       actions: <Widget>[
+    //         TextButton(
+    //           child: const Text('OK'),
+    //           onPressed: () {
+    //             Navigator.of(context).pop();
+    //           },
+    //         ),
+    //       ],
+    //     );
+    //   },
+    // );
 
     // Continue with the OTP sending process
     final mobileNumber = '+91${_mobileNumberController.text}';
@@ -112,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
       User? user = result.user;
 
       if (user != null) {
-        await DB().write(
+        await LS().write(
           'username',
           username,
         );
@@ -204,12 +204,13 @@ Future<void> loginUser(String phone, LoginUserCallbacks callbacks) async {
     phoneNumber: phone,
     timeout: const Duration(seconds: 60),
     verificationCompleted: (AuthCredential credential) async {
-      Toaster().info("Auto verification disabled");
+      // Toaster().info("Auto verification disabled");
     },
     verificationFailed: (FirebaseAuthException exception) {
       Toaster().error("Verification failed: $exception");
     },
     codeSent: (String verificationId, int? resendToken) async {
+      Toaster().info("OTP sent");
       callbacks.codeSent(verificationId, auth);
     },
     codeAutoRetrievalTimeout: (String verificationId) {
