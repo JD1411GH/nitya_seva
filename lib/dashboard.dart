@@ -46,6 +46,11 @@ class _DashboardState extends State<Dashboard> {
     FB().listenForSevaTicketChange(FBCallbacks(onChange: _onTicketChange));
   }
 
+  destroy() {
+    FB().removeSevaSlotListeners();
+    FB().removeSevaTicketListeners();
+  }
+
   Future<void> _futureInit() async {
     // reset the selected date to the current date
     selectedDate = DateTime.now();

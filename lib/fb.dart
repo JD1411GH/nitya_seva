@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:firebase_database/firebase_database.dart';
@@ -8,6 +9,14 @@ import 'package:garuda/datatypes.dart';
 class FB {
   static FB? _instance;
   static Map<String, String> keyCache = {};
+
+  StreamSubscription? _sevaSlotAddedSubscription;
+  StreamSubscription? _sevaSlotChangedSubscription;
+  StreamSubscription? _sevaSlotRemovedSubscription;
+
+  StreamSubscription? _sevaTicketAddedSubscription;
+  StreamSubscription? _sevaTicketChangedSubscription;
+  StreamSubscription? _sevaTicketRemovedSubscription;
 
   factory FB() {
     _instance ??= FB._();
@@ -232,15 +241,15 @@ class FB {
     final dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/sevaSlots');
 
-    dbRef.onChildAdded.listen((event) {
+    _sevaSlotAddedSubscription = dbRef.onChildAdded.listen((event) {
       callbacks.onChange("ADD_SEVA_SLOT", event.snapshot.value);
     });
 
-    dbRef.onChildChanged.listen((event) {
+    _sevaSlotChangedSubscription = dbRef.onChildChanged.listen((event) {
       callbacks.onChange("UPDATE_SEVA_SLOT", event.snapshot.value);
     });
 
-    dbRef.onChildRemoved.listen((event) {
+    _sevaSlotRemovedSubscription = dbRef.onChildRemoved.listen((event) {
       callbacks.onChange("REMOVE_SEVA_SLOT", event.snapshot.value);
     });
   }
@@ -249,17 +258,29 @@ class FB {
     final dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/sevaTickets');
 
-    dbRef.onChildAdded.listen((event) {
+    _sevaTicketAddedSubscription = dbRef.onChildAdded.listen((event) {
       callbacks.onChange("ADD_SEVA_TICKET", event.snapshot.value);
     });
 
-    dbRef.onChildChanged.listen((event) {
+    _sevaTicketChangedSubscription = dbRef.onChildChanged.listen((event) {
       callbacks.onChange("UPDATE_SEVA_TICKET", event.snapshot.value);
     });
 
-    dbRef.onChildRemoved.listen((event) {
+    _sevaTicketRemovedSubscription = dbRef.onChildRemoved.listen((event) {
       callbacks.onChange("REMOVE_SEVA_TICKET", event.snapshot.value);
     });
+  }
+
+  Future<void> removeSevaSlotListeners() async {
+    await _sevaSlotAddedSubscription?.cancel();
+    await _sevaSlotChangedSubscription?.cancel();
+    await _sevaSlotRemovedSubscription?.cancel();
+  }
+
+  Future<void> removeSevaTicketListeners() async {
+    await _sevaTicketAddedSubscription?.cancel();
+    await _sevaTicketChangedSubscription?.cancel();
+    await _sevaTicketRemovedSubscription?.cancel();
   }
 
   Future<void> addUpdateTallyCash(
