@@ -67,6 +67,32 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+  Widget _wLegends() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _wLegendItem(Colors.blue, 'Blue - 40%'),
+        _wLegendItem(Colors.red, 'Red - 30%'),
+        _wLegendItem(Colors.green, 'Green - 30%'),
+      ],
+    );
+  }
+
+  Widget _wLegendItem(Color color, String text) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 16,
+          height: 16,
+          color: color,
+        ),
+        const SizedBox(width: 4),
+        Text(text),
+      ],
+    );
+  }
+
   Widget _wPieMode() {
     return PieChart(
       PieChartData(
@@ -143,10 +169,16 @@ class _DashboardState extends State<Dashboard> {
                       Expanded(
                         child: _wDenoTable(),
                       ),
-                      SizedBox(
-                        width: 100, // Adjust the width as necessary
-                        height: 100, // Adjust the height as necessary
-                        child: _wPieMode(),
+                      Column(
+                        children: [
+                          SizedBox(
+                            width: 200, // Adjust the width as necessary
+                            height: 200, // Adjust the height as necessary
+                            child: _wPieMode(),
+                          ),
+                          const SizedBox(height: 10),
+                          _wLegends(),
+                        ],
                       ),
                     ],
                   ),
