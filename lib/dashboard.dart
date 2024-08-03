@@ -68,6 +68,22 @@ class _DashboardState extends State<Dashboard> {
             }).toList(),
           );
         }),
+        ...amountTableTotalRow.map((row) {
+          return TableRow(
+            children: row.map((cell) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 8.0), // Adjust the padding as needed
+                child: Center(
+                  child: Text(
+                    cell.toString(),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              );
+            }).toList(),
+          );
+        })
       ],
     );
   }
@@ -201,6 +217,8 @@ class _DashboardState extends State<Dashboard> {
         }
 
         // row 0 is count, row 1 is amount
+
+        // fill row 0 first
         // each row is a list by itself
         if (amountTableTotalRow[0].length <= j) {
           // row/col is empty, add the first element
@@ -209,9 +227,17 @@ class _DashboardState extends State<Dashboard> {
           // row is not empty, add the element to the existing element
           amountTableTotalRow[0][j] += col;
         }
+
+        // fill row 1 next
+        if (amountTableTotalRow[1].length <= j) {
+          // row/col is empty, add the first element
+          amountTableTotalRow[1].add(row[0] * col);
+        } else {
+          // row is not empty, add the element to the existing element
+          amountTableTotalRow[1][j] += (row[0] * col);
+        }
       }
     }
-    print("amountTableTotalRow = $amountTableTotalRow");
   }
 
   @override
