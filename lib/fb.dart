@@ -70,6 +70,28 @@ class FB {
     }
   }
 
+  Future<List<SevaTicket>> readSevaTicketsByDate(DateTime date) async {
+    final dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/sevaTickets');
+
+    String pattern =
+        date.toIso8601String().substring(0, 10); // only the date part
+    Query query = dbRef.orderByKey().startAt(pattern).endAt('$pattern\uf8ff');
+
+    DataSnapshot snapshot = await query.get();
+
+    if (snapshot.exists) {
+      Object? timestampSlotKey = snapshot.value;
+      if (timestampSlotKey != null) {
+        // dynamic listEntries = timestampSlotKey;
+      }
+
+      return [];
+    } else {
+      return [];
+    }
+  }
+
   Future<String> checkAdminAccess() async {
     // returns "-", "r", "rw"
     return "-";

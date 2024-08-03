@@ -1,5 +1,6 @@
-import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
+import 'package:garuda/datatypes.dart';
+import 'package:garuda/fb.dart';
 import 'package:intl/intl.dart';
 
 class Dashboard extends StatefulWidget {
@@ -10,9 +11,14 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  Widget _widgetDateHeader() {
-    final DateTime now = DateTime.now();
-    final String formattedDate = DateFormat('EEEE, MMMM d, yyyy').format(now);
+  // list of maps, Map<int deno, int count> ticketSummary
+  List<Map<int, int>> ticketSummary = [];
+  DateTime selectedDate = DateTime.now();
+
+  Widget _wDateHeader() {
+    final String formattedDate =
+        DateFormat('EEEE, MMMM d, yyyy').format(selectedDate);
+
     return Center(
       child: Text(
         formattedDate,
@@ -25,69 +31,95 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  Widget _widgetTable(int count) {
+  Widget _wDenoTable() {
+    // Sample data for the table
+    final data = [
+      [1, 10, 20],
+      [2, 15, 25],
+      [3, 20, 30],
+      [4, 25, 35],
+    ];
+
     return Table(
-      border: TableBorder.all(),
-      children: const [
-        TableRow(
+      children: [
+        const TableRow(
           children: [
-            TableCell(child: Center(child: Text('400'))),
-            TableCell(child: Center(child: Text('500'))),
-            TableCell(child: Center(child: Text('1000'))),
-            TableCell(child: Center(child: Text('2500'))),
-            TableCell(child: Center(child: Text('Total'))),
-            TableCell(child: Center(child: Text('Amount'))),
+            Center(
+                child: Text('denomination',
+                    style: TextStyle(fontWeight: FontWeight.bold))),
+            Center(
+                child: Text('morning',
+                    style: TextStyle(fontWeight: FontWeight.bold))),
+            Center(
+                child: Text('evening',
+                    style: TextStyle(fontWeight: FontWeight.bold))),
           ],
         ),
-        // Add more TableRow widgets here as needed
+        ...data.map((row) {
+          return TableRow(
+            children: row
+                .map((cell) => Center(child: Text(cell.toString())))
+                .toList(),
+          );
+        }),
       ],
     );
+  }
+
+  Future<void> _futureInit() async {
+    // do not call SetState here
+
+    selectedDate = DateTime.now();
+
+    List<SevaTicket> sevatickets =
+        await FB().readSevaTicketsByDate(selectedDate);
+
+    print(sevatickets);
   }
 
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
 
-    return Card(
-      elevation: 4.0,
-      child: Container(
-        width: screenWidth,
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _widgetDateHeader(),
+    return FutureBuilder(
+      future: _futureInit(), // Replace with your actual future
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else {
+          return Card(
+            elevation: 4.0,
+            child: Container(
+              width: screenWidth,
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // date header
+                  _wDateHeader(),
 
-            // Morning table
-            const SizedBox(height: 20),
-            const Text(
-              'Morning',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            _widgetTable(1),
+                  // Morning table and pie chart
+                  const SizedBox(height: 20),
+                  _wDenoTable(),
 
-            // Evening table
-            const SizedBox(
-                height: 20), // Add some spacing between the date and the table
-            const Text(
-              'Evening',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  // Grand total
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Grand Total = ',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const Text(
+                    'Total Amount = ',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
             ),
-            _widgetTable(2),
-
-            // Grand total
-            const SizedBox(height: 20),
-            const Text(
-              'Grand Total = ',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const Text(
-              'Total Amount = ',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-      ),
+          );
+        }
+      },
     );
   }
 }

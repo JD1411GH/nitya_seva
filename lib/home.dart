@@ -197,7 +197,7 @@ class _HomePageState extends State<HomePage> {
           onRefresh: _refreshFull,
           child: Column(
             children: [
-              Dashboard(),
+              const Dashboard(),
               const Divider(
                 color: Colors.grey,
                 thickness: 1.0,
