@@ -162,26 +162,24 @@ class _DashboardState extends State<Dashboard> {
                   // date header
                   _wDateHeader(),
 
-                  // Morning table and pie chart
+                  // Pie chart and legends in the same row
                   const SizedBox(height: 20),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Expanded(
-                        child: _wDenoTable(),
+                      SizedBox(
+                        width: 100, // Reduced width
+                        height: 100, // Reduced height
+                        child: _wPieMode(),
                       ),
-                      Column(
-                        children: [
-                          SizedBox(
-                            width: 200, // Adjust the width as necessary
-                            height: 200, // Adjust the height as necessary
-                            child: _wPieMode(),
-                          ),
-                          const SizedBox(height: 10),
-                          _wLegends(),
-                        ],
-                      ),
+                      const SizedBox(width: 10),
+                      _wLegends(),
                     ],
                   ),
+
+                  // Morning table
+                  const SizedBox(height: 20),
+                  _wDenoTable(),
 
                   // Grand total
                   const SizedBox(height: 20),
