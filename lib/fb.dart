@@ -51,6 +51,27 @@ class FB {
     return sevaSlots;
   }
 
+  Future<List<SevaSlot>> readSevaSlotsByDate(DateTime date) async {
+    final dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/sevaSlots');
+
+    String pattern =
+        date.toIso8601String().substring(0, 10); // only the date part
+    Query query = dbRef.orderByKey().startAt(pattern).endAt('$pattern\uf8ff');
+
+    DataSnapshot snapshot = await query.get();
+
+    if (snapshot.exists) {
+      return (snapshot.value as Map)
+          .values
+          .map((value) =>
+              SevaSlot.fromJson(Map<String, dynamic>.from(value as Map)))
+          .toList();
+    } else {
+      return [];
+    }
+  }
+
   Future<List<SevaTicket>> readSevaTickets(DateTime timestampSlot) async {
     final dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/sevaTickets');

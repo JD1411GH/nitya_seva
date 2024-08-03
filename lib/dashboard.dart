@@ -1,6 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:garuda/datatypes.dart';
 import 'package:garuda/fb.dart';
 import 'package:intl/intl.dart';
 
@@ -12,9 +11,10 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  // list of maps, Map<int deno, int count> ticketSummary
+  // list of maps, Map<int amount, int count> ticketSummary
   List<Map<int, int>> ticketSummary = [];
   DateTime selectedDate = DateTime.now();
+  List<String>? amountTableHeaderRow;
 
   Widget _wDateHeader() {
     final String formattedDate =
@@ -32,37 +32,20 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  Widget _wDenoTable() {
-    // Sample data for the table
-    final data = [
-      [1, 10, 20],
-      [2, 15, 25],
-      [3, 20, 30],
-      [4, 25, 35],
-    ];
-
+  Widget _wAmountTable() {
     return Table(
       children: [
-        const TableRow(
-          children: [
-            Center(
-                child: Text('denomination',
-                    style: TextStyle(fontWeight: FontWeight.bold))),
-            Center(
-                child: Text('morning',
-                    style: TextStyle(fontWeight: FontWeight.bold))),
-            Center(
-                child: Text('evening',
-                    style: TextStyle(fontWeight: FontWeight.bold))),
-          ],
+        TableRow(
+          children: amountTableHeaderRow!.map((header) {
+            return Center(
+              child: Text(
+                header,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            );
+          }).toList(),
         ),
-        ...data.map((row) {
-          return TableRow(
-            children: row
-                .map((cell) => Center(child: Text(cell.toString())))
-                .toList(),
-          );
-        }),
+        // Add more TableRow widgets here for the table body
       ],
     );
   }
@@ -133,12 +116,15 @@ class _DashboardState extends State<Dashboard> {
   Future<void> _futureInit() async {
     // do not call SetState here
 
+    // reset the selected date to the current date
     selectedDate = DateTime.now();
 
-    List<SevaTicket> sevatickets =
-        await FB().readSevaTicketsByDate(selectedDate);
-
-    print(sevatickets);
+    // read from firebase all the slots for the selected date
+    amountTableHeaderRow = ['Amount'];
+    var slots = await FB().readSevaSlotsByDate(selectedDate);
+    slots.forEach((slot) {
+      amountTableHeaderRow.add(slot.title);
+    });
   }
 
   @override
@@ -179,9 +165,9 @@ class _DashboardState extends State<Dashboard> {
                     ],
                   ),
 
-                  // Morning table
+                  // Denomination table
                   const SizedBox(height: 20),
-                  _wDenoTable(),
+                  _wAmountTable(),
 
                   // Grand total
                   const SizedBox(height: 20),
