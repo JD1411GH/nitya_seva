@@ -503,6 +503,25 @@ class _DashboardState extends State<Dashboard> {
                       },
                     ),
                   ),
+                  Positioned(
+                    top: 8,
+                    left: 8,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.today,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .secondary, // Use a variant color from the theme
+                      ),
+                      onPressed: () {
+                        // Implement the action for the "Today" button
+                        setState(() {
+                          selectedDate = DateTime.now();
+                          _futureInit();
+                        });
+                      },
+                    ),
+                  )
                 ],
               ),
             ),
