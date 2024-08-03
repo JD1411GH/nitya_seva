@@ -246,8 +246,15 @@ class _DashboardState extends State<Dashboard> {
             value: countModePercentage['UPI']!.toDouble(),
             title: '${countMode['UPI']}',
             radius: radius,
-            titleStyle: const TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+            titleStyle: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: countModePercentage['UPI']! > 9
+                  ? Colors.white
+                  : Theme.of(context).textTheme.bodyLarge!.color,
+            ),
+            titlePositionPercentageOffset:
+                countModePercentage['UPI']! > 9 ? 0.5 : 1.2,
           ),
 
           // cash
@@ -256,8 +263,15 @@ class _DashboardState extends State<Dashboard> {
             value: countModePercentage['Cash']!.toDouble(),
             title: '${countMode['Cash']}',
             radius: radius,
-            titleStyle: const TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+            titleStyle: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: countModePercentage['Cash']! > 9
+                  ? Colors.white
+                  : Theme.of(context).textTheme.bodyLarge!.color,
+            ),
+            titlePositionPercentageOffset:
+                countModePercentage['Cash']! > 9 ? 0.5 : 1.2,
           ),
 
           // card
@@ -266,8 +280,15 @@ class _DashboardState extends State<Dashboard> {
             value: countModePercentage['Card']!.toDouble(),
             title: '${countMode['Card']}',
             radius: radius,
-            titleStyle: const TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+            titleStyle: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: countModePercentage['Card']! > 9
+                  ? Colors.white
+                  : Theme.of(context).textTheme.bodyLarge!.color,
+            ),
+            titlePositionPercentageOffset:
+                countModePercentage['Card']! > 9 ? 0.5 : 1.2,
           ),
         ],
         sectionsSpace: 2,
@@ -326,7 +347,8 @@ class _DashboardState extends State<Dashboard> {
                         height: 100, // Reduced height
                         child: _wPieChart(),
                       ),
-                      const SizedBox(width: 10),
+                      const SizedBox(
+                          width: 30), // Increased width for more padding
                       _wLegends(),
                     ],
                   ),
@@ -345,7 +367,7 @@ class _DashboardState extends State<Dashboard> {
                         ),
                   ),
                   Text(
-                    'Total Amount = ${grandTotal[1]}',
+                    'Total Amount = Rs. ${grandTotal[1]}',
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
