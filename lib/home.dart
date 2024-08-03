@@ -197,21 +197,23 @@ class _HomePageState extends State<HomePage> {
           onRefresh: _refreshFull,
           child: Column(
             children: [
-              const Dashboard(),
-              const Divider(
-                color: Colors.grey,
-                thickness: 1.0,
-              ),
               Expanded(
                 child: ListView.builder(
-                  itemCount: sevaSlots.length,
+                  itemCount: sevaSlots.length +
+                      1, // Increment itemCount by 1 to include Dashboard
                   itemBuilder: (context, index) {
+                    if (index == 0) {
+                      // Return Dashboard widget as the first item
+                      return const Dashboard();
+                    }
+                    // Adjust index for sevaSlots
+                    final adjustedIndex = index - 1;
                     return Card(
                       elevation:
                           4.0, // Adjust the elevation to control the shadow
                       margin: const EdgeInsets.symmetric(vertical: 8.0),
                       // Set the background color to the primary color of the app
-                      child: _widgetSlots(context, index),
+                      child: _widgetSlots(context, adjustedIndex),
                     );
                   },
                 ),

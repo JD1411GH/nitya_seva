@@ -31,11 +31,14 @@ class NityaSevaApp extends StatelessWidget {
             color: Colors.white, // Set the back arrow color to white
           ),
         ),
-        textTheme: const TextTheme(
-          bodyLarge: TextStyle(color: Colors.black), // Set default text color
-          bodyMedium: TextStyle(color: Colors.black), // Set default text color
-          bodySmall: TextStyle(color: Colors.black), // Set default text color
-          titleSmall: TextStyle(fontSize: 14, color: Colors.white),
+        textTheme: TextTheme(
+          bodyLarge:
+              TextStyle(color: Const().colorPrimary), // Set default text color
+          bodyMedium:
+              TextStyle(color: Const().colorPrimary), // Set default text color
+          bodySmall:
+              TextStyle(color: Const().colorPrimary), // Set default text color
+          titleSmall: const TextStyle(fontSize: 14, color: Colors.white),
         ),
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(

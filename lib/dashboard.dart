@@ -23,11 +23,11 @@ class _DashboardState extends State<Dashboard> {
     return Center(
       child: Text(
         formattedDate,
-        style: const TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-          decoration: TextDecoration.underline,
-        ),
+        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              decoration: TextDecoration.underline,
+            ),
       ),
     );
   }
@@ -94,6 +94,8 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Widget _wPieMode() {
+    double radius = 40;
+
     return PieChart(
       PieChartData(
         sections: [
@@ -101,7 +103,7 @@ class _DashboardState extends State<Dashboard> {
             color: Colors.blue,
             value: 40,
             title: '40%',
-            radius: 50,
+            radius: radius,
             titleStyle: const TextStyle(
                 fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
           ),
@@ -109,7 +111,7 @@ class _DashboardState extends State<Dashboard> {
             color: Colors.red,
             value: 30,
             title: '30%',
-            radius: 50,
+            radius: radius,
             titleStyle: const TextStyle(
                 fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
           ),
@@ -117,13 +119,13 @@ class _DashboardState extends State<Dashboard> {
             color: Colors.green,
             value: 30,
             title: '30%',
-            radius: 50,
+            radius: radius,
             titleStyle: const TextStyle(
                 fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
           ),
         ],
         sectionsSpace: 2,
-        centerSpaceRadius: 0,
+        centerSpaceRadius: 8,
       ),
     );
   }
@@ -183,13 +185,19 @@ class _DashboardState extends State<Dashboard> {
 
                   // Grand total
                   const SizedBox(height: 20),
-                  const Text(
+                  Text(
                     'Grand Total = ',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
-                  const Text(
+                  Text(
                     'Total Amount = ',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                 ],
               ),
