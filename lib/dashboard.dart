@@ -21,6 +21,90 @@ class _DashboardState extends State<Dashboard> {
       []; // [ 400[countTicketMorning, countTicketEvening], 500[countTicketMorning, countTicketEvening] ...]
   List<List<dynamic>> amountTableTotalRow =
       []; // ["Total", countTicketMorning, countTicketEvening], ["Amount", totalAmountMorning, totalAmountEvening]
+  List<int> grandTotal = [0, 0]; // [totalTicket, totalAmount]
+
+  Future<void> _futureInit() async {
+    // reset the selected date to the current date
+    selectedDate = DateTime.now();
+
+    // read from firebase all the slots for the selected date
+    amountTableHeaderRow = ['Amount'];
+    List<SevaSlot> slots = await FB().readSevaSlotsByDate(selectedDate);
+    for (var slot in slots) {
+      amountTableHeaderRow.add(slot.title);
+    }
+
+    // count all tickets for the selected date
+    amountTableTicketRow = [];
+    Map<String, List<SevaTicket>> tickets =
+        await FB().readSevaTicketsByDate(selectedDate);
+    for (var amount in Const().ticketAmounts) {
+      List<int> row = _getRowData(tickets, amount);
+      bool rowReplaced = false;
+      for (int i = 0; i < amountTableTicketRow.length; i++) {
+        if (amountTableTicketRow[i].isNotEmpty &&
+            amountTableTicketRow[i][0] == row[0]) {
+          amountTableTicketRow[i] = row;
+          rowReplaced = true;
+          break;
+        }
+      }
+      if (!rowReplaced) {
+        amountTableTicketRow.add(row);
+      }
+    }
+
+    // calculate the total count for each slot
+    amountTableTotalRow = [
+      ["Total"],
+      ["Amount"]
+    ];
+    for (var i = 0; i < amountTableTicketRow.length; i++) {
+      // this is the row for table entry, and not the rows for the total
+
+      var row = amountTableTicketRow[i];
+      for (var j = 0; j < row.length; j++) {
+        var col = row[j];
+
+        // sapecial case for the first column
+        if (j == 0) {
+          continue;
+        }
+
+        // row 0 is count, row 1 is amount
+
+        // fill row 0 first
+        // each row is a list by itself
+        if (amountTableTotalRow[0].length <= j) {
+          // row/col is empty, add the first element
+          amountTableTotalRow[0].add(col);
+        } else {
+          // row is not empty, add the element to the existing element
+          amountTableTotalRow[0][j] += col;
+        }
+
+        // fill row 1 next
+        if (amountTableTotalRow[1].length <= j) {
+          // row/col is empty, add the first element
+          amountTableTotalRow[1].add(row[0] * col);
+        } else {
+          // row is not empty, add the element to the existing element
+          amountTableTotalRow[1][j] += (row[0] * col);
+        }
+      }
+    }
+
+    // grand total
+    grandTotal = [0, 0];
+    for (var i = 0; i < amountTableTotalRow.length; i++) {
+      for (var j = 0; j < amountTableTotalRow[i].length; j++) {
+        if (j == 0) {
+          continue;
+        }
+        grandTotal[i] += (amountTableTotalRow[i][j] as int);
+      }
+    }
+  }
 
   Widget _wDateHeader() {
     final String formattedDate =
@@ -168,78 +252,6 @@ class _DashboardState extends State<Dashboard> {
     return row;
   }
 
-  Future<void> _futureInit() async {
-    // reset the selected date to the current date
-    selectedDate = DateTime.now();
-
-    // read from firebase all the slots for the selected date
-    amountTableHeaderRow = ['Amount'];
-    List<SevaSlot> slots = await FB().readSevaSlotsByDate(selectedDate);
-    for (var slot in slots) {
-      amountTableHeaderRow.add(slot.title);
-    }
-
-    // count all tickets for the selected date
-    amountTableTicketRow = [];
-    Map<String, List<SevaTicket>> tickets =
-        await FB().readSevaTicketsByDate(selectedDate);
-    for (var amount in Const().ticketAmounts) {
-      List<int> row = _getRowData(tickets, amount);
-      bool rowReplaced = false;
-      for (int i = 0; i < amountTableTicketRow.length; i++) {
-        if (amountTableTicketRow[i].isNotEmpty &&
-            amountTableTicketRow[i][0] == row[0]) {
-          amountTableTicketRow[i] = row;
-          rowReplaced = true;
-          break;
-        }
-      }
-      if (!rowReplaced) {
-        amountTableTicketRow.add(row);
-      }
-    }
-
-    // calculate the total count for each slot
-    amountTableTotalRow = [
-      ["Total"],
-      ["Amount"]
-    ];
-    for (var i = 0; i < amountTableTicketRow.length; i++) {
-      // this is the row for table entry, and not the rows for the total
-
-      var row = amountTableTicketRow[i];
-      for (var j = 0; j < row.length; j++) {
-        var col = row[j];
-
-        // sapecial case for the first column
-        if (j == 0) {
-          continue;
-        }
-
-        // row 0 is count, row 1 is amount
-
-        // fill row 0 first
-        // each row is a list by itself
-        if (amountTableTotalRow[0].length <= j) {
-          // row/col is empty, add the first element
-          amountTableTotalRow[0].add(col);
-        } else {
-          // row is not empty, add the element to the existing element
-          amountTableTotalRow[0][j] += col;
-        }
-
-        // fill row 1 next
-        if (amountTableTotalRow[1].length <= j) {
-          // row/col is empty, add the first element
-          amountTableTotalRow[1].add(row[0] * col);
-        } else {
-          // row is not empty, add the element to the existing element
-          amountTableTotalRow[1][j] += (row[0] * col);
-        }
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -285,14 +297,14 @@ class _DashboardState extends State<Dashboard> {
                   // Grand total
                   const SizedBox(height: 20),
                   Text(
-                    'Grand Total = ',
+                    'Grand Total = ${grandTotal[0]}',
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                   ),
                   Text(
-                    'Total Amount = ',
+                    'Total Amount = ${grandTotal[1]}',
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
