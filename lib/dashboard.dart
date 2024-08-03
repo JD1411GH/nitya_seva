@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:garuda/datatypes.dart';
 import 'package:garuda/fb.dart';
@@ -66,6 +67,41 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+  Widget _wPieMode() {
+    return PieChart(
+      PieChartData(
+        sections: [
+          PieChartSectionData(
+            color: Colors.blue,
+            value: 40,
+            title: '40%',
+            radius: 50,
+            titleStyle: const TextStyle(
+                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+          PieChartSectionData(
+            color: Colors.red,
+            value: 30,
+            title: '30%',
+            radius: 50,
+            titleStyle: const TextStyle(
+                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+          PieChartSectionData(
+            color: Colors.green,
+            value: 30,
+            title: '30%',
+            radius: 50,
+            titleStyle: const TextStyle(
+                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+        ],
+        sectionsSpace: 2,
+        centerSpaceRadius: 0,
+      ),
+    );
+  }
+
   Future<void> _futureInit() async {
     // do not call SetState here
 
@@ -102,7 +138,18 @@ class _DashboardState extends State<Dashboard> {
 
                   // Morning table and pie chart
                   const SizedBox(height: 20),
-                  _wDenoTable(),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _wDenoTable(),
+                      ),
+                      SizedBox(
+                        width: 100, // Adjust the width as necessary
+                        height: 100, // Adjust the height as necessary
+                        child: _wPieMode(),
+                      ),
+                    ],
+                  ),
 
                   // Grand total
                   const SizedBox(height: 20),
