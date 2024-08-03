@@ -19,6 +19,8 @@ class _DashboardState extends State<Dashboard> {
   List<String> amountTableHeaderRow = [];
   List<List<int>> amountTableTicketRow =
       []; // [ 400[countTicketMorning, countTicketEvening], 500[countTicketMorning, countTicketEvening] ...]
+  List<List<dynamic>> amountTableTotalRow =
+      []; // ["Total", countTicketMorning, countTicketEvening], ["Amount", totalAmountMorning, totalAmountEvening]
 
   Widget _wDateHeader() {
     final String formattedDate =
@@ -41,10 +43,14 @@ class _DashboardState extends State<Dashboard> {
       children: [
         TableRow(
           children: amountTableHeaderRow.map((header) {
-            return Center(
-              child: Text(
-                header,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+            return Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 8.0), // Adjust the padding as needed
+              child: Center(
+                child: Text(
+                  header,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
             );
           }).toList(),
@@ -52,12 +58,16 @@ class _DashboardState extends State<Dashboard> {
         ...amountTableTicketRow.map((row) {
           return TableRow(
             children: row.map((cell) {
-              return Center(
-                child: Text(cell.toString()),
+              return Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 8.0), // Adjust the padding as needed
+                child: Center(
+                  child: Text(cell.toString()),
+                ),
               );
             }).toList(),
           );
-        }).toList(),
+        }),
       ],
     );
   }
@@ -159,7 +169,6 @@ class _DashboardState extends State<Dashboard> {
         await FB().readSevaTicketsByDate(selectedDate);
     for (var amount in Const().ticketAmounts) {
       List<int> row = _getRowData(tickets, amount);
-
       bool rowReplaced = false;
       for (int i = 0; i < amountTableTicketRow.length; i++) {
         if (amountTableTicketRow[i].isNotEmpty &&
@@ -173,6 +182,36 @@ class _DashboardState extends State<Dashboard> {
         amountTableTicketRow.add(row);
       }
     }
+
+    // calculate the total count for each slot
+    amountTableTotalRow = [
+      ["Total"],
+      ["Amount"]
+    ];
+    for (var i = 0; i < amountTableTicketRow.length; i++) {
+      // this is the row for table entry, and not the rows for the total
+
+      var row = amountTableTicketRow[i];
+      for (var j = 0; j < row.length; j++) {
+        var col = row[j];
+
+        // sapecial case for the first column
+        if (j == 0) {
+          continue;
+        }
+
+        // row 0 is count, row 1 is amount
+        // each row is a list by itself
+        if (amountTableTotalRow[0].length <= j) {
+          // row/col is empty, add the first element
+          amountTableTotalRow[0].add(col);
+        } else {
+          // row is not empty, add the element to the existing element
+          amountTableTotalRow[0][j] += col;
+        }
+      }
+    }
+    print("amountTableTotalRow = $amountTableTotalRow");
   }
 
   @override
@@ -198,7 +237,7 @@ class _DashboardState extends State<Dashboard> {
                   // date header
                   _wDateHeader(),
 
-                  // Pie chart and legends in the same row
+                  // Pie chart and legends
                   const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
