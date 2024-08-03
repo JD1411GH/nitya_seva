@@ -53,7 +53,7 @@ class _DashboardState extends State<Dashboard> {
 
   Future<void> _futureInit() async {
     // reset the selected date to the current date
-    selectedDate = DateTime.now();
+    // selectedDate = DateTime.now();
 
     // read from firebase all the slots for the selected date
     // somehow this piece of code was being called from a parallel thread. hence using a mutex.
@@ -392,8 +392,6 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-
     return FutureBuilder(
       future: _futureInit(), // Replace with your actual future
       builder: (context, snapshot) {
@@ -422,10 +420,16 @@ class _DashboardState extends State<Dashboard> {
             onHorizontalDragEnd: (details) {
               if (details.primaryVelocity! > 0) {
                 // User swiped Right
-                print('swiped right');
+                selectedDate = selectedDate.subtract(const Duration(days: 1));
+                setState(() {
+                  _futureInit();
+                });
               } else if (details.primaryVelocity! < 0) {
                 // User swiped Left
-                print('swiped left');
+                selectedDate = selectedDate.add(const Duration(days: 1));
+                setState(() {
+                  _futureInit();
+                });
               }
             },
             child: Card(

@@ -136,6 +136,7 @@ class FB {
         }
         if (title.isEmpty) {
           Toaster().error("Unable to find title for slot");
+          continue;
         } else {
           sevaTickets[title] = [];
         }
