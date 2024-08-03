@@ -17,6 +17,8 @@ class Const {
   String appVersion = '1.0.0';
   String dbVersion = '1';
 
+  List<int> ticketAmounts = [400, 500, 1000, 2500];
+
   // theme colors
   final Color colorPrimary =
       ColorScheme.fromSeed(seedColor: const Color(0xFF3B4043)).primary;

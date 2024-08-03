@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:garuda/const.dart';
 import 'package:garuda/toaster.dart';
@@ -101,13 +103,18 @@ class FB {
 
     DataSnapshot snapshot = await query.get();
 
+    List<SevaTicket> sevaTickets = [];
     if (snapshot.exists) {
-      Object? timestampSlotKey = snapshot.value;
-      if (timestampSlotKey != null) {
-        // dynamic listEntries = timestampSlotKey;
-      }
+      var mapSlotsFiltered = snapshot.value as Map;
+      mapSlotsFiltered.forEach((key, value) {
+        var mapTickets = value as Map;
+        mapTickets.forEach((key, value) {
+          sevaTickets.add(
+              SevaTicket.fromJson(Map<String, dynamic>.from(value as Map)));
+        });
+      });
 
-      return [];
+      return sevaTickets;
     } else {
       return [];
     }

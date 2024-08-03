@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:garuda/datatypes.dart';
 import 'package:garuda/fb.dart';
 import 'package:intl/intl.dart';
 
@@ -121,10 +122,14 @@ class _DashboardState extends State<Dashboard> {
 
     // read from firebase all the slots for the selected date
     amountTableHeaderRow = ['Amount'];
-    var slots = await FB().readSevaSlotsByDate(selectedDate);
-    slots.forEach((slot) {
-      amountTableHeaderRow.add(slot.title);
-    });
+    List<SevaSlot> slots = await FB().readSevaSlotsByDate(selectedDate);
+    for (var slot in slots) {
+      amountTableHeaderRow!.add(slot.title);
+    }
+
+    // read all tickets for the selected date
+    List<SevaTicket> tickets = await FB().readSevaTicketsByDate(selectedDate);
+    print("Tickets: ${tickets.length}");
   }
 
   @override
