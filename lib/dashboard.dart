@@ -37,6 +37,15 @@ class _DashboardState extends State<Dashboard> {
     'Card': 0,
   };
 
+  @override
+  void initState() {
+    super.initState();
+
+    // listen for database changes
+    FB().listenForSevaSlotChange(FBCallbacks(onChange: _onSlotChange));
+    FB().listenForSevaTicketChange(FBCallbacks(onChange: _onTicketChange));
+  }
+
   Future<void> _futureInit() async {
     // reset the selected date to the current date
     selectedDate = DateTime.now();
@@ -46,6 +55,9 @@ class _DashboardState extends State<Dashboard> {
     await _lock.synchronized(() async {
       amountTableHeaderRow = ['Amount'];
       List<SevaSlot> slots = await FB().readSevaSlotsByDate(selectedDate);
+      if (slots.isEmpty) {
+        return;
+      }
       for (var slot in slots) {
         amountTableHeaderRow.add(slot.title);
       }
@@ -141,11 +153,49 @@ class _DashboardState extends State<Dashboard> {
       }
     }
     int sum = countMode['UPI']! + countMode['Cash']! + countMode['Card']!;
-    countModePercentage = {
-      'UPI': (countMode['UPI']! / sum * 100).toInt(),
-      'Cash': (countMode['Cash']! / sum * 100).toInt(),
-      'Card': (countMode['Card']! / sum * 100).toInt(),
-    };
+    if (sum != 0) {
+      countModePercentage = {
+        'UPI': (countMode['UPI']! / sum * 100).toInt(),
+        'Cash': (countMode['Cash']! / sum * 100).toInt(),
+        'Card': (countMode['Card']! / sum * 100).toInt(),
+      };
+    }
+  }
+
+  void _onSlotChange(String changeType, dynamic data) {
+    Map<String, dynamic> dataMap = (data as Map).cast<String, dynamic>();
+    SevaSlot slot = SevaSlot.fromJson(dataMap);
+
+    DateTime slotDate = DateTime(slot.timestampSlot.year,
+        slot.timestampSlot.month, slot.timestampSlot.day);
+    DateTime selectedDateOnly =
+        DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
+
+    if (slotDate == selectedDateOnly) {
+      setState(() {
+        _futureInit();
+      });
+    }
+  }
+
+  void _onTicketChange(String changeType, dynamic data) {
+    var dataMap = data as Map;
+    for (var entry in dataMap.entries) {
+      var json = (entry.value as Map).cast<String, dynamic>();
+      SevaTicket ticket = SevaTicket.fromJson(json);
+
+      DateTime slotDate = DateTime(ticket.timestampTicket.year,
+          ticket.timestampTicket.month, ticket.timestampTicket.day);
+      DateTime selectedDateOnly =
+          DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
+
+      if (slotDate == selectedDateOnly) {
+        setState(() {
+          _futureInit();
+        });
+        break; // Break out of the loop
+      }
+    }
   }
 
   Widget _wDateHeader() {
@@ -165,6 +215,10 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Widget _wAmountTable() {
+    if (amountTableHeaderRow.length == 1 || grandTotal[0] == 0) {
+      return const Text("no data");
+    }
+
     return Table(
       children: [
         TableRow(
@@ -215,6 +269,11 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Widget _wLegends() {
+    if (countModePercentage['UPI'] == 0 &&
+        countModePercentage['Cash'] == 0 &&
+        countModePercentage['Card'] == 0) {
+      return const Text("");
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -242,6 +301,12 @@ class _DashboardState extends State<Dashboard> {
 
   Widget _wPieChart() {
     double radius = 40;
+
+    if (countModePercentage['UPI'] == 0 &&
+        countModePercentage['Cash'] == 0 &&
+        countModePercentage['Card'] == 0) {
+      return const Text("");
+    }
 
     return PieChart(
       PieChartData(
