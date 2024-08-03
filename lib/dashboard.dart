@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:garuda/const.dart';
 import 'package:garuda/datatypes.dart';
 import 'package:garuda/fb.dart';
 import 'package:intl/intl.dart';
@@ -15,7 +16,9 @@ class _DashboardState extends State<Dashboard> {
   // list of maps, Map<int amount, int count> ticketSummary
   List<Map<int, int>> ticketSummary = [];
   DateTime selectedDate = DateTime.now();
-  List<String>? amountTableHeaderRow;
+  List<String> amountTableHeaderRow = [];
+  List<List<int>> amountTableTicketRow =
+      []; // [ 400[countTicketMorning, countTicketEvening], 500[countTicketMorning, countTicketEvening] ...]
 
   Widget _wDateHeader() {
     final String formattedDate =
@@ -37,7 +40,7 @@ class _DashboardState extends State<Dashboard> {
     return Table(
       children: [
         TableRow(
-          children: amountTableHeaderRow!.map((header) {
+          children: amountTableHeaderRow.map((header) {
             return Center(
               child: Text(
                 header,
@@ -46,7 +49,15 @@ class _DashboardState extends State<Dashboard> {
             );
           }).toList(),
         ),
-        // Add more TableRow widgets here for the table body
+        ...amountTableTicketRow.map((row) {
+          return TableRow(
+            children: row.map((cell) {
+              return Center(
+                child: Text(cell.toString()),
+              );
+            }).toList(),
+          );
+        }).toList(),
       ],
     );
   }
@@ -114,9 +125,24 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  Future<void> _futureInit() async {
-    // do not call SetState here
+  List<int> _getRowData(Map<String, List<SevaTicket>> tickets, int amount) {
+    List<int> row = [amount];
 
+    for (var slot in amountTableHeaderRow.sublist(1)) {
+      List<SevaTicket>? ticketsFiltered = tickets[slot];
+      if (ticketsFiltered == null) {
+        row.add(0);
+      } else {
+        List<SevaTicket> ticketsFilteredAmount =
+            ticketsFiltered.where((ticket) => ticket.amount == amount).toList();
+        row.add(ticketsFilteredAmount.length);
+      }
+    }
+
+    return row;
+  }
+
+  Future<void> _futureInit() async {
     // reset the selected date to the current date
     selectedDate = DateTime.now();
 
@@ -124,12 +150,29 @@ class _DashboardState extends State<Dashboard> {
     amountTableHeaderRow = ['Amount'];
     List<SevaSlot> slots = await FB().readSevaSlotsByDate(selectedDate);
     for (var slot in slots) {
-      amountTableHeaderRow!.add(slot.title);
+      amountTableHeaderRow.add(slot.title);
     }
 
-    // read all tickets for the selected date
-    List<SevaTicket> tickets = await FB().readSevaTicketsByDate(selectedDate);
-    print("Tickets: ${tickets.length}");
+    // count all tickets for the selected date
+    amountTableTicketRow = [];
+    Map<String, List<SevaTicket>> tickets =
+        await FB().readSevaTicketsByDate(selectedDate);
+    for (var amount in Const().ticketAmounts) {
+      List<int> row = _getRowData(tickets, amount);
+
+      bool rowReplaced = false;
+      for (int i = 0; i < amountTableTicketRow.length; i++) {
+        if (amountTableTicketRow[i].isNotEmpty &&
+            amountTableTicketRow[i][0] == row[0]) {
+          amountTableTicketRow[i] = row;
+          rowReplaced = true;
+          break;
+        }
+      }
+      if (!rowReplaced) {
+        amountTableTicketRow.add(row);
+      }
+    }
   }
 
   @override

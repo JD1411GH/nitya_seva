@@ -93,9 +93,13 @@ class FB {
     }
   }
 
-  Future<List<SevaTicket>> readSevaTicketsByDate(DateTime date) async {
+  // "Sat Morning": [ticket1, ticket2], "Sat Evening": [ticket3, ticket4]
+  Future<Map<String, List<SevaTicket>>> readSevaTicketsByDate(
+      DateTime date) async {
     final dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/sevaTickets');
+    final dbRefSlot = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/sevaSlots');
 
     String pattern =
         date.toIso8601String().substring(0, 10); // only the date part
@@ -103,20 +107,41 @@ class FB {
 
     DataSnapshot snapshot = await query.get();
 
-    List<SevaTicket> sevaTickets = [];
+    Map<String, List<SevaTicket>> sevaTickets =
+        {}; // "Sat Morning": [ticket1, ticket2], "Sat Evening": [ticket3, ticket4]
     if (snapshot.exists) {
       var mapSlotsFiltered = snapshot.value as Map;
-      mapSlotsFiltered.forEach((key, value) {
+      for (var entry in mapSlotsFiltered.entries) {
+        var key = entry.key;
+        var value = entry.value;
+
+        // find the seva slot title for the given key
+        DatabaseReference ref = dbRefSlot.child(key);
+        DataSnapshot snapshotSlot = await ref.get();
+        String title = '';
+        if (snapshotSlot.value != null) {
+          var slotValue = snapshotSlot.value as Map<dynamic, dynamic>;
+          if (slotValue.containsKey('title')) {
+            title = slotValue['title'];
+          }
+        }
+        if (title.isEmpty) {
+          Toaster().error("Unable to find title for slot");
+        } else {
+          sevaTickets[title] = [];
+        }
+
         var mapTickets = value as Map;
-        mapTickets.forEach((key, value) {
-          sevaTickets.add(
-              SevaTicket.fromJson(Map<String, dynamic>.from(value as Map)));
+        mapTickets.forEach((ticketKey, ticketValue) {
+          SevaTicket ticket = SevaTicket.fromJson(
+              Map<String, dynamic>.from(ticketValue as Map));
+          sevaTickets[title]!.add(ticket);
         });
-      });
+      }
 
       return sevaTickets;
     } else {
-      return [];
+      return {};
     }
   }
 
