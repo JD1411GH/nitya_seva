@@ -4,6 +4,7 @@ import 'package:garuda/const.dart';
 import 'package:garuda/datatypes.dart';
 import 'package:garuda/fb.dart';
 import 'package:intl/intl.dart';
+import 'package:synchronized/synchronized.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -14,6 +15,7 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   // list of maps, Map<int amount, int count> ticketSummary
+  final _lock = Lock();
   List<Map<int, int>> ticketSummary = [];
   DateTime selectedDate = DateTime.now();
   List<String> amountTableHeaderRow = [];
@@ -40,11 +42,14 @@ class _DashboardState extends State<Dashboard> {
     selectedDate = DateTime.now();
 
     // read from firebase all the slots for the selected date
-    amountTableHeaderRow = ['Amount'];
-    List<SevaSlot> slots = await FB().readSevaSlotsByDate(selectedDate);
-    for (var slot in slots) {
-      amountTableHeaderRow.add(slot.title);
-    }
+    // somehow this piece of code was being called from a parallel thread. hence using a mutex.
+    await _lock.synchronized(() async {
+      amountTableHeaderRow = ['Amount'];
+      List<SevaSlot> slots = await FB().readSevaSlotsByDate(selectedDate);
+      for (var slot in slots) {
+        amountTableHeaderRow.add(slot.title);
+      }
+    });
 
     // count all tickets for the selected date
     amountTableTicketRow = [];
@@ -123,6 +128,7 @@ class _DashboardState extends State<Dashboard> {
       'Cash': 0,
       'Card': 0,
     };
+    List<SevaSlot> slots = await FB().readSevaSlotsByDate(selectedDate);
     for (var slot in slots) {
       List<SevaTicket>? ticketsFiltered =
           tickets[slot.title]; // tickets for the slot
@@ -328,53 +334,74 @@ class _DashboardState extends State<Dashboard> {
         } else {
           return Card(
             elevation: 4.0,
-            child: Container(
-              width: screenWidth,
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // date header
-                  _wDateHeader(),
-
-                  // Pie chart and legends
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+            child: Stack(
+              children: [
+                Container(
+                  width: screenWidth,
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      SizedBox(
-                        width: 100, // Reduced width
-                        height: 100, // Reduced height
-                        child: _wPieChart(),
+                      // date header
+                      _wDateHeader(),
+
+                      // Pie chart and legends
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 100, // Reduced width
+                            height: 100, // Reduced height
+                            child: _wPieChart(),
+                          ),
+                          const SizedBox(
+                              width: 30), // Increased width for more padding
+                          _wLegends(),
+                        ],
                       ),
-                      const SizedBox(
-                          width: 30), // Increased width for more padding
-                      _wLegends(),
+
+                      // Denomination table
+                      const SizedBox(height: 20),
+                      _wAmountTable(),
+
+                      // Grand total
+                      const SizedBox(height: 20),
+                      Text(
+                        'Grand Total = ${grandTotal[0]}',
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                      Text(
+                        'Total Amount = Rs. ${grandTotal[1]}',
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
                     ],
                   ),
-
-                  // Denomination table
-                  const SizedBox(height: 20),
-                  _wAmountTable(),
-
-                  // Grand total
-                  const SizedBox(height: 20),
-                  Text(
-                    'Grand Total = ${grandTotal[0]}',
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+                ),
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.refresh,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .secondary, // Use a variant color from the theme
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _futureInit(); // the actual refresh can happen asynchronously
+                      });
+                    },
                   ),
-                  Text(
-                    'Total Amount = Rs. ${grandTotal[1]}',
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           );
         }
