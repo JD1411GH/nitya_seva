@@ -22,6 +22,18 @@ class _DashboardState extends State<Dashboard> {
   List<List<dynamic>> amountTableTotalRow =
       []; // ["Total", countTicketMorning, countTicketEvening], ["Amount", totalAmountMorning, totalAmountEvening]
   List<int> grandTotal = [0, 0]; // [totalTicket, totalAmount]
+  Map<String, int> countMode = {
+    // {mode: count}
+    'UPI': 0,
+    'Cash': 0,
+    'Card': 0,
+  };
+  Map<String, int> countModePercentage = {
+    // {mode: percentage}
+    'UPI': 0,
+    'Cash': 0,
+    'Card': 0,
+  };
 
   Future<void> _futureInit() async {
     // reset the selected date to the current date
@@ -104,6 +116,30 @@ class _DashboardState extends State<Dashboard> {
         grandTotal[i] += (amountTableTotalRow[i][j] as int);
       }
     }
+
+    // pie chart values
+    countMode = {
+      'UPI': 0,
+      'Cash': 0,
+      'Card': 0,
+    };
+    for (var slot in slots) {
+      List<SevaTicket>? ticketsFiltered =
+          tickets[slot.title]; // tickets for the slot
+      if (ticketsFiltered == null) {
+        continue;
+      }
+
+      for (var ticket in ticketsFiltered) {
+        countMode[ticket.mode] = countMode[ticket.mode]! + 1;
+      }
+    }
+    int sum = countMode['UPI']! + countMode['Cash']! + countMode['Card']!;
+    countModePercentage = {
+      'UPI': (countMode['UPI']! / sum * 100).toInt(),
+      'Cash': (countMode['Cash']! / sum * 100).toInt(),
+      'Card': (countMode['Card']! / sum * 100).toInt(),
+    };
   }
 
   Widget _wDateHeader() {
@@ -176,9 +212,9 @@ class _DashboardState extends State<Dashboard> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _wLegendItem(Colors.blue, 'Blue - 40%'),
-        _wLegendItem(Colors.red, 'Red - 30%'),
-        _wLegendItem(Colors.green, 'Green - 30%'),
+        _wLegendItem(Colors.orange, 'UPI'),
+        _wLegendItem(Colors.green, 'Cash'),
+        _wLegendItem(Colors.blue, 'Card'),
       ],
     );
   }
@@ -198,32 +234,37 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  Widget _wPieMode() {
+  Widget _wPieChart() {
     double radius = 40;
 
     return PieChart(
       PieChartData(
         sections: [
+          // UPI
           PieChartSectionData(
-            color: Colors.blue,
-            value: 40,
-            title: '40%',
+            color: Colors.orange,
+            value: countModePercentage['UPI']!.toDouble(),
+            title: '${countMode['UPI']}',
             radius: radius,
             titleStyle: const TextStyle(
                 fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
           ),
-          PieChartSectionData(
-            color: Colors.red,
-            value: 30,
-            title: '30%',
-            radius: radius,
-            titleStyle: const TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-          ),
+
+          // cash
           PieChartSectionData(
             color: Colors.green,
-            value: 30,
-            title: '30%',
+            value: countModePercentage['Cash']!.toDouble(),
+            title: '${countMode['Cash']}',
+            radius: radius,
+            titleStyle: const TextStyle(
+                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+
+          // card
+          PieChartSectionData(
+            color: Colors.blue,
+            value: countModePercentage['Card']!.toDouble(),
+            title: '${countMode['Card']}',
             radius: radius,
             titleStyle: const TextStyle(
                 fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
@@ -283,7 +324,7 @@ class _DashboardState extends State<Dashboard> {
                       SizedBox(
                         width: 100, // Reduced width
                         height: 100, // Reduced height
-                        child: _wPieMode(),
+                        child: _wPieChart(),
                       ),
                       const SizedBox(width: 10),
                       _wLegends(),
