@@ -398,80 +398,109 @@ class _DashboardState extends State<Dashboard> {
       future: _futureInit(), // Replace with your actual future
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return Card(
+            elevation: 4.0,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: 400, // Adjust the height as needed
+              padding: const EdgeInsets.all(16.0),
+              child: Center(
+                child: Text(
+                  'Loading...',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+              ),
+            ),
+          );
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else {
-          return Card(
-            elevation: 4.0,
-            child: Stack(
-              children: [
-                Container(
-                  width: screenWidth,
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // date header
-                      _wDateHeader(),
+          return GestureDetector(
+            onHorizontalDragEnd: (details) {
+              if (details.primaryVelocity! > 0) {
+                // User swiped Right
+                print('swiped right');
+              } else if (details.primaryVelocity! < 0) {
+                // User swiped Left
+                print('swiped left');
+              }
+            },
+            child: Card(
+              elevation: 4.0,
+              child: Stack(
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // date header
+                        _wDateHeader(),
 
-                      // Pie chart and legends
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: 100, // Reduced width
-                            height: 100, // Reduced height
-                            child: _wPieChart(),
-                          ),
-                          const SizedBox(
-                              width: 30), // Increased width for more padding
-                          _wLegends(),
-                        ],
-                      ),
-
-                      // Denomination table
-                      const SizedBox(height: 20),
-                      _wAmountTable(),
-
-                      // Grand total
-                      const SizedBox(height: 20),
-                      Text(
-                        'Grand Total = ${grandTotal[0]}',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                        // Pie chart and legends
+                        const SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 100, // Reduced width
+                              height: 100, // Reduced height
+                              child: _wPieChart(),
                             ),
-                      ),
-                      Text(
-                        'Total Amount = Rs. ${grandTotal[1]}',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                      ),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.refresh,
-                      color: Theme.of(context)
-                          .colorScheme
-                          .secondary, // Use a variant color from the theme
+                            const SizedBox(
+                                width: 30), // Increased width for more padding
+                            _wLegends(),
+                          ],
+                        ),
+
+                        // Denomination table
+                        const SizedBox(height: 20),
+                        _wAmountTable(),
+
+                        // Grand total
+                        const SizedBox(height: 20),
+                        Text(
+                          'Grand Total = ${grandTotal[0]}',
+                          style:
+                              Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                        ),
+                        Text(
+                          'Total Amount = Rs. ${grandTotal[1]}',
+                          style:
+                              Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                        ),
+                      ],
                     ),
-                    onPressed: () {
-                      setState(() {
-                        _futureInit(); // the actual refresh can happen asynchronously
-                      });
-                    },
                   ),
-                ),
-              ],
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.refresh,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .secondary, // Use a variant color from the theme
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _futureInit(); // the actual refresh can happen asynchronously
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         }
