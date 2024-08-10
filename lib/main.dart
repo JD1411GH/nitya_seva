@@ -64,7 +64,7 @@ class NityaSevaApp extends StatelessWidget {
           color: Const().colorPrimary, // Set default icon color
         ),
       ),
-      home: const Menu(),
+      home: const LoadingScreen(),
     );
   }
 }

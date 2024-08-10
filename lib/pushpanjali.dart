@@ -7,14 +7,14 @@ import 'package:garuda/record.dart';
 import 'package:garuda/datatypes.dart';
 import 'package:garuda/dashboard.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class Pushpanjali extends StatefulWidget {
+  const Pushpanjali({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<Pushpanjali> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<Pushpanjali> {
   List<SevaSlot> sevaSlots = Record().sevaSlots;
   final TextEditingController _slotNameController = TextEditingController();
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/pushpanjali.dart';
 
 class Menu extends StatelessWidget {
   const Menu({super.key});
@@ -39,8 +40,10 @@ class Menu extends StatelessWidget {
         'imagePath': 'assets/images/vishnu_pushpanjali.png',
         'label': 'Pushpanjali',
         'action': () {
-          // Define your custom action here
-          print('Pushpanjali clicked');
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const Pushpanjali()),
+          );
         }
       },
       {

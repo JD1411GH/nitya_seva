@@ -120,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Toaster().info("Login successful");
 
         if (mounted) {
-          Navigator.push(context,
+          Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => const LoadingScreen()));
         } else {
           Toaster().error("Error: context not mounted");

@@ -2,9 +2,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:garuda/access_denied.dart';
 import 'package:garuda/login.dart';
-import 'package:garuda/home.dart';
+import 'package:garuda/pushpanjali.dart';
 import 'package:garuda/local_storage.dart';
 import 'package:garuda/fb.dart';
+import 'package:garuda/menu.dart';
 import 'package:garuda/record.dart';
 
 // Convert LoadingScreen to StatefulWidget
@@ -22,7 +23,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
     _navigateToHome();
   }
 
-  // this function will either load the login screen, homepage or access denied
+  // this function will either load the login screen, Pushpanjali or access denied
   Future<void> _navigateToHome() async {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
@@ -41,7 +42,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
             if (mounted) {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const HomePage()),
+                MaterialPageRoute(builder: (context) => const Menu()),
               );
             }
           } else {
