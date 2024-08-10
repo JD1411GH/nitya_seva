@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:garuda/access_denied.dart';
 import 'package:garuda/fb.dart';
-import 'package:garuda/loading.dart';
 import 'package:garuda/local_storage.dart';
+import 'package:garuda/menu.dart';
 import 'package:garuda/toaster.dart';
 import 'package:garuda/user.dart';
 
@@ -24,6 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _verificationId;
   FirebaseAuth? _auth;
   String username = 'Unknown User';
+  String _selectedRole = 'Volunteer';
 
   @override
   void initState() {
@@ -103,21 +107,29 @@ class _LoginScreenState extends State<LoginScreen> {
           uid: user.uid,
           name: username,
           phone: user.phoneNumber,
-          role: 'Volunteer',
+          role: _selectedRole,
         );
+        LS().write('user_details', jsonEncode(u.toJson()));
 
+        Widget nextpage = const AccessDenied();
         var status = await FB().checkUserApprovalStatus(u);
         if (status == "none") {
           // make entry to pending list
           await FB().addPendingUser(u);
+          nextpage = const AccessDenied();
+        } else if (status == "pending") {
+          nextpage = const AccessDenied();
+        } else if (status == "approved") {
+          // initialize local database
+          nextpage = const Menu();
         }
 
-        // if (mounted) {
-        //   Navigator.pushReplacement(context,
-        //       MaterialPageRoute(builder: (context) => const LoadingScreen()));
-        // } else {
-        //   Toaster().error("Error: context not mounted");
-        // }
+        if (mounted) {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => nextpage));
+        } else {
+          Toaster().error("Error: context not mounted");
+        }
       } else {
         Toaster().error("Verfication error");
       }
@@ -136,6 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // name of the user
               TextFormField(
                 controller:
                     _usernameController, // Define this controller in your class
@@ -144,6 +157,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 keyboardType: TextInputType.text,
               ),
+
+              // mobile number
               const SizedBox(
                   height:
                       16.0), // Spacing between username and mobile number fields
@@ -159,11 +174,36 @@ class _LoginScreenState extends State<LoginScreen> {
                   LengthLimitingTextInputFormatter(10),
                 ],
               ),
+
+              // Dropdown menu for role selection
+              const SizedBox(height: 16.0),
+              DropdownButtonFormField<String>(
+                value: _selectedRole, // Default value set to 'volunteer'
+                decoration: const InputDecoration(
+                  labelText: 'Role',
+                ),
+                items: <String>['Volunteer', 'Devotee', 'Admin']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedRole = newValue!;
+                  });
+                },
+              ),
+
+              // verify button, which will send OTP
               const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: _isSendOtpButtonEnabled ? _sendOTP : null,
                 child: const Text('Verify'),
               ),
+
+              // OTP field
               const SizedBox(height: 16.0),
               TextFormField(
                 controller: _otpController,
@@ -177,6 +217,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   LengthLimitingTextInputFormatter(6),
                 ],
               ),
+
+              // submit OTP button
               const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: _isSubmitButtonEnabled ? _submitOTP : null,

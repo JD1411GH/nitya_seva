@@ -1,12 +1,14 @@
+import 'dart:convert';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:garuda/access_denied.dart';
 import 'package:garuda/login.dart';
-import 'package:garuda/pushpanjali.dart';
 import 'package:garuda/local_storage.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/menu.dart';
 import 'package:garuda/record.dart';
+import 'package:garuda/user.dart';
 
 // Convert LoadingScreen to StatefulWidget
 class LoadingScreen extends StatefulWidget {
@@ -28,39 +30,39 @@ class _LoadingScreenState extends State<LoadingScreen> {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
 
-    LS().read('username').then((value) {
-      if (value != null) {
-        // User is already logged in
+    // check if user tried to login before
+    String? json = await LS().read('user_details');
+    if (json != null) {
+      // Parse the JSON string
+      Map<String, dynamic> userMap = jsonDecode(json);
 
-        // check if user has access to database
-        FB().checkAccess().then((value) async {
-          if (value == "rw") {
-            // initialize local database
-            await Record().init();
+      // Convert the parsed JSON into a UserDetails object
+      UserDetails userDetails = UserDetails.fromJson(userMap);
 
-            // User has access to database
-            if (mounted) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const Menu()),
-              );
-            }
-          } else {
-            // User does not have access to database
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const AccessDenied()),
-            );
-          }
-        });
-      } else {
-        // User is not logged in
+      // Check if the user has access to the database
+      String status = await FB().checkUserApprovalStatus(userDetails);
+      Widget nextpage = const AccessDenied();
+      if (status == "none") {
+        nextpage = const AccessDenied();
+      } else if (status == "pending") {
+        nextpage = const AccessDenied();
+      } else if (status == "approved") {
+        nextpage = const Menu();
+      }
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => nextpage),
+        );
+      }
+    } else {
+      if (mounted) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const LoginScreen()),
         );
       }
-    });
+    }
   }
 
   @override
