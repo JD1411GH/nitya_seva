@@ -77,6 +77,11 @@ flutter:
     - assets/images/icon_upi.png
     - assets/images/icon_cash.png
     - assets/images/icon_card.png
+    - assets/images/admin.jpg
+    - assets/images/deepotsava.jpg
+    - assets/images/laddu.jpg
+    - assets/images/settings.jpg
+    - assets/images/vishnu_pushpanjali.png
 
 
 

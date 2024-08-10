@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/const.dart';
 import 'package:garuda/loading.dart';
+import 'package:garuda/menu.dart';
 
 Future<void> main() async {
   runApp(const NityaSevaApp());
@@ -63,7 +64,7 @@ class NityaSevaApp extends StatelessWidget {
           color: Const().colorPrimary, // Set default icon color
         ),
       ),
-      home: const LoadingScreen(),
+      home: const Menu(),
     );
   }
 }
