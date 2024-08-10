@@ -5,6 +5,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:garuda/const.dart';
 import 'package:garuda/toaster.dart';
 import 'package:garuda/datatypes.dart';
+import 'package:garuda/user.dart';
 
 class FB {
   static FB? _instance;
@@ -153,11 +154,6 @@ class FB {
     } else {
       return {};
     }
-  }
-
-  Future<String> checkAdminAccess() async {
-    // returns "-", "r", "rw"
-    return "-";
   }
 
   Future<void> addSevaSlot(
@@ -338,6 +334,45 @@ class FB {
     }
 
     return json;
+  }
+
+  Future<void> addPendingUser(UserDetails user) async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/users/pending');
+
+    if (user.uid != null) {
+      DatabaseReference ref = dbRef.child(user.uid!);
+      try {
+        await ref.set(user.toJson());
+      } catch (e) {
+        // Handle the error here
+        Toaster().error('Database write error: $e');
+      }
+    }
+  }
+
+  // returns "pending", "approved", "admin", "none"
+  Future<String> checkUserApprovalStatus(UserDetails user) async {
+    final DatabaseReference dbRef =
+        FirebaseDatabase.instance.ref('record_db${Const().dbVersion}/users');
+
+    if (user.uid != null) {
+      DatabaseReference ref = dbRef.child('pending').child(user.uid!);
+      DataSnapshot snapshot = await ref.get();
+      if (snapshot.exists) {
+        // User is pending approval
+        return "pending";
+      }
+
+      ref = dbRef.child('approved').child(user.uid!);
+      snapshot = await ref.get();
+      if (snapshot.exists) {
+        // User is approved
+        return "approved";
+      }
+    }
+
+    return "none";
   }
 }
 

@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:garuda/fb.dart';
 import 'package:garuda/loading.dart';
 import 'package:garuda/local_storage.dart';
 import 'package:garuda/toaster.dart';
+import 'package:garuda/user.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -62,26 +64,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _sendOTP() async {
-    // Show the dialog
-    // await showDialog(
-    //   context: context,
-    //   builder: (BuildContext context) {
-    //     return AlertDialog(
-    //       title: const Text('Notice'),
-    //       content: const Text(
-    //           'You will be redirected to the browser for reCAPTCHA verification. After successful verification, come back to the app and enter the OTP received.'),
-    //       actions: <Widget>[
-    //         TextButton(
-    //           child: const Text('OK'),
-    //           onPressed: () {
-    //             Navigator.of(context).pop();
-    //           },
-    //         ),
-    //       ],
-    //     );
-    //   },
-    // );
-
     // Continue with the OTP sending process
     final mobileNumber = '+91${_mobileNumberController.text}';
     loginUser(mobileNumber, LoginUserCallbacks(
@@ -117,14 +99,25 @@ class _LoginScreenState extends State<LoginScreen> {
           username,
         );
 
-        Toaster().info("Login successful");
+        var u = UserDetails(
+          uid: user.uid,
+          name: username,
+          phone: user.phoneNumber,
+          role: 'Volunteer',
+        );
 
-        if (mounted) {
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => const LoadingScreen()));
-        } else {
-          Toaster().error("Error: context not mounted");
+        var status = await FB().checkUserApprovalStatus(u);
+        if (status == "none") {
+          // make entry to pending list
+          await FB().addPendingUser(u);
         }
+
+        // if (mounted) {
+        //   Navigator.pushReplacement(context,
+        //       MaterialPageRoute(builder: (context) => const LoadingScreen()));
+        // } else {
+        //   Toaster().error("Error: context not mounted");
+        // }
       } else {
         Toaster().error("Verfication error");
       }
