@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/admin/admin.dart';
 import 'package:garuda/pushpanjali.dart';
 
 class Menu extends StatelessWidget {
@@ -66,8 +67,10 @@ class Menu extends StatelessWidget {
         'imagePath': 'assets/images/admin.jpg',
         'label': 'Admin',
         'action': () {
-          // Define your custom action here
-          print('Admin clicked');
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AdminPage()),
+          );
         }
       },
       {

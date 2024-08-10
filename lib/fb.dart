@@ -28,23 +28,6 @@ class FB {
     // Code to be executed when first instantiated
   }
 
-  // returns "-", "r", "rw"
-  Future<String> checkAccess() async {
-    String ret = "-";
-    final dbref =
-        FirebaseDatabase.instance.ref("record_db${Const().dbVersion}");
-
-    try {
-      String dateTimeString = DateTime.now().toString();
-      await dbref.child("test").set(dateTimeString);
-      ret = "rw";
-    } catch (e) {
-      ret = "-";
-    }
-
-    return ret;
-  }
-
   Future<List<SevaSlot>> readSevaSlots() async {
     final dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/sevaSlots');
@@ -373,6 +356,57 @@ class FB {
     }
 
     return "none";
+  }
+
+  Future<UserDetails> getUserDetails(String uid) async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/users/approved');
+
+    DataSnapshot snapshot = await dbRef.child(uid).get();
+    UserDetails user = UserDetails();
+
+    if (snapshot.exists) {
+      user = UserDetails.fromJson(
+          Map<String, dynamic>.from(snapshot.value as Map));
+    }
+
+    return user;
+  }
+
+  Future<List<UserDetails>> readPendingUsers() async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/users/pending');
+
+    DataSnapshot snapshot = await dbRef.get();
+    List<UserDetails> users = [];
+
+    if (snapshot.exists) {
+      users = (snapshot.value as Map)
+          .values
+          .map((value) =>
+              UserDetails.fromJson(Map<String, dynamic>.from(value as Map)))
+          .toList();
+    }
+
+    return users;
+  }
+
+  Future<List<UserDetails>> readApprovedUsers() async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/users/approved');
+
+    DataSnapshot snapshot = await dbRef.get();
+    List<UserDetails> users = [];
+
+    if (snapshot.exists) {
+      users = (snapshot.value as Map)
+          .values
+          .map((value) =>
+              UserDetails.fromJson(Map<String, dynamic>.from(value as Map)))
+          .toList();
+    }
+
+    return users;
   }
 }
 
