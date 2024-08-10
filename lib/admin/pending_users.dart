@@ -44,14 +44,42 @@ class _PendingUsersState extends State<PendingUsers> {
                   child: ListView.builder(
                     itemCount: _pendingUsers.length,
                     itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(_pendingUsers[index].name!),
-                        subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(_pendingUsers[index].phone!),
-                              Text(_pendingUsers[index].role!),
-                            ]),
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 8.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          child: ListTile(
+                            title: Text(_pendingUsers[index].name!),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(_pendingUsers[index].phone!),
+                                Text(_pendingUsers[index].role!),
+                              ],
+                            ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: Icon(Icons.check, color: Colors.green),
+                                  onPressed: () {
+                                    // Add your approve logic here
+                                  },
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.close, color: Colors.red),
+                                  onPressed: () {
+                                    // Add your reject logic here
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       );
                     },
                   ),
