@@ -42,8 +42,8 @@ class _DashboardState extends State<Dashboard> {
     super.initState();
 
     // listen for database changes
-    FB().listenForSevaSlotChange(FBCallbacks(onChange: _onSlotChange));
-    FB().listenForSevaTicketChange(FBCallbacks(onChange: _onTicketChange));
+    // FB().listenForSevaSlotChange(FBCallbacks(onChange: _onSlotChange));
+    // FB().listenForSevaTicketChange(FBCallbacks(onChange: _onTicketChange));
   }
 
   destroy() {
@@ -52,11 +52,7 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Future<void> _futureInit() async {
-    // reset the selected date to the current date
-    // selectedDate = DateTime.now();
-
-    // read from firebase all the slots for the selected date
-    // somehow this piece of code was being called from a parallel thread. hence using a mutex.
+    // init must be completed in a single go
     await _lock.synchronized(() async {
       amountTableHeaderRow = ['Amount'];
       List<SevaSlot> slots = await FB().readSevaSlotsByDate(selectedDate);
@@ -66,105 +62,104 @@ class _DashboardState extends State<Dashboard> {
       for (var slot in slots) {
         amountTableHeaderRow.add(slot.title);
       }
-    });
 
-    // count all tickets for the selected date
-    amountTableTicketRow = [];
-    Map<String, List<SevaTicket>> tickets =
-        await FB().readSevaTicketsByDate(selectedDate);
-    for (var amount in Const().ticketAmounts) {
-      List<int> row = _getRowData(tickets, amount);
-      bool rowReplaced = false;
-      for (int i = 0; i < amountTableTicketRow.length; i++) {
-        if (amountTableTicketRow[i].isNotEmpty &&
-            amountTableTicketRow[i][0] == row[0]) {
-          amountTableTicketRow[i] = row;
-          rowReplaced = true;
-          break;
+      // count all tickets for the selected date
+      amountTableTicketRow = [];
+      Map<String, List<SevaTicket>> tickets =
+          await FB().readSevaTicketsByDate(selectedDate);
+      for (var amount in Const().ticketAmounts) {
+        List<int> row = _getRowData(tickets, amount);
+        bool rowReplaced = false;
+        for (int i = 0; i < amountTableTicketRow.length; i++) {
+          if (amountTableTicketRow[i].isNotEmpty &&
+              amountTableTicketRow[i][0] == row[0]) {
+            amountTableTicketRow[i] = row;
+            rowReplaced = true;
+            break;
+          }
+        }
+        if (!rowReplaced) {
+          amountTableTicketRow.add(row);
         }
       }
-      if (!rowReplaced) {
-        amountTableTicketRow.add(row);
-      }
-    }
 
-    // calculate the total count for each slot
-    amountTableTotalRow = [
-      ["Total"],
-      ["Amount"]
-    ];
-    for (var i = 0; i < amountTableTicketRow.length; i++) {
-      // this is the row for table entry, and not the rows for the total
+      // calculate the total count for each slot
+      amountTableTotalRow = [
+        ["Total"],
+        ["Amount"]
+      ];
+      for (var i = 0; i < amountTableTicketRow.length; i++) {
+        // this is the row for table entry, and not the rows for the total
 
-      var row = amountTableTicketRow[i];
-      for (var j = 0; j < row.length; j++) {
-        var col = row[j];
+        var row = amountTableTicketRow[i];
+        for (var j = 0; j < row.length; j++) {
+          var col = row[j];
 
-        // sapecial case for the first column
-        if (j == 0) {
-          continue;
-        }
+          // sapecial case for the first column
+          if (j == 0) {
+            continue;
+          }
 
-        // row 0 is count, row 1 is amount
+          // row 0 is count, row 1 is amount
 
-        // fill row 0 first
-        // each row is a list by itself
-        if (amountTableTotalRow[0].length <= j) {
-          // row/col is empty, add the first element
-          amountTableTotalRow[0].add(col);
-        } else {
-          // row is not empty, add the element to the existing element
-          amountTableTotalRow[0][j] += col;
-        }
+          // fill row 0 first
+          // each row is a list by itself
+          if (amountTableTotalRow[0].length <= j) {
+            // row/col is empty, add the first element
+            amountTableTotalRow[0].add(col);
+          } else {
+            // row is not empty, add the element to the existing element
+            amountTableTotalRow[0][j] += col;
+          }
 
-        // fill row 1 next
-        if (amountTableTotalRow[1].length <= j) {
-          // row/col is empty, add the first element
-          amountTableTotalRow[1].add(row[0] * col);
-        } else {
-          // row is not empty, add the element to the existing element
-          amountTableTotalRow[1][j] += (row[0] * col);
+          // fill row 1 next
+          if (amountTableTotalRow[1].length <= j) {
+            // row/col is empty, add the first element
+            amountTableTotalRow[1].add(row[0] * col);
+          } else {
+            // row is not empty, add the element to the existing element
+            amountTableTotalRow[1][j] += (row[0] * col);
+          }
         }
       }
-    }
 
-    // grand total
-    grandTotal = [0, 0];
-    for (var i = 0; i < amountTableTotalRow.length; i++) {
-      for (var j = 0; j < amountTableTotalRow[i].length; j++) {
-        if (j == 0) {
-          continue;
+      // grand total
+      grandTotal = [0, 0];
+      for (var i = 0; i < amountTableTotalRow.length; i++) {
+        for (var j = 0; j < amountTableTotalRow[i].length; j++) {
+          if (j == 0) {
+            continue;
+          }
+          grandTotal[i] += (amountTableTotalRow[i][j] as int);
         }
-        grandTotal[i] += (amountTableTotalRow[i][j] as int);
-      }
-    }
-
-    // pie chart values
-    countMode = {
-      'UPI': 0,
-      'Cash': 0,
-      'Card': 0,
-    };
-    List<SevaSlot> slots = await FB().readSevaSlotsByDate(selectedDate);
-    for (var slot in slots) {
-      List<SevaTicket>? ticketsFiltered =
-          tickets[slot.title]; // tickets for the slot
-      if (ticketsFiltered == null) {
-        continue;
       }
 
-      for (var ticket in ticketsFiltered) {
-        countMode[ticket.mode] = countMode[ticket.mode]! + 1;
-      }
-    }
-    int sum = countMode['UPI']! + countMode['Cash']! + countMode['Card']!;
-    if (sum != 0) {
-      countModePercentage = {
-        'UPI': (countMode['UPI']! / sum * 100).toInt(),
-        'Cash': (countMode['Cash']! / sum * 100).toInt(),
-        'Card': (countMode['Card']! / sum * 100).toInt(),
+      // pie chart values
+      countMode = {
+        'UPI': 0,
+        'Cash': 0,
+        'Card': 0,
       };
-    }
+      for (var slot in slots) {
+        List<SevaTicket>? ticketsFiltered =
+            tickets[slot.title]; // tickets for the slot
+        if (ticketsFiltered == null) {
+          continue;
+        }
+
+        for (var ticket in ticketsFiltered) {
+          countMode[ticket.mode] = countMode[ticket.mode]! + 1;
+        }
+      }
+      int sum = countMode['UPI']! + countMode['Cash']! + countMode['Card']!;
+      if (sum != 0) {
+        countModePercentage = {
+          'UPI': (countMode['UPI']! / sum * 100).toInt(),
+          'Cash': (countMode['Cash']! / sum * 100).toInt(),
+          'Card': (countMode['Card']! / sum * 100).toInt(),
+        };
+      }
+    });
   }
 
   void _onSlotChange(String changeType, dynamic data) {
@@ -486,6 +481,8 @@ class _DashboardState extends State<Dashboard> {
                       ],
                     ),
                   ),
+
+                  // refresh button
                   Positioned(
                     top: 8,
                     right: 8,
@@ -503,6 +500,8 @@ class _DashboardState extends State<Dashboard> {
                       },
                     ),
                   ),
+
+                  // today button
                   Positioned(
                     top: 8,
                     left: 8,
