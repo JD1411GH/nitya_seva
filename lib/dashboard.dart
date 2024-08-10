@@ -42,8 +42,8 @@ class _DashboardState extends State<Dashboard> {
     super.initState();
 
     // listen for database changes
-    // FB().listenForSevaSlotChange(FBCallbacks(onChange: _onSlotChange));
-    // FB().listenForSevaTicketChange(FBCallbacks(onChange: _onTicketChange));
+    FB().listenForSevaSlotChange(FBCallbacks(onChange: _onSlotChange));
+    FB().listenForSevaTicketChange(FBCallbacks(onChange: _onTicketChange));
   }
 
   destroy() {
@@ -55,6 +55,11 @@ class _DashboardState extends State<Dashboard> {
     // init must be completed in a single go
     await _lock.synchronized(() async {
       amountTableHeaderRow = ['Amount'];
+      countMode = {
+        'UPI': 0,
+        'Cash': 0,
+        'Card': 0,
+      };
       List<SevaSlot> slots = await FB().readSevaSlotsByDate(selectedDate);
       if (slots.isEmpty) {
         return;
@@ -135,11 +140,6 @@ class _DashboardState extends State<Dashboard> {
       }
 
       // pie chart values
-      countMode = {
-        'UPI': 0,
-        'Cash': 0,
-        'Card': 0,
-      };
       for (var slot in slots) {
         List<SevaTicket>? ticketsFiltered =
             tickets[slot.title]; // tickets for the slot
@@ -413,14 +413,16 @@ class _DashboardState extends State<Dashboard> {
         } else {
           return GestureDetector(
             onHorizontalDragEnd: (details) {
+              // User swiped Right
               if (details.primaryVelocity! > 0) {
-                // User swiped Right
                 selectedDate = selectedDate.subtract(const Duration(days: 1));
                 setState(() {
                   _futureInit();
                 });
-              } else if (details.primaryVelocity! < 0) {
-                // User swiped Left
+              }
+
+              // User swiped Left
+              else if (details.primaryVelocity! < 0) {
                 selectedDate = selectedDate.add(const Duration(days: 1));
                 setState(() {
                   _futureInit();
