@@ -15,7 +15,7 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   // list of maps, Map<int amount, int count> ticketSummary
-  final _lock = Lock();
+  final _lockInit = Lock();
   List<Map<int, int>> ticketSummary = [];
   DateTime selectedDate = DateTime.now();
   List<String> amountTableHeaderRow = [];
@@ -53,7 +53,7 @@ class _DashboardState extends State<Dashboard> {
 
   Future<void> _futureInit() async {
     // init must be completed in a single go
-    await _lock.synchronized(() async {
+    await _lockInit.synchronized(() async {
       amountTableHeaderRow = ['Amount'];
       countMode = {
         'UPI': 0,
