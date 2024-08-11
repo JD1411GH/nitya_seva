@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/pushpanjali/dashboard.dart';
+import 'package:garuda/pushpanjali/sevaslots.dart';
 
 class Pushpanjali extends StatefulWidget {
   const Pushpanjali({super.key});
@@ -37,7 +38,14 @@ class _WidgetTemplateState extends State<Pushpanjali> {
               appBar: AppBar(
                 title: const Text('Pushpanjali'),
               ),
-              body: const Dashboard(),
+              body: const SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Dashboard(),
+                    SevaSlots(),
+                  ],
+                ),
+              ),
             );
           }
         },
