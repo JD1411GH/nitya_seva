@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/toaster.dart';
-import 'package:garuda/user.dart';
+import 'package:garuda/admin/user.dart';
 import 'package:synchronized/synchronized.dart';
 
 class PendingUsers extends StatefulWidget {

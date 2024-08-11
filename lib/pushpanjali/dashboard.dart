@@ -1,7 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:garuda/const.dart';
-import 'package:garuda/datatypes.dart';
+import 'package:garuda/pushpanjali/datatypes.dart';
 import 'package:garuda/fb.dart';
 import 'package:intl/intl.dart';
 import 'package:synchronized/synchronized.dart';

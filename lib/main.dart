@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:garuda/const.dart';
 import 'package:garuda/loading.dart';
 import 'package:garuda/menu.dart';
+import 'package:garuda/pushpanjali/pushpanjali.dart';
 
 Future<void> main() async {
   runApp(const NityaSevaApp());

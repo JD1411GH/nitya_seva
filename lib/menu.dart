@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/admin/admin.dart';
-import 'package:garuda/pushpanjali.dart';
+import 'package:garuda/pushpanjali/pushpanjali.dart';
 
 class Menu extends StatelessWidget {
   const Menu({super.key});

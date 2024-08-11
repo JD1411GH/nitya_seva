@@ -7,8 +7,8 @@ import 'package:garuda/login.dart';
 import 'package:garuda/local_storage.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/menu.dart';
-import 'package:garuda/record.dart';
-import 'package:garuda/user.dart';
+import 'package:garuda/pushpanjali/record.dart';
+import 'package:garuda/admin/user.dart';
 
 // Convert LoadingScreen to StatefulWidget
 class LoadingScreen extends StatefulWidget {

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:garuda/dashboard.dart';
+import 'package:garuda/pushpanjali/dashboard.dart';
 import 'package:intl/intl.dart';
 import 'package:garuda/local_storage.dart';
-import 'package:garuda/ticket_page.dart';
-import 'package:garuda/record.dart';
-import 'package:garuda/datatypes.dart';
-import 'package:garuda/dashboard.dart';
+import 'package:garuda/pushpanjali/ticket_page.dart';
+import 'package:garuda/pushpanjali/record.dart';
+import 'package:garuda/pushpanjali/datatypes.dart';
+import 'package:garuda/pushpanjali/dashboard.dart';
 
 class Pushpanjali extends StatefulWidget {
   const Pushpanjali({super.key});

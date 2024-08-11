@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:garuda/const.dart';
 import 'package:garuda/local_storage.dart';
-import 'package:garuda/summary.dart';
-import 'package:garuda/record.dart';
-import 'package:garuda/tally_cash.dart';
-import 'package:garuda/tally_upi_card.dart';
-import 'package:garuda/datatypes.dart';
+import 'package:garuda/pushpanjali/summary.dart';
+import 'package:garuda/pushpanjali/record.dart';
+import 'package:garuda/pushpanjali/tally_cash.dart';
+import 'package:garuda/pushpanjali/tally_upi_card.dart';
+import 'package:garuda/pushpanjali/datatypes.dart';
 import 'package:flip_card/flip_card.dart';
 
 class TicketTable extends StatefulWidget {

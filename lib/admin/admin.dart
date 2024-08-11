@@ -5,7 +5,7 @@ import 'package:garuda/admin/pending_users.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/local_storage.dart';
 import 'package:garuda/toaster.dart';
-import 'package:garuda/user.dart';
+import 'package:garuda/admin/user.dart';
 import 'package:synchronized/synchronized.dart';
 
 class AdminPage extends StatefulWidget {
