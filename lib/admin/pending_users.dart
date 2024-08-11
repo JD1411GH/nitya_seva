@@ -81,8 +81,12 @@ class _PendingUsersState extends State<PendingUsers> {
                                 IconButton(
                                   icon: const Icon(Icons.close,
                                       color: Colors.red),
-                                  onPressed: () {
-                                    // Add your reject logic here
+                                  onPressed: () async {
+                                    await FB().rejectUser(_pendingUsers[index]);
+                                    await _futureInit();
+                                    setState(() {
+                                      Toaster().info('User rejected');
+                                    });
                                   },
                                 ),
                               ],

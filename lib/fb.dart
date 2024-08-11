@@ -355,6 +355,16 @@ class FB {
     }
   }
 
+  Future<void> rejectUser(UserDetails user) async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/users/pending');
+
+    if (user.uid != null) {
+      DatabaseReference ref = dbRef.child(user.uid!);
+      await ref.remove();
+    }
+  }
+
   // returns "pending", "approved", "admin", "none"
   Future<String> checkUserApprovalStatus(UserDetails user) async {
     final DatabaseReference dbRef =
