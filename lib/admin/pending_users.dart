@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/fb.dart';
+import 'package:garuda/toaster.dart';
 import 'package:garuda/user.dart';
 import 'package:synchronized/synchronized.dart';
 
@@ -65,13 +66,21 @@ class _PendingUsersState extends State<PendingUsers> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 IconButton(
-                                  icon: Icon(Icons.check, color: Colors.green),
-                                  onPressed: () {
+                                  icon: const Icon(Icons.check,
+                                      color: Colors.green),
+                                  onPressed: () async {
                                     // Add your approve logic here
+                                    await FB()
+                                        .approveUser(_pendingUsers[index]);
+                                    await _futureInit();
+                                    setState(() {
+                                      Toaster().info('User approved');
+                                    });
                                   },
                                 ),
                                 IconButton(
-                                  icon: Icon(Icons.close, color: Colors.red),
+                                  icon: const Icon(Icons.close,
+                                      color: Colors.red),
                                   onPressed: () {
                                     // Add your reject logic here
                                   },

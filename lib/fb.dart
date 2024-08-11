@@ -334,6 +334,27 @@ class FB {
     }
   }
 
+  Future<void> approveUser(UserDetails user) async {
+    final DatabaseReference dbRef =
+        FirebaseDatabase.instance.ref('record_db${Const().dbVersion}/users');
+
+    if (user.uid != null) {
+      DatabaseReference refPending = dbRef.child('pending').child(user.uid!);
+      DatabaseReference refApproved = dbRef.child('approved').child(user.uid!);
+
+      DataSnapshot snapshot = await refPending.get();
+      if (snapshot.exists) {
+        try {
+          await refApproved.set(user.toJson());
+          await refPending.remove();
+        } catch (e) {
+          // Handle the error here
+          Toaster().error('Database write error: $e');
+        }
+      }
+    }
+  }
+
   // returns "pending", "approved", "admin", "none"
   Future<String> checkUserApprovalStatus(UserDetails user) async {
     final DatabaseReference dbRef =
