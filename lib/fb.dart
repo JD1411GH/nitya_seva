@@ -334,7 +334,8 @@ class FB {
     }
   }
 
-  Future<void> approveUser(UserDetails user) async {
+  // returns success or failure
+  Future<bool> approveUser(UserDetails user) async {
     final DatabaseReference dbRef =
         FirebaseDatabase.instance.ref('record_db${Const().dbVersion}/users');
 
@@ -350,9 +351,16 @@ class FB {
         } catch (e) {
           // Handle the error here
           Toaster().error('Database write error: $e');
+          return false;
         }
+      } else {
+        return false;
       }
+    } else {
+      return false;
     }
+
+    return true;
   }
 
   Future<void> rejectUser(UserDetails user) async {

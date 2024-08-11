@@ -70,12 +70,14 @@ class _PendingUsersState extends State<PendingUsers> {
                                       color: Colors.green),
                                   onPressed: () async {
                                     // Add your approve logic here
-                                    await FB()
+                                    bool status = await FB()
                                         .approveUser(_pendingUsers[index]);
-                                    await _futureInit();
-                                    setState(() {
-                                      Toaster().info('User approved');
-                                    });
+                                    if (status) {
+                                      await _futureInit();
+                                      setState(() {
+                                        Toaster().info('User approved');
+                                      });
+                                    }
                                   },
                                 ),
                                 IconButton(

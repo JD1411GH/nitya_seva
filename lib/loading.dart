@@ -33,6 +33,8 @@ class _LoadingScreenState extends State<LoadingScreen> {
     // check if user tried to login before
     String? json = await LS().read('user_details');
     if (json != null) {
+      // Yes, user tried to login before
+
       // Parse the JSON string
       Map<String, dynamic> userMap = jsonDecode(json);
 
