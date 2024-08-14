@@ -140,12 +140,13 @@ class FB {
   }
 
   Future<void> addSevaSlot(
-      String timestampSlot, Map<String, dynamic> sevaSlot) async {
+      DateTime timestampSlot, Map<String, dynamic> sevaSlot) async {
     // Add a new seva slot
     final DatabaseReference dbRef =
         FirebaseDatabase.instance.ref('record_db${Const().dbVersion}');
-    DatabaseReference ref =
-        dbRef.child('sevaSlots').child(timestampSlot.replaceAll(".", "^"));
+    DatabaseReference ref = dbRef
+        .child('sevaSlots')
+        .child(timestampSlot.toIso8601String().replaceAll(".", "^"));
     await ref.set(sevaSlot);
   }
 

@@ -112,7 +112,7 @@ class Record {
     sevaSlots.add(slot);
     sevaSlots.sort((a, b) => b.timestampSlot.compareTo(a.timestampSlot));
 
-    FB().addSevaSlot(timestampSlot.toIso8601String(), slot.toJson());
+    FB().addSevaSlot(timestampSlot, slot.toJson());
 
     if (callbacks != null && callbacks!.onSlotChange != null) {
       callbacks!.onSlotChange!();

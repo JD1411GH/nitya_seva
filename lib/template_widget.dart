@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:synchronized/synchronized.dart';
 
 class Pushpanjali extends StatefulWidget {
   const Pushpanjali({super.key});
@@ -7,10 +8,16 @@ class Pushpanjali extends StatefulWidget {
   State<Pushpanjali> createState() => _WidgetTemplateState();
 }
 
+final GlobalKey<_WidgetTemplateState> templateKey =
+    GlobalKey<_WidgetTemplateState>();
+
 class _WidgetTemplateState extends State<Pushpanjali> {
+  final _lockInit = Lock();
+
   Future<void> _futureInit() async {
-    await Future.delayed(const Duration(seconds: 2));
-    // Add your initialization code here
+    await _lockInit.synchronized(() async {
+      await Future.delayed(const Duration(seconds: 2));
+    });
   }
 
   Future<void> refresh() async {

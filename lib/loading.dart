@@ -35,6 +35,9 @@ class _LoadingScreenState extends State<LoadingScreen> {
     if (json != null) {
       // Yes, user tried to login before
 
+      // an unnecessary evil. to remove record lot of code needs to be changed
+      await Record().init();
+
       // Parse the JSON string
       Map<String, dynamic> userMap = jsonDecode(json);
 
