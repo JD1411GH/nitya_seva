@@ -150,13 +150,20 @@ class FB {
     await ref.set(sevaSlot);
   }
 
-  Future<void> removeSevaSlot(String timestampSlot) async {
-    // Remove a seva slot
-    final DatabaseReference dbRef =
-        FirebaseDatabase.instance.ref('record_db${Const().dbVersion}');
-    DatabaseReference ref =
-        dbRef.child('sevaSlots').child(timestampSlot.replaceAll(".", "^"));
-    await ref.remove();
+  Future<void> removeSevaSlot(DateTime timestampSlot) async {
+    for (String key in [
+      'sevaSlots',
+      'sevaTickets',
+      'tallyCash',
+      'tallyUpiCard'
+    ]) {
+      final DatabaseReference dbRef =
+          FirebaseDatabase.instance.ref('record_db${Const().dbVersion}');
+      DatabaseReference ref = dbRef
+          .child(key)
+          .child(timestampSlot.toIso8601String().replaceAll(".", "^"));
+      await ref.remove();
+    }
   }
 
   Future<String> _getSelectedSlotKey(
@@ -374,7 +381,7 @@ class FB {
     }
   }
 
-  // returns "pending", "approved", "admin", "none"
+  // returns "pending", "approved", "none"
   Future<String> checkUserApprovalStatus(UserDetails user) async {
     final DatabaseReference dbRef =
         FirebaseDatabase.instance.ref('record_db${Const().dbVersion}/users');
@@ -396,6 +403,25 @@ class FB {
     }
 
     return "none";
+  }
+
+  Future<String> getUserRole(String uid) async {
+    final DatabaseReference dbRef =
+        FirebaseDatabase.instance.ref('record_db${Const().dbVersion}/users');
+
+    DatabaseReference ref = dbRef.child('approved').child(uid);
+    DataSnapshot snapshot = await ref.get();
+
+    if (snapshot.exists) {
+      if (snapshot.value != null) {
+        Map map = snapshot.value as Map;
+        return map['role'];
+      } else {
+        return "none";
+      }
+    } else {
+      return "none";
+    }
   }
 
   Future<void> editSlot(DateTime timestampSlot, String title) async {

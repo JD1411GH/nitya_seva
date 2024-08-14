@@ -52,7 +52,7 @@ class Menu extends StatelessWidget {
         'imagePath': 'assets/images/laddu.jpg',
         'label': 'Prasadam',
         'action': () {
-          Toaster().error("Not Implemented!");
+          Toaster().error("Not Implemented");
         }
       },
       {
@@ -76,7 +76,7 @@ class Menu extends StatelessWidget {
         'imagePath': 'assets/images/settings.jpg',
         'label': 'Settings',
         'action': () {
-          Toaster().error("Not Implemented!");
+          Toaster().error("Not Implemented");
         }
       },
     ];

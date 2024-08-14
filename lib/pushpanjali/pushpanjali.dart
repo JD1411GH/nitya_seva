@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:garuda/admin/user.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/pushpanjali/dashboard.dart';
+import 'package:garuda/toaster.dart';
 import 'package:intl/intl.dart';
 import 'package:garuda/local_storage.dart';
 import 'package:garuda/pushpanjali/ticket_page.dart';
@@ -122,6 +126,44 @@ class _HomePageState extends State<Pushpanjali> {
     );
   }
 
+  void _showDeleteConfirmation(BuildContext context, int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Are you sure?'),
+          content: Text('Do you really want to delete this item?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Delete'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                LS().read('user_details').then((value) async {
+                  if (value != null) {
+                    UserDetails user = UserDetails.fromJson(jsonDecode(value));
+                    String role = await FB().getUserRole(user.uid!);
+                    if (role == 'Admin') {
+                      await FB().removeSevaSlot(sevaSlots[index].timestampSlot);
+                      await _refreshFull();
+                    } else {
+                      Toaster().error("Access Denied");
+                    }
+                  }
+                });
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _showMenuSlot(context, index, details) {
     showMenu(
       context: context,
@@ -162,8 +204,11 @@ class _HomePageState extends State<Pushpanjali> {
       if (value == 'edit') {
         _showEditDialog(context, index);
       } else if (value == 'delete') {
-        // Handle delete action for the specific index
-        print('Delete pressed for index: $index');
+        LS().read('user_details').then((value) async {
+          if (value != null) {
+            _showDeleteConfirmation(context, index);
+          }
+        });
       }
     });
   }

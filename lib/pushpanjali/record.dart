@@ -120,7 +120,7 @@ class Record {
   }
 
   void removeSevaSlot(DateTime timestampSlot) {
-    FB().removeSevaSlot(timestampSlot.toIso8601String());
+    FB().removeSevaSlot(timestampSlot);
 
     sevaSlots.removeWhere((slot) => slot.timestampSlot == timestampSlot);
     sevaSlots.sort((a, b) => b.timestampSlot.compareTo(a.timestampSlot));
