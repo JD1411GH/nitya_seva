@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/fb.dart';
 import 'package:garuda/pushpanjali/dashboard.dart';
 import 'package:intl/intl.dart';
 import 'package:garuda/local_storage.dart';
 import 'package:garuda/pushpanjali/ticket_page.dart';
 import 'package:garuda/pushpanjali/record.dart';
-import 'package:garuda/pushpanjali/datatypes.dart';
+import 'package:garuda/pushpanjali/sevaslot.dart';
 
 class Pushpanjali extends StatefulWidget {
   const Pushpanjali({super.key});
@@ -81,8 +82,90 @@ class _HomePageState extends State<Pushpanjali> {
   }
 
   Future<void> _refreshFull() async {
-    Record().refreshSevaSlots();
+    await Record().refreshSevaSlots();
     refresh();
+  }
+
+  void _showEditDialog(BuildContext context, int slotIndex) {
+    String initialText = sevaSlots[slotIndex].title;
+    TextEditingController _controller =
+        TextEditingController(text: initialText);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Edit slot'),
+          content: TextField(
+            controller: _controller,
+            decoration: InputDecoration(hintText: "Enter new title"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Edit'),
+              onPressed: () async {
+                await FB().editSlot(
+                    sevaSlots[slotIndex].timestampSlot, _controller.text);
+                await _refreshFull();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showMenuSlot(context, index, details) {
+    showMenu(
+      context: context,
+      position: RelativeRect.fromLTRB(
+          details.globalPosition.dx,
+          details.globalPosition.dy,
+          0,
+          0), // Use the position of the long press
+      items: [
+        PopupMenuItem(
+          value: 'edit',
+          child: ListTile(
+            leading: Icon(
+              Icons.edit,
+              color: Theme.of(context).iconTheme.color,
+            ),
+            title: Text(
+              'Edit',
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+          ),
+        ),
+        PopupMenuItem(
+          value: 'delete',
+          child: ListTile(
+            leading: Icon(
+              Icons.delete,
+              color: Theme.of(context).iconTheme.color,
+            ),
+            title: Text(
+              'Delete',
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+          ),
+        ),
+      ],
+    ).then((value) {
+      if (value == 'edit') {
+        _showEditDialog(context, index);
+      } else if (value == 'delete') {
+        // Handle delete action for the specific index
+        print('Delete pressed for index: $index');
+      }
+    });
   }
 
   Widget _widgetDate(index) {
@@ -112,26 +195,29 @@ class _HomePageState extends State<Pushpanjali> {
 
   Widget _widgetSlots(context, index) {
     return InkWell(
-        // Define your action here for onTap
-        onTap: () {
-          LS()
-              .write('selectedSlot',
-                  sevaSlots[index].timestampSlot.toIso8601String())
-              .then((value) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const TicketTable()),
-            ).then((_) {
-              Record()
-                  .registerCallbacks(RecordCallbacks(onSlotChange: refresh));
-            });
+      // Define your action here for onTap
+      onTap: () {
+        LS()
+            .write('selectedSlot',
+                sevaSlots[index].timestampSlot.toIso8601String())
+            .then((value) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const TicketTable()),
+          ).then((_) {
+            Record().registerCallbacks(RecordCallbacks(onSlotChange: refresh));
           });
-        },
+        });
+      },
 
-        // contents of the slot tile
-        child: Container(
-          margin: const EdgeInsets.symmetric(
-              vertical: 4.0, horizontal: 8.0), // Margin around the container
+      // contents of the slot tile
+      child: Container(
+        margin: const EdgeInsets.symmetric(
+            vertical: 4.0, horizontal: 8.0), // Margin around the container
+        child: GestureDetector(
+          onLongPressStart: (LongPressStartDetails details) {
+            _showMenuSlot(context, index, details);
+          },
           child: ListTile(
             // title
             title: Row(
@@ -179,7 +265,9 @@ class _HomePageState extends State<Pushpanjali> {
               ],
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   @override

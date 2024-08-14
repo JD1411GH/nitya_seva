@@ -4,7 +4,7 @@ import 'package:garuda/fb.dart';
 import 'package:garuda/local_storage.dart';
 import 'package:garuda/pushpanjali/record.dart';
 import 'package:garuda/toaster.dart';
-import 'package:garuda/pushpanjali/datatypes.dart';
+import 'package:garuda/pushpanjali/sevaslot.dart';
 
 class TallyUpiCardPage extends StatefulWidget {
   const TallyUpiCardPage({super.key});

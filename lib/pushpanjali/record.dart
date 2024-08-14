@@ -1,6 +1,6 @@
 import 'package:garuda/fb.dart';
 import 'package:garuda/toaster.dart';
-import 'package:garuda/pushpanjali/datatypes.dart';
+import 'package:garuda/pushpanjali/sevaslot.dart';
 
 class Record {
   static final Record _instance = Record._internal();

@@ -8,7 +8,7 @@ import 'package:garuda/pushpanjali/summary.dart';
 import 'package:garuda/pushpanjali/record.dart';
 import 'package:garuda/pushpanjali/tally_cash.dart';
 import 'package:garuda/pushpanjali/tally_upi_card.dart';
-import 'package:garuda/pushpanjali/datatypes.dart';
+import 'package:garuda/pushpanjali/sevaslot.dart';
 import 'package:flip_card/flip_card.dart';
 
 class TicketTable extends StatefulWidget {

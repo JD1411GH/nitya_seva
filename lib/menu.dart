@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/admin/admin.dart';
 import 'package:garuda/pushpanjali/pushpanjali.dart';
+import 'package:garuda/toaster.dart';
 
 class Menu extends StatelessWidget {
   const Menu({super.key});
@@ -51,16 +52,14 @@ class Menu extends StatelessWidget {
         'imagePath': 'assets/images/laddu.jpg',
         'label': 'Prasadam',
         'action': () {
-          // Define your custom action here
-          print('Prasadam clicked');
+          Toaster().error("Not Implemented!");
         }
       },
       {
         'imagePath': 'assets/images/deepotsava.jpg',
         'label': 'Deepotsava',
         'action': () {
-          // Define your custom action here
-          print('Deepotsava clicked');
+          Toaster().error("Not Implemented!");
         }
       },
       {
@@ -77,8 +76,7 @@ class Menu extends StatelessWidget {
         'imagePath': 'assets/images/settings.jpg',
         'label': 'Settings',
         'action': () {
-          // Define your custom action here
-          print('Settings clicked');
+          Toaster().error("Not Implemented!");
         }
       },
     ];

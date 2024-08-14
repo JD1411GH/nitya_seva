@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:garuda/const.dart';
 import 'package:garuda/toaster.dart';
-import 'package:garuda/pushpanjali/datatypes.dart';
+import 'package:garuda/pushpanjali/sevaslot.dart';
 import 'package:garuda/admin/user.dart';
 
 class FB {
@@ -396,6 +396,16 @@ class FB {
     }
 
     return "none";
+  }
+
+  Future<void> editSlot(DateTime timestampSlot, String title) async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/sevaSlots');
+
+    String key = timestampSlot.toIso8601String().replaceAll(".", "^");
+
+    DatabaseReference ref = dbRef.child(key);
+    await ref.update({'title': title});
   }
 
   Future<UserDetails> getUserDetails(String uid) async {
