@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/laddu/stock.dart';
 
 class LadduPage extends StatefulWidget {
   @override
@@ -6,6 +7,8 @@ class LadduPage extends StatefulWidget {
 }
 
 class _LadduPageState extends State<LadduPage> {
+  Widget _stock = Stock();
+
   Future<void> _refresh() async {
     // Simulate a network call
     await Future.delayed(Duration(seconds: 2));
@@ -15,18 +18,11 @@ class _LadduPageState extends State<LadduPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('RefreshIndicator Example'),
+        title: Text('Laddu Seva'),
       ),
       body: RefreshIndicator(
         onRefresh: _refresh,
-        child: ListView.builder(
-          itemCount: 20,
-          itemBuilder: (context, index) {
-            return ListTile(
-              title: Text('Item $index'),
-            );
-          },
-        ),
+        child: _stock,
       ),
     );
   }
