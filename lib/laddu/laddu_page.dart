@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/laddu/dist.dart';
 import 'package:garuda/laddu/stock.dart';
 
 class LadduPage extends StatefulWidget {
@@ -8,6 +9,7 @@ class LadduPage extends StatefulWidget {
 
 class _LadduPageState extends State<LadduPage> {
   Widget _stock = Stock();
+  Widget _dist = Dist();
 
   Future<void> _refresh() async {
     // Simulate a network call
@@ -22,7 +24,12 @@ class _LadduPageState extends State<LadduPage> {
       ),
       body: RefreshIndicator(
         onRefresh: _refresh,
-        child: _stock,
+        child: Column(
+          children: [
+            _stock,
+            _dist,
+          ],
+        ),
       ),
     );
   }

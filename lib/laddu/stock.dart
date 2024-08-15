@@ -6,7 +6,8 @@ class Stock extends StatefulWidget {
 }
 
 class _StockState extends State<Stock> {
-  bool isCollapsed = true;
+  final primaryColor = Colors.green;
+  bool isCollapsed = false;
   int total_procured = 0;
   int total_distributed = 0;
   int procured_today = 0;
@@ -45,7 +46,7 @@ class _StockState extends State<Stock> {
             child: AnimatedContainer(
               duration: Duration(milliseconds: 300),
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.green),
+                border: Border.all(color: primaryColor),
               ),
               child: Column(
                 mainAxisSize:
@@ -60,7 +61,7 @@ class _StockState extends State<Stock> {
                       });
                     },
                     child: Container(
-                      color: Colors.green, // Dark background for the title
+                      color: primaryColor, // Dark background for the title
                       width:
                           double.infinity, // Fill the entire horizontal space
                       padding: EdgeInsets.all(8.0),
@@ -127,8 +128,8 @@ class _StockState extends State<Stock> {
                                     // Add button logic
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors
-                                        .green, // Set the background color to light green
+                                    backgroundColor:
+                                        primaryColor, // Set the background color to light green
                                   ),
                                   child: Text('Add'),
                                 ),
@@ -142,8 +143,8 @@ class _StockState extends State<Stock> {
                                     // Logs button logic
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors
-                                        .green, // Set the background color to light green
+                                    backgroundColor:
+                                        primaryColor, // Set the background color to light green
                                   ),
                                   child: Text('Logs'),
                                 ),

@@ -36,7 +36,7 @@ class _DistState extends State<Dist> {
                 width: double.infinity, // Fill the entire horizontal space
                 padding: EdgeInsets.all(8.0),
                 child: Text(
-                  'Title',
+                  'Distribution',
                   style: TextStyle(
                     color: Colors.white, // Set the text color to white
                     fontSize: 18.0,
