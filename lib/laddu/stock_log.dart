@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/fb.dart';
+import 'package:garuda/laddu/laddu_datatypes.dart';
 
 class StockLog extends StatefulWidget {
   @override
@@ -6,25 +8,25 @@ class StockLog extends StatefulWidget {
 }
 
 class _StockLogState extends State<StockLog> {
-  Future<void> _refresh() async {
-    // Simulate a network call
-    await Future.delayed(Duration(seconds: 2));
+  List<LadduStock> logs = [];
+
+  Widget _getListViewStock() {
+    return ListView.builder(
+      itemCount: logs.length,
+      itemBuilder: (context, index) {
+        return ListTile(
+          title: Text("HI"),
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Laddu stock log'),
-      ),
-      body: RefreshIndicator(
-        onRefresh: _refresh,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [Text("Stock"), Text("data")],
-          ),
+        appBar: AppBar(
+          title: Text('Laddu stock log'),
         ),
-      ),
-    );
+        body: _getListViewStock());
   }
 }
