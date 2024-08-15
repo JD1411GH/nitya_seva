@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/access_denied.dart';
 import 'package:garuda/const.dart';
 import 'package:garuda/loading.dart';
 
@@ -64,6 +65,7 @@ class NityaSevaApp extends StatelessWidget {
         ),
       ),
       home: const LoadingScreen(),
+      // home: const AccessDenied(),
     );
   }
 }

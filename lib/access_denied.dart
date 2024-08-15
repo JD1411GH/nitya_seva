@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/loading.dart';
 
 class AccessDenied extends StatelessWidget {
   const AccessDenied({super.key});
@@ -9,7 +10,7 @@ class AccessDenied extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Access Denied'),
       ),
-      body: const Center(
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -28,6 +29,25 @@ class AccessDenied extends StatelessWidget {
             Text(
               'Please contact admin',
               style: TextStyle(fontSize: 18),
+            ),
+
+            // refresh and logout buttons
+            SizedBox(height: 40), // Add some space before the buttons
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                // refresh
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoadingScreen()),
+                    );
+                  },
+                  child: const Icon(Icons.refresh),
+                ),
+              ],
             ),
           ],
         ),
