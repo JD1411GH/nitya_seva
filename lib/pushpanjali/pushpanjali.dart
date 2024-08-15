@@ -112,7 +112,7 @@ class _HomePageState extends State<Pushpanjali> {
               },
             ),
             TextButton(
-              child: Text('Edit'),
+              child: Text('Save'),
               onPressed: () async {
                 await FB().editSlot(
                     sevaSlots[slotIndex].timestampSlot, _controller.text);

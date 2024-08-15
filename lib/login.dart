@@ -3,11 +3,9 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:garuda/access_denied.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/loading.dart';
 import 'package:garuda/local_storage.dart';
-import 'package:garuda/menu.dart';
 import 'package:garuda/toaster.dart';
 import 'package:garuda/admin/user.dart';
 
@@ -172,7 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 decoration: const InputDecoration(
                   labelText: 'Role',
                 ),
-                items: <String>['Volunteer', 'Devotee', 'Admin']
+                items: <String>['Volunteer', 'Pujari', 'Security', 'Admin']
                     .map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
