@@ -56,7 +56,7 @@ class Menu extends StatelessWidget {
       },
       {
         'imagePath': 'assets/images/laddu.jpg',
-        'label': 'Laddu Prasadam',
+        'label': 'Laddu Seva',
         'action': () {
           Toaster().error("Not Implemented");
         }
