@@ -1,5 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:garuda/admin/user.dart';
 import 'package:garuda/fb.dart';
+import 'package:garuda/laddu/laddu_datatypes.dart';
+import 'package:garuda/laddu/stock_log.dart';
+import 'package:garuda/local_storage.dart';
 import 'package:garuda/toaster.dart';
 
 class Stock extends StatefulWidget {
@@ -8,7 +14,7 @@ class Stock extends StatefulWidget {
 }
 
 class _StockState extends State<Stock> {
-  final primaryColor = Colors.green;
+  final localColor = Colors.green;
   bool isCollapsed = false;
   int total_procured = 0;
   int total_distributed = 0;
@@ -16,7 +22,7 @@ class _StockState extends State<Stock> {
   int distributed_today = 0;
 
   Future<void> _futureInit() async {
-    total_procured = await FB().readLadduStock();
+    total_procured = await FB().readLadduStockTotal();
     // total_distributed = await FB().getTotalDistributed();
     // procured_today = await FB().getProcuredToday();
     // distributed_today = await FB().getDistributedToday();
@@ -60,9 +66,27 @@ class _StockState extends State<Stock> {
             // add button
             ElevatedButton(
               onPressed: () async {
-                bool status = await FB().addLadduStock(procured);
-                if (!status) {
-                  Toaster().error("Add failed");
+                var u = await LS().read('user_details');
+                if (u != null) {
+                  var uu = jsonDecode(u);
+                  UserDetails user = UserDetails.fromJson(uu);
+
+                  LadduStock stock = LadduStock(
+                    timestamp: DateTime.now(),
+                    user: user.name!,
+                    count: procured,
+                  );
+
+                  bool status = await FB().addLadduStock(stock);
+                  if (!status) {
+                    Toaster().error("Add failed");
+                  }
+
+                  setState(() {
+                    total_procured += procured;
+                  });
+                } else {
+                  Toaster().error("Error");
                 }
                 Navigator.pop(context);
               },
@@ -92,7 +116,7 @@ class _StockState extends State<Stock> {
             child: AnimatedContainer(
               duration: Duration(milliseconds: 300),
               decoration: BoxDecoration(
-                border: Border.all(color: primaryColor),
+                border: Border.all(color: localColor),
               ),
               child: Column(
                 mainAxisSize:
@@ -107,7 +131,7 @@ class _StockState extends State<Stock> {
                       });
                     },
                     child: Container(
-                      color: primaryColor, // Dark background for the title
+                      color: localColor, // Dark background for the title
                       width:
                           double.infinity, // Fill the entire horizontal space
                       padding: EdgeInsets.all(8.0),
@@ -185,7 +209,7 @@ class _StockState extends State<Stock> {
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor:
-                                        primaryColor, // Set the background color to light green
+                                        localColor, // Set the background color to light green
                                   ),
                                   child: Text('Add'),
                                 ),
@@ -197,11 +221,15 @@ class _StockState extends State<Stock> {
                                 ),
                                 ElevatedButton(
                                   onPressed: () {
-                                    // Logs button logic
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => StockLog()),
+                                    );
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor:
-                                        primaryColor, // Set the background color to light green
+                                        localColor, // Set the background color to light green
                                   ),
                                   child: Text('Logs'),
                                 ),
@@ -215,7 +243,7 @@ class _StockState extends State<Stock> {
                                   onPressed: () {},
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor:
-                                        primaryColor, // Set the background color to light green
+                                        localColor, // Set the background color to light green
                                   ),
                                   child: Text('Validate'),
                                 ),

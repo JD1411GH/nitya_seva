@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:garuda/const.dart';
+import 'package:garuda/laddu/laddu_datatypes.dart';
+import 'package:garuda/laddu/stock_log.dart';
 import 'package:garuda/toaster.dart';
 import 'package:garuda/pushpanjali/sevaslot.dart';
 import 'package:garuda/admin/user.dart';
@@ -501,17 +503,17 @@ class FB {
     return users;
   }
 
-  Future<bool> addLadduStock(int count) async {
+  Future<bool> addLadduStock(LadduStock stock) async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/ladduSeva');
 
     // Add a new laddu stock
-    DateTime timestamp = DateTime.now();
+    DateTime timestamp = stock.timestamp;
     DatabaseReference ref = dbRef
         .child('stock')
         .child(timestamp.toIso8601String().replaceAll(".", "^"));
     try {
-      await ref.set(count);
+      await ref.set(stock.toJson());
     } catch (e) {
       return false;
     }
@@ -524,7 +526,7 @@ class FB {
       if (snapshot.exists) {
         total = snapshot.value as int;
       }
-      total += count;
+      total += stock.count;
       await refTotal.set(total);
     } catch (e) {
       return false;
@@ -533,7 +535,7 @@ class FB {
     return true;
   }
 
-  Future<int> readLadduStock() async {
+  Future<int> readLadduStockTotal() async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/ladduSeva/totalStock');
 
@@ -545,6 +547,26 @@ class FB {
     }
 
     return total;
+  }
+
+  Future<List<LadduStock>> readLadduStocks() async {
+    // this will read only for the current month
+
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva/stock');
+
+    DataSnapshot snapshot = await dbRef.get();
+    List<LadduStock> stocks = [];
+
+    if (snapshot.exists) {
+      stocks = (snapshot.value as Map)
+          .values
+          .map((value) =>
+              LadduStock.fromJson(Map<String, dynamic>.from(value as Map)))
+          .toList();
+    }
+
+    return stocks;
   }
 }
 
