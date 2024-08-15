@@ -41,6 +41,37 @@ class Menu extends StatelessWidget {
     );
   }
 
+  void _showLogoutConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Logout'),
+          content: Text('Are you sure you want to logout?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Logout'),
+              onPressed: () {
+                LS().delete('user_details');
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const LoadingScreen()),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<Map<String, dynamic>> items = [
@@ -103,11 +134,7 @@ class Menu extends StatelessWidget {
         'imagePath': 'assets/images/logout.jpg',
         'label': 'Logout',
         'action': () {
-          LS().delete('user_details');
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const LoadingScreen()),
-          );
+          _showLogoutConfirmationDialog(context);
         }
       },
     ];
