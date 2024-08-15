@@ -8,7 +8,7 @@ class LadduPage extends StatefulWidget {
 }
 
 class _LadduPageState extends State<LadduPage> {
-  Widget _stock = Stock();
+  Widget _stock = Stock(key: StockStateKey);
   Widget _dist = Dist();
 
   Future<void> _refresh() async {

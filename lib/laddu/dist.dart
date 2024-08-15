@@ -1,4 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:garuda/admin/user.dart';
+import 'package:garuda/fb.dart';
+import 'package:garuda/laddu/laddu_datatypes.dart';
+import 'package:garuda/laddu/stock.dart';
+import 'package:garuda/local_storage.dart';
+import 'package:garuda/toaster.dart';
+import 'package:intl/intl.dart';
 
 class Dist extends StatefulWidget {
   @override
@@ -9,7 +18,14 @@ class _DistState extends State<Dist> {
   final localColor = Colors.orange;
   bool isCollapsed = false;
   int countLaddu = 0;
-  final List<String> tileData = List.generate(10, (index) => 'Tile $index');
+  List<LadduDist> tileData = [];
+  final TextEditingController _controllerNote = TextEditingController();
+
+  @override
+  void dispose() {
+    _controllerNote.dispose();
+    super.dispose();
+  }
 
   Widget _getCountPicker() {
     return Container(
@@ -50,6 +66,7 @@ class _DistState extends State<Dist> {
         // text field for note
         Expanded(
           child: TextField(
+            controller: _controllerNote,
             decoration: InputDecoration(
               hintText: 'add notes',
             ),
@@ -59,8 +76,31 @@ class _DistState extends State<Dist> {
         // add button
         IconButton(
           icon: Icon(Icons.add),
-          onPressed: () {
-            // Add button pressed logic
+          onPressed: () async {
+            _controllerNote.text = '';
+
+            var u = await LS().read('user_details');
+            if (u != null) {
+              var uu = jsonDecode(u);
+              UserDetails user = UserDetails.fromJson(uu);
+
+              LadduDist dist = LadduDist(
+                timestamp: DateTime.now(),
+                user: user.name!,
+                count: countLaddu,
+                note: _controllerNote.text,
+              );
+
+              bool status = await FB().addLadduDist(dist);
+              if (status) {
+                await StockStateKey.currentState!.refresh();
+                Toaster().info("Add success");
+              } else {
+                Toaster().error("Add failed");
+              }
+            } else {
+              Toaster().error("Error");
+            }
           },
         ),
 
@@ -92,10 +132,34 @@ class _DistState extends State<Dist> {
             child: Center(
               child: Padding(
                 padding: EdgeInsets.all(16.0), // Increase padding as needed
-                child: Text(
-                  tile,
-                  style: TextStyle(
-                      color: Theme.of(context).textTheme.bodyLarge!.color),
+                child: Row(
+                  children: [
+                    Column(
+                      children: [
+                        Text(
+                          "Time: ${DateFormat('HH:mm').format(tile.timestamp)}",
+                          style: TextStyle(
+                            color: Theme.of(context).textTheme.bodyLarge!.color,
+                          ),
+                        ),
+                        Text(
+                          "Count: ${tile.count}",
+                          style: TextStyle(
+                            color: Theme.of(context).textTheme.bodyLarge!.color,
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (tile.note.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 8.0), // Adjust the value as needed
+                        child: Icon(
+                          Icons.note,
+                          color: Theme.of(context).iconTheme.color,
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ),
@@ -106,7 +170,10 @@ class _DistState extends State<Dist> {
     );
   }
 
-  Future<void> _futureInit() async {}
+  Future<void> _futureInit() async {
+    tileData = await FB().readLadduDists();
+    tileData.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+  }
 
   @override
   Widget build(BuildContext context) {

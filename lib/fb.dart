@@ -568,6 +568,72 @@ class FB {
 
     return stocks;
   }
+
+  Future<bool> addLadduDist(LadduDist dist) async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva');
+
+    // Add a new laddu distribution
+    DateTime timestamp = dist.timestamp;
+    DatabaseReference ref = dbRef
+        .child('dist')
+        .child(timestamp.toIso8601String().replaceAll(".", "^"));
+    try {
+      await ref.set(dist.toJson());
+    } catch (e) {
+      return false;
+    }
+
+    // Update the total count
+    DatabaseReference refTotal = dbRef.child('totalDist');
+    try {
+      DataSnapshot snapshot = await refTotal.get();
+      int total = 0;
+      if (snapshot.exists) {
+        total = snapshot.value as int;
+      }
+      total += dist.count;
+      await refTotal.set(total);
+    } catch (e) {
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<List<LadduDist>> readLadduDists() async {
+    // this will read only for the current month
+
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva/dist');
+
+    DataSnapshot snapshot = await dbRef.get();
+    List<LadduDist> dists = [];
+
+    if (snapshot.exists) {
+      dists = (snapshot.value as Map)
+          .values
+          .map((value) =>
+              LadduDist.fromJson(Map<String, dynamic>.from(value as Map)))
+          .toList();
+    }
+
+    return dists;
+  }
+
+  Future<int> readLadduDistTotal() async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva/totalDist');
+
+    DataSnapshot snapshot = await dbRef.get();
+    int total = 0;
+
+    if (snapshot.exists) {
+      total = snapshot.value as int;
+    }
+
+    return total;
+  }
 }
 
 class FBCallbacks {

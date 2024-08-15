@@ -9,9 +9,12 @@ import 'package:garuda/local_storage.dart';
 import 'package:garuda/toaster.dart';
 
 class Stock extends StatefulWidget {
+  Stock({Key? key}) : super(key: key);
   @override
   _StockState createState() => _StockState();
 }
+
+final GlobalKey<_StockState> StockStateKey = GlobalKey<_StockState>();
 
 class _StockState extends State<Stock> {
   final localColor = Colors.green;
@@ -21,11 +24,14 @@ class _StockState extends State<Stock> {
   int procured_today = 0;
   int distributed_today = 0;
 
+  Future<void> refresh() async {
+    await _futureInit();
+    setState(() {});
+  }
+
   Future<void> _futureInit() async {
     total_procured = await FB().readLadduStockTotal();
-    // total_distributed = await FB().getTotalDistributed();
-    // procured_today = await FB().getProcuredToday();
-    // distributed_today = await FB().getDistributedToday();
+    total_distributed = await FB().readLadduDistTotal();
   }
 
   @override
@@ -240,7 +246,9 @@ class _StockState extends State<Stock> {
                                       10, // Add some spacing between the buttons
                                 ),
                                 ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Toaster().error("Not implemented");
+                                  },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor:
                                         localColor, // Set the background color to light green
