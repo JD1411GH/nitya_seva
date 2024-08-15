@@ -6,7 +6,6 @@ import 'package:garuda/admin/user.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/loading.dart';
 import 'package:garuda/local_storage.dart';
-import 'package:garuda/login.dart';
 import 'package:garuda/pushpanjali/pushpanjali.dart';
 import 'package:garuda/toaster.dart';
 
@@ -57,7 +56,7 @@ class Menu extends StatelessWidget {
       },
       {
         'imagePath': 'assets/images/laddu.jpg',
-        'label': 'Prasadam',
+        'label': 'Laddu Seva',
         'action': () {
           Toaster().error("Not Implemented");
         }
