@@ -64,6 +64,9 @@ class _DashboardState extends State<Dashboard> {
       List<SevaSlot> slots = await FB().readSevaSlotsByDate(selectedDate);
       if (slots.isEmpty) {
         return;
+      } else {
+        // sort the slots by time
+        slots.sort((a, b) => a.timestampSlot.compareTo(b.timestampSlot));
       }
       for (var slot in slots) {
         amountTableHeaderRow.add(slot.title);
@@ -222,6 +225,7 @@ class _DashboardState extends State<Dashboard> {
 
     return Table(
       children: [
+        // table header
         TableRow(
           children: amountTableHeaderRow.map((header) {
             return Padding(
@@ -236,6 +240,8 @@ class _DashboardState extends State<Dashboard> {
             );
           }).toList(),
         ),
+
+        // row for entries
         ...amountTableTicketRow.map((row) {
           return TableRow(
             children: row.map((cell) {
@@ -249,6 +255,8 @@ class _DashboardState extends State<Dashboard> {
             }).toList(),
           );
         }),
+
+        // row for total
         ...amountTableTotalRow.map((row) {
           return TableRow(
             children: row.map((cell) {
