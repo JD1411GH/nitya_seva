@@ -13,25 +13,18 @@ class _StockState extends State<Stock> {
   int procured_today = 0;
   int distributed_today = 0;
 
-  Future<void> fetchData() async {
-    setState(() {
-      total_procured = 100;
-      total_distributed = 50;
-      procured_today = 10;
-      distributed_today = 5;
-    });
-  }
+  Future<void> _futureInit() async {}
 
   @override
   void initState() {
     super.initState();
-    fetchData();
+    _futureInit();
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: fetchData(),
+      future: _futureInit(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());

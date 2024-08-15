@@ -96,6 +96,11 @@ class _DistState extends State<Dist> {
     );
   }
 
+  Future<void> _futureInit() async {
+    // Simulate a network call
+    await Future.delayed(Duration(seconds: 2));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -136,17 +141,29 @@ class _DistState extends State<Dist> {
 
             // body
             if (!isCollapsed)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    _getCountPicker(),
-                    _getAddButton(),
-                    Divider(),
-                    _getDistList(),
-                  ],
-                ),
-              ),
+              FutureBuilder(
+                future:
+                    _futureInit(), // Replace with your actual future function
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          _getCountPicker(),
+                          _getAddButton(),
+                          Divider(),
+                          _getDistList(),
+                        ],
+                      ),
+                    );
+                  }
+                },
+              )
           ],
         ),
       ),
