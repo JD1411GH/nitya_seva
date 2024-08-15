@@ -48,6 +48,7 @@ class _DistState extends State<Dist> {
   Widget _getAddButton() {
     return Row(
       children: [
+        // text field for note
         Expanded(
           child: TextField(
             decoration: InputDecoration(
@@ -55,10 +56,20 @@ class _DistState extends State<Dist> {
             ),
           ),
         ),
+
+        // add button
         IconButton(
           icon: Icon(Icons.add),
           onPressed: () {
             // Add button pressed logic
+          },
+        ),
+
+        // log button
+        IconButton(
+          icon: Icon(Icons.list),
+          onPressed: () {
+            // Log button pressed logic
           },
         ),
       ],

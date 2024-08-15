@@ -500,6 +500,52 @@ class FB {
 
     return users;
   }
+
+  Future<bool> addLadduStock(int count) async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva');
+
+    // Add a new laddu stock
+    DateTime timestamp = DateTime.now();
+    DatabaseReference ref = dbRef
+        .child('stock')
+        .child(timestamp.toIso8601String().replaceAll(".", "^"));
+    try {
+      await ref.set(count);
+    } catch (e) {
+      return false;
+    }
+
+    // Update the total count
+    DatabaseReference refTotal = dbRef.child('totalStock');
+    try {
+      DataSnapshot snapshot = await refTotal.get();
+      int total = 0;
+      if (snapshot.exists) {
+        total = snapshot.value as int;
+      }
+      total += count;
+      await refTotal.set(total);
+    } catch (e) {
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<int> readLadduStock() async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva/totalStock');
+
+    DataSnapshot snapshot = await dbRef.get();
+    int total = 0;
+
+    if (snapshot.exists) {
+      total = snapshot.value as int;
+    }
+
+    return total;
+  }
 }
 
 class FBCallbacks {

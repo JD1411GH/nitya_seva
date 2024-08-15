@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/fb.dart';
+import 'package:garuda/toaster.dart';
 
 class Stock extends StatefulWidget {
   @override
@@ -13,12 +15,63 @@ class _StockState extends State<Stock> {
   int procured_today = 0;
   int distributed_today = 0;
 
-  Future<void> _futureInit() async {}
+  Future<void> _futureInit() async {
+    total_procured = await FB().readLadduStock();
+    // total_distributed = await FB().getTotalDistributed();
+    // procured_today = await FB().getProcuredToday();
+    // distributed_today = await FB().getDistributedToday();
+  }
 
   @override
   void initState() {
     super.initState();
     _futureInit();
+  }
+
+  void _addStock(BuildContext context) {
+    int procured = 0;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Add Stock'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                decoration: InputDecoration(labelText: 'Packs procured'),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  procured = int.parse(value);
+                },
+              ),
+            ],
+          ),
+          actions: [
+            // cancel button
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Cancel'),
+            ),
+
+            // add button
+            ElevatedButton(
+              onPressed: () async {
+                bool status = await FB().addLadduStock(procured);
+                if (!status) {
+                  Toaster().error("Add failed");
+                }
+                Navigator.pop(context);
+              },
+              child: Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -91,6 +144,16 @@ class _StockState extends State<Stock> {
                             ),
                           ),
 
+                          // remaining
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Total remaining = ${total_procured - total_distributed} packs',
+                            ),
+                          ),
+
+                          Divider(),
+
                           // procured today
                           Align(
                             alignment: Alignment.centerLeft,
@@ -118,7 +181,7 @@ class _StockState extends State<Stock> {
                                 // add button
                                 ElevatedButton(
                                   onPressed: () {
-                                    // Add button logic
+                                    _addStock(context);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor:
@@ -129,8 +192,9 @@ class _StockState extends State<Stock> {
 
                                 // logs button
                                 SizedBox(
-                                    width:
-                                        10), // Add some spacing between the buttons
+                                  width:
+                                      10, // Add some spacing between the buttons
+                                ),
                                 ElevatedButton(
                                   onPressed: () {
                                     // Logs button logic
@@ -140,6 +204,20 @@ class _StockState extends State<Stock> {
                                         primaryColor, // Set the background color to light green
                                   ),
                                   child: Text('Logs'),
+                                ),
+
+                                // validate button
+                                SizedBox(
+                                  width:
+                                      10, // Add some spacing between the buttons
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {},
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        primaryColor, // Set the background color to light green
+                                  ),
+                                  child: Text('Validate'),
                                 ),
                               ],
                             ),
