@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:garuda/admin/admin.dart';
 import 'package:garuda/admin/user.dart';
 import 'package:garuda/fb.dart';
+import 'package:garuda/loading.dart';
 import 'package:garuda/local_storage.dart';
+import 'package:garuda/login.dart';
 import 'package:garuda/pushpanjali/pushpanjali.dart';
 import 'package:garuda/toaster.dart';
 
@@ -96,6 +98,19 @@ class Menu extends StatelessWidget {
           Toaster().error("Not Implemented");
         }
       },
+
+      // log out
+      {
+        'imagePath': 'assets/images/logout.jpg',
+        'label': 'Logout',
+        'action': () {
+          LS().delete('user_details');
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const LoadingScreen()),
+          );
+        }
+      },
     ];
 
     return Scaffold(
@@ -109,11 +124,11 @@ class Menu extends StatelessWidget {
             child: GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: crossAxisCount,
-                mainAxisSpacing: 20.0,
-                crossAxisSpacing: 20.0,
+                mainAxisSpacing: 0.0, // Reduced to zero
+                crossAxisSpacing: 0.0, // Reduced to zero
                 childAspectRatio: 1.0,
               ),
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(30.0), // Reduced padding
               itemCount: items.length,
               itemBuilder: (context, index) {
                 return _buildGridItem(

@@ -2,3 +2,4 @@
 - rename Pushpanjali slot
 - delete Pushpanjali slot by admin
 - user approval auto refresh
+- logout button

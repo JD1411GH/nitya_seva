@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:garuda/access_denied.dart';
 import 'package:garuda/fb.dart';
+import 'package:garuda/loading.dart';
 import 'package:garuda/local_storage.dart';
 import 'package:garuda/menu.dart';
 import 'package:garuda/toaster.dart';
@@ -111,22 +112,11 @@ class _LoginScreenState extends State<LoginScreen> {
         );
         LS().write('user_details', jsonEncode(u.toJson()));
 
-        Widget nextpage = const AccessDenied();
-        var status = await FB().checkUserApprovalStatus(u);
-        if (status == "none") {
-          // make entry to pending list
-          await FB().addPendingUser(u);
-          nextpage = const AccessDenied();
-        } else if (status == "pending") {
-          nextpage = const AccessDenied();
-        } else if (status == "approved") {
-          // initialize local database
-          nextpage = const Menu();
-        }
+        await FB().addPendingUser(u);
 
         if (mounted) {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => nextpage));
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => LoadingScreen()));
         } else {
           Toaster().error("Error: context not mounted");
         }
