@@ -203,8 +203,7 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Widget _wDateHeader() {
-    final String formattedDate =
-        DateFormat('EEEE, MMMM d, yyyy').format(selectedDate);
+    final String formattedDate = DateFormat('EE, MMM d').format(selectedDate);
 
     return Center(
       child: Text(
