@@ -11,15 +11,35 @@ class PendingUsers extends StatefulWidget {
   State<PendingUsers> createState() => _PendingUsersState();
 }
 
+final GlobalKey<_PendingUsersState> keyPendingUsers =
+    GlobalKey<_PendingUsersState>();
+
 class _PendingUsersState extends State<PendingUsers> {
   final _lockInit = Lock();
   List<UserDetails> _pendingUsers = [];
+
+  initState() {
+    super.initState();
+
+    // dont have to wait
+    FB().listenForChange("users", FBCallbacks(
+      onChange: (changeType, data) async {
+        await _futureInit();
+        setState(() {});
+      },
+    ));
+  }
 
   Future<void> _futureInit() async {
     await _lockInit.synchronized(() async {
       // populate users list
       _pendingUsers = await FB().readPendingUsers();
     });
+  }
+
+  Future<void> refresh() async {
+    await _futureInit();
+    setState(() {});
   }
 
   @override

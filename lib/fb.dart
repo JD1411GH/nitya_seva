@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:garuda/const.dart';
@@ -256,6 +255,23 @@ class FB {
 
     _sevaTicketRemovedSubscription = dbRef.onChildRemoved.listen((event) {
       callbacks.onChange("REMOVE_SEVA_TICKET", event.snapshot.value);
+    });
+  }
+
+  Future<void> listenForChange(String path, FBCallbacks callbacks) async {
+    final dbRef =
+        FirebaseDatabase.instance.ref('record_db${Const().dbVersion}/$path');
+
+    _sevaTicketAddedSubscription = dbRef.onChildAdded.listen((event) {
+      callbacks.onChange("ADD", event.snapshot.value);
+    });
+
+    _sevaTicketChangedSubscription = dbRef.onChildChanged.listen((event) {
+      callbacks.onChange("UPDATE", event.snapshot.value);
+    });
+
+    _sevaTicketRemovedSubscription = dbRef.onChildRemoved.listen((event) {
+      callbacks.onChange("REMOVE", event.snapshot.value);
     });
   }
 

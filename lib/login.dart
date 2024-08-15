@@ -249,7 +249,7 @@ Future<void> loginUser(String phone, LoginUserCallbacks callbacks) async {
       callbacks.codeSent(verificationId, auth);
     },
     codeAutoRetrievalTimeout: (String verificationId) {
-      Toaster().error("codeAutoRetrievalTimeout");
+      // Toaster().error("codeAutoRetrievalTimeout");
     },
   );
 }

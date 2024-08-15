@@ -1,5 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:garuda/admin/admin.dart';
+import 'package:garuda/admin/user.dart';
+import 'package:garuda/fb.dart';
+import 'package:garuda/local_storage.dart';
 import 'package:garuda/pushpanjali/pushpanjali.dart';
 import 'package:garuda/toaster.dart';
 
@@ -65,11 +70,23 @@ class Menu extends StatelessWidget {
       {
         'imagePath': 'assets/images/admin.jpg',
         'label': 'Admin',
-        'action': () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const AdminPage()),
-          );
+        'action': () async {
+          // check if access to the page is there
+          String? json = await LS().read('user_details');
+          if (json != null) {
+            UserDetails u = UserDetails.fromJson(jsonDecode(json));
+            UserDetails user = await FB().getUserDetails(u.uid!);
+            if (user.role != 'Admin') {
+              Toaster().error("Access Denied!");
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AdminPage()),
+              );
+            }
+          } else {
+            Toaster().error("Unknown Error!");
+          }
         }
       },
       {
