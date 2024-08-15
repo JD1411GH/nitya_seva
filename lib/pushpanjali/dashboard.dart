@@ -54,7 +54,7 @@ class _DashboardState extends State<Dashboard> {
   Future<void> _futureInit() async {
     // init must be completed in a single go
     await _lockInit.synchronized(() async {
-      amountTableHeaderRow = ['Amount'];
+      amountTableHeaderRow = ['Seva Ticket'];
       countMode = {
         'UPI': 0,
         'Cash': 0,
