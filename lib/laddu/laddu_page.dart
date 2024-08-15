@@ -24,11 +24,13 @@ class _LadduPageState extends State<LadduPage> {
       ),
       body: RefreshIndicator(
         onRefresh: _refresh,
-        child: Column(
-          children: [
-            _stock,
-            _dist,
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              _stock,
+              _dist,
+            ],
+          ),
         ),
       ),
     );

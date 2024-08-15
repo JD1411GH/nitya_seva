@@ -8,6 +8,93 @@ class Dist extends StatefulWidget {
 class _DistState extends State<Dist> {
   final primaryColor = Colors.orange;
   bool isCollapsed = false;
+  int countLaddu = 0;
+  final List<String> tileData = List.generate(10, (index) => 'Tile $index');
+
+  Widget _getCountPicker() {
+    return Container(
+      height: 50.0, // Adjust the height as needed
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: 100,
+        itemBuilder: (BuildContext context, int index) {
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                countLaddu = index;
+              });
+            },
+            child: Container(
+              width: 50.0, // Adjust the width as needed
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color:
+                      countLaddu == index ? primaryColor : Colors.transparent,
+                  width: 2.0,
+                ),
+              ),
+              child: Text(
+                index.toString(),
+                style: TextStyle(fontSize: 24),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _getAddButton() {
+    return Row(
+      children: [
+        Expanded(
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: 'add notes',
+            ),
+          ),
+        ),
+        IconButton(
+          icon: Icon(Icons.add),
+          onPressed: () {
+            // Add button pressed logic
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _getDistList() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: // Define a list of tile data
+
+          // Use the list to generate the tiles
+          Row(
+        children: tileData.map((tile) {
+          return Card(
+            shape: RoundedRectangleBorder(
+              borderRadius:
+                  BorderRadius.circular(16.0), // Adjust the radius as needed
+            ),
+            margin: EdgeInsets.all(8.0),
+            child: Center(
+              child: Padding(
+                padding: EdgeInsets.all(16.0), // Increase padding as needed
+                child: Text(
+                  tile,
+                  style: TextStyle(
+                      color: Theme.of(context).textTheme.bodyLarge!.color),
+                ),
+              ),
+            ),
+          );
+          ;
+        }).toList(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +112,7 @@ class _DistState extends State<Dist> {
           mainAxisSize:
               MainAxisSize.min, // Take only the space needed by children
           children: [
+            // header
             GestureDetector(
               onTap: () {
                 setState(() {
@@ -45,10 +133,19 @@ class _DistState extends State<Dist> {
                 ),
               ),
             ),
+
+            // body
             if (!isCollapsed)
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('Expanded Content'), // Content when expanded
+                child: Column(
+                  children: [
+                    _getCountPicker(),
+                    _getAddButton(),
+                    Divider(),
+                    _getDistList(),
+                  ],
+                ),
               ),
           ],
         ),

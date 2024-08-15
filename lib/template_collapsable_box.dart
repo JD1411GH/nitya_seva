@@ -25,6 +25,7 @@ class _DistState extends State<Dist> {
           mainAxisSize:
               MainAxisSize.min, // Take only the space needed by children
           children: [
+            // title bar
             GestureDetector(
               onTap: () {
                 setState(() {
@@ -45,10 +46,17 @@ class _DistState extends State<Dist> {
                 ),
               ),
             ),
+
+            // body
             if (!isCollapsed)
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('Expanded Content'), // Content when expanded
+                child: Column(
+                  children: [
+                    Text('Expanded Content'), // Content when expanded
+                    Text('Additional Content'), // New Text field
+                  ],
+                ),
               ),
           ],
         ),

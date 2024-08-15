@@ -19,13 +19,10 @@ class _LadduPageState extends State<LadduPage> {
       ),
       body: RefreshIndicator(
         onRefresh: _refresh,
-        child: ListView.builder(
-          itemCount: 20,
-          itemBuilder: (context, index) {
-            return ListTile(
-              title: Text('Item $index'),
-            );
-          },
+        child: SingleChildScrollView(
+          child: Column(
+            children: [Text("Stock"), Text("data")],
+          ),
         ),
       ),
     );
