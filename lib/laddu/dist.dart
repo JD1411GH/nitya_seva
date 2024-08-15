@@ -96,10 +96,7 @@ class _DistState extends State<Dist> {
     );
   }
 
-  Future<void> _futureInit() async {
-    // Simulate a network call
-    await Future.delayed(Duration(seconds: 2));
-  }
+  Future<void> _futureInit() async {}
 
   @override
   Widget build(BuildContext context) {
