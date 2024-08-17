@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/laddu_seva/dist_log.dart';
 import 'package:garuda/laddu_seva/stock_log.dart';
 
 class LadduLog extends StatelessWidget {
@@ -34,7 +35,7 @@ class LadduLog extends StatelessWidget {
         body: TabBarView(
           children: [
             Center(child: StockLog()),
-            Center(child: Text('Content for Tab 2')),
+            Center(child: DistributionLog()),
           ],
         ),
       ),

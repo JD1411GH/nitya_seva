@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class LadduStock {
   final DateTime timestamp;
   final String user;
@@ -57,5 +55,38 @@ class LadduDist {
       count: json['count'],
       note: json['note'],
     );
+  }
+}
+
+class LadduDistAccumulated {
+  final String date;
+  int count;
+  List<String> users;
+  List<String> notes;
+
+  LadduDistAccumulated(
+      {required this.date,
+      required this.count,
+      required this.users,
+      required this.notes});
+
+  // Factory constructor to create an instance from a JSON map
+  factory LadduDistAccumulated.fromJson(Map<String, dynamic> json) {
+    return LadduDistAccumulated(
+      date: json['date'],
+      count: json['count'],
+      users: List<String>.from(json['users']),
+      notes: List<String>.from(json['notes']),
+    );
+  }
+
+  // Method to convert an instance to a JSON map
+  Map<String, dynamic> toJson() {
+    return {
+      'date': date,
+      'count': count,
+      'users': users,
+      'notes': notes,
+    };
   }
 }

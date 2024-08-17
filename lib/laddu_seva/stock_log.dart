@@ -21,8 +21,8 @@ class _StockLogState extends State<StockLog> {
   }
 
   Future<void> _refresh() async {
-    // Simulate a network call
-    await Future.delayed(Duration(seconds: 2));
+    await _futureInit();
+    setState(() {});
   }
 
   Widget _getListViewStock() {

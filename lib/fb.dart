@@ -659,6 +659,31 @@ class FB {
     return dists;
   }
 
+  Future<List<LadduDist>> readLadduDistsByDateRange(
+      DateTime startDate, DateTime endDate) async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva/dist');
+
+    final Query query = dbRef
+        .orderByKey()
+        .startAt(startDate.toIso8601String().replaceAll(".", "^"))
+        .endAt(endDate.toIso8601String().replaceAll(".", "^"));
+
+    final DataSnapshot snapshot = await query.get();
+
+    if (snapshot.exists) {
+      final Map<String, dynamic> data =
+          Map<String, dynamic>.from(snapshot.value as Map);
+      final List<LadduDist> ladduDists = data.entries
+          .map((entry) =>
+              LadduDist.fromJson(Map<String, dynamic>.from(entry.value)))
+          .toList();
+      return ladduDists;
+    } else {
+      return [];
+    }
+  }
+
   Future<int> readLadduDistSum() async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/ladduSeva/sumDist');
