@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:garuda/admin/user.dart';
 import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
@@ -18,6 +17,8 @@ class LadduDash extends StatefulWidget {
   @override
   State<LadduDash> createState() => _LadduDashState();
 }
+
+final GlobalKey<_LadduDashState> LadduDashKey = GlobalKey<_LadduDashState>();
 
 class _LadduDashState extends State<LadduDash> {
   final _lockInit = Lock();
@@ -49,7 +50,7 @@ class _LadduDashState extends State<LadduDash> {
     if (currentStock / total_procured < 0.2) {
       progressColor = Colors.redAccent;
     } else if (currentStock / total_procured < 0.5) {
-      progressColor = Colors.yellow;
+      progressColor = Colors.amber;
     } else {
       progressColor = Colors.lightGreen;
     }
@@ -173,6 +174,29 @@ class _LadduDashState extends State<LadduDash> {
     );
   }
 
+  void showDialogFailedValidation(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            'Validation failed',
+            style: TextStyle(color: Colors.red),
+          ),
+          content: Text(message),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _getAvailabilityWidget(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -203,8 +227,38 @@ class _LadduDashState extends State<LadduDash> {
                 child: Text("Logs"),
               ),
               ElevatedButton(
-                onPressed: () {
-                  // Add your onPressed code here!
+                onPressed: () async {
+                  bool valid = true;
+
+                  // validate stock
+                  List<LadduStock> stocks = await FB().readLadduStocks();
+                  int sum = 0;
+                  stocks.forEach((element) {
+                    sum += element.count;
+                  });
+                  if (sum != total_procured) {
+                    valid = false;
+                    showDialogFailedValidation(context,
+                        "Stock validation failed. \nTotal expected stock = $sum \nTotal actual stock = $total_procured");
+                    return;
+                  }
+
+                  // validate distribution
+                  List<LadduDist> dists = await FB().readLadduDists();
+                  sum = 0;
+                  dists.forEach((element) {
+                    sum += element.count;
+                  });
+                  if (sum != total_distributed) {
+                    valid = false;
+                    showDialogFailedValidation(context,
+                        "Distribution validation failed. \nTotal expected distribution = $sum \nTotal actual distribution = $total_distributed");
+                    return;
+                  }
+
+                  if (valid) {
+                    Toaster().info("Validation successful");
+                  }
                 },
                 child: Text("Validate"),
               ),

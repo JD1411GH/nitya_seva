@@ -7,9 +7,10 @@ class LadduMain extends StatefulWidget {
 }
 
 class _LadduSevaState extends State<LadduMain> {
+  Widget _ladduDash = LadduDash(key: LadduDashKey);
+
   Future<void> _refresh() async {
-    // Simulate a network call
-    await Future.delayed(Duration(seconds: 2));
+    LadduDashKey.currentState!.refresh();
   }
 
   @override
@@ -22,7 +23,7 @@ class _LadduSevaState extends State<LadduMain> {
         onRefresh: _refresh,
         child: ListView(
           children: [
-            LadduDash(),
+            _ladduDash,
           ],
         ),
       ),
