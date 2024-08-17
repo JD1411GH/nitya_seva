@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:garuda/const.dart';
-import 'package:garuda/laddu/laddu_datatypes.dart';
-import 'package:garuda/laddu/stock_log.dart';
+import 'package:garuda/laddu/datatypes.dart';
 import 'package:garuda/toaster.dart';
 import 'package:garuda/pushpanjali/sevaslot.dart';
 import 'package:garuda/admin/user.dart';

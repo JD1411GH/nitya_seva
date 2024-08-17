@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/fb.dart';
-import 'package:garuda/laddu/laddu_datatypes.dart';
+import 'package:garuda/laddu/datatypes.dart';
 import 'package:intl/intl.dart';
 
 class StockLog extends StatefulWidget {

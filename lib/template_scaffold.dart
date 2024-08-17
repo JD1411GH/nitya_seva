@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/laddu/laddu_dash.dart';
 
-class LadduPage extends StatefulWidget {
+class LadduSeva extends StatefulWidget {
   @override
-  _LadduPageState createState() => _LadduPageState();
+  _LadduSevaState createState() => _LadduSevaState();
 }
 
-class _LadduPageState extends State<LadduPage> {
+class _LadduSevaState extends State<LadduSeva> {
   Future<void> _refresh() async {
     // Simulate a network call
     await Future.delayed(Duration(seconds: 2));
@@ -15,14 +16,14 @@ class _LadduPageState extends State<LadduPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('RefreshIndicator Example'),
+        title: Text('Laddu Seva'),
       ),
       body: RefreshIndicator(
         onRefresh: _refresh,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [Text("Stock"), Text("data")],
-          ),
+        child: ListView(
+          children: [
+            LadduDash(),
+          ],
         ),
       ),
     );

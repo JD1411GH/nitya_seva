@@ -1,0 +1,31 @@
+import 'package:flutter/material.dart';
+import 'package:garuda/laddu/laddu_dash.dart';
+
+class LadduSeva extends StatefulWidget {
+  @override
+  _LadduSevaState createState() => _LadduSevaState();
+}
+
+class _LadduSevaState extends State<LadduSeva> {
+  Future<void> _refresh() async {
+    // Simulate a network call
+    await Future.delayed(Duration(seconds: 2));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Laddu Seva'),
+      ),
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: ListView(
+          children: [
+            LadduDash(),
+          ],
+        ),
+      ),
+    );
+  }
+}
