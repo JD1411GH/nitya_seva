@@ -12,6 +12,7 @@ import 'package:garuda/laddu_seva/number_selector.dart';
 import 'package:garuda/laddu_seva/stock_log.dart';
 import 'package:garuda/local_storage.dart';
 import 'package:garuda/toaster.dart';
+import 'package:intl/intl.dart';
 import 'package:synchronized/synchronized.dart';
 
 class LadduDash extends StatefulWidget {
@@ -280,6 +281,14 @@ class _LadduDashState extends State<LadduDash> {
         } else {
           return Column(
             children: [
+              Text(
+                DateFormat('EEE, MMM d').format(DateTime.now()),
+                style: TextStyle(
+                  fontSize: 20.0, // Increase the font size
+                  fontWeight: FontWeight.bold, // Make the text bold
+                ),
+              ),
+              Divider(),
               _summary,
               _getStockButtons(context),
               Divider(),
