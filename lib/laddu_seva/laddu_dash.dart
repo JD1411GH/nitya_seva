@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:garuda/admin/user.dart';
 import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
+import 'package:garuda/laddu_seva/avilability_bar.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/laddu_seva/dist_tiles.dart';
+import 'package:garuda/laddu_seva/laddu_summary.dart';
 import 'package:garuda/laddu_seva/number_selector.dart';
 import 'package:garuda/laddu_seva/stock_log.dart';
 import 'package:garuda/local_storage.dart';
@@ -23,108 +25,21 @@ final GlobalKey<_LadduDashState> LadduDashKey = GlobalKey<_LadduDashState>();
 
 class _LadduDashState extends State<LadduDash> {
   final _lockInit = Lock();
-  TextEditingController _controllerNote = TextEditingController();
 
   Widget _numberSelector = NumberSelector(key: numberSelectorKey);
-  Widget distTiles = DistTiles(key: DistTilesKey);
+  Widget _distTiles = DistTiles(key: DistTilesKey);
+  Widget _summary = LadduSummary();
+  Widget _avlBar = AvailabilityBar();
 
-  int total_procured = 0;
-  int total_distributed = 0;
-  int procured_today = 0;
-  int distributed_today = 0;
+  TextEditingController _controllerNote = TextEditingController();
 
   Future<void> _futureInit() async {
-    await _lockInit.synchronized(() async {
-      total_procured = await FB().readLadduStockTotal();
-      total_distributed = await FB().readLadduDistSum();
-
-      // get today's stock
-      List<LadduStock> stocks =
-          await FB().readLadduStocks(date: DateTime.now());
-      procured_today = 0;
-      for (var stock in stocks) {
-        procured_today += stock.count;
-      }
-
-      // get today's distribution
-      List<LadduDist> dists = await FB().readLadduDists(date: DateTime.now());
-      distributed_today = 0;
-      for (var dist in dists) {
-        distributed_today += dist.count;
-      }
-    });
+    await _lockInit.synchronized(() async {});
   }
 
   Future<void> refresh() async {
     await _futureInit();
     setState(() {});
-  }
-
-  Widget _getAvailabilityBar(BuildContext context) {
-    int currentStock = total_procured - total_distributed;
-
-    Color progressColor;
-    if (currentStock / total_procured < 0.2) {
-      progressColor = Colors.redAccent;
-    } else if (currentStock / total_procured < 0.5) {
-      progressColor = Colors.amber;
-    } else {
-      progressColor = Colors.lightGreen;
-    }
-
-    // if There is no stock, display a message
-    if (currentStock == 0) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(height: 20),
-          Container(
-            padding: EdgeInsets.all(8.0), // Add padding around the text
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.red), // Border color
-              borderRadius: BorderRadius.circular(12.0), // Rounded edges
-            ),
-            child: Text(
-              'No stocks available',
-              style: TextStyle(
-                color: Colors.red,
-                fontSize: 18.0, // Increase the font size as needed
-                fontWeight: FontWeight.bold, // Make the text bold
-              ),
-            ),
-          ),
-        ],
-      );
-    } else {
-      // stock is available, show a bar chart
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(height: 20),
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: LinearProgressIndicator(
-                  value: currentStock / total_procured,
-                  minHeight: 30, // Increased the height to 30
-                  color: progressColor,
-                ),
-              ),
-              Text(
-                'Available: ${currentStock}',
-                style: TextStyle(
-                  color: Theme.of(context).textTheme.bodyLarge!.color,
-                  fontSize: 18.0, // Increase the font size as needed
-                  fontWeight: FontWeight.bold, // Make the text bold
-                ),
-              ),
-            ],
-          ),
-        ],
-      );
-    }
   }
 
   void _addStock(BuildContext context) {
@@ -176,7 +91,7 @@ class _LadduDashState extends State<LadduDash> {
                   }
 
                   setState(() {
-                    total_procured += procured;
+                    LadduSummaryKey.currentState!.restock(procured);
                   });
                 } else {
                   Toaster().error("Error");
@@ -214,19 +129,12 @@ class _LadduDashState extends State<LadduDash> {
     );
   }
 
-  Widget _getAvailabilityWidget(BuildContext context) {
+  Widget _getStockButtons(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Total laddu packs procured = $total_procured"),
-          Text("Total laddu packs distributed = $total_distributed"),
-          Text(
-              "Total laddu packs remaining = ${total_procured - total_distributed}"),
-          Divider(),
-          Text("Laddu packs procured today = $procured_today"),
-          Text("Laddu packs distributed today = $distributed_today"),
           Divider(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -256,10 +164,10 @@ class _LadduDashState extends State<LadduDash> {
                   stocks.forEach((element) {
                     sum += element.count;
                   });
-                  if (sum != total_procured) {
+                  if (sum != LadduSummaryKey.currentState!.total_procured) {
                     valid = false;
                     showDialogFailedValidation(context,
-                        "Stock validation failed. \nTotal expected stock = $sum \nTotal actual stock = $total_procured");
+                        "Stock validation failed. \nTotal expected stock = $sum \nTotal actual stock = ${LadduSummaryKey.currentState!.total_procured}");
                     return;
                   }
 
@@ -269,10 +177,10 @@ class _LadduDashState extends State<LadduDash> {
                   dists.forEach((element) {
                     sum += element.count;
                   });
-                  if (sum != total_distributed) {
+                  if (sum != LadduSummaryKey.currentState!.total_distributed) {
                     valid = false;
                     showDialogFailedValidation(context,
-                        "Distribution validation failed. \nTotal expected distribution = $sum \nTotal actual distribution = $total_distributed");
+                        "Distribution validation failed. \nTotal expected distribution = $sum \nTotal actual distribution = ${LadduSummaryKey.currentState!.total_distributed}");
                     return;
                   }
 
@@ -360,12 +268,13 @@ class _LadduDashState extends State<LadduDash> {
         } else {
           return Column(
             children: [
-              _getAvailabilityWidget(context),
+              _summary,
+              _getStockButtons(context),
               Divider(),
-              _getAvailabilityBar(context),
+              _avlBar,
               _getDistributionWidget(context),
               SizedBox(height: 8.0),
-              distTiles,
+              _distTiles,
             ],
           );
         }
