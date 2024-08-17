@@ -7,6 +7,7 @@ import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/avilability_bar.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/laddu_seva/dist_tiles.dart';
+import 'package:garuda/laddu_seva/laddu_log.dart';
 import 'package:garuda/laddu_seva/laddu_summary.dart';
 import 'package:garuda/laddu_seva/number_selector.dart';
 import 'package:garuda/laddu_seva/stock_log.dart';
@@ -159,7 +160,7 @@ class _LadduDashState extends State<LadduDash> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => StockLog()),
+                    MaterialPageRoute(builder: (context) => LadduLog()),
                   );
                 },
                 child: Text("Logs"),
@@ -281,6 +282,7 @@ class _LadduDashState extends State<LadduDash> {
         } else {
           return Column(
             children: [
+              // date header
               Text(
                 DateFormat('EEE, MMM d').format(DateTime.now()),
                 style: TextStyle(
@@ -288,6 +290,8 @@ class _LadduDashState extends State<LadduDash> {
                   fontWeight: FontWeight.bold, // Make the text bold
                 ),
               ),
+
+              // other widgets
               Divider(),
               _summary,
               _getStockButtons(context),

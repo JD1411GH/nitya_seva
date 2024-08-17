@@ -56,9 +56,6 @@ class _StockLogState extends State<StockLog> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Laddu Seva'),
-      ),
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: FutureBuilder<void>(

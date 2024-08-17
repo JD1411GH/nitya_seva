@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:garuda/laddu_seva/laddu_dash.dart';
 
 class LadduMain extends StatefulWidget {
   @override
@@ -25,7 +24,7 @@ class _LadduSevaState extends State<LadduMain> {
         // If you use ListView.builder inside this, then the ListView here can be removed.
         child: ListView(
           children: [
-            LadduDash(),
+            Text('body'),
           ],
         ),
       ),
