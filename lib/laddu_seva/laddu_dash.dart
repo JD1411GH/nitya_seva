@@ -5,9 +5,9 @@ import 'package:flutter/widgets.dart';
 import 'package:garuda/admin/user.dart';
 import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
-import 'package:garuda/laddu/datatypes.dart';
-import 'package:garuda/laddu/laddu_tile.dart';
-import 'package:garuda/laddu/number_selector.dart';
+import 'package:garuda/laddu_seva/datatypes.dart';
+import 'package:garuda/laddu_seva/dist_tiles.dart';
+import 'package:garuda/laddu_seva/number_selector.dart';
 import 'package:garuda/local_storage.dart';
 import 'package:garuda/toaster.dart';
 import 'package:synchronized/synchronized.dart';
@@ -274,7 +274,7 @@ class _LadduDashState extends State<LadduDash> {
   }
 
   Widget _getDistributionTiles(BuildContext context) {
-    return DistributionTiles();
+    return DistTiles();
   }
 
   @override

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:garuda/laddu/laddu_dash.dart';
+import 'package:garuda/laddu_seva/laddu_dash.dart';
 
 class LadduSeva extends StatefulWidget {
   @override
