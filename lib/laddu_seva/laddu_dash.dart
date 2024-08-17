@@ -28,8 +28,8 @@ class _LadduDashState extends State<LadduDash> {
 
   Widget _numberSelector = NumberSelector(key: numberSelectorKey);
   Widget _distTiles = DistTiles(key: DistTilesKey);
-  Widget _summary = LadduSummary();
-  Widget _avlBar = AvailabilityBar();
+  Widget _summary = LadduSummary(key: LadduSummaryKey);
+  Widget _avlBar = AvailabilityBar(key: AvailabilityBarKey);
 
   TextEditingController _controllerNote = TextEditingController();
 
@@ -71,7 +71,7 @@ class _LadduDashState extends State<LadduDash> {
               child: Text('Cancel'),
             ),
 
-            // add button
+            // add stock button
             ElevatedButton(
               onPressed: () async {
                 var u = await LS().read('user_details');
@@ -90,9 +90,15 @@ class _LadduDashState extends State<LadduDash> {
                     Toaster().error("Add failed");
                   }
 
-                  setState(() {
+                  // update stock summary
+                  if (LadduSummaryKey.currentState != null) {
                     LadduSummaryKey.currentState!.restock(procured);
-                  });
+                  }
+
+                  // update availability bar
+                  if (AvailabilityBarKey.currentState != null) {
+                    AvailabilityBarKey.currentState!.refresh();
+                  }
                 } else {
                   Toaster().error("Error");
                 }
@@ -139,12 +145,15 @@ class _LadduDashState extends State<LadduDash> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
+              // restock button
               ElevatedButton(
                 onPressed: () {
                   _addStock(context);
                 },
                 child: Text("Restock"),
               ),
+
+              // logs button
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
@@ -154,6 +163,8 @@ class _LadduDashState extends State<LadduDash> {
                 },
                 child: Text("Logs"),
               ),
+
+              // validate button
               ElevatedButton(
                 onPressed: () async {
                   bool valid = true;
@@ -238,8 +249,9 @@ class _LadduDashState extends State<LadduDash> {
 
                     bool status = await FB().addLadduDist(dist);
                     if (status) {
-                      await _futureInit();
-                      DistTilesKey.currentState!.refresh();
+                      await LadduSummaryKey.currentState!.refresh();
+                      await DistTilesKey.currentState!.refresh();
+                      await AvailabilityBarKey.currentState!.refresh();
                       Toaster().info("Add success");
                     } else {
                       Toaster().error("Add failed");
