@@ -1,6 +1,10 @@
 // ignore_for_file: unused_local_variable
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:garuda/admin/user.dart';
+import 'package:garuda/local_storage.dart';
 
 class Const {
   static final Const _instance = Const._internal();
@@ -30,4 +34,20 @@ class Const {
   final color1000variant = Colors.green[900];
   final color2500 = Colors.pink[200];
   final color2500variant = Colors.pink[900];
+
+  Future<String> getUserName() async {
+    var u = await LS().read('user_details');
+    if (u != null) {
+      var uu = jsonDecode(u);
+      UserDetails user = UserDetails.fromJson(uu);
+
+      if (user.name == null) {
+        return 'Username Error';
+      } else {
+        return user.name!;
+      }
+    } else {
+      return 'Username Error';
+    }
+  }
 }

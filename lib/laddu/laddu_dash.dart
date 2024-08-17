@@ -1,6 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:garuda/admin/user.dart';
+import 'package:garuda/const.dart';
+import 'package:garuda/fb.dart';
+import 'package:garuda/laddu/datatypes.dart';
 import 'package:garuda/laddu/laddu_tile.dart';
 import 'package:garuda/laddu/number_selector.dart';
+import 'package:garuda/local_storage.dart';
+import 'package:garuda/toaster.dart';
 import 'package:synchronized/synchronized.dart';
 
 class LadduDash extends StatefulWidget {
@@ -10,10 +18,15 @@ class LadduDash extends StatefulWidget {
   State<LadduDash> createState() => _LadduDashState();
 }
 
-final GlobalKey<_LadduDashState> templateKey = GlobalKey<_LadduDashState>();
-
 class _LadduDashState extends State<LadduDash> {
   final _lockInit = Lock();
+
+  Widget _numberSelector = NumberSelector(key: numberSelectorKey);
+
+  int total_procured = 0;
+  int total_distributed = 0;
+  int procured_today = 0;
+  int distributed_today = 0;
 
   Future<void> _futureInit() async {
     await _lockInit.synchronized(() async {});
@@ -25,13 +38,12 @@ class _LadduDashState extends State<LadduDash> {
   }
 
   Widget _getAvailabilityBar(BuildContext context) {
-    int totalStock = 0;
-    int currentStock = 0;
+    int currentStock = total_procured - total_distributed;
 
     Color progressColor;
-    if (currentStock / totalStock < 0.2) {
+    if (currentStock / total_procured < 0.2) {
       progressColor = Colors.redAccent;
-    } else if (currentStock / totalStock < 0.5) {
+    } else if (currentStock / total_procured < 0.5) {
       progressColor = Colors.yellow;
     } else {
       progressColor = Colors.lightGreen;
@@ -72,7 +84,7 @@ class _LadduDashState extends State<LadduDash> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: LinearProgressIndicator(
-                  value: currentStock / totalStock,
+                  value: currentStock / total_procured,
                   minHeight: 30, // Increased the height to 30
                   color: progressColor,
                 ),
@@ -92,15 +104,80 @@ class _LadduDashState extends State<LadduDash> {
     }
   }
 
-  Widget _getStockAvailability(BuildContext context) {
+  void _addStock(BuildContext context) {
+    int procured = 0;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Add Stock'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                decoration: InputDecoration(labelText: 'Packs procured'),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  procured = int.parse(value);
+                },
+              ),
+            ],
+          ),
+          actions: [
+            // cancel button
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Cancel'),
+            ),
+
+            // add button
+            ElevatedButton(
+              onPressed: () async {
+                var u = await LS().read('user_details');
+                if (u != null) {
+                  var uu = jsonDecode(u);
+                  UserDetails user = UserDetails.fromJson(uu);
+
+                  LadduStock stock = LadduStock(
+                    timestamp: DateTime.now(),
+                    user: user.name!,
+                    count: procured,
+                  );
+
+                  bool status = await FB().addLadduStock(stock);
+                  if (!status) {
+                    Toaster().error("Add failed");
+                  }
+
+                  setState(() {
+                    total_procured += procured;
+                  });
+                } else {
+                  Toaster().error("Error");
+                }
+                Navigator.pop(context);
+              },
+              child: Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _getAvailabilityWidget(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Total laddu packs procured = "),
-          Text("Total laddu packs distributed = "),
-          Text("Total laddu packs remaining = "),
+          Text("Total laddu packs procured = $total_procured"),
+          Text("Total laddu packs distributed = $total_distributed"),
+          Text(
+              "Total laddu packs remaining = ${total_procured - total_distributed}"),
           Divider(),
           Text("Laddu packs procured today = "),
           Text("Laddu packs distributed today = "),
@@ -110,7 +187,7 @@ class _LadduDashState extends State<LadduDash> {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  // Add your onPressed code here!
+                  _addStock(context);
                 },
                 child: Text("Restock"),
               ),
@@ -136,7 +213,10 @@ class _LadduDashState extends State<LadduDash> {
   Widget _getDistributionWidget(BuildContext context) {
     return Column(
       children: [
-        NumberSelector(),
+        // number selector
+        _numberSelector,
+
+        // note and send buttons
         Container(
           alignment: Alignment.bottomCenter,
           child: Row(
@@ -154,8 +234,20 @@ class _LadduDashState extends State<LadduDash> {
               ),
               IconButton(
                 icon: Icon(Icons.send),
-                onPressed: () {
-                  // Handle give button press
+                onPressed: () async {
+                  int countLaddu =
+                      numberSelectorKey.currentState!.selectedNumber;
+
+                  if (countLaddu > 0) {
+                    String username = await Const().getUserName();
+
+                    LadduDist dist = LadduDist(
+                      timestamp: DateTime.now(),
+                      user: username,
+                      count: countLaddu,
+                      note: "_controllerNote.text",
+                    );
+                  }
                 },
               ),
             ],
@@ -165,7 +257,7 @@ class _LadduDashState extends State<LadduDash> {
     );
   }
 
-  Widget _getDistributionLog(BuildContext context) {
+  Widget _getDistributionTiles(BuildContext context) {
     return DistributionTiles();
   }
 
@@ -183,11 +275,11 @@ class _LadduDashState extends State<LadduDash> {
         } else {
           return Column(
             children: [
-              _getStockAvailability(context),
+              _getAvailabilityWidget(context),
               Divider(),
               _getAvailabilityBar(context),
               _getDistributionWidget(context),
-              _getDistributionLog(context),
+              _getDistributionTiles(context),
             ],
           );
         }

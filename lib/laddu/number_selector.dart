@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 
 class NumberSelector extends StatefulWidget {
+  NumberSelector({Key? key}) : super(key: key);
+
   @override
   _NumberSelectorState createState() => _NumberSelectorState();
 }
 
+final GlobalKey<_NumberSelectorState> numberSelectorKey =
+    GlobalKey<_NumberSelectorState>();
+
 class _NumberSelectorState extends State<NumberSelector> {
   int _selectedNumber = -1;
+
+  int get selectedNumber => _selectedNumber;
 
   @override
   Widget build(BuildContext context) {
