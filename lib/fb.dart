@@ -518,7 +518,7 @@ class FB {
     }
 
     // Update the total count
-    DatabaseReference refTotal = dbRef.child('totalStock');
+    DatabaseReference refTotal = dbRef.child('sumStock');
     try {
       DataSnapshot snapshot = await refTotal.get();
       int total = 0;
@@ -536,7 +536,7 @@ class FB {
 
   Future<int> readLadduStockTotal() async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
-        .ref('record_db${Const().dbVersion}/ladduSeva/totalStock');
+        .ref('record_db${Const().dbVersion}/ladduSeva/sumStock');
 
     DataSnapshot snapshot = await dbRef.get();
     int total = 0;
@@ -584,7 +584,7 @@ class FB {
     }
 
     // Update the total count
-    DatabaseReference refTotal = dbRef.child('totalDist');
+    DatabaseReference refTotal = dbRef.child('sumDist');
     try {
       DataSnapshot snapshot = await refTotal.get();
       int total = 0;
@@ -600,15 +600,22 @@ class FB {
     return true;
   }
 
-  Future<List<LadduDist>> readLadduDists() async {
+  Future<List<LadduDist>> readLadduDists({DateTime? date}) async {
     // this will read only for the current month
 
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/ladduSeva/dist');
 
-    DataSnapshot snapshot = await dbRef.get();
-    List<LadduDist> dists = [];
+    DataSnapshot snapshot;
+    if (date != null) {
+      String pattern = date.toIso8601String().substring(0, 10);
+      Query query = dbRef.orderByKey().startAt(pattern).endAt('$pattern\uf8ff');
+      snapshot = await query.get();
+    } else {
+      snapshot = await dbRef.get();
+    }
 
+    List<LadduDist> dists = [];
     if (snapshot.exists) {
       dists = (snapshot.value as Map)
           .values
@@ -620,13 +627,12 @@ class FB {
     return dists;
   }
 
-  Future<int> readLadduDistTotal() async {
+  Future<int> readLadduDistSum() async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
-        .ref('record_db${Const().dbVersion}/ladduSeva/totalDist');
+        .ref('record_db${Const().dbVersion}/ladduSeva/sumDist');
 
     DataSnapshot snapshot = await dbRef.get();
     int total = 0;
-
     if (snapshot.exists) {
       total = snapshot.value as int;
     }

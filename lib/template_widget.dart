@@ -8,6 +8,7 @@ class Pushpanjali extends StatefulWidget {
   State<Pushpanjali> createState() => _WidgetTemplateState();
 }
 
+// hint: templateKey.currentState!.refresh();
 final GlobalKey<_WidgetTemplateState> templateKey =
     GlobalKey<_WidgetTemplateState>();
 

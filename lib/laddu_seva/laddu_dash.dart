@@ -33,7 +33,7 @@ class _LadduDashState extends State<LadduDash> {
   Future<void> _futureInit() async {
     await _lockInit.synchronized(() async {
       total_procured = await FB().readLadduStockTotal();
-      total_distributed = await FB().readLadduDistTotal();
+      total_distributed = await FB().readLadduDistSum();
     });
   }
 
@@ -295,6 +295,7 @@ class _LadduDashState extends State<LadduDash> {
               Divider(),
               _getAvailabilityBar(context),
               _getDistributionWidget(context),
+              SizedBox(height: 8.0),
               _getDistributionTiles(context),
             ],
           );
