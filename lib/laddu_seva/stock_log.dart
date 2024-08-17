@@ -12,8 +12,17 @@ class _StockLogState extends State<StockLog> {
   List<LadduStock> logs = [];
 
   Future<void> _futureInit() async {
-    logs = await FB().readLadduStocks();
-    logs.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+    DateTime startDate = DateTime(DateTime.now().year, DateTime.now().month, 1);
+    DateTime endDate = DateTime.now();
+    logs = await FB().readLadduStocksByDateRange(startDate, endDate);
+    if (logs.isNotEmpty) {
+      logs.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+    }
+  }
+
+  Future<void> _refresh() async {
+    // Simulate a network call
+    await Future.delayed(Duration(seconds: 2));
   }
 
   Widget _getListViewStock() {
@@ -47,10 +56,12 @@ class _StockLogState extends State<StockLog> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Laddu stock log'),
-        ),
-        body: FutureBuilder<void>(
+      appBar: AppBar(
+        title: Text('Laddu Seva'),
+      ),
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: FutureBuilder<void>(
           future: _futureInit(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -58,9 +69,20 @@ class _StockLogState extends State<StockLog> {
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else {
-              return _getListViewStock();
+              if (logs.isEmpty) {
+                return Center(
+                    child: Text(
+                  "No laddu stocks procured \nin this month",
+                  style: TextStyle(
+                      fontSize: 20.0), // Adjust the font size as needed
+                ));
+              } else {
+                return _getListViewStock();
+              }
             }
           },
-        ));
+        ),
+      ),
+    );
   }
 }

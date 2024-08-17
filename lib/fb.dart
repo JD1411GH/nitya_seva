@@ -548,15 +548,22 @@ class FB {
     return total;
   }
 
-  Future<List<LadduStock>> readLadduStocks() async {
-    // this will read only for the current month
-
+  // if date is provided, it will read only for that date
+  // else it will read all
+  Future<List<LadduStock>> readLadduStocks({DateTime? date}) async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/ladduSeva/stock');
 
-    DataSnapshot snapshot = await dbRef.get();
-    List<LadduStock> stocks = [];
+    DataSnapshot snapshot;
+    if (date != null) {
+      String pattern = date.toIso8601String().substring(0, 10);
+      Query query = dbRef.orderByKey().startAt(pattern).endAt('$pattern\uf8ff');
+      snapshot = await query.get();
+    } else {
+      snapshot = await dbRef.get();
+    }
 
+    List<LadduStock> stocks = [];
     if (snapshot.exists) {
       stocks = (snapshot.value as Map)
           .values
@@ -566,6 +573,31 @@ class FB {
     }
 
     return stocks;
+  }
+
+  Future<List<LadduStock>> readLadduStocksByDateRange(
+      DateTime startDate, DateTime endDate) async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva/stock');
+
+    final Query query = dbRef
+        .orderByKey()
+        .startAt(startDate.toIso8601String().replaceAll(".", "^"))
+        .endAt(endDate.toIso8601String().replaceAll(".", "^"));
+
+    final DataSnapshot snapshot = await query.get();
+
+    if (snapshot.exists) {
+      final Map<String, dynamic> data =
+          Map<String, dynamic>.from(snapshot.value as Map);
+      final List<LadduStock> ladduStocks = data.entries
+          .map((entry) =>
+              LadduStock.fromJson(Map<String, dynamic>.from(entry.value)))
+          .toList();
+      return ladduStocks;
+    } else {
+      return [];
+    }
   }
 
   Future<bool> addLadduDist(LadduDist dist) async {

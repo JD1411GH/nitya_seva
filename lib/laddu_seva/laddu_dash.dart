@@ -7,6 +7,7 @@ import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/laddu_seva/dist_tiles.dart';
 import 'package:garuda/laddu_seva/number_selector.dart';
+import 'package:garuda/laddu_seva/stock_log.dart';
 import 'package:garuda/local_storage.dart';
 import 'package:garuda/toaster.dart';
 import 'package:synchronized/synchronized.dart';
@@ -35,6 +36,21 @@ class _LadduDashState extends State<LadduDash> {
     await _lockInit.synchronized(() async {
       total_procured = await FB().readLadduStockTotal();
       total_distributed = await FB().readLadduDistSum();
+
+      // get today's stock
+      List<LadduStock> stocks =
+          await FB().readLadduStocks(date: DateTime.now());
+      procured_today = 0;
+      for (var stock in stocks) {
+        procured_today += stock.count;
+      }
+
+      // get today's distribution
+      List<LadduDist> dists = await FB().readLadduDists(date: DateTime.now());
+      distributed_today = 0;
+      for (var dist in dists) {
+        distributed_today += dist.count;
+      }
     });
   }
 
@@ -208,8 +224,8 @@ class _LadduDashState extends State<LadduDash> {
           Text(
               "Total laddu packs remaining = ${total_procured - total_distributed}"),
           Divider(),
-          Text("Laddu packs procured today = "),
-          Text("Laddu packs distributed today = "),
+          Text("Laddu packs procured today = $procured_today"),
+          Text("Laddu packs distributed today = $distributed_today"),
           Divider(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -222,7 +238,10 @@ class _LadduDashState extends State<LadduDash> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  // Add your onPressed code here!
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => StockLog()),
+                  );
                 },
                 child: Text("Logs"),
               ),
