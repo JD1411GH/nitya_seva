@@ -26,6 +26,7 @@ class _LadduDashState extends State<LadduDash> {
   TextEditingController _controllerNote = TextEditingController();
 
   Widget _numberSelector = NumberSelector(key: numberSelectorKey);
+  Widget distTiles = DistTiles(key: DistTilesKey);
 
   int total_procured = 0;
   int total_distributed = 0;
@@ -330,9 +331,8 @@ class _LadduDashState extends State<LadduDash> {
                     bool status = await FB().addLadduDist(dist);
                     if (status) {
                       await _futureInit();
-                      setState(() {
-                        Toaster().info("Add success");
-                      });
+                      DistTilesKey.currentState!.refresh();
+                      Toaster().info("Add success");
                     } else {
                       Toaster().error("Add failed");
                     }
@@ -344,10 +344,6 @@ class _LadduDashState extends State<LadduDash> {
         ),
       ],
     );
-  }
-
-  Widget _getDistributionTiles(BuildContext context) {
-    return DistTiles();
   }
 
   @override
@@ -369,7 +365,7 @@ class _LadduDashState extends State<LadduDash> {
               _getAvailabilityBar(context),
               _getDistributionWidget(context),
               SizedBox(height: 8.0),
-              _getDistributionTiles(context),
+              distTiles,
             ],
           );
         }
