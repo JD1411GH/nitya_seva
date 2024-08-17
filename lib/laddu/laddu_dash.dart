@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:garuda/admin/user.dart';
 import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
@@ -20,6 +21,7 @@ class LadduDash extends StatefulWidget {
 
 class _LadduDashState extends State<LadduDash> {
   final _lockInit = Lock();
+  TextEditingController _controllerNote = TextEditingController();
 
   Widget _numberSelector = NumberSelector(key: numberSelectorKey);
 
@@ -29,7 +31,10 @@ class _LadduDashState extends State<LadduDash> {
   int distributed_today = 0;
 
   Future<void> _futureInit() async {
-    await _lockInit.synchronized(() async {});
+    await _lockInit.synchronized(() async {
+      total_procured = await FB().readLadduStockTotal();
+      total_distributed = await FB().readLadduDistTotal();
+    });
   }
 
   Future<void> refresh() async {
@@ -226,6 +231,7 @@ class _LadduDashState extends State<LadduDash> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: TextField(
+                    controller: _controllerNote,
                     decoration: InputDecoration(
                       labelText: 'Notes',
                     ),
@@ -245,8 +251,18 @@ class _LadduDashState extends State<LadduDash> {
                       timestamp: DateTime.now(),
                       user: username,
                       count: countLaddu,
-                      note: "_controllerNote.text",
+                      note: _controllerNote.text,
                     );
+
+                    bool status = await FB().addLadduDist(dist);
+                    if (status) {
+                      await _futureInit();
+                      setState(() {
+                        Toaster().info("Add success");
+                      });
+                    } else {
+                      Toaster().error("Add failed");
+                    }
                   }
                 },
               ),
