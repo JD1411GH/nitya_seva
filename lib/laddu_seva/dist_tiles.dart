@@ -54,8 +54,34 @@ class _DistTilesState extends State<DistTiles> {
                     child: Column(
                       children: [
                         SizedBox(height: 6.0),
-                        Text(
-                            DateFormat('HH:mm').format(dists[index].timestamp)),
+
+                        Row(
+                          children: [
+                            // the time
+                            Text(
+                              DateFormat('HH:mm')
+                                  .format(dists[index].timestamp),
+                            ),
+
+                            SizedBox(
+                                width:
+                                    4), // Add some spacing between the icon and the text
+
+                            // note icon
+                            if (dists[index].note.isNotEmpty)
+                              Icon(
+                                Icons.note,
+                                size: 16.0,
+                                color: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge
+                                        ?.color ??
+                                    Colors.black,
+                              ),
+                          ],
+                        ),
+
+                        // the count
                         Container(
                           padding:
                               EdgeInsets.all(8.0), // Adjust padding as needed
@@ -77,7 +103,9 @@ class _DistTilesState extends State<DistTiles> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                        )
+                        ),
+
+                        // note if any
                       ],
                     ),
                   ),

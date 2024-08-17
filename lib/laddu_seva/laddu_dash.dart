@@ -222,6 +222,7 @@ class _LadduDashState extends State<LadduDash> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
+              // text field for notes
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.only(left: 8.0),
@@ -233,6 +234,8 @@ class _LadduDashState extends State<LadduDash> {
                   ),
                 ),
               ),
+
+              // button to distribute laddus
               IconButton(
                 icon: Icon(Icons.send),
                 onPressed: () async {
@@ -251,12 +254,13 @@ class _LadduDashState extends State<LadduDash> {
 
                     bool status = await FB().addLadduDist(dist);
                     if (status) {
+                      _controllerNote.clear();
                       await LadduSummaryKey.currentState!.refresh();
                       await DistTilesKey.currentState!.refresh();
                       await AvailabilityBarKey.currentState!.refresh();
-                      Toaster().info("Add success");
+                      Toaster().info("Laddu Distributed");
                     } else {
-                      Toaster().error("Add failed");
+                      Toaster().error("ERROR");
                     }
                   }
                 },
