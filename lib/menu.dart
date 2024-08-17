@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:garuda/admin/admin.dart';
 import 'package:garuda/admin/user.dart';
 import 'package:garuda/fb.dart';
-import 'package:garuda/laddu_seva/laddu_seva.dart';
+import 'package:garuda/laddu_seva/laddu_main.dart';
 import 'package:garuda/loading.dart';
 import 'package:garuda/local_storage.dart';
 import 'package:garuda/pushpanjali/pushpanjali.dart';
@@ -92,7 +92,7 @@ class Menu extends StatelessWidget {
         'action': () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => LadduSeva()),
+            MaterialPageRoute(builder: (context) => LadduMain()),
           );
         }
       },
