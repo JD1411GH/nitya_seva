@@ -201,6 +201,7 @@ Future<void> returnStock(
           ),
           TextButton(
             onPressed: () {
+              FB().returnLadduStock(allotment);
               Navigator.of(context).pop(true);
             },
             child: Text('Confirm'),

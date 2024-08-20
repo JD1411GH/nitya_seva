@@ -724,6 +724,16 @@ class FB {
 
     return total;
   }
+
+  Future<void> returnLadduStock(DateTime allotment) async {
+    String a = allotment.toIso8601String().replaceAll(".", "^");
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva/$a');
+
+    // set return status
+    DatabaseReference refRet = dbRef.child('returned');
+    await refRet.set(true);
+  }
 }
 
 class FBCallbacks {
