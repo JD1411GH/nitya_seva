@@ -56,7 +56,6 @@ class _SummaryState extends State<Summary> {
   }
 
   Widget _getPieChart(BuildContext context) {
-    double radius = 40;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -142,14 +141,111 @@ class _SummaryState extends State<Summary> {
     );
   }
 
+  Widget _getPieChartEmpty(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          height: 100, // Set the desired height
+          width: 100, // Set the desired width
+          child: PieChart(
+            PieChartData(
+              sections: [
+                PieChartSectionData(
+                  color: Colors.blue,
+                  value: 0,
+                  title: '40%',
+                  radius: 50,
+                  titleStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                  titlePositionPercentageOffset: 0.6, // Adjust as needed
+                ),
+                PieChartSectionData(
+                  color: Colors.red,
+                  value: 0,
+                  title: '30%',
+                  radius: 50,
+                  titleStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                  titlePositionPercentageOffset: 0.6, // Adjust as needed
+                ),
+                PieChartSectionData(
+                  color: Colors.green,
+                  value: 0,
+                  title: '20%',
+                  radius: 50,
+                  titleStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                  titlePositionPercentageOffset: 0.6, // Adjust as needed
+                ),
+                PieChartSectionData(
+                  color: Colors.yellow,
+                  value: 0,
+                  title: '10%',
+                  radius: 50,
+                  titleStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).textTheme.bodyLarge!.color),
+                  titlePositionPercentageOffset: 1.3, // Move label outside
+                ),
+              ],
+            ),
+          ),
+        ),
+        SizedBox(width: 40), // Increased space between the chart and the legend
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildLegendItem(Colors.grey, 'Loading...'),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _getLoading(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 16.0),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text("Total laddu packs procured = ..."),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 16.0),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text("Total laddu packs distributed = ..."),
+          ),
+        ),
+
+        // padding before pie chart
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: _getPieChartEmpty(context),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<void>(
       future: _futureInit(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
+          return Center(
+            // child: CircularProgressIndicator(),
+            child: _getLoading(context),
           );
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');

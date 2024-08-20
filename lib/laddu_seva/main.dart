@@ -10,20 +10,18 @@ class LadduMain extends StatefulWidget {
 }
 
 class _LadduSevaState extends State<LadduMain> {
-  AvailabilityBar _availabilityBar = AvailabilityBar(key: AvailabilityBarKey);
-
   Future<void> refresh() async {
     if (AvailabilityBarKey.currentState != null) {
       AvailabilityBarKey.currentState!.refresh();
     }
 
-    // if (SummaryKey.currentState != null) {
-    //   SummaryKey.currentState!.refresh();
-    // }
+    if (SummaryKey.currentState != null) {
+      SummaryKey.currentState!.refresh();
+    }
 
-    // if (LogKey.currentState != null) {
-    //   LogKey.currentState!.refresh();
-    // }
+    if (LogKey.currentState != null) {
+      LogKey.currentState!.refresh();
+    }
   }
 
   @override
@@ -48,12 +46,13 @@ class _LadduSevaState extends State<LadduMain> {
         // If you use ListView.builder inside this, then the ListView here can be removed.
         child: ListView(
           children: [
-            _availabilityBar,
+            AvailabilityBar(key: AvailabilityBarKey),
+
             Divider(),
-            Summary(),
-            Divider(),
+            Summary(key: SummaryKey),
 
             // button row
+            Divider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
@@ -83,7 +82,7 @@ class _LadduSevaState extends State<LadduMain> {
             ),
 
             Divider(),
-            Log(),
+            Log(key: LogKey),
           ],
         ),
       ),

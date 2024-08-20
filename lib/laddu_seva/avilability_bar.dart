@@ -116,6 +116,37 @@ class _AvailabilityBarState extends State<AvailabilityBar> {
     }
   }
 
+  Widget _getAvailabilityBarLoading(BuildContext context) {
+    // stock is available, show a bar chart
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(height: 20),
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: LinearProgressIndicator(
+                value: 100 / 100,
+                minHeight: 30, // Increased the height to 30
+                color: Colors.grey,
+              ),
+            ),
+            Text(
+              'Loading...',
+              style: TextStyle(
+                color: Theme.of(context).textTheme.bodyLarge!.color,
+                fontSize: 18.0, // Increase the font size as needed
+                fontWeight: FontWeight.bold, // Make the text bold
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<void>(
@@ -124,7 +155,7 @@ class _AvailabilityBarState extends State<AvailabilityBar> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
             // child: CircularProgressIndicator(),
-            child: _getAvailabilityBar(context),
+            child: _getAvailabilityBarLoading(context),
           );
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');

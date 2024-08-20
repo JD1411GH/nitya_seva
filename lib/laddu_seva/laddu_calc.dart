@@ -62,8 +62,8 @@ Future<void> addStock(
 
                 bool status = await FB().addLadduStock(stock);
                 if (status) {
-                  Toaster().info("Added successfully");
                   await callbackRefresh();
+                  Toaster().info("Added successfully");
                 } else {
                   Toaster().error("Add failed");
                 }
