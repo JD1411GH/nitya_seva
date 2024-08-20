@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:garuda/const.dart';
@@ -22,27 +24,67 @@ class _SummaryState extends State<Summary> {
   int total_distributed = 0;
 
   List<PieChartSectionData> pieSections = [];
+  List<Widget> pieLegends = [];
 
   Future<void> _futureInit() async {
     await _lockInit.synchronized(() async {
       DateTime allotment = await FB().readLatestLadduAllotment();
-
       total_procured = await FB().readLadduStockSum(allotment);
       total_distributed = await FB().readLadduDistSum(allotment);
+      pieSections = [];
+      pieLegends = [];
 
-      // data for pie chart
-      DateTime endDate = DateTime.now();
-      DateTime startDate = endDate.subtract(Duration(days: 30));
+      List<LadduDist> dists = await FB().readLadduDists(allotment);
+      List<String> labels = [];
+      List<int> values = [];
+      dists.forEach((dist) {
+        if (labels.contains(dist.purpose)) {
+          int index = labels.indexOf(dist.purpose);
+          values[index] += dist.count;
+        } else {
+          labels.add(dist.purpose);
+          values.add(dist.count);
+        }
+      });
 
-      List<LadduStock> stocks =
-          await FB().readLadduStocksByDateRange(startDate, endDate);
-      stocks.sort((a, b) => a.timestamp.compareTo(b.timestamp));
-      List<LadduDist> dists =
-          await FB().readLadduDistsByDateRange(startDate, endDate);
-      dists.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+      // add the pie sections and legends
+      for (int i = 0; i < labels.length; i++) {
+        Color pieColor = Colors.grey;
+        Color textColor = Colors.white;
+        if (labels[i].startsWith("Seva")) {
+          String amount = labels[i].split(' ')[1];
+          pieColor = Const().ticketColors[amount]!;
+          textColor =
+              amount == "500" ? Theme.of(context).primaryColor : Colors.white;
+        } else {
+          pieColor = Color.fromARGB(
+              255,
+              Random().nextInt(128), // Red component (0-127)
+              Random().nextInt(128), // Green component (0-127)
+              Random().nextInt(128) // Blue component (0-127)
+              );
+        }
 
-      // add the sections
-      // Const().ticketAmounts.forEach((value) {
+        double value = values[i].toDouble();
+        double percentage = (value / values.reduce((a, b) => a + b)) * 100;
+        double titlePositionPercentageOffset = percentage < 10 ? 1.2 : 0.5;
+        if (percentage < 10) {
+          textColor = Theme.of(context).primaryColor;
+        }
+
+        pieSections.add(PieChartSectionData(
+          color: pieColor,
+          value: value,
+          title: values[i].toString(),
+          radius: 50,
+          titleStyle: TextStyle(
+              fontSize: 16, fontWeight: FontWeight.bold, color: textColor),
+          titlePositionPercentageOffset: titlePositionPercentageOffset,
+        ));
+
+        pieLegends.add(_buildLegendItem(pieColor, labels[i]));
+      }
+      // dists.forEach((value) {
       //   pieSections.add(PieChartSectionData(
       //     color: Const().ticketColors['$value']!,
       //     value: value,
@@ -81,12 +123,7 @@ class _SummaryState extends State<Summary> {
         SizedBox(width: 40), // Increased space between the chart and the legend
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildLegendItem(Colors.blue, 'Blue - 40%'),
-            _buildLegendItem(Colors.red, 'Red - 30%'),
-            _buildLegendItem(Colors.green, 'Green - 20%'),
-            _buildLegendItem(Colors.yellow, 'Yellow - 10%'),
-          ],
+          children: pieLegends,
         ),
       ],
     );
@@ -155,7 +192,7 @@ class _SummaryState extends State<Summary> {
           padding: const EdgeInsets.only(left: 16.0),
           child: Align(
             alignment: Alignment.centerLeft,
-            child: Text("Total laddu packs distributed = ..."),
+            child: Text("Total laddu packs served = ..."),
           ),
         ),
 
@@ -194,8 +231,7 @@ class _SummaryState extends State<Summary> {
                 padding: const EdgeInsets.only(left: 16.0),
                 child: Align(
                   alignment: Alignment.centerLeft,
-                  child: Text(
-                      "Total laddu packs distributed = $total_distributed"),
+                  child: Text("Total laddu packs served = $total_distributed"),
                 ),
               ),
 

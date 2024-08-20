@@ -8,6 +8,8 @@ import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/local_storage.dart';
 import 'package:garuda/toaster.dart';
 
+String selectedPurpose = "Others";
+
 Future<void> addStock(
     BuildContext context, Future<void> Function() callbackRefresh) async {
   String from = "";
@@ -90,7 +92,6 @@ Future<void> removeStock(
   await showDialog(
     context: context,
     builder: (BuildContext context) {
-      String selectedPurpose = "Others";
       int? count;
       String? note;
 
@@ -102,7 +103,7 @@ Future<void> removeStock(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               // drop down for purpose
-              _getPurposeDropDown(context, selectedPurpose),
+              _getPurposeDropDown(context),
 
               // count field
               TextFormField(
@@ -218,7 +219,7 @@ Future<void> returnStock(
   }
 }
 
-Widget _getPurposeDropDown(BuildContext context, String selectedPurpose) {
+Widget _getPurposeDropDown(BuildContext context) {
   List<String> Purposes =
       Const().ticketAmounts.map((e) => "Seva ${e.toString()}").toList();
 
