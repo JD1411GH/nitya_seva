@@ -34,9 +34,10 @@ class _SummaryState extends State<Summary> {
       pieSections = [];
       pieLegends = [];
 
-      List<LadduDist> dists = await FB().readLadduDists(allotment);
       List<String> labels = [];
       List<int> values = [];
+
+      List<LadduDist> dists = await FB().readLadduDists(allotment);
       dists.forEach((dist) {
         if (labels.contains(dist.purpose)) {
           int index = labels.indexOf(dist.purpose);
@@ -46,6 +47,19 @@ class _SummaryState extends State<Summary> {
           values.add(dist.count);
         }
       });
+
+      List<Color> extraColors = [
+        Colors.orange,
+        Colors.lightGreen,
+        Colors.redAccent,
+        Colors.blueAccent,
+        Colors.greenAccent,
+        Colors.purpleAccent,
+        Colors.pinkAccent,
+        Colors.deepPurpleAccent,
+        Colors.lightBlueAccent,
+        Colors.lightGreenAccent
+      ];
 
       // add the pie sections and legends
       for (int i = 0; i < labels.length; i++) {
@@ -57,12 +71,7 @@ class _SummaryState extends State<Summary> {
           textColor =
               amount == "500" ? Theme.of(context).primaryColor : Colors.white;
         } else {
-          pieColor = Color.fromARGB(
-              255,
-              Random().nextInt(128), // Red component (0-127)
-              Random().nextInt(128), // Green component (0-127)
-              Random().nextInt(128) // Blue component (0-127)
-              );
+          pieColor = extraColors[i % extraColors.length];
         }
 
         double value = values[i].toDouble();
