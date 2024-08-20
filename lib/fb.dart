@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:garuda/const.dart';
@@ -466,6 +467,36 @@ class FB {
     return user;
   }
 
+  Future<DateTime> readLatestLadduAllotment() async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva');
+
+    DateTime endDate = DateTime.now();
+    DateTime startDate = endDate.subtract(Duration(days: 30));
+
+    final Query query = dbRef
+        .orderByKey()
+        .startAt(startDate.toIso8601String().replaceAll(".", "^"))
+        .endAt(endDate.toIso8601String().replaceAll(".", "^"));
+
+    final DataSnapshot snapshot = await query.get();
+    if (snapshot.exists) {
+      var allotments = snapshot.value as Map;
+      var keys = allotments.keys.toList();
+      keys.sort();
+      var lastKey = keys.last;
+
+      if (allotments[lastKey]['returned'] == true) {
+        return DateTime.now();
+      } else {
+        lastKey = lastKey.replaceAll("^", ".");
+        return DateTime.parse(lastKey);
+      }
+    } else {
+      return DateTime.now();
+    }
+  }
+
   Future<List<UserDetails>> readPendingUsers() async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/users/pending');
@@ -502,14 +533,23 @@ class FB {
     return users;
   }
 
-  Future<bool> addLadduStock(LadduStock stock) async {
+  Future<bool> addLadduStock(DateTime allotment, LadduStock stock) async {
+    String a = allotment.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance
-        .ref('record_db${Const().dbVersion}/ladduSeva');
+        .ref('record_db${Const().dbVersion}/ladduSeva/$a');
+
+    // set return status
+    DatabaseReference refRet = dbRef.child('returned');
+    try {
+      await refRet.set(false);
+    } catch (e) {
+      return false;
+    }
 
     // Add a new laddu stock
     DateTime timestamp = stock.timestamp;
     DatabaseReference ref = dbRef
-        .child('stock')
+        .child('stocks')
         .child(timestamp.toIso8601String().replaceAll(".", "^"));
     try {
       await ref.set(stock.toJson());
@@ -534,9 +574,10 @@ class FB {
     return true;
   }
 
-  Future<int> readLadduStockTotal() async {
+  Future<int> readLadduStockSum(DateTime allotment) async {
+    String a = allotment.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance
-        .ref('record_db${Const().dbVersion}/ladduSeva/sumStock');
+        .ref('record_db${Const().dbVersion}/ladduSeva/$a/sumStock');
 
     DataSnapshot snapshot = await dbRef.get();
     int total = 0;
@@ -548,20 +589,12 @@ class FB {
     return total;
   }
 
-  // if date is provided, it will read only for that date
-  // else it will read all
-  Future<List<LadduStock>> readLadduStocks({DateTime? date}) async {
+  Future<List<LadduStock>> readLadduStocks(DateTime allotment) async {
+    String a = allotment.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance
-        .ref('record_db${Const().dbVersion}/ladduSeva/stock');
+        .ref('record_db${Const().dbVersion}/ladduSeva/$a/stocks');
 
-    DataSnapshot snapshot;
-    if (date != null) {
-      String pattern = date.toIso8601String().substring(0, 10);
-      Query query = dbRef.orderByKey().startAt(pattern).endAt('$pattern\uf8ff');
-      snapshot = await query.get();
-    } else {
-      snapshot = await dbRef.get();
-    }
+    DataSnapshot snapshot = await dbRef.get();
 
     List<LadduStock> stocks = [];
     if (snapshot.exists) {
@@ -578,7 +611,7 @@ class FB {
   Future<List<LadduStock>> readLadduStocksByDateRange(
       DateTime startDate, DateTime endDate) async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
-        .ref('record_db${Const().dbVersion}/ladduSeva/stock');
+        .ref('record_db${Const().dbVersion}/ladduSeva/stocks');
 
     final Query query = dbRef
         .orderByKey()
@@ -600,14 +633,15 @@ class FB {
     }
   }
 
-  Future<bool> addLadduDist(LadduDist dist) async {
+  Future<bool> addLadduDist(DateTime allotment, LadduDist dist) async {
+    String a = allotment.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance
-        .ref('record_db${Const().dbVersion}/ladduSeva');
+        .ref('record_db${Const().dbVersion}/ladduSeva/$a');
 
     // Add a new laddu distribution
     DateTime timestamp = dist.timestamp;
     DatabaseReference ref = dbRef
-        .child('dist')
+        .child('dists')
         .child(timestamp.toIso8601String().replaceAll(".", "^"));
     try {
       await ref.set(dist.toJson());
@@ -632,20 +666,13 @@ class FB {
     return true;
   }
 
-  Future<List<LadduDist>> readLadduDists({DateTime? date}) async {
-    // this will read only for the current month
-
+  Future<List<LadduDist>> readLadduDists(DateTime allotment) async {
+    String a = allotment.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance
-        .ref('record_db${Const().dbVersion}/ladduSeva/dist');
+        .ref('record_db${Const().dbVersion}/ladduSeva/$a/dists');
 
     DataSnapshot snapshot;
-    if (date != null) {
-      String pattern = date.toIso8601String().substring(0, 10);
-      Query query = dbRef.orderByKey().startAt(pattern).endAt('$pattern\uf8ff');
-      snapshot = await query.get();
-    } else {
-      snapshot = await dbRef.get();
-    }
+    snapshot = await dbRef.get();
 
     List<LadduDist> dists = [];
     if (snapshot.exists) {
@@ -662,7 +689,7 @@ class FB {
   Future<List<LadduDist>> readLadduDistsByDateRange(
       DateTime startDate, DateTime endDate) async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
-        .ref('record_db${Const().dbVersion}/ladduSeva/dist');
+        .ref('record_db${Const().dbVersion}/ladduSeva/dists');
 
     final Query query = dbRef
         .orderByKey()
@@ -684,9 +711,10 @@ class FB {
     }
   }
 
-  Future<int> readLadduDistSum() async {
+  Future<int> readLadduDistSum(DateTime allotment) async {
+    String a = allotment.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance
-        .ref('record_db${Const().dbVersion}/ladduSeva/sumDist');
+        .ref('record_db${Const().dbVersion}/ladduSeva/$a/sumDist');
 
     DataSnapshot snapshot = await dbRef.get();
     int total = 0;

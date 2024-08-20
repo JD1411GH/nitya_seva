@@ -76,7 +76,9 @@ class _LadduSevaState extends State<LadduMain> {
 
                 // return button
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    returnStock(context, refresh);
+                  },
                   icon: Icon(Icons.undo),
                   label: Text('Return'),
                 ),

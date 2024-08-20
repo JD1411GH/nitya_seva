@@ -25,8 +25,10 @@ class _SummaryState extends State<Summary> {
 
   Future<void> _futureInit() async {
     await _lockInit.synchronized(() async {
-      total_procured = await FB().readLadduStockTotal();
-      total_distributed = await FB().readLadduDistSum();
+      DateTime allotment = await FB().readLatestLadduAllotment();
+
+      total_procured = await FB().readLadduStockSum(allotment);
+      total_distributed = await FB().readLadduDistSum(allotment);
 
       // data for pie chart
       DateTime endDate = DateTime.now();

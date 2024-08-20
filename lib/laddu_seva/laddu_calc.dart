@@ -61,7 +61,8 @@ Future<void> addStock(
                   count: procured,
                 );
 
-                bool status = await FB().addLadduStock(stock);
+                DateTime allotment = await FB().readLatestLadduAllotment();
+                bool status = await FB().addLadduStock(allotment, stock);
                 if (status) {
                   await callbackRefresh();
                   Toaster().info("Added successfully");
@@ -156,7 +157,8 @@ Future<void> removeStock(
                     note: note ?? '',
                   );
 
-                  bool status = await FB().addLadduDist(dist);
+                  DateTime allotment = await FB().readLatestLadduAllotment();
+                  bool status = await FB().addLadduDist(allotment, dist);
                   if (status) {
                     _controllerNote.clear();
                     await callbackRefresh();
@@ -174,6 +176,45 @@ Future<void> removeStock(
       );
     },
   );
+}
+
+Future<void> returnStock(
+    BuildContext context, Future<void> Function() callbackRefresh) async {
+  DateTime allotment = await FB().readLatestLadduAllotment();
+
+  int sumStocks = await FB().readLadduStockSum(allotment);
+  int sumDists = await FB().readLadduDistSum(allotment);
+  int balance = sumStocks - sumDists;
+
+  bool? confirm = await showDialog<bool>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Are you sure?'),
+        content: Text('Do you really want to return the stock: $balance?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
+            child: Text('Confirm'),
+          ),
+        ],
+      );
+    },
+  );
+
+  if (confirm == true) {
+    // await FB().returnLadduStock();
+
+    await callbackRefresh();
+  }
 }
 
 Widget _getPurposeDropDown(BuildContext context, String selectedPurpose) {
