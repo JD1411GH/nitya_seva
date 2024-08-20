@@ -55,56 +55,90 @@ class _SummaryState extends State<Summary> {
     setState(() {});
   }
 
-  Widget _getPieChart() {
-    return SizedBox(
-      height: 100, // Set the desired height
-      width: 100, // Set the desired width
-      child: PieChart(
-        PieChartData(
-          sections: [
-            PieChartSectionData(
-              color: Colors.blue,
-              value: 40,
-              title: '40%',
-              radius: 50,
-              titleStyle: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
+  Widget _getPieChart(BuildContext context) {
+    double radius = 40;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          height: 100, // Set the desired height
+          width: 100, // Set the desired width
+          child: PieChart(
+            PieChartData(
+              sections: [
+                PieChartSectionData(
+                  color: Colors.blue,
+                  value: 40,
+                  title: '40%',
+                  radius: 50,
+                  titleStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                  titlePositionPercentageOffset: 0.6, // Adjust as needed
+                ),
+                PieChartSectionData(
+                  color: Colors.red,
+                  value: 30,
+                  title: '30%',
+                  radius: 50,
+                  titleStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                  titlePositionPercentageOffset: 0.6, // Adjust as needed
+                ),
+                PieChartSectionData(
+                  color: Colors.green,
+                  value: 20,
+                  title: '20%',
+                  radius: 50,
+                  titleStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                  titlePositionPercentageOffset: 0.6, // Adjust as needed
+                ),
+                PieChartSectionData(
+                  color: Colors.yellow,
+                  value: 10,
+                  title: '10%',
+                  radius: 50,
+                  titleStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).textTheme.bodyLarge!.color),
+                  titlePositionPercentageOffset: 1.3, // Move label outside
+                ),
+              ],
             ),
-            PieChartSectionData(
-              color: Colors.red,
-              value: 30,
-              title: '30%',
-              radius: 50,
-              titleStyle: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-            ),
-            PieChartSectionData(
-              color: Colors.green,
-              value: 20,
-              title: '20%',
-              radius: 50,
-              titleStyle: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-            ),
-            PieChartSectionData(
-              color: Colors.yellow,
-              value: 10,
-              title: '10%',
-              radius: 50,
-              titleStyle: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-            ),
+          ),
+        ),
+        SizedBox(width: 40), // Increased space between the chart and the legend
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildLegendItem(Colors.blue, 'Blue - 40%'),
+            _buildLegendItem(Colors.red, 'Red - 30%'),
+            _buildLegendItem(Colors.green, 'Green - 20%'),
+            _buildLegendItem(Colors.yellow, 'Yellow - 10%'),
           ],
         ),
-      ),
+      ],
+    );
+  }
+
+  Widget _buildLegendItem(Color color, String text) {
+    return Row(
+      children: [
+        Container(
+          width: 16,
+          height: 16,
+          color: color,
+        ),
+        SizedBox(width: 8),
+        Text(text),
+      ],
     );
   }
 
@@ -122,7 +156,27 @@ class _SummaryState extends State<Summary> {
         } else {
           return Column(
             children: [
-              _getPieChart(),
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text("Total laddu packs procured = $total_procured"),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                      "Total laddu packs distributed = $total_distributed"),
+                ),
+              ),
+
+              // padding before pie chart
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: _getPieChart(context),
+              ),
             ],
           );
         }
