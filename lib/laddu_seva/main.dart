@@ -30,6 +30,17 @@ class _LadduSevaState extends State<LadduMain> {
 
         // here a ListView is used to allow the content to be scrollable and refreshable.
         // If you use ListView.builder inside this, then the ListView here can be removed.
+        // child: ListView(
+        //   children: [
+        //     _availabilityBar,
+        //     Divider(),
+        //     _summary,
+        //     Divider(),
+        //     ButtonRow(),
+        //     Divider(),
+        //     _log,
+        //   ],
+        // ),
         child: _summary,
       ),
     );

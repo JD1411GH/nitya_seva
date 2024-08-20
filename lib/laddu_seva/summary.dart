@@ -56,42 +56,54 @@ class _SummaryState extends State<Summary> {
   }
 
   Widget _getPieChart() {
-    return PieChart(
-      PieChartData(
-        sections: [
-          PieChartSectionData(
-            color: Colors.blue,
-            value: 40,
-            title: '40%',
-            radius: 50,
-            titleStyle: TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-          ),
-          PieChartSectionData(
-            color: Colors.red,
-            value: 30,
-            title: '30%',
-            radius: 50,
-            titleStyle: TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-          ),
-          PieChartSectionData(
-            color: Colors.green,
-            value: 20,
-            title: '20%',
-            radius: 50,
-            titleStyle: TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-          ),
-          PieChartSectionData(
-            color: Colors.yellow,
-            value: 10,
-            title: '10%',
-            radius: 50,
-            titleStyle: TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-          ),
-        ],
+    return SizedBox(
+      height: 100, // Set the desired height
+      width: 100, // Set the desired width
+      child: PieChart(
+        PieChartData(
+          sections: [
+            PieChartSectionData(
+              color: Colors.blue,
+              value: 40,
+              title: '40%',
+              radius: 50,
+              titleStyle: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+            ),
+            PieChartSectionData(
+              color: Colors.red,
+              value: 30,
+              title: '30%',
+              radius: 50,
+              titleStyle: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+            ),
+            PieChartSectionData(
+              color: Colors.green,
+              value: 20,
+              title: '20%',
+              radius: 50,
+              titleStyle: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+            ),
+            PieChartSectionData(
+              color: Colors.yellow,
+              value: 10,
+              title: '10%',
+              radius: 50,
+              titleStyle: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -108,27 +120,11 @@ class _SummaryState extends State<Summary> {
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
-          // return Column(
-          //   crossAxisAlignment: CrossAxisAlignment.start,
-          //   children: [
-          //     Padding(
-          //       padding: const EdgeInsets.only(left: 16.0),
-          //       child: Align(
-          //         alignment: Alignment.centerLeft,
-          //         child: Text("Total laddu packs procured = $total_procured"),
-          //       ),
-          //     ),
-          //     Padding(
-          //       padding: const EdgeInsets.only(left: 16.0),
-          //       child: Align(
-          //         alignment: Alignment.centerLeft,
-          //         child: Text("Total laddu packs served = $total_distributed"),
-          //       ),
-          //     ),
-
-          //   ],
-          // );
-          return _getPieChart();
+          return Column(
+            children: [
+              _getPieChart(),
+            ],
+          );
         }
       },
     );
