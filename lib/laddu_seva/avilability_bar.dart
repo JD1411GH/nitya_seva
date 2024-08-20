@@ -4,13 +4,12 @@ import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:synchronized/synchronized.dart';
 
 class AvailabilityBar extends StatefulWidget {
-  const AvailabilityBar({super.key});
+  AvailabilityBar({super.key});
 
   @override
   State<AvailabilityBar> createState() => _AvailabilityBarState();
 }
 
-// hint: templateKey.currentState!.refresh();
 final GlobalKey<_AvailabilityBarState> AvailabilityBarKey =
     GlobalKey<_AvailabilityBarState>();
 
@@ -123,8 +122,9 @@ class _AvailabilityBarState extends State<AvailabilityBar> {
       future: _futureInit(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
+          return Center(
+            // child: CircularProgressIndicator(),
+            child: _getAvailabilityBar(context),
           );
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
