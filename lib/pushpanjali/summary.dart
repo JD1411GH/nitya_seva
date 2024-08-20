@@ -151,13 +151,13 @@ class _SummaryState extends State<Summary> {
     // Select a color based on the number
     switch (number) {
       case 400:
-        return Const().color400!;
+        return Const().ticketColors['400']!;
       case 500:
-        return Const().color500!;
+        return Const().ticketColors['500']!;
       case 1000:
-        return Const().color1000!;
+        return Const().ticketColors['1000']!;
       case 2500:
-        return Const().color2500!;
+        return Const().ticketColors['2500']!;
       default:
         return const Color.fromARGB(157, 158, 158,
             158); // Default color if the number doesn't match any case
