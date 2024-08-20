@@ -136,7 +136,7 @@ class _AvailabilityBarState extends State<AvailabilityBar> {
             Text(
               'Loading...',
               style: TextStyle(
-                color: Theme.of(context).textTheme.bodyLarge!.color,
+                color: Colors.white,
                 fontSize: 18.0, // Increase the font size as needed
                 fontWeight: FontWeight.bold, // Make the text bold
               ),

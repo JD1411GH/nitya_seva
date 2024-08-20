@@ -152,48 +152,14 @@ class _SummaryState extends State<Summary> {
             PieChartData(
               sections: [
                 PieChartSectionData(
-                  color: Colors.blue,
-                  value: 0,
-                  title: '40%',
+                  color: Colors.grey,
+                  value: 100,
+                  title: '',
                   radius: 50,
                   titleStyle: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.white),
-                  titlePositionPercentageOffset: 0.6, // Adjust as needed
-                ),
-                PieChartSectionData(
-                  color: Colors.red,
-                  value: 0,
-                  title: '30%',
-                  radius: 50,
-                  titleStyle: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
-                  titlePositionPercentageOffset: 0.6, // Adjust as needed
-                ),
-                PieChartSectionData(
-                  color: Colors.green,
-                  value: 0,
-                  title: '20%',
-                  radius: 50,
-                  titleStyle: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
-                  titlePositionPercentageOffset: 0.6, // Adjust as needed
-                ),
-                PieChartSectionData(
-                  color: Colors.yellow,
-                  value: 0,
-                  title: '10%',
-                  radius: 50,
-                  titleStyle: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).textTheme.bodyLarge!.color),
-                  titlePositionPercentageOffset: 1.3, // Move label outside
                 ),
               ],
             ),

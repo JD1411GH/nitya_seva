@@ -34,12 +34,14 @@ class LadduStock {
 class LadduDist {
   final DateTime timestamp;
   final String user;
+  final String purpose;
   final int count;
   final String note;
 
   LadduDist(
       {required this.timestamp,
       required this.user,
+      required this.purpose,
       required this.count,
       required this.note});
 
@@ -48,6 +50,7 @@ class LadduDist {
     return {
       'timestamp': timestamp.toIso8601String(),
       'user': user,
+      'purpose': purpose,
       'count': count,
       'note': note,
     };
@@ -58,6 +61,7 @@ class LadduDist {
     return LadduDist(
       timestamp: DateTime.parse(json['timestamp']),
       user: json['user'],
+      purpose: json['purpose'],
       count: json['count'],
       note: json['note'],
     );

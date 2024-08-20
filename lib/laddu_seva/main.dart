@@ -67,7 +67,9 @@ class _LadduSevaState extends State<LadduMain> {
 
                 // serve button
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    removeStock(context, refresh);
+                  },
                   icon: Icon(Icons.remove),
                   label: Text('Serve'),
                 ),

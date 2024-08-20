@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:garuda/admin/user.dart';
+import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/local_storage.dart';
@@ -80,25 +81,124 @@ Future<void> addStock(
   );
 }
 
-void showDialogFailedValidation(BuildContext context, String message) {
-  showDialog(
+Future<void> removeStock(
+    BuildContext context, Future<void> Function() callbackRefresh) async {
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController _controllerNote = TextEditingController();
+
+  await showDialog(
     context: context,
-    builder: (context) {
+    builder: (BuildContext context) {
+      String selectedPurpose = "Others";
+      int? count;
+      String? note;
+
       return AlertDialog(
-        title: Text(
-          'Validation failed',
-          style: TextStyle(color: Colors.red),
+        title: Text('Serve laddu packs'),
+        content: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              // drop down for purpose
+              _getPurposeDropDown(context, selectedPurpose),
+
+              // count field
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Count'),
+                keyboardType: TextInputType.number,
+                onChanged: (String value) {
+                  count = int.tryParse(value);
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty || value == 0) {
+                    return 'Please enter a count';
+                  }
+                  return null;
+                },
+              ),
+
+              // note field
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Note'),
+                controller: _controllerNote,
+                onChanged: (String value) {
+                  note = value;
+                },
+              ),
+            ],
+          ),
         ),
-        content: Text(message),
-        actions: [
-          ElevatedButton(
+
+        // action buttons
+        actions: <Widget>[
+          // cancel button
+          TextButton(
+            child: Text('Cancel'),
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.of(context).pop();
             },
+          ),
+
+          // serve button
+          TextButton(
             child: Text('OK'),
+            onPressed: () async {
+              if (_formKey.currentState!.validate()) {
+                if (count! > 0) {
+                  String username = await Const().getUserName();
+
+                  LadduDist dist = LadduDist(
+                    timestamp: DateTime.now(),
+                    user: username,
+                    purpose: selectedPurpose,
+                    count: count ?? 0,
+                    note: note ?? '',
+                  );
+
+                  bool status = await FB().addLadduDist(dist);
+                  if (status) {
+                    _controllerNote.clear();
+                    await callbackRefresh();
+                    Toaster().info("Laddu Distributed");
+                  } else {
+                    Toaster().error("ERROR");
+                  }
+                }
+
+                Navigator.of(context).pop();
+              }
+            },
           ),
         ],
       );
+    },
+  );
+}
+
+Widget _getPurposeDropDown(BuildContext context, String selectedPurpose) {
+  List<String> Purposes =
+      Const().ticketAmounts.map((e) => "Seva ${e.toString()}").toList();
+
+  Purposes.add("Others");
+  Purposes.add("Missing");
+
+  return DropdownButtonFormField<String>(
+    decoration: InputDecoration(labelText: 'Purpose'),
+    items: Purposes.map((String value) {
+      return DropdownMenuItem<String>(
+        value: value,
+        child: Text(value),
+      );
+    }).toList(),
+    onChanged: (String? newValue) {
+      selectedPurpose = newValue ?? 'Others';
+    },
+    validator: (value) {
+      if (value == null || value.isEmpty) {
+        return 'Please select a purpose';
+      }
+      return null;
     },
   );
 }
