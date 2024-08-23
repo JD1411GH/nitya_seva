@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/laddu_seva/avilability_bar.dart';
+import 'package:garuda/laddu_seva/history.dart';
 import 'package:garuda/laddu_seva/laddu_calc.dart';
 import 'package:garuda/laddu_seva/log.dart';
 import 'package:garuda/laddu_seva/summary.dart';
@@ -33,9 +34,12 @@ class _LadduSevaState extends State<LadduMain> {
           IconButton(
             icon: Icon(Icons.list),
             onPressed: () {
-              // Add your onPressed code here!
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => History()),
+              );
             },
-            tooltip: 'Full Log',
+            tooltip: 'Complete Log',
           ),
         ],
       ),

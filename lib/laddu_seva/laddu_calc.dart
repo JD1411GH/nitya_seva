@@ -190,10 +190,7 @@ Future<void> returnStock(
   List<LadduDist> dists = await FB().readLadduDists(allotment);
   dists.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
-  DateTime firstEntry = stocks.first.timestamp;
-  if (dists.first.timestamp.isBefore(firstEntry)) {
-    firstEntry = dists.first.timestamp;
-  }
+  DateTime firstEntry = allotment;
 
   DateTime lastEntry = stocks.last.timestamp;
   if (dists.last.timestamp.isAfter(lastEntry)) {

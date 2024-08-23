@@ -497,6 +497,29 @@ class FB {
     }
   }
 
+  Future<List<DateTime>> readLadduAllotments(
+      DateTime startDate, DateTime endDate) async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva');
+
+    final Query query = dbRef
+        .orderByKey()
+        .startAt(startDate.toIso8601String().replaceAll(".", "^"))
+        .endAt(endDate.toIso8601String().replaceAll(".", "^"));
+
+    final DataSnapshot snapshot = await query.get();
+    if (snapshot.exists) {
+      var allotments = snapshot.value as Map;
+      var keys = allotments.keys.toList();
+      keys.sort();
+      return keys
+          .map((key) => DateTime.parse(key.replaceAll("^", ".")))
+          .toList();
+    } else {
+      return [];
+    }
+  }
+
   Future<List<UserDetails>> readPendingUsers() async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/users/pending');

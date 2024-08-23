@@ -37,6 +37,44 @@ class Const {
     '2500variant': Colors.pink[900],
   };
 
+  final List<Color> darkColors = [
+    Colors.orange,
+    Colors.lightGreen,
+    Colors.redAccent,
+    Colors.blueAccent,
+    Colors.purpleAccent,
+    Colors.pinkAccent,
+    Colors.deepPurpleAccent,
+    Colors.lightBlueAccent,
+    Colors.deepOrangeAccent,
+    Colors.indigoAccent,
+    Colors.brown,
+    Colors.grey,
+    Colors.blueGrey,
+  ];
+
+  Color getRandomDarkColor() {
+    return darkColors[DateTime.now().millisecond % darkColors.length];
+  }
+
+  final List<Color> lightColors = [
+    Colors.greenAccent,
+    Colors.lightBlueAccent,
+    Colors.lightGreenAccent,
+    Colors.amberAccent,
+    Colors.tealAccent,
+    Colors.cyanAccent,
+    Colors.limeAccent,
+    Colors.orangeAccent,
+    Colors.redAccent,
+    Colors.pinkAccent,
+    Colors.purpleAccent,
+  ];
+
+  Color getRandomLightColor() {
+    return lightColors[DateTime.now().millisecond % lightColors.length];
+  }
+
   Future<String> getUserName() async {
     var u = await LS().read('user_details');
     if (u != null) {

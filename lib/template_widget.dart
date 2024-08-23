@@ -5,14 +5,13 @@ class Pushpanjali extends StatefulWidget {
   const Pushpanjali({super.key});
 
   @override
-  State<Pushpanjali> createState() => _WidgetTemplateState();
+  State<Pushpanjali> createState() => _PushpanjaliState();
 }
 
 // hint: templateKey.currentState!.refresh();
-final GlobalKey<_WidgetTemplateState> templateKey =
-    GlobalKey<_WidgetTemplateState>();
+final GlobalKey<_PushpanjaliState> templateKey = GlobalKey<_PushpanjaliState>();
 
-class _WidgetTemplateState extends State<Pushpanjali> {
+class _PushpanjaliState extends State<Pushpanjali> {
   final _lockInit = Lock();
 
   Future<void> _futureInit() async {
