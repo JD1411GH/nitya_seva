@@ -63,12 +63,12 @@ class Const {
     Colors.lightGreenAccent,
     Colors.amberAccent,
     Colors.tealAccent,
-    Colors.cyanAccent,
+    const Color.fromARGB(255, 153, 249, 249),
     Colors.limeAccent,
     Colors.orangeAccent,
-    Colors.redAccent,
-    Colors.pinkAccent,
-    Colors.purpleAccent,
+    Color.fromARGB(255, 255, 169, 169),
+    const Color.fromARGB(255, 248, 139, 175),
+    Color.fromARGB(255, 235, 124, 255),
   ];
 
   Color getRandomLightColor() {

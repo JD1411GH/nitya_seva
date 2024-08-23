@@ -58,6 +58,11 @@ class _HistoryListState extends State<HistoryList> {
         }
         body.add("Total laddu packs procured = $totalStock");
 
+        int totalDist = 0;
+        for (LadduDist dist in dists) {
+          totalDist += dist.count;
+        }
+
         Map<String, int> purposeSum = {};
         dists.forEach((dist) {
           if (purposeSum.containsKey(dist.purpose)) {
@@ -67,13 +72,20 @@ class _HistoryListState extends State<HistoryList> {
           }
         });
 
+        body.add("Laddu packs served for:");
         purposeSum.forEach((purpose, count) {
           if (purpose == "Missing") {
             body.add("Missing laddu packs = $count");
           } else {
-            body.add("Laddu packs served for $purpose = $count");
+            body.add("    $purpose = $count");
           }
         });
+
+        if (await FB().readLadduReturnStatus(allotment)) {
+          body.add("Laddu packs returned = ${totalStock - totalDist}");
+        } else {
+          body.add("---Service is in progress---");
+        }
 
         _logs.add(
           ListTile(

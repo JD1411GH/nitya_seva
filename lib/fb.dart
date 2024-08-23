@@ -520,6 +520,20 @@ class FB {
     }
   }
 
+  Future<bool> readLadduReturnStatus(DateTime allotment) {
+    String a = allotment.toIso8601String().replaceAll(".", "^");
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva/$a/returned');
+
+    return dbRef.get().then((snapshot) {
+      if (snapshot.exists) {
+        return snapshot.value as bool;
+      } else {
+        return false;
+      }
+    });
+  }
+
   Future<List<UserDetails>> readPendingUsers() async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/users/pending');
