@@ -103,7 +103,9 @@ class _LogState extends State<Log> {
       }
 
       _logItems.sort((a, b) {
-        return b.title.toString().compareTo(a.title.toString());
+        String titleA = (a.title as Text).data ?? '';
+        String titleB = (b.title as Text).data ?? '';
+        return titleB.compareTo(titleA);
       });
     });
   }
