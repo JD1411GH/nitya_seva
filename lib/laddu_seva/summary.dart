@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
+import 'package:garuda/toaster.dart';
 import 'package:synchronized/synchronized.dart';
 
 class Summary extends StatefulWidget {
@@ -93,16 +94,26 @@ class _SummaryState extends State<Summary> {
 
         pieLegends.add(_buildLegendItem(pieColor, labels[i]));
       }
-      // dists.forEach((value) {
-      //   pieSections.add(PieChartSectionData(
-      //     color: Const().ticketColors['$value']!,
-      //     value: value,
-      //     title: '',
-      //     radius: 50,
-      //     titleStyle: TextStyle(
-      //         fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-      //   ));
-      // });
+
+      // move the seva elements first
+      pieLegends.sort((a, b) {
+        String textA = ((a as Row).children[2] as Text).data ?? '';
+        String textB = ((b as Row).children[2] as Text).data ?? '';
+        return textB.compareTo(textA);
+      });
+
+      // sort again based on seva amount
+      pieLegends.sort((a, b) {
+        String textA = ((a as Row).children[2] as Text).data ?? '';
+        String textB = ((b as Row).children[2] as Text).data ?? '';
+        if (textA.startsWith("Seva") && textB.startsWith("Seva")) {
+          int amountA = int.parse(textA.split(' ')[1]);
+          int amountB = int.parse(textB.split(' ')[1]);
+          return amountA.compareTo(amountB);
+        } else {
+          return 0;
+        }
+      });
     });
   }
 
