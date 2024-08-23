@@ -7,6 +7,7 @@ import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/local_storage.dart';
 import 'package:garuda/toaster.dart';
+import 'package:intl/intl.dart';
 
 String selectedPurpose = "Others";
 
@@ -183,16 +184,88 @@ Future<void> returnStock(
     BuildContext context, Future<void> Function() callbackRefresh) async {
   DateTime allotment = await FB().readLatestLadduAllotment();
 
-  int sumStocks = await FB().readLadduStockSum(allotment);
-  int sumDists = await FB().readLadduDistSum(allotment);
-  int balance = sumStocks - sumDists;
+  List<LadduStock> stocks = await FB().readLadduStocks(allotment);
+  stocks.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+
+  List<LadduDist> dists = await FB().readLadduDists(allotment);
+  dists.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+
+  DateTime firstEntry = stocks.first.timestamp;
+  if (dists.first.timestamp.isBefore(firstEntry)) {
+    firstEntry = dists.first.timestamp;
+  }
+
+  DateTime lastEntry = stocks.last.timestamp;
+  if (dists.last.timestamp.isAfter(lastEntry)) {
+    lastEntry = dists.last.timestamp;
+  }
+
+  // sum of all stocks
+  int totalStock =
+      stocks.fold(0, (previousValue, element) => previousValue + element.count);
+
+  // sum of all distributions
+  int totalDist =
+      dists.fold(0, (previousValue, element) => previousValue + element.count);
 
   bool? confirm = await showDialog<bool>(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
         title: Text('Are you sure?'),
-        content: Text('Do you really want to return the stock: $balance?'),
+        content:
+            // Summary of the stock and distribution
+            Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                  'Start date: ${DateFormat('dd-MM-yyyy').format(firstEntry)}'),
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                  'End date: ${DateFormat('dd-MM-yyyy').format(lastEntry)}'),
+            ),
+
+            SizedBox(height: 8.0),
+            Align(
+              alignment: Alignment.centerLeft,
+              child:
+                  Text('Total laddu packs procured: ${totalStock.toString()}'),
+            ),
+
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text('Total laddu packs served: ${totalDist.toString()}'),
+            ),
+
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Laddu packs to return:'),
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    (totalStock - totalDist).toString(),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                  ),
+                ),
+              ],
+            ),
+
+            // confirmation
+            SizedBox(height: 8.0),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text('Do you really want to return the stock?'),
+            ),
+          ],
+        ),
+
+        // confirm and cancel buttons
         actions: <Widget>[
           TextButton(
             onPressed: () {
