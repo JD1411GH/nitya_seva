@@ -30,15 +30,25 @@ class _SummaryState extends State<Summary> {
   Future<void> _futureInit() async {
     await _lockInit.synchronized(() async {
       DateTime allotment = await FB().readLatestLadduAllotment();
-      total_procured = await FB().readLadduStockSum(allotment);
-      total_distributed = await FB().readLadduDistSum(allotment);
+      List<LadduStock> stocks = await FB().readLadduStocks(allotment);
+      List<LadduDist> dists = await FB().readLadduDists(allotment);
+
+      total_procured = 0;
+      for (var stock in stocks) {
+        total_procured += stock.count;
+      }
+
+      total_distributed = 0;
+      for (var dist in dists) {
+        total_distributed += dist.count;
+      }
+
       pieSections = [];
       pieLegends = [];
 
       List<String> labels = [];
       List<int> values = [];
 
-      List<LadduDist> dists = await FB().readLadduDists(allotment);
       dists.forEach((dist) {
         if (labels.contains(dist.purpose)) {
           int index = labels.indexOf(dist.purpose);

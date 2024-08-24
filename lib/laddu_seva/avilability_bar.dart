@@ -25,21 +25,18 @@ class _AvailabilityBarState extends State<AvailabilityBar> {
   Future<void> _futureInit() async {
     await _lockInit.synchronized(() async {
       DateTime allotment = await FB().readLatestLadduAllotment();
-      total_procured = await FB().readLadduStockSum(allotment);
-      total_distributed = await FB().readLadduDistSum(allotment);
 
-      // get today's stock
       List<LadduStock> stocks = await FB().readLadduStocks(allotment);
-      procured_today = 0;
+      List<LadduDist> dists = await FB().readLadduDists(allotment);
+
+      total_procured = 0;
       for (var stock in stocks) {
-        procured_today += stock.count;
+        total_procured += stock.count;
       }
 
-      // get today's distribution
-      List<LadduDist> dists = await FB().readLadduDists(allotment);
-      distributed_today = 0;
+      total_distributed = 0;
       for (var dist in dists) {
-        distributed_today += dist.count;
+        total_distributed += dist.count;
       }
     });
   }

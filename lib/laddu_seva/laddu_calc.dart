@@ -40,7 +40,7 @@ Future<void> addEditStock(BuildContext context,
               decoration: InputDecoration(labelText: 'Packs procured'),
               keyboardType: TextInputType.number,
               onChanged: (value) {
-                procured = int.parse(value);
+                if (value.isNotEmpty) procured = int.parse(value);
               },
               controller: TextEditingController(
                 text: edit ? stock!.count.toString() : '',

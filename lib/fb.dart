@@ -594,20 +594,6 @@ class FB {
       return false;
     }
 
-    // Update the total count
-    DatabaseReference refTotal = dbRef.child('sumStock');
-    try {
-      DataSnapshot snapshot = await refTotal.get();
-      int total = 0;
-      if (snapshot.exists) {
-        total = snapshot.value as int;
-      }
-      total += stock.count;
-      await refTotal.set(total);
-    } catch (e) {
-      return false;
-    }
-
     return true;
   }
 
@@ -631,21 +617,6 @@ class FB {
       } else {
         return false;
       }
-    } catch (e) {
-      return false;
-    }
-
-    // Update the total count
-    DatabaseReference refTotal = dbRef.child('sumStock');
-    try {
-      DataSnapshot snapshot = await refTotal.get();
-      int total = 0;
-      if (snapshot.exists) {
-        total = snapshot.value as int;
-      }
-      total -= oldCount;
-      total += stock.count;
-      await refTotal.set(total);
     } catch (e) {
       return false;
     }
@@ -674,36 +645,7 @@ class FB {
       return false;
     }
 
-    // Update the total count
-    DatabaseReference refTotal = dbRef.child('sumStock');
-    try {
-      DataSnapshot snapshot = await refTotal.get();
-      int total = 0;
-      if (snapshot.exists) {
-        total = snapshot.value as int;
-      }
-      total -= stock.count;
-      await refTotal.set(total);
-    } catch (e) {
-      return false;
-    }
-
     return true;
-  }
-
-  Future<int> readLadduStockSum(DateTime allotment) async {
-    String a = allotment.toIso8601String().replaceAll(".", "^");
-    final DatabaseReference dbRef = FirebaseDatabase.instance
-        .ref('record_db${Const().dbVersion}/ladduSeva/$a/sumStock');
-
-    DataSnapshot snapshot = await dbRef.get();
-    int total = 0;
-
-    if (snapshot.exists) {
-      total = snapshot.value as int;
-    }
-
-    return total;
   }
 
   Future<List<LadduStock>> readLadduStocks(DateTime allotment) async {
@@ -766,20 +708,6 @@ class FB {
       return false;
     }
 
-    // Update the total count
-    DatabaseReference refTotal = dbRef.child('sumDist');
-    try {
-      DataSnapshot snapshot = await refTotal.get();
-      int total = 0;
-      if (snapshot.exists) {
-        total = snapshot.value as int;
-      }
-      total += dist.count;
-      await refTotal.set(total);
-    } catch (e) {
-      return false;
-    }
-
     return true;
   }
 
@@ -826,20 +754,6 @@ class FB {
     } else {
       return [];
     }
-  }
-
-  Future<int> readLadduDistSum(DateTime allotment) async {
-    String a = allotment.toIso8601String().replaceAll(".", "^");
-    final DatabaseReference dbRef = FirebaseDatabase.instance
-        .ref('record_db${Const().dbVersion}/ladduSeva/$a/sumDist');
-
-    DataSnapshot snapshot = await dbRef.get();
-    int total = 0;
-    if (snapshot.exists) {
-      total = snapshot.value as int;
-    }
-
-    return total;
   }
 
   Future<void> returnLadduStock(DateTime allotment) async {
