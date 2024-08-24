@@ -653,6 +653,44 @@ class FB {
     return true;
   }
 
+  Future<bool> deleteLadduStock(DateTime allotment, LadduStock stock) async {
+    String a = allotment.toIso8601String().replaceAll(".", "^");
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva/$a');
+
+    // delete laddu stock
+    DateTime timestamp = stock.timestamp;
+    DatabaseReference ref = dbRef
+        .child('stocks')
+        .child(timestamp.toIso8601String().replaceAll(".", "^"));
+    try {
+      DataSnapshot snapshot = await ref.get();
+      if (snapshot.exists) {
+        await ref.remove();
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+
+    // Update the total count
+    DatabaseReference refTotal = dbRef.child('sumStock');
+    try {
+      DataSnapshot snapshot = await refTotal.get();
+      int total = 0;
+      if (snapshot.exists) {
+        total = snapshot.value as int;
+      }
+      total -= stock.count;
+      await refTotal.set(total);
+    } catch (e) {
+      return false;
+    }
+
+    return true;
+  }
+
   Future<int> readLadduStockSum(DateTime allotment) async {
     String a = allotment.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance

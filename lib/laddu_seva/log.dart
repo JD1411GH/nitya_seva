@@ -67,7 +67,7 @@ class _LogState extends State<Log> {
 
             // on tap
             onTap: () {
-              addEditStock(context, refresh, edit: true, stock: stock);
+              addEditStock(context, edit: true, stock: stock);
             }));
       }
 

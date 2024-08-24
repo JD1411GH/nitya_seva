@@ -11,8 +11,7 @@ import 'package:intl/intl.dart';
 
 String selectedPurpose = "Others";
 
-Future<void> addEditStock(
-    BuildContext context, Future<void> Function() callbackRefresh,
+Future<void> addEditStock(BuildContext context,
     {bool edit = false, LadduStock? stock = null}) async {
   String from = "";
   int procured = 0;
@@ -52,7 +51,39 @@ Future<void> addEditStock(
         actions: [
           if (edit)
             ElevatedButton(
-              onPressed: () async {},
+              onPressed: () async {
+                bool? confirm = await showDialog<bool>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Confirmation'),
+                      content: Text('Are you sure you want to delete?'),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(false); // Return false
+                          },
+                          child: Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(true); // Return true
+                          },
+                          child: Text('Confirm'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+
+                if (confirm == true) {
+                  DateTime allotment = await FB().readLatestLadduAllotment();
+                  await FB().deleteLadduStock(allotment, stock!);
+                  Navigator.pop(context);
+                } else {
+                  // Cancel the action
+                }
+              },
               child: Text('Delete'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red, // Set the background color to red
@@ -115,7 +146,7 @@ Future<void> addEditStock(
               }
               Navigator.pop(context);
             },
-            child: Text(edit ? 'Save' : 'Add'),
+            child: Text(edit ? 'Update' : 'Add'),
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
             ),
@@ -126,8 +157,7 @@ Future<void> addEditStock(
   );
 }
 
-Future<void> removeStock(
-    BuildContext context, Future<void> Function() callbackRefresh) async {
+Future<void> removeStock(BuildContext context) async {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _controllerNote = TextEditingController();
 
@@ -204,7 +234,6 @@ Future<void> removeStock(
                   bool status = await FB().addLadduDist(allotment, dist);
                   if (status) {
                     _controllerNote.clear();
-                    await callbackRefresh();
                     Toaster().info("Laddu Distributed");
                   } else {
                     Toaster().error("ERROR");
@@ -221,8 +250,7 @@ Future<void> removeStock(
   );
 }
 
-Future<void> returnStock(
-    BuildContext context, Future<void> Function() callbackRefresh) async {
+Future<void> returnStock(BuildContext context) async {
   DateTime allotment = await FB().readLatestLadduAllotment();
 
   List<LadduStock> stocks = await FB().readLadduStocks(allotment);
@@ -322,12 +350,6 @@ Future<void> returnStock(
       );
     },
   );
-
-  if (confirm == true) {
-    // await FB().returnLadduStock();
-
-    await callbackRefresh();
-  }
 }
 
 Widget _getPurposeDropDown(BuildContext context) {

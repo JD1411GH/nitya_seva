@@ -15,31 +15,23 @@ class _LadduSevaState extends State<LadduMain> {
   initState() {
     super.initState();
 
-    DateTime lastRefresh = DateTime.now();
-
     FB().listenForChange("ladduSeva",
-        FBCallbacks(onChange: (String changeType, dynamic data) {
-      // if the change is within 2 seconds of the app launch, then ignore it.
-      if (DateTime.now().difference(lastRefresh).inSeconds < 2) {
-        return;
-      }
-
-      lastRefresh = DateTime.now();
-      refresh();
+        FBCallbacks(onChange: (String changeType, dynamic data) async {
+      await refresh();
     }));
   }
 
   Future<void> refresh() async {
     if (AvailabilityBarKey.currentState != null) {
-      AvailabilityBarKey.currentState!.refresh();
+      await AvailabilityBarKey.currentState!.refresh();
     }
 
     if (SummaryKey.currentState != null) {
-      SummaryKey.currentState!.refresh();
+      await SummaryKey.currentState!.refresh();
     }
 
     if (LogKey.currentState != null) {
-      LogKey.currentState!.refresh();
+      await LogKey.currentState!.refresh();
     }
   }
 
@@ -81,7 +73,7 @@ class _LadduSevaState extends State<LadduMain> {
                 // stock button
                 ElevatedButton.icon(
                   onPressed: () async {
-                    addEditStock(context, refresh);
+                    addEditStock(context);
                   },
                   icon: Icon(Icons.add),
                   label: Text('Stock'),
@@ -90,7 +82,7 @@ class _LadduSevaState extends State<LadduMain> {
                 // serve button
                 ElevatedButton.icon(
                   onPressed: () {
-                    removeStock(context, refresh);
+                    removeStock(context);
                   },
                   icon: Icon(Icons.remove),
                   label: Text('Serve'),
@@ -99,7 +91,7 @@ class _LadduSevaState extends State<LadduMain> {
                 // return button
                 ElevatedButton.icon(
                   onPressed: () {
-                    returnStock(context, refresh);
+                    returnStock(context);
                   },
                   icon: Icon(Icons.undo),
                   label: Text('Return'),
