@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:intl/intl.dart';
@@ -93,10 +94,11 @@ class _LogState extends State<Log> {
                 alignment: Alignment.centerLeft,
                 child: Text('Purpose: ${stock.purpose}'),
               ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text('Note: ${stock.note}'),
-              ),
+              if (stock.note.isNotEmpty)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text('Note: ${stock.note}'),
+                ),
             ],
           ),
         ));
