@@ -38,7 +38,7 @@ class Record {
         break;
       case 'REMOVE_SEVA_SLOT':
         SevaSlot slot = SevaSlot.fromJson(Map<String, dynamic>.from(sevaSlot));
-        removeSevaSlot(slot.timestampSlot);
+        deleteSevaSlot(slot.timestampSlot);
         break;
       case 'UPDATE_SEVA_SLOT':
         break;
@@ -74,7 +74,7 @@ class Record {
           DateTime timestampSlot = ticket.timestampSlot;
           DateTime timestampTicket = ticket.timestampTicket;
 
-          removeSevaTicket(ticket.timestampSlot, ticket.timestampTicket);
+          deleteSevaTicket(ticket.timestampSlot, ticket.timestampTicket);
         });
         break;
       case 'UPDATE_SEVA_TICKET':
@@ -119,8 +119,8 @@ class Record {
     }
   }
 
-  void removeSevaSlot(DateTime timestampSlot) {
-    FB().removeSevaSlot(timestampSlot);
+  void deleteSevaSlot(DateTime timestampSlot) {
+    FB().deleteSevaSlot(timestampSlot);
 
     sevaSlots.removeWhere((slot) => slot.timestampSlot == timestampSlot);
     sevaSlots.sort((a, b) => b.timestampSlot.compareTo(a.timestampSlot));
@@ -177,8 +177,8 @@ class Record {
         ticket.timestampTicket.toIso8601String(), ticket.toJson());
   }
 
-  void removeSevaTicket(DateTime timestampSlot, DateTime timestampTicket) {
-    FB().removeSevaTicket(
+  void deleteSevaTicket(DateTime timestampSlot, DateTime timestampTicket) {
+    FB().deleteSevaTicket(
         timestampSlot.toIso8601String(), timestampTicket.toIso8601String());
 
     if (sevaTickets.containsKey(timestampSlot)) {

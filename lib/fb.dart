@@ -151,7 +151,7 @@ class FB {
     await ref.set(sevaSlot);
   }
 
-  Future<void> removeSevaSlot(DateTime timestampSlot) async {
+  Future<void> deleteSevaSlot(DateTime timestampSlot) async {
     for (String key in [
       'sevaSlots',
       'sevaTickets',
@@ -204,7 +204,7 @@ class FB {
     }
   }
 
-  Future<void> removeSevaTicket(
+  Future<void> deleteSevaTicket(
       String timestampSlot, String timestampTicket) async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/sevaTickets');
@@ -277,13 +277,13 @@ class FB {
     });
   }
 
-  Future<void> removeSevaSlotListeners() async {
+  Future<void> deleteSevaSlotListeners() async {
     await _sevaSlotAddedSubscription?.cancel();
     await _sevaSlotChangedSubscription?.cancel();
     await _sevaSlotRemovedSubscription?.cancel();
   }
 
-  Future<void> removeSevaTicketListeners() async {
+  Future<void> deleteSevaTicketListeners() async {
     await _sevaTicketAddedSubscription?.cancel();
     await _sevaTicketChangedSubscription?.cancel();
     await _sevaTicketRemovedSubscription?.cancel();

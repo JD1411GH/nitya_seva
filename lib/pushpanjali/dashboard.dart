@@ -47,8 +47,8 @@ class _DashboardState extends State<Dashboard> {
   }
 
   destroy() {
-    FB().removeSevaSlotListeners();
-    FB().removeSevaTicketListeners();
+    FB().deleteSevaSlotListeners();
+    FB().deleteSevaTicketListeners();
   }
 
   Future<void> _futureInit() async {
