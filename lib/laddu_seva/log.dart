@@ -29,7 +29,8 @@ class _LogState extends State<Log> {
       List<LadduStock> stocks = await FB().readLadduStocks(allotment);
       for (LadduStock stock in stocks) {
         _logItems.add(ListTile(
-            title: Text(DateFormat('dd-MM-yyyy HH:mm').format(stock.timestamp)),
+            title:
+                Text(DateFormat('dd-MM-yyyy HH:mm:ss').format(stock.timestamp)),
             leading: const Icon(Icons.add),
 
             // body
@@ -72,45 +73,50 @@ class _LogState extends State<Log> {
       }
 
       List<LadduDist> dists = await FB().readLadduDists(allotment);
-      for (LadduDist stock in dists) {
+      for (LadduDist dist in dists) {
         _logItems.add(ListTile(
-          title: Text(DateFormat('dd-MM-yyyy HH:mm').format(stock.timestamp)),
-          leading: const Icon(Icons.remove),
-          trailing: Container(
-            padding: EdgeInsets.all(8.0), // Add padding around the text
-            decoration: BoxDecoration(
-              border:
-                  Border.all(color: Colors.black, width: 2.0), // Add a border
-              borderRadius:
-                  BorderRadius.circular(12.0), // Make the border circular
+            title:
+                Text(DateFormat('dd-MM-yyyy HH:mm:ss').format(dist.timestamp)),
+            leading: const Icon(Icons.remove),
+            trailing: Container(
+              padding: EdgeInsets.all(8.0), // Add padding around the text
+              decoration: BoxDecoration(
+                border:
+                    Border.all(color: Colors.black, width: 2.0), // Add a border
+                borderRadius:
+                    BorderRadius.circular(12.0), // Make the border circular
+              ),
+              child: Text(
+                dist.count.toString(),
+                style: TextStyle(fontSize: 24.0), // Increase the font size
+              ),
             ),
-            child: Text(
-              stock.count.toString(),
-              style: TextStyle(fontSize: 24.0), // Increase the font size
-            ),
-          ),
-          subtitle: Column(
-            children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text('Sevakarta: ${stock.user}'),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text('Laddu packs served: ${stock.count}'),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text('Purpose: ${stock.purpose}'),
-              ),
-              if (stock.note.isNotEmpty)
+            subtitle: Column(
+              children: [
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Text('Note: ${stock.note}'),
+                  child: Text('Sevakarta: ${dist.user}'),
                 ),
-            ],
-          ),
-        ));
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text('Laddu packs served: ${dist.count}'),
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text('Purpose: ${dist.purpose}'),
+                ),
+                if (dist.note.isNotEmpty)
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text('Note: ${dist.note}'),
+                  ),
+              ],
+            ),
+
+            // edit on tap
+            onTap: () {
+              addEditDist(context, edit: true, dist: dist);
+            }));
       }
 
       _logItems.sort((a, b) {

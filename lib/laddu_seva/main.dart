@@ -14,9 +14,15 @@ class LadduMain extends StatefulWidget {
 class _LadduSevaState extends State<LadduMain> {
   initState() {
     super.initState();
+    DateTime lastRefresh = DateTime.now();
 
     FB().listenForChange("ladduSeva",
         FBCallbacks(onChange: (String changeType, dynamic data) async {
+      // if the last refresh was more than 2 seconds ago, then refresh the data
+      if (DateTime.now().difference(lastRefresh).inSeconds < 2) {
+        return;
+      }
+
       await refresh();
     }));
   }
@@ -82,7 +88,7 @@ class _LadduSevaState extends State<LadduMain> {
                 // serve button
                 ElevatedButton.icon(
                   onPressed: () {
-                    removeStock(context);
+                    addEditDist(context);
                   },
                   icon: Icon(Icons.remove),
                   label: Text('Serve'),

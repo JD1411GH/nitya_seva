@@ -604,16 +604,37 @@ class FB {
 
     // Add a new laddu stock
     DateTime timestamp = stock.timestamp;
-    int oldCount = 0;
     DatabaseReference ref = dbRef
         .child('stocks')
         .child(timestamp.toIso8601String().replaceAll(".", "^"));
     try {
       DataSnapshot snapshot = await ref.get();
       if (snapshot.exists) {
-        Map oldStock = snapshot.value as Map;
-        oldCount = oldStock['count'];
         await ref.set(stock.toJson());
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<bool> editLadduDist(DateTime allotment, LadduDist dist) async {
+    String a = allotment.toIso8601String().replaceAll(".", "^");
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva/$a');
+
+    // Add a new laddu stock
+    DateTime timestamp = dist.timestamp;
+    DatabaseReference ref = dbRef
+        .child('dists')
+        .child(timestamp.toIso8601String().replaceAll(".", "^"));
+    try {
+      DataSnapshot snapshot = await ref.get();
+      if (snapshot.exists) {
+        await ref.set(dist.toJson());
       } else {
         return false;
       }
@@ -633,6 +654,30 @@ class FB {
     DateTime timestamp = stock.timestamp;
     DatabaseReference ref = dbRef
         .child('stocks')
+        .child(timestamp.toIso8601String().replaceAll(".", "^"));
+    try {
+      DataSnapshot snapshot = await ref.get();
+      if (snapshot.exists) {
+        await ref.remove();
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<bool> deleteLadduDist(DateTime allotment, LadduDist dist) async {
+    String a = allotment.toIso8601String().replaceAll(".", "^");
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva/$a');
+
+    // delete laddu stock
+    DateTime timestamp = dist.timestamp;
+    DatabaseReference ref = dbRef
+        .child('dists')
         .child(timestamp.toIso8601String().replaceAll(".", "^"));
     try {
       DataSnapshot snapshot = await ref.get();
