@@ -9,8 +9,7 @@ class History extends StatefulWidget {
 
 class _HistoryState extends State<History> {
   Future<void> _refresh() async {
-    // Simulate a network call
-    await Future.delayed(Duration(seconds: 2));
+    await HistoryListKey.currentState!.refresh(DateTime.now());
   }
 
   @override
@@ -27,7 +26,7 @@ class _HistoryState extends State<History> {
         child: ListView(
           children: [
             HistoryMonth(key: HistoryMonthKey),
-            HistoryList(),
+            HistoryList(key: HistoryListKey),
           ],
         ),
       ),

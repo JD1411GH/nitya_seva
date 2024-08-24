@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/avilability_bar.dart';
 import 'package:garuda/laddu_seva/history.dart';
 import 'package:garuda/laddu_seva/laddu_calc.dart';
@@ -11,6 +12,21 @@ class LadduMain extends StatefulWidget {
 }
 
 class _LadduSevaState extends State<LadduMain> {
+  initState() {
+    DateTime launchTime = DateTime.now();
+    super.initState();
+
+    FB().listenForChange("ladduSeva",
+        FBCallbacks(onChange: (String changeType, dynamic data) {
+      // if the change is within 2 seconds of the app launch, then ignore it.
+      if (DateTime.now().difference(launchTime).inSeconds < 2) {
+        return;
+      }
+
+      refresh();
+    }));
+  }
+
   Future<void> refresh() async {
     if (AvailabilityBarKey.currentState != null) {
       AvailabilityBarKey.currentState!.refresh();

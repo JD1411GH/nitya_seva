@@ -12,7 +12,8 @@ class HistoryList extends StatefulWidget {
 }
 
 // hint: templateKey.currentState!.refresh();
-final GlobalKey<_HistoryListState> templateKey = GlobalKey<_HistoryListState>();
+final GlobalKey<_HistoryListState> HistoryListKey =
+    GlobalKey<_HistoryListState>();
 
 class _HistoryListState extends State<HistoryList> {
   final _lockInit = Lock();
@@ -89,14 +90,21 @@ class _HistoryListState extends State<HistoryList> {
 
         _logs.add(
           ListTile(
+            // title
             title: Container(
               color: _primaryColor, // Set your desired color here
               child: Padding(
                 padding: const EdgeInsets.only(
                     left: 8.0), // Adjust the left padding as needed
-                child: Text(title),
+                child: Text(
+                  title,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold), // Make the title bold
+                ),
               ),
             ),
+
+            // body
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: body.map((e) => Text(e)).toList(),
