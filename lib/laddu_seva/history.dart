@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/laddu_seva/history_list.dart';
-import 'package:garuda/laddu_seva/history_month.dart';
+import 'package:garuda/laddu_seva/history_header.dart';
 
 class History extends StatefulWidget {
   @override
@@ -25,7 +25,7 @@ class _HistoryState extends State<History> {
         // If you use ListView.builder inside this, then the ListView here can be removed.
         child: ListView(
           children: [
-            HistoryMonth(key: HistoryMonthKey),
+            HistoryHeader(key: HistoryHeaderKey),
             HistoryList(key: HistoryListKey),
           ],
         ),

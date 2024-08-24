@@ -13,8 +13,9 @@ class LadduMain extends StatefulWidget {
 
 class _LadduSevaState extends State<LadduMain> {
   initState() {
-    DateTime launchTime = DateTime.now();
     super.initState();
+
+    DateTime launchTime = DateTime.now();
 
     FB().listenForChange("ladduSeva",
         FBCallbacks(onChange: (String changeType, dynamic data) {

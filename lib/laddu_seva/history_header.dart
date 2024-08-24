@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:synchronized/synchronized.dart';
 
-class HistoryMonth extends StatefulWidget {
-  const HistoryMonth({super.key});
+class HistoryHeader extends StatefulWidget {
+  const HistoryHeader({super.key});
 
   @override
-  State<HistoryMonth> createState() => _HistoryMonthState();
+  State<HistoryHeader> createState() => _HistoryHeaderState();
 }
 
 // hint: templateKey.currentState!.refresh();
-final GlobalKey<_HistoryMonthState> HistoryMonthKey =
-    GlobalKey<_HistoryMonthState>();
+final GlobalKey<_HistoryHeaderState> HistoryHeaderKey =
+    GlobalKey<_HistoryHeaderState>();
 
-class _HistoryMonthState extends State<HistoryMonth> {
+class _HistoryHeaderState extends State<HistoryHeader> {
   final _lockInit = Lock();
   String currentMonth = "";
 
