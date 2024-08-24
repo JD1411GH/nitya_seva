@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
+import 'package:garuda/laddu_seva/laddu_calc.dart';
 import 'package:intl/intl.dart';
 import 'package:synchronized/synchronized.dart';
 
@@ -28,38 +29,46 @@ class _LogState extends State<Log> {
       List<LadduStock> stocks = await FB().readLadduStocks(allotment);
       for (LadduStock stock in stocks) {
         _logItems.add(ListTile(
-          title: Text(DateFormat('dd-MM-yyyy HH:mm').format(stock.timestamp)),
-          leading: const Icon(Icons.add),
-          trailing: Container(
-            padding: EdgeInsets.all(8.0), // Add padding around the text
-            decoration: BoxDecoration(
-              border:
-                  Border.all(color: Colors.black, width: 2.0), // Add a border
-              borderRadius:
-                  BorderRadius.circular(12.0), // Make the border circular
+            title: Text(DateFormat('dd-MM-yyyy HH:mm').format(stock.timestamp)),
+            leading: const Icon(Icons.add),
+
+            // body
+            subtitle: Column(
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text('Sevakarta: ${stock.user}'),
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text('Laddu packs collected: ${stock.count}'),
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text('Collected from: ${stock.from}'),
+                ),
+              ],
             ),
-            child: Text(
-              stock.count.toString(),
-              style: TextStyle(fontSize: 24.0), // Increase the font size
+
+            // the count
+            trailing: Container(
+              padding: EdgeInsets.all(8.0), // Add padding around the text
+              decoration: BoxDecoration(
+                border:
+                    Border.all(color: Colors.black, width: 2.0), // Add a border
+                borderRadius:
+                    BorderRadius.circular(12.0), // Make the border circular
+              ),
+              child: Text(
+                stock.count.toString(),
+                style: TextStyle(fontSize: 24.0), // Increase the font size
+              ),
             ),
-          ),
-          subtitle: Column(
-            children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text('Sevakarta: ${stock.user}'),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text('Laddu packs collected: ${stock.count}'),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text('Collected from: ${stock.from}'),
-              ),
-            ],
-          ),
-        ));
+
+            // on tap
+            onTap: () {
+              addEditStock(context, refresh, edit: true, stock: stock);
+            }));
       }
 
       List<LadduDist> dists = await FB().readLadduDists(allotment);

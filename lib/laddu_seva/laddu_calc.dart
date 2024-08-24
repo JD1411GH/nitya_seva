@@ -11,8 +11,9 @@ import 'package:intl/intl.dart';
 
 String selectedPurpose = "Others";
 
-Future<void> addStock(
-    BuildContext context, Future<void> Function() callbackRefresh) async {
+Future<void> addEditStock(
+    BuildContext context, Future<void> Function() callbackRefresh,
+    {bool edit = false, LadduStock? stock = null}) async {
   String from = "";
   int procured = 0;
 
@@ -20,14 +21,19 @@ Future<void> addStock(
     context: context,
     builder: (context) {
       return AlertDialog(
-        title: Text('Add Stock'),
+        title: edit ? Text('Edit Stock') : Text('Add Stock'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             // text input for collected from
             TextField(
               decoration: InputDecoration(labelText: 'From'),
-              onChanged: (value) {},
+              onChanged: (value) {
+                from = value;
+              },
+              controller: TextEditingController(
+                text: edit ? stock!.from : '',
+              ),
             ),
 
             // text input for packs procured
@@ -37,19 +43,35 @@ Future<void> addStock(
               onChanged: (value) {
                 procured = int.parse(value);
               },
+              controller: TextEditingController(
+                text: edit ? stock!.count.toString() : '',
+              ),
             ),
           ],
         ),
         actions: [
+          if (edit)
+            ElevatedButton(
+              onPressed: () async {},
+              child: Text('Delete'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red, // Set the background color to red
+                padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+              ),
+            ),
+
           // cancel button
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
             },
             child: Text('Cancel'),
+            style: ElevatedButton.styleFrom(
+              padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+            ),
           ),
 
-          // add stock button
+          // add/edit stock button
           ElevatedButton(
             onPressed: () async {
               var u = await LS().read('user_details');
@@ -57,15 +79,32 @@ Future<void> addStock(
                 var uu = jsonDecode(u);
                 UserDetails user = UserDetails.fromJson(uu);
 
-                LadduStock stock = LadduStock(
-                  timestamp: DateTime.now(),
-                  user: user.name!,
-                  from: from,
-                  count: procured,
-                );
+                LadduStock stockNew;
+                if (edit) {
+                  stockNew = LadduStock(
+                    timestamp: stock!.timestamp,
+                    user: stock.user,
+                    from: from,
+                    count: procured,
+                  );
+                } else {
+                  stockNew = LadduStock(
+                    timestamp: DateTime.now(),
+                    user: user.name!,
+                    from: from,
+                    count: procured,
+                  );
+                }
 
                 DateTime allotment = await FB().readLatestLadduAllotment();
-                bool status = await FB().addLadduStock(allotment, stock);
+                bool status;
+
+                if (edit) {
+                  status = await FB().editLadduStock(allotment, stockNew);
+                } else {
+                  status = await FB().addLadduStock(allotment, stockNew);
+                }
+
                 if (status) {
                   await callbackRefresh();
                   Toaster().info("Added successfully");
@@ -77,7 +116,10 @@ Future<void> addStock(
               }
               Navigator.pop(context);
             },
-            child: Text('Add'),
+            child: Text(edit ? 'Save' : 'Add'),
+            style: ElevatedButton.styleFrom(
+              padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+            ),
           ),
         ],
       );

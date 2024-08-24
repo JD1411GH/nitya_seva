@@ -67,7 +67,7 @@ class _TicketListState extends State<TicketTable> {
   }
 
   void onEditEntry(SevaTicket entry) async {
-    Record().updateSevaTicket(timestampSlot, entry);
+    Record().editSevaTicket(timestampSlot, entry);
   }
 
   void onDeleteEntry(DateTime timestampTicket) async {

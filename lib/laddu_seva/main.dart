@@ -80,7 +80,7 @@ class _LadduSevaState extends State<LadduMain> {
                 // stock button
                 ElevatedButton.icon(
                   onPressed: () async {
-                    addStock(context, refresh);
+                    addEditStock(context, refresh);
                   },
                   icon: Icon(Icons.add),
                   label: Text('Stock'),

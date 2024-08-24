@@ -150,7 +150,7 @@ class Record {
         ticket.timestampTicket.toIso8601String(), ticket.toJson());
   }
 
-  void updateSevaTicket(DateTime timestampSlot, SevaTicket ticket) {
+  void editSevaTicket(DateTime timestampSlot, SevaTicket ticket) {
     if (sevaTickets[timestampSlot] == null) {
       Toaster().error("No tickets found for the slot");
       return;
@@ -173,7 +173,7 @@ class Record {
       callbacks!.onTicketChange!();
     }
 
-    FB().updateSevaTicket(timestampSlot.toIso8601String(),
+    FB().editSevaTicket(timestampSlot.toIso8601String(),
         ticket.timestampTicket.toIso8601String(), ticket.toJson());
   }
 

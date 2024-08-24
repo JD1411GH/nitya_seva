@@ -215,7 +215,7 @@ class FB {
     await ref.remove();
   }
 
-  Future<void> updateSevaTicket(String timestampSlot, String timestampTicket,
+  Future<void> editSevaTicket(String timestampSlot, String timestampTicket,
       Map<String, dynamic> json) async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/sevaTickets');
@@ -602,6 +602,48 @@ class FB {
       if (snapshot.exists) {
         total = snapshot.value as int;
       }
+      total += stock.count;
+      await refTotal.set(total);
+    } catch (e) {
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<bool> editLadduStock(DateTime allotment, LadduStock stock) async {
+    String a = allotment.toIso8601String().replaceAll(".", "^");
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva/$a');
+
+    // Add a new laddu stock
+    DateTime timestamp = stock.timestamp;
+    int oldCount = 0;
+    DatabaseReference ref = dbRef
+        .child('stocks')
+        .child(timestamp.toIso8601String().replaceAll(".", "^"));
+    try {
+      DataSnapshot snapshot = await ref.get();
+      if (snapshot.exists) {
+        Map oldStock = snapshot.value as Map;
+        oldCount = oldStock['count'];
+        await ref.set(stock.toJson());
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+
+    // Update the total count
+    DatabaseReference refTotal = dbRef.child('sumStock');
+    try {
+      DataSnapshot snapshot = await refTotal.get();
+      int total = 0;
+      if (snapshot.exists) {
+        total = snapshot.value as int;
+      }
+      total -= oldCount;
       total += stock.count;
       await refTotal.set(total);
     } catch (e) {
