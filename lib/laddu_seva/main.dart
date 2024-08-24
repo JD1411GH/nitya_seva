@@ -15,15 +15,16 @@ class _LadduSevaState extends State<LadduMain> {
   initState() {
     super.initState();
 
-    DateTime launchTime = DateTime.now();
+    DateTime lastRefresh = DateTime.now();
 
     FB().listenForChange("ladduSeva",
         FBCallbacks(onChange: (String changeType, dynamic data) {
       // if the change is within 2 seconds of the app launch, then ignore it.
-      if (DateTime.now().difference(launchTime).inSeconds < 2) {
+      if (DateTime.now().difference(lastRefresh).inSeconds < 2) {
         return;
       }
 
+      lastRefresh = DateTime.now();
       refresh();
     }));
   }

@@ -106,7 +106,6 @@ Future<void> addEditStock(
                 }
 
                 if (status) {
-                  await callbackRefresh();
                   Toaster().info("Added successfully");
                 } else {
                   Toaster().error("Add failed");

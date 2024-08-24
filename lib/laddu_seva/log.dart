@@ -127,15 +127,21 @@ class _LogState extends State<Log> {
   }
 
   Widget _getListView() {
-    return Column(
-      children: List.generate(_logItems.length * 2 - 1, (index) {
-        if (index.isEven) {
-          return _logItems[index ~/ 2];
-        } else {
-          return Divider();
-        }
-      }),
-    );
+    if (_logItems.isEmpty) {
+      return Center(
+        child: Text('No data available'),
+      );
+    } else {
+      return Column(
+        children: List.generate(_logItems.length * 2 - 1, (index) {
+          if (index.isEven) {
+            return _logItems[index ~/ 2];
+          } else {
+            return Divider();
+          }
+        }),
+      );
+    }
   }
 
   @override
