@@ -27,13 +27,13 @@ class Const {
   final Color colorPrimary =
       ColorScheme.fromSeed(seedColor: const Color(0xFF3B4043)).primary;
   final ticketColors = {
-    '400': Colors.blue[200],
+    '400': Colors.blue[400],
     '400variant': Colors.blue[900],
-    '500': Colors.yellow[200],
+    '500': Colors.yellow[600],
     '500variant': Colors.yellow[900],
-    '1000': Colors.green[200],
+    '1000': Colors.green[400],
     '1000variant': Colors.green[900],
-    '2500': Colors.pink[200],
+    '2500': Colors.pink[300],
     '2500variant': Colors.pink[900],
   };
 

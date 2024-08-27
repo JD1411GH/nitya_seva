@@ -59,19 +59,6 @@ class _SummaryState extends State<Summary> {
         }
       });
 
-      List<Color> extraColors = [
-        Colors.orange,
-        Colors.lightGreen,
-        Colors.redAccent,
-        Colors.blueAccent,
-        Colors.greenAccent,
-        Colors.purpleAccent,
-        Colors.pinkAccent,
-        Colors.deepPurpleAccent,
-        Colors.lightBlueAccent,
-        Colors.lightGreenAccent
-      ];
-
       // add the pie sections and legends
       for (int i = 0; i < labels.length; i++) {
         Color pieColor = Colors.grey;
@@ -82,7 +69,7 @@ class _SummaryState extends State<Summary> {
           textColor =
               amount == "500" ? Theme.of(context).primaryColor : Colors.white;
         } else {
-          pieColor = extraColors[i % extraColors.length];
+          pieColor = Const().getRandomDarkColor();
         }
 
         double value = values[i].toDouble();
