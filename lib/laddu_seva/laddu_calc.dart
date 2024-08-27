@@ -21,6 +21,7 @@ class _AddEditStockDialogState extends State<AddEditStockDialog> {
   String from = "";
   int procured = 0;
   bool isLoading = false;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -35,38 +36,50 @@ class _AddEditStockDialogState extends State<AddEditStockDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: widget.edit ? Text('Edit Stock') : Text('Add Stock'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // text input for collected from
-          TextField(
-            decoration: InputDecoration(labelText: 'From'),
-            onChanged: (value) {
-              from = value;
-            },
-            controller: TextEditingController(
-              text: widget.edit ? widget.stock!.from : '',
+      content: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // text input for collected from
+            TextFormField(
+              decoration: InputDecoration(labelText: 'From'),
+              onChanged: (value) {
+                from = value;
+              },
+              controller: TextEditingController(
+                text: widget.edit ? widget.stock!.from : '',
+              ),
             ),
-          ),
 
-          // text input for packs procured
-          TextField(
-            decoration: InputDecoration(labelText: 'Packs procured'),
-            keyboardType: TextInputType.number,
-            onChanged: (value) {
-              if (value.isNotEmpty) procured = int.parse(value);
-            },
-            controller: TextEditingController(
-              text: widget.edit ? widget.stock!.count.toString() : '',
+            // text input for packs procured
+            TextFormField(
+              decoration: InputDecoration(labelText: 'Packs procured'),
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                if (value.isNotEmpty) procured = int.parse(value);
+              },
+              controller: TextEditingController(
+                text: widget.edit ? widget.stock!.count.toString() : '',
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a valid number';
+                }
+                if (int.tryParse(value) == null || int.parse(value) <= 0) {
+                  return 'Please enter a value greater than 0';
+                }
+                return null;
+              },
             ),
-          ),
 
-          if (isLoading)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CircularProgressIndicator(),
-            ),
-        ],
+            if (isLoading)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CircularProgressIndicator(),
+              ),
+          ],
+        ),
       ),
       actions: [
         // delete button
@@ -133,49 +146,51 @@ class _AddEditStockDialogState extends State<AddEditStockDialog> {
         // add/edit stock button
         ElevatedButton(
           onPressed: () async {
-            setState(() {
-              isLoading = true;
-            });
+            if (_formKey.currentState!.validate()) {
+              setState(() {
+                isLoading = true;
+              });
 
-            String username = await Const().getUserName();
+              String username = await Const().getUserName();
 
-            LadduStock stockNew;
-            if (widget.edit) {
-              stockNew = LadduStock(
-                timestamp: widget.stock!.timestamp,
-                user: widget.stock!.user,
-                from: from,
-                count: procured,
-              );
-            } else {
-              stockNew = LadduStock(
-                timestamp: DateTime.now(),
-                user: username,
-                from: from,
-                count: procured,
-              );
+              LadduStock stockNew;
+              if (widget.edit) {
+                stockNew = LadduStock(
+                  timestamp: widget.stock!.timestamp,
+                  user: widget.stock!.user,
+                  from: from,
+                  count: procured,
+                );
+              } else {
+                stockNew = LadduStock(
+                  timestamp: DateTime.now(),
+                  user: username,
+                  from: from,
+                  count: procured,
+                );
+              }
+
+              DateTime session = await FB().readLatestLadduAllotment();
+              bool status;
+
+              if (widget.edit) {
+                status = await FB().editLadduStock(session, stockNew);
+              } else {
+                status = await FB().addLadduStock(session, stockNew);
+              }
+
+              setState(() {
+                isLoading = false;
+              });
+
+              if (status) {
+                Toaster().info("Added successfully");
+              } else {
+                Toaster().error("Add failed");
+              }
+
+              Navigator.pop(context);
             }
-
-            DateTime session = await FB().readLatestLadduAllotment();
-            bool status;
-
-            if (widget.edit) {
-              status = await FB().editLadduStock(session, stockNew);
-            } else {
-              status = await FB().addLadduStock(session, stockNew);
-            }
-
-            setState(() {
-              isLoading = false;
-            });
-
-            if (status) {
-              Toaster().info("Added successfully");
-            } else {
-              Toaster().error("Add failed");
-            }
-
-            Navigator.pop(context);
           },
           child: Text(widget.edit ? 'Update' : 'Add'),
           style: ElevatedButton.styleFrom(
@@ -346,46 +361,65 @@ class _AddEditDistDialogState extends State<AddEditDistDialog> {
               });
 
               if (count > 0) {
-                String username = await Const().getUserName();
-
-                LadduDist distNew;
-                if (widget.edit) {
-                  distNew = LadduDist(
-                    timestamp: widget.dist!.timestamp,
-                    user: username,
-                    purpose: selectedPurpose,
-                    count: count,
-                    note: note,
-                  );
-                } else {
-                  distNew = LadduDist(
-                    timestamp: DateTime.now(),
-                    user: username,
-                    purpose: selectedPurpose,
-                    count: count,
-                    note: note,
-                  );
-                }
-
                 DateTime session = await FB().readLatestLadduAllotment();
 
-                bool status;
-                if (widget.edit) {
-                  status = await FB().editLadduDist(session, distNew);
+                // validate against availability
+                List<LadduStock> stocks = await FB().readLadduStocks(session);
+                List<LadduDist> dists = await FB().readLadduDists(session);
+
+                int total_procured = 0;
+                for (var stock in stocks) {
+                  total_procured += stock.count;
+                }
+
+                int total_distributed = 0;
+                for (var dist in dists) {
+                  total_distributed += dist.count;
+                }
+
+                int available = total_procured - total_distributed;
+                if (count > available) {
+                  Toaster().error("Not available");
                 } else {
-                  status = await FB().addLadduDist(session, distNew);
+                  String username = await Const().getUserName();
+
+                  LadduDist distNew;
+                  if (widget.edit) {
+                    distNew = LadduDist(
+                      timestamp: widget.dist!.timestamp,
+                      user: username,
+                      purpose: selectedPurpose,
+                      count: count,
+                      note: note,
+                    );
+                  } else {
+                    distNew = LadduDist(
+                      timestamp: DateTime.now(),
+                      user: username,
+                      purpose: selectedPurpose,
+                      count: count,
+                      note: note,
+                    );
+                  }
+
+                  bool status;
+                  if (widget.edit) {
+                    status = await FB().editLadduDist(session, distNew);
+                  } else {
+                    status = await FB().addLadduDist(session, distNew);
+                  }
+
+                  if (status) {
+                    _controllerNote.clear();
+                    Toaster().info("Laddu Distributed");
+                  } else {
+                    Toaster().error("ERROR");
+                  }
                 }
 
                 setState(() {
                   isLoading = false;
                 });
-
-                if (status) {
-                  _controllerNote.clear();
-                  Toaster().info("Laddu Distributed");
-                } else {
-                  Toaster().error("ERROR");
-                }
               }
 
               Navigator.of(context).pop();
