@@ -38,7 +38,6 @@ class Const {
   };
 
   final List<Color> darkColors = [
-    Colors.orange,
     Colors.lightGreen,
     Colors.redAccent,
     Colors.blueAccent,
@@ -46,7 +45,6 @@ class Const {
     Colors.pinkAccent,
     Colors.deepPurpleAccent,
     Colors.lightBlueAccent,
-    Colors.deepOrangeAccent,
     Colors.indigoAccent,
     Colors.brown,
     Colors.grey,
@@ -65,7 +63,6 @@ class Const {
     Colors.tealAccent,
     const Color.fromARGB(255, 153, 249, 249),
     Colors.limeAccent,
-    Colors.orangeAccent,
     Color.fromARGB(255, 255, 169, 169),
     const Color.fromARGB(255, 248, 139, 175),
     Color.fromARGB(255, 235, 124, 255),
