@@ -468,7 +468,12 @@ class _TicketListState extends State<TicketTable> {
                   child: Center(
                     child: Text(
                       '${sevaTickets.length - index}',
-                      style: const TextStyle(fontSize: 20, color: Colors.white),
+                      style: TextStyle(
+                        fontSize: (sevaTickets.length - index) > 99
+                            ? 16
+                            : 20, // Reduce font size if length > 99
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
