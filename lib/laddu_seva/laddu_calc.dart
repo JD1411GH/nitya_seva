@@ -102,8 +102,8 @@ class _AddEditStockDialogState extends State<AddEditStockDialog> {
                   isLoading = true;
                 });
 
-                DateTime allotment = await FB().readLatestLadduAllotment();
-                await FB().deleteLadduStock(allotment, widget.stock!);
+                DateTime session = await FB().readLatestLadduAllotment();
+                await FB().deleteLadduStock(session, widget.stock!);
 
                 setState(() {
                   isLoading = false;
@@ -156,13 +156,13 @@ class _AddEditStockDialogState extends State<AddEditStockDialog> {
               );
             }
 
-            DateTime allotment = await FB().readLatestLadduAllotment();
+            DateTime session = await FB().readLatestLadduAllotment();
             bool status;
 
             if (widget.edit) {
-              status = await FB().editLadduStock(allotment, stockNew);
+              status = await FB().editLadduStock(session, stockNew);
             } else {
-              status = await FB().addLadduStock(allotment, stockNew);
+              status = await FB().addLadduStock(session, stockNew);
             }
 
             setState(() {
@@ -308,8 +308,8 @@ class _AddEditDistDialogState extends State<AddEditDistDialog> {
                   isLoading = true;
                 });
 
-                DateTime allotment = await FB().readLatestLadduAllotment();
-                await FB().deleteLadduDist(allotment, widget.dist!);
+                DateTime session = await FB().readLatestLadduAllotment();
+                await FB().deleteLadduDist(session, widget.dist!);
 
                 setState(() {
                   isLoading = false;
@@ -367,13 +367,13 @@ class _AddEditDistDialogState extends State<AddEditDistDialog> {
                   );
                 }
 
-                DateTime allotment = await FB().readLatestLadduAllotment();
+                DateTime session = await FB().readLatestLadduAllotment();
 
                 bool status;
                 if (widget.edit) {
-                  status = await FB().editLadduDist(allotment, distNew);
+                  status = await FB().editLadduDist(session, distNew);
                 } else {
-                  status = await FB().addLadduDist(allotment, distNew);
+                  status = await FB().addLadduDist(session, distNew);
                 }
 
                 setState(() {
@@ -411,12 +411,12 @@ Future<void> addEditDist(BuildContext context,
 }
 
 Future<void> returnStock(BuildContext context) async {
-  DateTime allotment = await FB().readLatestLadduAllotment();
+  DateTime session = await FB().readLatestLadduAllotment();
 
-  List<LadduStock> stocks = await FB().readLadduStocks(allotment);
+  List<LadduStock> stocks = await FB().readLadduStocks(session);
   stocks.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
-  List<LadduDist> dists = await FB().readLadduDists(allotment);
+  List<LadduDist> dists = await FB().readLadduDists(session);
   dists.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
   DateTime lastEntry = stocks.last.timestamp;
@@ -438,7 +438,7 @@ Future<void> returnStock(BuildContext context) async {
     context: context,
     builder: (BuildContext context) {
       return ReturnStockDialog(
-        allotment: allotment,
+        session: session,
         totalStock: totalStock,
         totalDist: totalDist,
         remaining: remaining,
@@ -448,16 +448,18 @@ Future<void> returnStock(BuildContext context) async {
 }
 
 class ReturnStockDialog extends StatefulWidget {
-  final DateTime allotment;
+  final DateTime session;
   final int totalStock;
   final int totalDist;
   int remaining;
+  String returnedTo;
 
   ReturnStockDialog({
-    required this.allotment,
+    required this.session,
     required this.totalStock,
     required this.totalDist,
     required this.remaining,
+    this.returnedTo = '',
   });
 
   @override
@@ -494,6 +496,9 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
                 decoration: InputDecoration(
                   labelText: 'Returned to',
                 ),
+                onChanged: (value) {
+                  widget.returnedTo = value;
+                },
               ),
             ),
             SizedBox(height: 8.0),
@@ -543,7 +548,8 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
       _isLoading = true;
     });
 
-    await FB().returnLadduStock(widget.allotment);
+    await FB()
+        .returnLadduStock(widget.session, widget.remaining, widget.returnedTo);
 
     setState(() {
       _isLoading = false;

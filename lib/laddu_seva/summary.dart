@@ -29,9 +29,9 @@ class _SummaryState extends State<Summary> {
 
   Future<void> _futureInit() async {
     await _lockInit.synchronized(() async {
-      DateTime allotment = await FB().readLatestLadduAllotment();
-      List<LadduStock> stocks = await FB().readLadduStocks(allotment);
-      List<LadduDist> dists = await FB().readLadduDists(allotment);
+      DateTime session = await FB().readLatestLadduAllotment();
+      List<LadduStock> stocks = await FB().readLadduStocks(session);
+      List<LadduDist> dists = await FB().readLadduDists(session);
 
       total_procured = 0;
       for (var stock in stocks) {

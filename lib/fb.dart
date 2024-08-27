@@ -486,7 +486,7 @@ class FB {
       keys.sort();
       var lastKey = keys.last;
 
-      if (allotments[lastKey]['returned'] == true) {
+      if (allotments[lastKey]['returned'] > 0) {
         return DateTime.now();
       } else {
         lastKey = lastKey.replaceAll("^", ".");
@@ -520,16 +520,16 @@ class FB {
     }
   }
 
-  Future<bool> readLadduReturnStatus(DateTime allotment) {
-    String a = allotment.toIso8601String().replaceAll(".", "^");
+  Future<int> readLadduReturnStatus(DateTime session) {
+    String a = session.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/ladduSeva/$a/returned');
 
     return dbRef.get().then((snapshot) {
       if (snapshot.exists) {
-        return snapshot.value as bool;
+        return snapshot.value as int;
       } else {
-        return false;
+        return 0;
       }
     });
   }
@@ -570,15 +570,15 @@ class FB {
     return users;
   }
 
-  Future<bool> addLadduStock(DateTime allotment, LadduStock stock) async {
-    String a = allotment.toIso8601String().replaceAll(".", "^");
+  Future<bool> addLadduStock(DateTime session, LadduStock stock) async {
+    String a = session.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/ladduSeva/$a');
 
     // set return status
     DatabaseReference refRet = dbRef.child('returned');
     try {
-      await refRet.set(false);
+      await refRet.set(0);
     } catch (e) {
       return false;
     }
@@ -597,8 +597,8 @@ class FB {
     return true;
   }
 
-  Future<bool> editLadduStock(DateTime allotment, LadduStock stock) async {
-    String a = allotment.toIso8601String().replaceAll(".", "^");
+  Future<bool> editLadduStock(DateTime session, LadduStock stock) async {
+    String a = session.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/ladduSeva/$a');
 
@@ -621,8 +621,8 @@ class FB {
     return true;
   }
 
-  Future<bool> editLadduDist(DateTime allotment, LadduDist dist) async {
-    String a = allotment.toIso8601String().replaceAll(".", "^");
+  Future<bool> editLadduDist(DateTime session, LadduDist dist) async {
+    String a = session.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/ladduSeva/$a');
 
@@ -645,8 +645,8 @@ class FB {
     return true;
   }
 
-  Future<bool> deleteLadduStock(DateTime allotment, LadduStock stock) async {
-    String a = allotment.toIso8601String().replaceAll(".", "^");
+  Future<bool> deleteLadduStock(DateTime session, LadduStock stock) async {
+    String a = session.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/ladduSeva/$a');
 
@@ -669,8 +669,8 @@ class FB {
     return true;
   }
 
-  Future<bool> deleteLadduDist(DateTime allotment, LadduDist dist) async {
-    String a = allotment.toIso8601String().replaceAll(".", "^");
+  Future<bool> deleteLadduDist(DateTime session, LadduDist dist) async {
+    String a = session.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/ladduSeva/$a');
 
@@ -693,8 +693,8 @@ class FB {
     return true;
   }
 
-  Future<List<LadduStock>> readLadduStocks(DateTime allotment) async {
-    String a = allotment.toIso8601String().replaceAll(".", "^");
+  Future<List<LadduStock>> readLadduStocks(DateTime session) async {
+    String a = session.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/ladduSeva/$a/stocks');
 
@@ -737,8 +737,8 @@ class FB {
     }
   }
 
-  Future<bool> addLadduDist(DateTime allotment, LadduDist dist) async {
-    String a = allotment.toIso8601String().replaceAll(".", "^");
+  Future<bool> addLadduDist(DateTime session, LadduDist dist) async {
+    String a = session.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/ladduSeva/$a');
 
@@ -756,8 +756,8 @@ class FB {
     return true;
   }
 
-  Future<List<LadduDist>> readLadduDists(DateTime allotment) async {
-    String a = allotment.toIso8601String().replaceAll(".", "^");
+  Future<List<LadduDist>> readLadduDists(DateTime session) async {
+    String a = session.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/ladduSeva/$a/dists');
 
@@ -801,14 +801,17 @@ class FB {
     }
   }
 
-  Future<void> returnLadduStock(DateTime allotment) async {
-    String a = allotment.toIso8601String().replaceAll(".", "^");
+  Future<void> returnLadduStock(DateTime session, int count, String to) async {
+    String a = session.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/ladduSeva/$a');
 
     // set return status
     DatabaseReference refRet = dbRef.child('returned');
-    await refRet.set(true);
+    await refRet.set(count);
+
+    refRet = dbRef.child('returnedTo');
+    await refRet.set(to);
   }
 }
 

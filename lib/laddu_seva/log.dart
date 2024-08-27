@@ -24,13 +24,14 @@ class _LogState extends State<Log> {
   Future<void> _futureInit() async {
     await _lockInit.synchronized(() async {
       _logItems = [];
-      DateTime allotment = await FB().readLatestLadduAllotment();
+      DateTime session = await FB().readLatestLadduAllotment();
 
-      List<LadduStock> stocks = await FB().readLadduStocks(allotment);
+      List<LadduStock> stocks = await FB().readLadduStocks(session);
       for (LadduStock stock in stocks) {
         _logItems.add(ListTile(
-            title:
-                Text(DateFormat('dd-MM-yyyy HH:mm:ss').format(stock.timestamp)),
+            title: Text(
+                DateFormat('dd-MM-yyyy HH:mm:ss').format(stock.timestamp),
+                style: TextStyle(fontWeight: FontWeight.bold)),
             leading: const Icon(Icons.add),
 
             // body
@@ -72,11 +73,13 @@ class _LogState extends State<Log> {
             }));
       }
 
-      List<LadduDist> dists = await FB().readLadduDists(allotment);
+      List<LadduDist> dists = await FB().readLadduDists(session);
       for (LadduDist dist in dists) {
         _logItems.add(ListTile(
-            title:
-                Text(DateFormat('dd-MM-yyyy HH:mm:ss').format(dist.timestamp)),
+            title: Text(
+              DateFormat('dd-MM-yyyy HH:mm:ss').format(dist.timestamp),
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             leading: const Icon(Icons.remove),
             trailing: Container(
               padding: EdgeInsets.all(8.0), // Add padding around the text

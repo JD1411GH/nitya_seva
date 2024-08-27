@@ -35,16 +35,17 @@ class _HistoryListState extends State<HistoryList> {
       allotments.sort((a, b) => b.compareTo(a));
 
       _logs.clear();
-      for (DateTime allotment in allotments) {
-        List<LadduStock> stocks = await FB().readLadduStocks(allotment);
+      for (DateTime session in allotments) {
+        List<LadduStock> stocks = await FB().readLadduStocks(session);
         stocks.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
-        List<LadduDist> dists = await FB().readLadduDists(allotment);
+        List<LadduDist> dists = await FB().readLadduDists(session);
         dists.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
-        DateTime startAllotment = allotment;
+        DateTime startAllotment = session;
         DateTime endAllotment = dists.last.timestamp;
-        if (stocks.last.timestamp.isAfter(dists.last.timestamp)) {
+        if (dists.isNotEmpty &&
+            stocks.last.timestamp.isAfter(dists.last.timestamp)) {
           endAllotment = stocks.last.timestamp;
         }
 
@@ -82,7 +83,7 @@ class _HistoryListState extends State<HistoryList> {
           }
         });
 
-        if (await FB().readLadduReturnStatus(allotment)) {
+        if (await FB().readLadduReturnStatus(session) > 0) {
           body.add("Laddu packs returned = ${totalStock - totalDist}");
         } else {
           body.add("---Service is in progress---");
