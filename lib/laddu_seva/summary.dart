@@ -69,7 +69,13 @@ class _SummaryState extends State<Summary> {
           textColor =
               amount == "500" ? Theme.of(context).primaryColor : Colors.white;
         } else {
-          pieColor = Const().getRandomDarkColor();
+          if (labels[i] == "Others") {
+            pieColor = Colors.grey;
+          } else if (labels[i] == "Missing") {
+            pieColor = Colors.redAccent;
+          } else {
+            pieColor = Const().getRandomDarkColor();
+          }
         }
 
         double value = values[i].toDouble();

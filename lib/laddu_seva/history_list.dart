@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
+import 'package:garuda/laddu_seva/history_edit.dart';
 import 'package:synchronized/synchronized.dart';
 
 class HistoryList extends StatefulWidget {
@@ -86,7 +87,7 @@ class _HistoryListState extends State<HistoryList> {
         if (await FB().readLadduReturnStatus(session) > 0) {
           body.add("Laddu packs returned = ${totalStock - totalDist}");
         } else {
-          body.add("---Service is in progress---");
+          body.add("---Service in progress---");
         }
 
         _logs.add(
@@ -110,6 +111,13 @@ class _HistoryListState extends State<HistoryList> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: body.map((e) => Text(e)).toList(),
             ),
+
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HistoryEdit()),
+              );
+            },
           ),
         );
       }
