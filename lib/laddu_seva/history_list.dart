@@ -32,7 +32,7 @@ class _HistoryListState extends State<HistoryList> {
       final startDate = DateTime(month!.year, month!.month, 1);
       final endDate = DateTime.now();
       List<DateTime> allotments =
-          await FB().readLadduAllotments(startDate, endDate);
+          await FB().readLadduSessions(startDate, endDate);
       allotments.sort((a, b) => b.compareTo(a));
 
       _logs.clear();
@@ -43,15 +43,15 @@ class _HistoryListState extends State<HistoryList> {
         List<LadduDist> dists = await FB().readLadduDists(session);
         dists.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
-        DateTime startAllotment = session;
-        DateTime endAllotment = dists.last.timestamp;
+        DateTime startSession = session;
+        DateTime endSession = dists.last.timestamp;
         if (dists.isNotEmpty &&
             stocks.last.timestamp.isAfter(dists.last.timestamp)) {
-          endAllotment = stocks.last.timestamp;
+          endSession = stocks.last.timestamp;
         }
 
         String title =
-            "${startAllotment.day}/${startAllotment.month}/${startAllotment.year} - ${endAllotment.day}/${endAllotment.month}/${endAllotment.year}";
+            "${startSession.day}/${startSession.month}/${startSession.year} - ${endSession.day}/${endSession.month}/${endSession.year}";
 
         List<String> body = [];
 
@@ -115,7 +115,10 @@ class _HistoryListState extends State<HistoryList> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => HistoryEdit()),
+                MaterialPageRoute(
+                    builder: (context) => HistoryEdit(
+                          startSession: startSession,
+                        )),
               );
             },
           ),

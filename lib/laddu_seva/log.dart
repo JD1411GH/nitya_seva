@@ -24,7 +24,7 @@ class _LogState extends State<Log> {
   Future<void> _futureInit() async {
     await _lockInit.synchronized(() async {
       _logItems = [];
-      DateTime session = await FB().readLatestLadduAllotment();
+      DateTime session = await FB().readLatestLadduSession();
 
       List<LadduStock> stocks = await FB().readLadduStocks(session);
       for (LadduStock stock in stocks) {

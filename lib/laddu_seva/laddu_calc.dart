@@ -115,7 +115,7 @@ class _AddEditStockDialogState extends State<AddEditStockDialog> {
                   isLoading = true;
                 });
 
-                DateTime session = await FB().readLatestLadduAllotment();
+                DateTime session = await FB().readLatestLadduSession();
                 await FB().deleteLadduStock(session, widget.stock!);
 
                 setState(() {
@@ -170,7 +170,7 @@ class _AddEditStockDialogState extends State<AddEditStockDialog> {
                 );
               }
 
-              DateTime session = await FB().readLatestLadduAllotment();
+              DateTime session = await FB().readLatestLadduSession();
               bool status;
 
               if (widget.edit) {
@@ -323,7 +323,7 @@ class _AddEditDistDialogState extends State<AddEditDistDialog> {
                   isLoading = true;
                 });
 
-                DateTime session = await FB().readLatestLadduAllotment();
+                DateTime session = await FB().readLatestLadduSession();
                 await FB().deleteLadduDist(session, widget.dist!);
 
                 setState(() {
@@ -361,7 +361,7 @@ class _AddEditDistDialogState extends State<AddEditDistDialog> {
               });
 
               if (count > 0) {
-                DateTime session = await FB().readLatestLadduAllotment();
+                DateTime session = await FB().readLatestLadduSession();
 
                 // validate against availability
                 List<LadduStock> stocks = await FB().readLadduStocks(session);
@@ -445,7 +445,7 @@ Future<void> addEditDist(BuildContext context,
 }
 
 Future<void> returnStock(BuildContext context) async {
-  DateTime session = await FB().readLatestLadduAllotment();
+  DateTime session = await FB().readLatestLadduSession();
 
   List<LadduStock> stocks = await FB().readLadduStocks(session);
   stocks.sort((a, b) => a.timestamp.compareTo(b.timestamp));

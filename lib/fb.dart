@@ -467,7 +467,7 @@ class FB {
     return user;
   }
 
-  Future<DateTime> readLatestLadduAllotment() async {
+  Future<DateTime> readLatestLadduSession() async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/ladduSeva');
 
@@ -497,7 +497,7 @@ class FB {
     }
   }
 
-  Future<List<DateTime>> readLadduAllotments(
+  Future<List<DateTime>> readLadduSessions(
       DateTime startDate, DateTime endDate) async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/ladduSeva');

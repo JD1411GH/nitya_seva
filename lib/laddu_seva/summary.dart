@@ -29,7 +29,7 @@ class _SummaryState extends State<Summary> {
 
   Future<void> _futureInit() async {
     await _lockInit.synchronized(() async {
-      DateTime session = await FB().readLatestLadduAllotment();
+      DateTime session = await FB().readLatestLadduSession();
       List<LadduStock> stocks = await FB().readLadduStocks(session);
       List<LadduDist> dists = await FB().readLadduDists(session);
 
