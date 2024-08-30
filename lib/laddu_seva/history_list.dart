@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
-import 'package:garuda/history_edit.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/laddu_seva/history_edit.dart';
+import 'package:garuda/laddu_seva/main.dart';
 import 'package:synchronized/synchronized.dart';
 
 class HistoryList extends StatefulWidget {
@@ -118,9 +118,8 @@ class _HistoryListState extends State<HistoryList> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => HistoryEdit(
-                          startSession: startSession,
-                        )),
+                    builder: (context) =>
+                        HistoryEdit(startSession: startSession)),
               );
             },
           ),

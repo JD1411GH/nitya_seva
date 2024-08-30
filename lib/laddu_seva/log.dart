@@ -6,7 +6,9 @@ import 'package:intl/intl.dart';
 import 'package:synchronized/synchronized.dart';
 
 class Log extends StatefulWidget {
-  const Log({super.key});
+  final DateTime? session;
+
+  const Log({super.key, this.session});
 
   @override
   State<Log> createState() => _LogState();
@@ -23,7 +25,8 @@ class _LogState extends State<Log> {
   Future<void> _futureInit() async {
     await _lockInit.synchronized(() async {
       _logItems = [];
-      DateTime session = await FB().readLatestLadduSession();
+
+      DateTime session = widget.session ?? await FB().readLatestLadduSession();
 
       // display log only if not returned
       LadduReturn status = await FB().readLadduReturnStatus(session);
@@ -144,11 +147,7 @@ class _LogState extends State<Log> {
     if (_logItems.isEmpty) {
       return Center(
         child: Text(
-          'Click above buttons to start',
-          style: TextStyle(
-            color: Colors.red,
-            fontSize: 20.0, // Adjust the font size as needed
-          ),
+          'No entries',
         ),
       );
     } else {
