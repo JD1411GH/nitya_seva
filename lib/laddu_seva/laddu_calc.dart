@@ -3,7 +3,6 @@ import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/toaster.dart';
-import 'package:intl/intl.dart';
 
 String selectedPurpose = "Others";
 
@@ -21,6 +20,7 @@ class _AddEditStockDialogState extends State<AddEditStockDialog> {
   String from = "";
   int procured = 0;
   bool isLoading = false;
+  String sessionName = '';
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -487,6 +487,7 @@ class ReturnStockDialog extends StatefulWidget {
   final int totalDist;
   int remaining;
   String returnedTo;
+  int returnCount = 0;
 
   ReturnStockDialog({
     required this.session,
@@ -545,7 +546,7 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
                   labelText: 'Packs returned',
                 ),
                 onChanged: (value) {
-                  widget.remaining = int.parse(value);
+                  if (value.isNotEmpty) widget.returnCount = int.parse(value);
                 },
               ),
             ),
@@ -582,8 +583,31 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
       _isLoading = true;
     });
 
-    await FB()
-        .returnLadduStock(widget.session, widget.remaining, widget.returnedTo);
+    if (widget.returnCount > widget.remaining) {
+      Toaster().error("Not available");
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    } else if (widget.returnCount < widget.remaining) {
+      DateTime session = await FB().readLatestLadduSession();
+
+      await FB().addLadduDist(
+          session,
+          LadduDist(
+              timestamp: DateTime.now(),
+              user: "auto",
+              purpose: "Missing",
+              count: widget.remaining - widget.returnCount,
+              note: "Return count less than remaining packs"));
+    }
+
+    await FB().returnLadduStock(
+        widget.session,
+        LadduReturn(
+            timestamp: DateTime.now(),
+            count: widget.returnCount,
+            to: widget.returnedTo));
 
     setState(() {
       _isLoading = false;

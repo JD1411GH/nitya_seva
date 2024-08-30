@@ -71,7 +71,7 @@ class _AvailabilityBarState extends State<AvailabilityBar> {
               borderRadius: BorderRadius.circular(12.0), // Rounded edges
             ),
             child: Text(
-              'No stocks available',
+              'Session Closed',
               style: TextStyle(
                 color: Colors.red,
                 fontSize: 18.0, // Increase the font size as needed

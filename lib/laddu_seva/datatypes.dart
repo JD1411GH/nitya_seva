@@ -100,3 +100,29 @@ class LadduDistAccumulated {
     };
   }
 }
+
+class LadduReturn {
+  final DateTime timestamp;
+  final String to;
+  final int count;
+
+  LadduReturn({required this.timestamp, required this.to, required this.count});
+
+  // Convert a LadduStock instance to a JSON map
+  Map<String, dynamic> toJson() {
+    return {
+      'timestamp': timestamp.toIso8601String(),
+      'to': to,
+      'count': count,
+    };
+  }
+
+  // Create a LadduStock instance from a JSON map
+  factory LadduReturn.fromJson(Map<String, dynamic> json) {
+    return LadduReturn(
+      timestamp: DateTime.parse(json['timestamp']),
+      to: json['to'],
+      count: json['count'],
+    );
+  }
+}

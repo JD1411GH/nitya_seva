@@ -27,11 +27,20 @@ class _SummaryState extends State<Summary> {
   List<PieChartSectionData> pieSections = [];
   List<Widget> pieLegends = [];
 
+  String sessionTitle = '';
+
   Future<void> _futureInit() async {
     await _lockInit.synchronized(() async {
       DateTime session = await FB().readLatestLadduSession();
       List<LadduStock> stocks = await FB().readLadduStocks(session);
       List<LadduDist> dists = await FB().readLadduDists(session);
+
+      sessionTitle = "${session.day}/${session.month}/${session.year}";
+      LadduReturn lr = await FB().readLadduReturnStatus(session);
+      if (lr.count > 0) {
+        sessionTitle +=
+            " - ${lr.timestamp.day}/${lr.timestamp.month}/${lr.timestamp.year}";
+      }
 
       total_procured = 0;
       for (var stock in stocks) {
@@ -228,6 +237,19 @@ class _SummaryState extends State<Summary> {
     );
   }
 
+  Widget _getSessionTitle() {
+    return Align(
+      alignment: Alignment.center,
+      child: Text(
+        sessionTitle,
+        style: TextStyle(
+          fontSize: 16.0, // Increase the font size
+          fontWeight: FontWeight.bold, // Make the text bold
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<void>(
@@ -243,6 +265,8 @@ class _SummaryState extends State<Summary> {
         } else {
           return Column(
             children: [
+              _getSessionTitle(),
+
               Padding(
                 padding: const EdgeInsets.only(left: 16.0),
                 child: Align(

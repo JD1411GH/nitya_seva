@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/laddu_seva/laddu_calc.dart';
@@ -25,6 +24,12 @@ class _LogState extends State<Log> {
     await _lockInit.synchronized(() async {
       _logItems = [];
       DateTime session = await FB().readLatestLadduSession();
+
+      // display log only if not returned
+      LadduReturn status = await FB().readLadduReturnStatus(session);
+      if (status.count == 0) {
+        return;
+      }
 
       List<LadduStock> stocks = await FB().readLadduStocks(session);
       for (LadduStock stock in stocks) {
@@ -138,7 +143,13 @@ class _LogState extends State<Log> {
   Widget _getListView() {
     if (_logItems.isEmpty) {
       return Center(
-        child: Text('No data available'),
+        child: Text(
+          'Click above buttons to start',
+          style: TextStyle(
+            color: Colors.red,
+            fontSize: 20.0, // Adjust the font size as needed
+          ),
+        ),
       );
     } else {
       return Column(

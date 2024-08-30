@@ -486,7 +486,7 @@ class FB {
       keys.sort();
       var lastKey = keys.last;
 
-      if (allotments[lastKey]['returned'] > 0) {
+      if (allotments[lastKey]['returned']['count'] > 0) {
         return DateTime.now();
       } else {
         lastKey = lastKey.replaceAll("^", ".");
@@ -520,16 +520,17 @@ class FB {
     }
   }
 
-  Future<int> readLadduReturnStatus(DateTime session) {
+  Future<LadduReturn> readLadduReturnStatus(DateTime session) {
     String a = session.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/ladduSeva/$a/returned');
 
     return dbRef.get().then((snapshot) {
       if (snapshot.exists) {
-        return snapshot.value as int;
+        return LadduReturn.fromJson(
+            Map<String, dynamic>.from(snapshot.value as Map));
       } else {
-        return 0;
+        return LadduReturn(timestamp: DateTime.now(), to: '', count: 0);
       }
     });
   }
@@ -570,7 +571,10 @@ class FB {
     return users;
   }
 
-  Future<bool> addLadduStock(DateTime session, LadduStock stock) async {
+  Future<bool> addLadduStock(
+    DateTime session,
+    LadduStock stock,
+  ) async {
     String a = session.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/ladduSeva/$a');
@@ -578,7 +582,8 @@ class FB {
     // set return status
     DatabaseReference refRet = dbRef.child('returned');
     try {
-      await refRet.set(0);
+      await refRet.set(
+          LadduReturn(timestamp: DateTime.now(), to: "", count: 0).toJson());
     } catch (e) {
       return false;
     }
@@ -801,17 +806,20 @@ class FB {
     }
   }
 
-  Future<void> returnLadduStock(DateTime session, int count, String to) async {
+  Future<void> returnLadduStock(DateTime session, LadduReturn lr) async {
     String a = session.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance
-        .ref('record_db${Const().dbVersion}/ladduSeva/$a');
+        .ref('record_db${Const().dbVersion}/ladduSeva/$a/returned');
 
     // set return status
-    DatabaseReference refRet = dbRef.child('returned');
-    await refRet.set(count);
+    DatabaseReference refRet = dbRef.child('count');
+    await refRet.set(lr.count);
 
-    refRet = dbRef.child('returnedTo');
-    await refRet.set(to);
+    refRet = dbRef.child('to');
+    await refRet.set(lr.to);
+
+    refRet = dbRef.child('timestamp');
+    await refRet.set(lr.timestamp.toIso8601String());
   }
 }
 
