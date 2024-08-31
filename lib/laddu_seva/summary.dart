@@ -40,7 +40,7 @@ class _SummaryState extends State<Summary> {
 
       sessionTitle = "${session.day}/${session.month}/${session.year}";
       lr = await FB().readLadduReturnStatus(session);
-      if (lr!.count > 0) {
+      if (lr!.count >= 0) {
         String endSession =
             "${lr!.timestamp.day}/${lr!.timestamp.month}/${lr!.timestamp.year}";
         if (sessionTitle != endSession) {
@@ -292,7 +292,7 @@ class _SummaryState extends State<Summary> {
               ),
 
               // write return count if session closed
-              if (lr != null && lr!.count > 0) ...[
+              if (lr != null && lr!.count >= 0) ...[
                 Padding(
                   padding: const EdgeInsets.only(left: 16.0),
                   child: Align(

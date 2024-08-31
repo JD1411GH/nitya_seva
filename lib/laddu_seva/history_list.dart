@@ -87,7 +87,7 @@ class _HistoryListState extends State<HistoryList> {
         });
 
         LadduReturn lr = await FB().readLadduReturnStatus(session);
-        if (lr.count > 0) {
+        if (lr.count >= 0) {
           body.add("Laddu packs returned = ${totalStock - totalDist}");
         } else {
           body.add("---Service in progress---");

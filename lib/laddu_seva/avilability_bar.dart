@@ -30,7 +30,7 @@ class _AvailabilityBarState extends State<AvailabilityBar> {
       session = await FB().readLatestLadduSession();
 
       LadduReturn lr = await FB().readLadduReturnStatus(session);
-      returned = lr.count > 0;
+      returned = lr.count >= 0;
 
       List<LadduStock> stocks = await FB().readLadduStocks(session);
       List<LadduDist> dists = await FB().readLadduDists(session);

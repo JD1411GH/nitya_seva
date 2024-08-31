@@ -526,7 +526,7 @@ class FB {
             Map<String, dynamic>.from(snapshot.value as Map));
       } else {
         return LadduReturn(
-            timestamp: DateTime.now(), to: '', count: 0, user: 'Unknown');
+            timestamp: DateTime.now(), to: '', count: -1, user: 'Unknown');
       }
     });
   }
@@ -579,7 +579,7 @@ class FB {
     DatabaseReference refRet = dbRef.child('returned');
     try {
       await refRet.set(LadduReturn(
-              timestamp: DateTime.now(), to: "", count: 0, user: 'Unknown')
+              timestamp: DateTime.now(), to: "", count: -1, user: 'Unknown')
           .toJson());
     } catch (e) {
       return false;

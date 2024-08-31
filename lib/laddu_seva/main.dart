@@ -53,7 +53,7 @@ class _LadduSevaState extends State<LadduMain> {
     }
 
     // refresh Log only when session is open
-    if (lr == null || lr!.count == 0) {
+    if (lr == null || lr!.count == -1) {
       if (LogKey.currentState != null) {
         await LogKey.currentState!.refresh();
       }
@@ -106,7 +106,7 @@ class _LadduSevaState extends State<LadduMain> {
 
                 // serve button
                 ElevatedButton.icon(
-                  onPressed: (lr == null || lr!.count == 0)
+                  onPressed: (lr == null || lr!.count == -1)
                       ? () {
                           addEditDist(context);
                         }
@@ -117,7 +117,7 @@ class _LadduSevaState extends State<LadduMain> {
 
                 // return button
                 ElevatedButton.icon(
-                  onPressed: (lr == null || lr!.count == 0)
+                  onPressed: (lr == null || lr!.count == -1)
                       ? () {
                           returnStock(context);
                         }
@@ -131,7 +131,7 @@ class _LadduSevaState extends State<LadduMain> {
             Divider(),
 
             // if session is closed, display a message
-            if (lr != null && lr!.count > 0)
+            if (lr != null && lr!.count >= 0)
               Column(
                 children: [
                   Text(
@@ -141,7 +141,7 @@ class _LadduSevaState extends State<LadduMain> {
                 ],
               ),
 
-            if (lr == null || lr!.count == 0) Log(key: LogKey),
+            if (lr == null || lr!.count == -1) Log(key: LogKey),
           ],
         ),
       ),
