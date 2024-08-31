@@ -116,7 +116,8 @@ class _AddEditStockDialogState extends State<AddEditStockDialog> {
                   isLoading = true;
                 });
 
-                DateTime session = await FB().readLatestLadduSession();
+                DateTime session =
+                    widget.session ?? await FB().readLatestLadduSession();
                 await FB().deleteLadduStock(session, widget.stock!);
 
                 setState(() {
@@ -209,7 +210,7 @@ Future<void> addEditStock(BuildContext context,
   showDialog(
     context: context,
     builder: (context) {
-      return AddEditStockDialog(edit: edit, stock: stock);
+      return AddEditStockDialog(edit: edit, stock: stock, session: session);
     },
   );
 }

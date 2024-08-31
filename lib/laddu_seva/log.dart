@@ -75,7 +75,7 @@ class _LogState extends State<Log> {
                 addEditStock(context, edit: true, stock: stock);
               } else {
                 addEditStock(context,
-                    edit: false, stock: stock, session: session);
+                    edit: true, stock: stock, session: session);
               }
             }));
       }
