@@ -373,6 +373,7 @@ class _AddEditDistDialogState extends State<AddEditDistDialog> {
                 // validate against availability
                 List<LadduStock> stocks = await FB().readLadduStocks(session);
                 List<LadduDist> dists = await FB().readLadduDists(session);
+                dists.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
                 int total_procured = 0;
                 for (var stock in stocks) {
@@ -382,6 +383,10 @@ class _AddEditDistDialogState extends State<AddEditDistDialog> {
                 int total_distributed = 0;
                 for (var dist in dists) {
                   total_distributed += dist.count;
+                }
+
+                if (widget.edit) {
+                  total_distributed -= dists.last.count;
                 }
 
                 int available = total_procured - total_distributed;

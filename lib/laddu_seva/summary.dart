@@ -7,6 +7,7 @@ import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/toaster.dart';
 import 'package:synchronized/synchronized.dart';
+import 'dart:math';
 
 class Summary extends StatefulWidget {
   const Summary({super.key});
@@ -145,6 +146,9 @@ class _SummaryState extends State<Summary> {
   }
 
   Widget _getPieChart(BuildContext context) {
+    // Shuffle the pie sections to avoid adjacent placement
+    pieSections.shuffle(Random());
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
