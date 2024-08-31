@@ -27,7 +27,7 @@ class AccessDenied extends StatelessWidget {
             ),
             SizedBox(height: 20),
             Text(
-              'Please contact admin',
+              'If you have registered recently, \nplease wait for admnin approval.',
               style: TextStyle(fontSize: 18),
             ),
 

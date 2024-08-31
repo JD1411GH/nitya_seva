@@ -47,14 +47,14 @@ class _DashboardState extends State<Dashboard> {
   }
 
   destroy() {
-    FB().removeSevaSlotListeners();
-    FB().removeSevaTicketListeners();
+    FB().deleteSevaSlotListeners();
+    FB().deleteSevaTicketListeners();
   }
 
   Future<void> _futureInit() async {
     // init must be completed in a single go
     await _lockInit.synchronized(() async {
-      amountTableHeaderRow = ['Amount'];
+      amountTableHeaderRow = ['Seva Ticket'];
       countMode = {
         'UPI': 0,
         'Cash': 0,
@@ -194,9 +194,11 @@ class _DashboardState extends State<Dashboard> {
           DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
 
       if (slotDate == selectedDateOnly) {
-        setState(() {
-          _futureInit();
-        });
+        if (mounted) {
+          setState(() {
+            _futureInit();
+          });
+        }
         break; // Break out of the loop
       }
     }

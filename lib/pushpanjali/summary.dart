@@ -41,7 +41,7 @@ class _SummaryState extends State<Summary> {
     int totalCashAmount = 0;
     int totalCardAmount = 0;
 
-    for (int amount in [400, 500, 1000, 2500]) {
+    for (int amount in Const().ticketAmounts) {
       List<SevaTicket> listFiltered =
           _listEntries!.where((e) => e.amount == amount).toList();
 
@@ -59,14 +59,41 @@ class _SummaryState extends State<Summary> {
         entryWithHighestTicket = entry.ticket;
       }
 
-      // print
+      // print headline
       _appendHeadline("Seva amount", amount.toString());
-      _appendRow("Starting no", entryWithLowestTicket.toString());
-      _appendRow("Ending no", entryWithHighestTicket.toString());
+
+      // print ticket numbers
       if (entryWithHighestTicket != 0) {
         total = entryWithHighestTicket - entryWithLowestTicket + 1;
       }
-      _appendRow("Tickets sold", total.toString());
+      if (total == listFiltered.length) {
+        // all tickets are continuous
+        _appendRow("Starting no", entryWithLowestTicket.toString());
+        _appendRow("Ending no", entryWithHighestTicket.toString());
+        _appendRow("Tickets sold", listFiltered.length.toString());
+      } else {
+        // ticket numbers are not continuous
+
+        listFiltered.sort((a, b) => a.ticket.compareTo(b.ticket));
+
+        int start = listFiltered[0].ticket;
+        int end = listFiltered[1].ticket;
+        for (int i = 1; i < listFiltered.length; i++) {
+          if (listFiltered[i].ticket - 1 == listFiltered[i - 1].ticket) {
+            end = listFiltered[i].ticket;
+          } else {
+            _appendRow("Ticket range", "$start - $end");
+            int sold = end - start + 1;
+            _appendRow("Tickets sold", sold.toString());
+
+            start = listFiltered[i].ticket;
+            end = listFiltered[i].ticket;
+          }
+        }
+        _appendRow("Ticket range", "$start - $end");
+        int sold = end - start + 1;
+        _appendRow("Tickets sold", sold.toString());
+      }
 
       // count of transactions per mode
       int numUpi = listFiltered.where((e) => e.mode == "UPI").length;
@@ -151,13 +178,13 @@ class _SummaryState extends State<Summary> {
     // Select a color based on the number
     switch (number) {
       case 400:
-        return Const().color400!;
+        return Const().ticketColors['400']!;
       case 500:
-        return Const().color500!;
+        return Const().ticketColors['500']!;
       case 1000:
-        return Const().color1000!;
+        return Const().ticketColors['1000']!;
       case 2500:
-        return Const().color2500!;
+        return Const().ticketColors['2500']!;
       default:
         return const Color.fromARGB(157, 158, 158,
             158); // Default color if the number doesn't match any case

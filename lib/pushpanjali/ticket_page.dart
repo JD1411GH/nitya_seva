@@ -67,11 +67,11 @@ class _TicketListState extends State<TicketTable> {
   }
 
   void onEditEntry(SevaTicket entry) async {
-    Record().updateSevaTicket(timestampSlot, entry);
+    Record().editSevaTicket(timestampSlot, entry);
   }
 
   void onDeleteEntry(DateTime timestampTicket) async {
-    Record().removeSevaTicket(timestampSlot, timestampTicket);
+    Record().deleteSevaTicket(timestampSlot, timestampTicket);
   }
 
   int getNextTicket(amount) {
@@ -423,20 +423,20 @@ class _TicketListState extends State<TicketTable> {
 
       switch (entry.amount) {
         case 400:
-          backgroundColor = Const().color400!;
-          backgroundShade = Const().color400variant!;
+          backgroundColor = Const().ticketColors['400']!;
+          backgroundShade = Const().ticketColors['400variant']!;
           break;
         case 500:
-          backgroundColor = Const().color500!;
-          backgroundShade = Const().color500variant!;
+          backgroundColor = Const().ticketColors['500']!;
+          backgroundShade = Const().ticketColors['500variant']!;
           break;
         case 1000:
-          backgroundColor = Const().color1000!;
-          backgroundShade = Const().color1000variant!;
+          backgroundColor = Const().ticketColors['1000']!;
+          backgroundShade = Const().ticketColors['1000variant']!;
           break;
         case 2500:
-          backgroundColor = Const().color2500!;
-          backgroundShade = Const().color2500variant!;
+          backgroundColor = Const().ticketColors['2500']!;
+          backgroundShade = Const().ticketColors['2500variant']!;
           break;
         default:
           backgroundColor = Theme.of(context).colorScheme.primary;
@@ -468,7 +468,12 @@ class _TicketListState extends State<TicketTable> {
                   child: Center(
                     child: Text(
                       '${sevaTickets.length - index}',
-                      style: const TextStyle(fontSize: 20, color: Colors.white),
+                      style: TextStyle(
+                        fontSize: (sevaTickets.length - index) > 99
+                            ? 16
+                            : 20, // Reduce font size if length > 99
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),

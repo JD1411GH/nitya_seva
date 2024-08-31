@@ -112,7 +112,7 @@ class _HomePageState extends State<Pushpanjali> {
               },
             ),
             TextButton(
-              child: Text('Edit'),
+              child: Text('Save'),
               onPressed: () async {
                 await FB().editSlot(
                     sevaSlots[slotIndex].timestampSlot, _controller.text);
@@ -149,7 +149,7 @@ class _HomePageState extends State<Pushpanjali> {
                     UserDetails user = UserDetails.fromJson(jsonDecode(value));
                     String role = await FB().getUserRole(user.uid!);
                     if (role == 'Admin') {
-                      await FB().removeSevaSlot(sevaSlots[index].timestampSlot);
+                      await FB().deleteSevaSlot(sevaSlots[index].timestampSlot);
                       await _refreshFull();
                     } else {
                       Toaster().error("Access Denied");

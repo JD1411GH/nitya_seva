@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:garuda/admin/admin.dart';
 import 'package:garuda/admin/user.dart';
 import 'package:garuda/fb.dart';
+import 'package:garuda/laddu_seva/main.dart';
 import 'package:garuda/loading.dart';
 import 'package:garuda/local_storage.dart';
-import 'package:garuda/login.dart';
 import 'package:garuda/pushpanjali/pushpanjali.dart';
 import 'package:garuda/toaster.dart';
 
@@ -42,6 +42,37 @@ class Menu extends StatelessWidget {
     );
   }
 
+  void _showLogoutConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Logout'),
+          content: Text('Are you sure you want to logout?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Logout'),
+              onPressed: () {
+                LS().delete('user_details');
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const LoadingScreen()),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<Map<String, dynamic>> items = [
@@ -57,9 +88,12 @@ class Menu extends StatelessWidget {
       },
       {
         'imagePath': 'assets/images/laddu.jpg',
-        'label': 'Prasadam',
+        'label': 'Laddu Seva',
         'action': () {
-          Toaster().error("Not Implemented");
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => LadduMain()),
+          );
         }
       },
       {
@@ -104,11 +138,7 @@ class Menu extends StatelessWidget {
         'imagePath': 'assets/images/logout.jpg',
         'label': 'Logout',
         'action': () {
-          LS().delete('user_details');
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const LoadingScreen()),
-          );
+          _showLogoutConfirmationDialog(context);
         }
       },
     ];

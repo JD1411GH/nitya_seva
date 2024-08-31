@@ -1,24 +1,11 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
+class LadduMain extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: MyHomePage(),
-    );
-  }
+  _LadduSevaState createState() => _LadduSevaState();
 }
 
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+class _LadduSevaState extends State<LadduMain> {
   Future<void> _refresh() async {
     // Simulate a network call
     await Future.delayed(Duration(seconds: 2));
@@ -28,17 +15,17 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('RefreshIndicator Example'),
+        title: Text('Laddu Seva'),
       ),
       body: RefreshIndicator(
         onRefresh: _refresh,
-        child: ListView.builder(
-          itemCount: 20,
-          itemBuilder: (context, index) {
-            return ListTile(
-              title: Text('Item $index'),
-            );
-          },
+
+        // here a ListView is used to allow the content to be scrollable and refreshable.
+        // If you use ListView.builder inside this, then the ListView here can be removed.
+        child: ListView(
+          children: [
+            Text('body'),
+          ],
         ),
       ),
     );
