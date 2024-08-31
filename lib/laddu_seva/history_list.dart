@@ -45,7 +45,8 @@ class _HistoryListState extends State<HistoryList> {
         dists.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
         DateTime startSession = session;
-        DateTime endSession = dists.last.timestamp;
+        DateTime endSession = session;
+
         if (dists.isNotEmpty &&
             stocks.last.timestamp.isAfter(dists.last.timestamp)) {
           endSession = stocks.last.timestamp;
