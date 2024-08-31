@@ -140,7 +140,9 @@ class _LogState extends State<Log> {
 
   Future<void> refresh() async {
     await _futureInit();
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Widget _getListView() {

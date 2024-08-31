@@ -485,12 +485,8 @@ class FB {
       keys.sort();
       var lastKey = keys.last;
 
-      if (allotments[lastKey]['returned']['count'] > 0) {
-        return DateTime.now();
-      } else {
-        lastKey = lastKey.replaceAll("^", ".");
-        return DateTime.parse(lastKey);
-      }
+      lastKey = lastKey.replaceAll("^", ".");
+      return DateTime.parse(lastKey);
     } else {
       return DateTime.now();
     }

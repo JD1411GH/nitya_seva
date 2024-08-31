@@ -194,9 +194,11 @@ class _DashboardState extends State<Dashboard> {
           DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
 
       if (slotDate == selectedDateOnly) {
-        setState(() {
-          _futureInit();
-        });
+        if (mounted) {
+          setState(() {
+            _futureInit();
+          });
+        }
         break; // Break out of the loop
       }
     }

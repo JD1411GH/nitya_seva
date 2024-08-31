@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/avilability_bar.dart';
+import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/laddu_seva/history.dart';
 import 'package:garuda/laddu_seva/laddu_calc.dart';
 import 'package:garuda/laddu_seva/log.dart';
@@ -12,22 +13,25 @@ class LadduMain extends StatefulWidget {
 }
 
 class _LadduSevaState extends State<LadduMain> {
+  DateTime? session;
+  LadduReturn? lr;
+
+  @override
   initState() {
     super.initState();
-    DateTime lastRefresh = DateTime.now();
 
     FB().listenForChange("ladduSeva",
         FBCallbacks(onChange: (String changeType, dynamic data) async {
-      // if the last refresh was more than 2 seconds ago, then refresh the data
-      if (DateTime.now().difference(lastRefresh).inSeconds < 2) {
-        return;
-      }
-
       await refresh();
     }));
   }
 
   Future<void> refresh() async {
+    // refresh the main widget
+    session = await FB().readLatestLadduSession();
+    lr = await FB().readLadduReturnStatus(session!);
+    setState(() {});
+
     if (AvailabilityBarKey.currentState != null) {
       await AvailabilityBarKey.currentState!.refresh();
     }
@@ -36,8 +40,11 @@ class _LadduSevaState extends State<LadduMain> {
       await SummaryKey.currentState!.refresh();
     }
 
-    if (LogKey.currentState != null) {
-      await LogKey.currentState!.refresh();
+    // refresh Log only when session is open
+    if (lr == null || lr!.count == 0) {
+      if (LogKey.currentState != null) {
+        await LogKey.currentState!.refresh();
+      }
     }
   }
 
@@ -87,26 +94,42 @@ class _LadduSevaState extends State<LadduMain> {
 
                 // serve button
                 ElevatedButton.icon(
-                  onPressed: () {
-                    addEditDist(context);
-                  },
+                  onPressed: (lr == null || lr!.count == 0)
+                      ? () {
+                          addEditDist(context);
+                        }
+                      : null,
                   icon: Icon(Icons.remove),
                   label: Text('Serve'),
                 ),
 
                 // return button
                 ElevatedButton.icon(
-                  onPressed: () {
-                    returnStock(context);
-                  },
+                  onPressed: (lr == null || lr!.count == 0)
+                      ? () {
+                          returnStock(context);
+                        }
+                      : null,
                   icon: Icon(Icons.undo),
                   label: Text('Return'),
-                ),
+                )
               ],
             ),
 
             Divider(),
-            Log(key: LogKey),
+
+            // if session is closed, display a message
+            if (lr != null && lr!.count > 0)
+              Column(
+                children: [
+                  Text(
+                    "Click '+ Stock' to start",
+                    style: TextStyle(color: Colors.red, fontSize: 20.0),
+                  ),
+                ],
+              ),
+
+            if (lr == null || lr!.count == 0) Log(key: LogKey),
           ],
         ),
       ),

@@ -24,6 +24,8 @@ class _SummaryState extends State<Summary> {
   int total_procured = 0;
   int total_distributed = 0;
 
+  LadduReturn? lr;
+
   List<PieChartSectionData> pieSections = [];
   List<Widget> pieLegends = [];
 
@@ -36,10 +38,13 @@ class _SummaryState extends State<Summary> {
       List<LadduDist> dists = await FB().readLadduDists(session);
 
       sessionTitle = "${session.day}/${session.month}/${session.year}";
-      LadduReturn lr = await FB().readLadduReturnStatus(session);
-      if (lr.count > 0) {
-        sessionTitle +=
-            " - ${lr.timestamp.day}/${lr.timestamp.month}/${lr.timestamp.year}";
+      lr = await FB().readLadduReturnStatus(session);
+      if (lr!.count > 0) {
+        String endSession =
+            "${lr!.timestamp.day}/${lr!.timestamp.month}/${lr!.timestamp.year}";
+        if (sessionTitle != endSession) {
+          sessionTitle += " - $endSession";
+        }
       }
 
       total_procured = 0;
@@ -281,6 +286,17 @@ class _SummaryState extends State<Summary> {
                   child: Text("Total laddu packs served = $total_distributed"),
                 ),
               ),
+
+              // write return count if session closed
+              if (lr != null && lr!.count > 0) ...[
+                Padding(
+                  padding: const EdgeInsets.only(left: 16.0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Total laddu packs returned = ${lr!.count}"),
+                  ),
+                ),
+              ],
 
               // padding before pie chart
               Padding(

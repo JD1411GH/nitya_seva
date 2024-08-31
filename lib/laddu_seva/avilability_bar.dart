@@ -16,6 +16,9 @@ final GlobalKey<_AvailabilityBarState> AvailabilityBarKey =
 class _AvailabilityBarState extends State<AvailabilityBar> {
   final _lockInit = Lock();
 
+  DateTime session = DateTime.now();
+  bool returned = false;
+
   // primitive local variables
   int total_procured = 0;
   int total_distributed = 0;
@@ -24,7 +27,10 @@ class _AvailabilityBarState extends State<AvailabilityBar> {
 
   Future<void> _futureInit() async {
     await _lockInit.synchronized(() async {
-      DateTime session = await FB().readLatestLadduSession();
+      session = await FB().readLatestLadduSession();
+
+      LadduReturn lr = await FB().readLadduReturnStatus(session);
+      returned = lr.count > 0;
 
       List<LadduStock> stocks = await FB().readLadduStocks(session);
       List<LadduDist> dists = await FB().readLadduDists(session);
@@ -58,8 +64,8 @@ class _AvailabilityBarState extends State<AvailabilityBar> {
       progressColor = Colors.lightGreen;
     }
 
-    // if There is no stock, display a message
-    if (currentStock == 0) {
+    // if session is closed, display a message
+    if (returned) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
