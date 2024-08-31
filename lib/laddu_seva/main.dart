@@ -16,8 +16,6 @@ class _LadduSevaState extends State<LadduMain> {
   DateTime? session;
   LadduReturn? lr;
 
-  DateTime lastDownload = DateTime.now();
-
   @override
   initState() {
     super.initState();
@@ -26,13 +24,7 @@ class _LadduSevaState extends State<LadduMain> {
 
     FB().listenForChange("ladduSeva",
         FBCallbacks(onChange: (String changeType, dynamic data) async {
-      // refresh only if the last download was more than 2 seconds ago
-      if (lastDownload.isAfter(DateTime.now().subtract(Duration(seconds: 2)))) {
-        return;
-      }
-
       await refresh();
-      lastDownload = DateTime.now();
     }));
   }
 
