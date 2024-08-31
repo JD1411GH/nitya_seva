@@ -1,4 +1,8 @@
 # 2.0.0
+- fixes for laddu seva
+- fixes for discontinuous pushpanjali tickets
+
+# 2.0.0
 - laddu seva
 - pushpanjali bugfixes for discontinuous numbers
 
