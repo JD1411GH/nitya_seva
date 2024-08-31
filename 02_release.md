@@ -1,3 +1,4 @@
+- push all changes in release branch
 - update changelog and push
 - build apk
     - flutter clean
