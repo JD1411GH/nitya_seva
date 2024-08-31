@@ -6,6 +6,7 @@ import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/toaster.dart';
+import 'package:intl/intl.dart';
 import 'package:synchronized/synchronized.dart';
 import 'dart:math';
 
@@ -38,15 +39,20 @@ class _SummaryState extends State<Summary> {
       List<LadduStock> stocks = await FB().readLadduStocks(session);
       List<LadduDist> dists = await FB().readLadduDists(session);
 
-      sessionTitle = "${session.day}/${session.month}/${session.year}";
-      lr = await FB().readLadduReturnStatus(session);
-      if (lr!.count >= 0) {
-        String endSession =
-            "${lr!.timestamp.day}/${lr!.timestamp.month}/${lr!.timestamp.year}";
-        if (sessionTitle != endSession) {
-          sessionTitle += " - $endSession";
-        }
+      sessionTitle = DateFormat("EEE, MMM dd").format(session);
+
+      DateTime now = DateTime.now();
+      if (session.day != now.day) {
+        sessionTitle += DateFormat(" - EEE, MMM dd").format(now);
       }
+      // lr = await FB().readLadduReturnStatus(session);
+      // if (lr!.count >= 0) {
+      //   String endSession =
+      //       "${lr!.timestamp.day}/${lr!.timestamp.month}/${lr!.timestamp.year}";
+      //   if (sessionTitle != endSession) {
+      //     sessionTitle += " - $endSession";
+      //   }
+      // }
 
       total_procured = 0;
       for (var stock in stocks) {
