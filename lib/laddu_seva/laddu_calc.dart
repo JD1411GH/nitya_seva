@@ -357,7 +357,7 @@ class _AddEditDistDialogState extends State<AddEditDistDialog> {
           ),
         ),
 
-        // serve button
+        // add/update button
         ElevatedButton(
           child: Text(widget.edit ? 'Update' : 'OK'),
           onPressed: () async {
@@ -386,7 +386,7 @@ class _AddEditDistDialogState extends State<AddEditDistDialog> {
 
                 int available = total_procured - total_distributed;
                 if (count > available) {
-                  Toaster().error("Not available");
+                  Toaster().error("Not enough stock");
                 } else {
                   String username = await Const().getUserName();
 
@@ -415,6 +415,9 @@ class _AddEditDistDialogState extends State<AddEditDistDialog> {
                   } else {
                     status = await FB().addLadduDist(session, distNew);
                   }
+
+                  // reset selected purpose
+                  selectedPurpose = "Others";
 
                   if (status) {
                     _controllerNote.clear();

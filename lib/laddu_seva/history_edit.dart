@@ -37,7 +37,7 @@ class _HistoryEditState extends State<HistoryEdit> {
     LadduReturn lr = await FB().readLadduReturnStatus(widget.startSession);
     String endSession =
         "${lr.timestamp.day}/${lr.timestamp.month}/${lr.timestamp.year}";
-    if (lr.count > 0) {
+    if (lr.count > 0 && startSession != endSession) {
       _title += ' - $endSession';
     }
 
