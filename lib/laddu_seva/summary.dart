@@ -152,6 +152,10 @@ class _SummaryState extends State<Summary> {
   }
 
   Widget _getPieChart(BuildContext context) {
+    if (pieSections.isEmpty) {
+      return _getPieChartEmpty(context);
+    }
+
     // Shuffle the pie sections to avoid adjacent placement
     pieSections.shuffle(Random());
 
@@ -218,7 +222,7 @@ class _SummaryState extends State<Summary> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildLegendItem(Colors.grey, 'Loading...'),
+            _buildLegendItem(Colors.grey, 'No data'),
           ],
         ),
       ],
@@ -228,6 +232,7 @@ class _SummaryState extends State<Summary> {
   Widget _getLoading(BuildContext context) {
     return Column(
       children: [
+        _getSessionTitle(),
         Padding(
           padding: const EdgeInsets.only(left: 16.0),
           child: Align(
