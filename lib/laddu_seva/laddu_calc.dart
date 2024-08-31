@@ -5,6 +5,7 @@ import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/toaster.dart';
 
 String selectedPurpose = "Others";
+bool selectedPurposeChanged = false;
 
 class AddEditStockDialog extends StatefulWidget {
   final bool edit;
@@ -423,6 +424,7 @@ class _AddEditDistDialogState extends State<AddEditDistDialog> {
 
                   // reset selected purpose
                   selectedPurpose = "Others";
+                  selectedPurposeChanged = false;
 
                   if (status) {
                     _controllerNote.clear();
@@ -651,6 +653,11 @@ Widget _getPurposeDropDown(BuildContext context, {String? defaultPurpose}) {
   Purposes.add("Others");
   Purposes.add("Missing");
 
+  // if there was no change in the dropdown, set the selected purpose to default
+  if (!selectedPurposeChanged) {
+    selectedPurpose = defaultPurpose ?? 'Others';
+  }
+
   return DropdownButtonFormField<String>(
     value: defaultPurpose ?? 'Others',
     decoration: InputDecoration(labelText: 'Purpose'),
@@ -662,6 +669,7 @@ Widget _getPurposeDropDown(BuildContext context, {String? defaultPurpose}) {
     }).toList(),
     onChanged: (String? newValue) {
       selectedPurpose = newValue ?? 'Others';
+      selectedPurposeChanged = true;
     },
     validator: (value) {
       if (value == null || value.isEmpty) {
