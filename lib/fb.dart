@@ -752,6 +752,23 @@ class FB {
     }
   }
 
+  Future<DateTime> addLadduSession() async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva');
+
+    DateTime timestamp = DateTime.now();
+    DatabaseReference ref =
+        dbRef.child(timestamp.toIso8601String().replaceAll(".", "^"));
+
+    try {
+      await ref.set({});
+      return timestamp;
+    } catch (e) {
+      Toaster().error("Database write error: $e");
+      return DateTime.now();
+    }
+  }
+
   Future<bool> addLadduDist(DateTime session, LadduDist dist) async {
     String a = session.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance

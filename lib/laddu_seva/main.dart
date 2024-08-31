@@ -40,7 +40,9 @@ class _LadduSevaState extends State<LadduMain> {
     // refresh the main widget
     session = await FB().readLatestLadduSession();
     lr = await FB().readLadduReturnStatus(session!);
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
 
     if (AvailabilityBarKey.currentState != null) {
       await AvailabilityBarKey.currentState!.refresh();

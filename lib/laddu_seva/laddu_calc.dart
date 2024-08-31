@@ -172,13 +172,14 @@ class _AddEditStockDialogState extends State<AddEditStockDialog> {
                 );
               }
 
-              DateTime session =
-                  widget.session ?? await FB().readLatestLadduSession();
+              DateTime session;
               bool status;
 
               if (widget.edit) {
+                session = widget.session ?? await FB().readLatestLadduSession();
                 status = await FB().editLadduStock(session, stockNew);
               } else {
+                session = await FB().addLadduSession();
                 status = await FB().addLadduStock(session, stockNew);
               }
 
