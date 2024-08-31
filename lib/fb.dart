@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:garuda/const.dart';
+import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/toaster.dart';
 import 'package:garuda/pushpanjali/sevaslot.dart';
 import 'package:garuda/admin/user.dart';
@@ -149,7 +150,7 @@ class FB {
     await ref.set(sevaSlot);
   }
 
-  Future<void> removeSevaSlot(DateTime timestampSlot) async {
+  Future<void> deleteSevaSlot(DateTime timestampSlot) async {
     for (String key in [
       'sevaSlots',
       'sevaTickets',
@@ -202,7 +203,7 @@ class FB {
     }
   }
 
-  Future<void> removeSevaTicket(
+  Future<void> deleteSevaTicket(
       String timestampSlot, String timestampTicket) async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/sevaTickets');
@@ -213,7 +214,7 @@ class FB {
     await ref.remove();
   }
 
-  Future<void> updateSevaTicket(String timestampSlot, String timestampTicket,
+  Future<void> editSevaTicket(String timestampSlot, String timestampTicket,
       Map<String, dynamic> json) async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/sevaTickets');
@@ -275,13 +276,13 @@ class FB {
     });
   }
 
-  Future<void> removeSevaSlotListeners() async {
+  Future<void> deleteSevaSlotListeners() async {
     await _sevaSlotAddedSubscription?.cancel();
     await _sevaSlotChangedSubscription?.cancel();
     await _sevaSlotRemovedSubscription?.cancel();
   }
 
-  Future<void> removeSevaTicketListeners() async {
+  Future<void> deleteSevaTicketListeners() async {
     await _sevaTicketAddedSubscription?.cancel();
     await _sevaTicketChangedSubscription?.cancel();
     await _sevaTicketRemovedSubscription?.cancel();
@@ -465,6 +466,71 @@ class FB {
     return user;
   }
 
+  Future<DateTime> readLatestLadduSession() async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva');
+
+    DateTime endDate = DateTime.now();
+    DateTime startDate = endDate.subtract(Duration(days: 30));
+
+    final Query query = dbRef
+        .orderByKey()
+        .startAt(startDate.toIso8601String().replaceAll(".", "^"))
+        .endAt(endDate.toIso8601String().replaceAll(".", "^"));
+
+    final DataSnapshot snapshot = await query.get();
+    if (snapshot.exists) {
+      var allotments = snapshot.value as Map;
+      var keys = allotments.keys.toList();
+      keys.sort();
+      var lastKey = keys.last;
+
+      lastKey = lastKey.replaceAll("^", ".");
+      return DateTime.parse(lastKey);
+    } else {
+      return DateTime.now();
+    }
+  }
+
+  Future<List<DateTime>> readLadduSessions(
+      DateTime startDate, DateTime endDate) async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva');
+
+    final Query query = dbRef
+        .orderByKey()
+        .startAt(startDate.toIso8601String().replaceAll(".", "^"))
+        .endAt(endDate.toIso8601String().replaceAll(".", "^"));
+
+    final DataSnapshot snapshot = await query.get();
+    if (snapshot.exists) {
+      var allotments = snapshot.value as Map;
+      var keys = allotments.keys.toList();
+      keys.sort();
+      return keys
+          .map((key) => DateTime.parse(key.replaceAll("^", ".")))
+          .toList();
+    } else {
+      return [];
+    }
+  }
+
+  Future<LadduReturn> readLadduReturnStatus(DateTime session) {
+    String a = session.toIso8601String().replaceAll(".", "^");
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva/$a/returned');
+
+    return dbRef.get().then((snapshot) {
+      if (snapshot.exists) {
+        return LadduReturn.fromJson(
+            Map<String, dynamic>.from(snapshot.value as Map));
+      } else {
+        return LadduReturn(
+            timestamp: DateTime.now(), to: '', count: -1, user: 'Unknown');
+      }
+    });
+  }
+
   Future<List<UserDetails>> readPendingUsers() async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/users/pending');
@@ -499,6 +565,288 @@ class FB {
     }
 
     return users;
+  }
+
+  Future<bool> addLadduStock(
+    DateTime session,
+    LadduStock stock,
+  ) async {
+    String a = session.toIso8601String().replaceAll(".", "^");
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva/$a');
+
+    // set return status
+    DatabaseReference refRet = dbRef.child('returned');
+    try {
+      await refRet.set(LadduReturn(
+              timestamp: DateTime.now(), to: "", count: -1, user: 'Unknown')
+          .toJson());
+    } catch (e) {
+      return false;
+    }
+
+    // Add a new laddu stock
+    DateTime timestamp = stock.timestamp;
+    DatabaseReference ref = dbRef
+        .child('stocks')
+        .child(timestamp.toIso8601String().replaceAll(".", "^"));
+    try {
+      await ref.set(stock.toJson());
+    } catch (e) {
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<bool> editLadduStock(DateTime session, LadduStock stock) async {
+    String a = session.toIso8601String().replaceAll(".", "^");
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva/$a');
+
+    // Add a new laddu stock
+    DateTime timestamp = stock.timestamp;
+    DatabaseReference ref = dbRef
+        .child('stocks')
+        .child(timestamp.toIso8601String().replaceAll(".", "^"));
+    try {
+      DataSnapshot snapshot = await ref.get();
+      if (snapshot.exists) {
+        await ref.set(stock.toJson());
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<void> editLadduReturn(DateTime session, LadduReturn lr) async {
+    String a = session.toIso8601String().replaceAll(".", "^");
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva/$a/returned');
+
+    // set return status
+    DatabaseReference refRet = dbRef.child('count');
+    await refRet.set(lr.count);
+
+    refRet = dbRef.child('to');
+    await refRet.set(lr.to);
+  }
+
+  Future<bool> editLadduDist(DateTime session, LadduDist dist) async {
+    String a = session.toIso8601String().replaceAll(".", "^");
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva/$a');
+
+    // Add a new laddu stock
+    DateTime timestamp = dist.timestamp;
+    DatabaseReference ref = dbRef
+        .child('dists')
+        .child(timestamp.toIso8601String().replaceAll(".", "^"));
+    try {
+      DataSnapshot snapshot = await ref.get();
+      if (snapshot.exists) {
+        await ref.set(dist.toJson());
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<bool> deleteLadduStock(DateTime session, LadduStock stock) async {
+    String a = session.toIso8601String().replaceAll(".", "^");
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva/$a');
+
+    // delete laddu stock
+    DateTime timestamp = stock.timestamp;
+    DatabaseReference ref = dbRef
+        .child('stocks')
+        .child(timestamp.toIso8601String().replaceAll(".", "^"));
+    try {
+      DataSnapshot snapshot = await ref.get();
+      if (snapshot.exists) {
+        await ref.remove();
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<bool> deleteLadduDist(DateTime session, LadduDist dist) async {
+    String a = session.toIso8601String().replaceAll(".", "^");
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva/$a');
+
+    // delete laddu stock
+    DateTime timestamp = dist.timestamp;
+    DatabaseReference ref = dbRef
+        .child('dists')
+        .child(timestamp.toIso8601String().replaceAll(".", "^"));
+    try {
+      DataSnapshot snapshot = await ref.get();
+      if (snapshot.exists) {
+        await ref.remove();
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<List<LadduStock>> readLadduStocks(DateTime session) async {
+    String a = session.toIso8601String().replaceAll(".", "^");
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva/$a/stocks');
+
+    DataSnapshot snapshot = await dbRef.get();
+
+    List<LadduStock> stocks = [];
+    if (snapshot.exists) {
+      stocks = (snapshot.value as Map)
+          .values
+          .map((value) =>
+              LadduStock.fromJson(Map<String, dynamic>.from(value as Map)))
+          .toList();
+    }
+
+    return stocks;
+  }
+
+  Future<List<LadduStock>> readLadduStocksByDateRange(
+      DateTime startDate, DateTime endDate) async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva/stocks');
+
+    final Query query = dbRef
+        .orderByKey()
+        .startAt(startDate.toIso8601String().replaceAll(".", "^"))
+        .endAt(endDate.toIso8601String().replaceAll(".", "^"));
+
+    final DataSnapshot snapshot = await query.get();
+
+    if (snapshot.exists) {
+      final Map<String, dynamic> data =
+          Map<String, dynamic>.from(snapshot.value as Map);
+      final List<LadduStock> ladduStocks = data.entries
+          .map((entry) =>
+              LadduStock.fromJson(Map<String, dynamic>.from(entry.value)))
+          .toList();
+      return ladduStocks;
+    } else {
+      return [];
+    }
+  }
+
+  Future<DateTime> addLadduSession() async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva');
+
+    DateTime timestamp = DateTime.now();
+    DatabaseReference ref =
+        dbRef.child(timestamp.toIso8601String().replaceAll(".", "^"));
+
+    try {
+      await ref.set({});
+      return timestamp;
+    } catch (e) {
+      Toaster().error("Database write error: $e");
+      return DateTime.now();
+    }
+  }
+
+  Future<bool> addLadduDist(DateTime session, LadduDist dist) async {
+    String a = session.toIso8601String().replaceAll(".", "^");
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva/$a');
+
+    // Add a new laddu distribution
+    DateTime timestamp = dist.timestamp;
+    DatabaseReference ref = dbRef
+        .child('dists')
+        .child(timestamp.toIso8601String().replaceAll(".", "^"));
+    try {
+      await ref.set(dist.toJson());
+    } catch (e) {
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<List<LadduDist>> readLadduDists(DateTime session) async {
+    String a = session.toIso8601String().replaceAll(".", "^");
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva/$a/dists');
+
+    DataSnapshot snapshot;
+    snapshot = await dbRef.get();
+
+    List<LadduDist> dists = [];
+    if (snapshot.exists) {
+      dists = (snapshot.value as Map)
+          .values
+          .map((value) =>
+              LadduDist.fromJson(Map<String, dynamic>.from(value as Map)))
+          .toList();
+    }
+
+    return dists;
+  }
+
+  Future<List<LadduDist>> readLadduDistsByDateRange(
+      DateTime startDate, DateTime endDate) async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva/dists');
+
+    final Query query = dbRef
+        .orderByKey()
+        .startAt(startDate.toIso8601String().replaceAll(".", "^"))
+        .endAt(endDate.toIso8601String().replaceAll(".", "^"));
+
+    final DataSnapshot snapshot = await query.get();
+
+    if (snapshot.exists) {
+      final Map<String, dynamic> data =
+          Map<String, dynamic>.from(snapshot.value as Map);
+      final List<LadduDist> ladduDists = data.entries
+          .map((entry) =>
+              LadduDist.fromJson(Map<String, dynamic>.from(entry.value)))
+          .toList();
+      return ladduDists;
+    } else {
+      return [];
+    }
+  }
+
+  Future<void> returnLadduStock(DateTime session, LadduReturn lr) async {
+    String a = session.toIso8601String().replaceAll(".", "^");
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva/$a/returned');
+
+    // set return status
+    DatabaseReference refRet = dbRef.child('count');
+    await refRet.set(lr.count);
+
+    refRet = dbRef.child('to');
+    await refRet.set(lr.to);
+
+    refRet = dbRef.child('timestamp');
+    await refRet.set(lr.timestamp.toIso8601String());
   }
 }
 

@@ -47,8 +47,8 @@ class _DashboardState extends State<Dashboard> {
   }
 
   destroy() {
-    FB().removeSevaSlotListeners();
-    FB().removeSevaTicketListeners();
+    FB().deleteSevaSlotListeners();
+    FB().deleteSevaTicketListeners();
   }
 
   Future<void> _futureInit() async {
@@ -194,9 +194,11 @@ class _DashboardState extends State<Dashboard> {
           DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
 
       if (slotDate == selectedDateOnly) {
-        setState(() {
-          _futureInit();
-        });
+        if (mounted) {
+          setState(() {
+            _futureInit();
+          });
+        }
         break; // Break out of the loop
       }
     }
