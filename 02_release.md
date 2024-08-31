@@ -1,0 +1,17 @@
+- build apk
+    - flutter clean
+    - flutter pub get
+    - flutter build apk --release
+- update changelog and push
+- Raise PR to merge version branch to main
+    - merge PR
+- Draft a new release in github
+    - apply release tag to main
+    - give release title e.g. 2.0.0
+    - upload apk from `build\app\outputs\flutter-apk\app-release.apk`
+    - publish release
+- release in play store for internal testing
+    - create app bundle `flutter build appbundle --release`
+    - Create new release
+    - upload the app bundle from `build\app\outputs\bundle\release\app-release.aab`
+
