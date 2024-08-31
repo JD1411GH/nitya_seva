@@ -7,9 +7,11 @@ def branch_exists(branch_name):
     result = subprocess.run(["git", "branch", "--list", branch_name], capture_output=True, text=True)
     return branch_name in result.stdout
 
-def create_or_switch_branch(new_branch, latest_branch):
+def create_or_switch_branch(new_branch):
     """Create a new branch """
-    subprocess.check_output(["git", "checkout", "-b", new_branch, latest_branch])
+    subprocess.check_output(["git", "checkout", "main"])
+    subprocess.check_output(["git", "pull"])
+    subprocess.check_output(["git", "checkout", "-b", new_branch, "main"])
     print(f"Created and switched to new branch: {new_branch}")
 
 def main():
@@ -72,8 +74,7 @@ def main():
     if "--dry_run" not in sys.argv:
         # Checkout a new branch based on the latest branch
         try:
-            create_or_switch_branch(new_branch, latest_branch)
-            print("New branch created:", new_branch)
+            create_or_switch_branch(new_branch)
 
             # Update the version in pubspec.yaml
             with open('pubspec.yaml', 'w') as file:
