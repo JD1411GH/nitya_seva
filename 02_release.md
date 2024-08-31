@@ -1,8 +1,8 @@
+- update changelog and push
 - build apk
     - flutter clean
     - flutter pub get
     - flutter build apk --release
-- update changelog and push
 - Raise PR to merge version branch to main
     - merge PR
 - Draft a new release in github

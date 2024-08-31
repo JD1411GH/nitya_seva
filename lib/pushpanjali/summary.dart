@@ -78,12 +78,14 @@ class _SummaryState extends State<Summary> {
 
         int start = listFiltered[0].ticket;
         int end = listFiltered[1].ticket;
+        int totalSold = 0;
         for (int i = 1; i < listFiltered.length; i++) {
           if (listFiltered[i].ticket - 1 == listFiltered[i - 1].ticket) {
             end = listFiltered[i].ticket;
           } else {
             _appendRow("Ticket range", "$start - $end");
             int sold = end - start + 1;
+            totalSold = totalSold + sold;
             _appendRow("Tickets sold", sold.toString());
 
             start = listFiltered[i].ticket;
@@ -92,7 +94,9 @@ class _SummaryState extends State<Summary> {
         }
         _appendRow("Ticket range", "$start - $end");
         int sold = end - start + 1;
+        totalSold = totalSold + sold;
         _appendRow("Tickets sold", sold.toString());
+        _appendRow("Total tickets sold", totalSold.toString());
       }
 
       // count of transactions per mode
