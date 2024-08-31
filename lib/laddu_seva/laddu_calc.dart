@@ -9,8 +9,9 @@ String selectedPurpose = "Others";
 class AddEditStockDialog extends StatefulWidget {
   final bool edit;
   final LadduStock? stock;
+  final DateTime? session;
 
-  AddEditStockDialog({required this.edit, this.stock});
+  AddEditStockDialog({required this.edit, this.stock, this.session});
 
   @override
   _AddEditStockDialogState createState() => _AddEditStockDialogState();
@@ -170,7 +171,8 @@ class _AddEditStockDialogState extends State<AddEditStockDialog> {
                 );
               }
 
-              DateTime session = await FB().readLatestLadduSession();
+              DateTime session =
+                  widget.session ?? await FB().readLatestLadduSession();
               bool status;
 
               if (widget.edit) {
@@ -203,7 +205,7 @@ class _AddEditStockDialogState extends State<AddEditStockDialog> {
 }
 
 Future<void> addEditStock(BuildContext context,
-    {bool edit = false, LadduStock? stock = null}) async {
+    {bool edit = false, LadduStock? stock = null, DateTime? session}) async {
   showDialog(
     context: context,
     builder: (context) {
@@ -215,8 +217,9 @@ Future<void> addEditStock(BuildContext context,
 class AddEditDistDialog extends StatefulWidget {
   final bool edit;
   final LadduDist? dist;
+  final DateTime? session;
 
-  AddEditDistDialog({required this.edit, this.dist});
+  AddEditDistDialog({required this.edit, this.dist, this.session});
 
   @override
   _AddEditDistDialogState createState() => _AddEditDistDialogState();
@@ -361,7 +364,8 @@ class _AddEditDistDialogState extends State<AddEditDistDialog> {
               });
 
               if (count > 0) {
-                DateTime session = await FB().readLatestLadduSession();
+                DateTime session =
+                    widget.session ?? await FB().readLatestLadduSession();
 
                 // validate against availability
                 List<LadduStock> stocks = await FB().readLadduStocks(session);
@@ -435,11 +439,11 @@ class _AddEditDistDialogState extends State<AddEditDistDialog> {
 }
 
 Future<void> addEditDist(BuildContext context,
-    {bool edit = false, LadduDist? dist = null}) async {
+    {bool edit = false, LadduDist? dist = null, DateTime? session}) async {
   showDialog(
     context: context,
     builder: (context) {
-      return AddEditDistDialog(edit: edit, dist: dist);
+      return AddEditDistDialog(edit: edit, dist: dist, session: session);
     },
   );
 }
@@ -452,6 +456,11 @@ Future<void> returnStock(BuildContext context) async {
 
   List<LadduDist> dists = await FB().readLadduDists(session);
   dists.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+
+  if (stocks.isEmpty) {
+    Toaster().error("No stock available");
+    return;
+  }
 
   DateTime lastEntry = stocks.last.timestamp;
   if (dists.isNotEmpty && dists.last.timestamp.isAfter(lastEntry)) {
@@ -503,6 +512,12 @@ class ReturnStockDialog extends StatefulWidget {
 
 class _ReturnStockDialogState extends State<ReturnStockDialog> {
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.returnCount = widget.remaining;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -602,12 +617,15 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
               note: "Return count less than remaining packs"));
     }
 
+    String username = await Const().getUserName();
+
     await FB().returnLadduStock(
         widget.session,
         LadduReturn(
             timestamp: DateTime.now(),
             count: widget.returnCount,
-            to: widget.returnedTo));
+            to: widget.returnedTo,
+            user: username));
 
     setState(() {
       _isLoading = false;

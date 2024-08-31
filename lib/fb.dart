@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:garuda/const.dart';
@@ -530,7 +529,8 @@ class FB {
         return LadduReturn.fromJson(
             Map<String, dynamic>.from(snapshot.value as Map));
       } else {
-        return LadduReturn(timestamp: DateTime.now(), to: '', count: 0);
+        return LadduReturn(
+            timestamp: DateTime.now(), to: '', count: 0, user: 'Unknown');
       }
     });
   }
@@ -582,8 +582,9 @@ class FB {
     // set return status
     DatabaseReference refRet = dbRef.child('returned');
     try {
-      await refRet.set(
-          LadduReturn(timestamp: DateTime.now(), to: "", count: 0).toJson());
+      await refRet.set(LadduReturn(
+              timestamp: DateTime.now(), to: "", count: 0, user: 'Unknown')
+          .toJson());
     } catch (e) {
       return false;
     }
@@ -624,6 +625,19 @@ class FB {
     }
 
     return true;
+  }
+
+  Future<void> editLadduReturn(DateTime session, LadduReturn lr) async {
+    String a = session.toIso8601String().replaceAll(".", "^");
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/ladduSeva/$a/returned');
+
+    // set return status
+    DatabaseReference refRet = dbRef.child('count');
+    await refRet.set(lr.count);
+
+    refRet = dbRef.child('to');
+    await refRet.set(lr.to);
   }
 
   Future<bool> editLadduDist(DateTime session, LadduDist dist) async {

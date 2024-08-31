@@ -105,8 +105,13 @@ class LadduReturn {
   final DateTime timestamp;
   final String to;
   final int count;
+  final String user;
 
-  LadduReturn({required this.timestamp, required this.to, required this.count});
+  LadduReturn(
+      {required this.timestamp,
+      required this.to,
+      required this.count,
+      required this.user});
 
   // Convert a LadduStock instance to a JSON map
   Map<String, dynamic> toJson() {
@@ -114,6 +119,7 @@ class LadduReturn {
       'timestamp': timestamp.toIso8601String(),
       'to': to,
       'count': count,
+      'user': user,
     };
   }
 
@@ -123,6 +129,7 @@ class LadduReturn {
       timestamp: DateTime.parse(json['timestamp']),
       to: json['to'],
       count: json['count'],
+      user: json['user'],
     );
   }
 }

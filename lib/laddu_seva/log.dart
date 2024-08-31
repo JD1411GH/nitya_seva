@@ -28,12 +28,6 @@ class _LogState extends State<Log> {
 
       DateTime session = widget.session ?? await FB().readLatestLadduSession();
 
-      // display log only if not returned
-      LadduReturn status = await FB().readLadduReturnStatus(session);
-      if (status.count == 0) {
-        return;
-      }
-
       List<LadduStock> stocks = await FB().readLadduStocks(session);
       for (LadduStock stock in stocks) {
         _logItems.add(ListTile(
@@ -77,7 +71,12 @@ class _LogState extends State<Log> {
 
             // on tap
             onTap: () {
-              addEditStock(context, edit: true, stock: stock);
+              if (widget.session == null) {
+                addEditStock(context, edit: true, stock: stock);
+              } else {
+                addEditStock(context,
+                    edit: false, stock: stock, session: session);
+              }
             }));
       }
 
@@ -126,7 +125,8 @@ class _LogState extends State<Log> {
 
             // edit on tap
             onTap: () {
-              addEditDist(context, edit: true, dist: dist);
+              addEditDist(context,
+                  edit: true, dist: dist, session: widget.session);
             }));
       }
 
