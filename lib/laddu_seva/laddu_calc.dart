@@ -180,7 +180,15 @@ class _AddEditStockDialogState extends State<AddEditStockDialog> {
                 session = widget.session ?? await FB().readLatestLadduSession();
                 status = await FB().editLadduStock(session, stockNew);
               } else {
-                session = await FB().addLadduSession();
+                // check if session is already running
+                session = await FB().readLatestLadduSession();
+                LadduReturn lr = await FB().readLadduReturnStatus(session);
+
+                if (lr.count >= 0) {
+                  // session is closed. create new one.
+                  session = await FB().addLadduSession();
+                }
+
                 status = await FB().addLadduStock(session, stockNew);
               }
 
