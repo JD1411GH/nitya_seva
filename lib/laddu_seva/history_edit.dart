@@ -75,7 +75,7 @@ class _HistoryEditState extends State<HistoryEdit> {
       );
     }
 
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   void _onEditReturn(BuildContext context, LadduReturn lr) {

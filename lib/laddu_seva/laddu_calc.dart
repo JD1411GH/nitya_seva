@@ -327,7 +327,8 @@ class _AddEditDistDialogState extends State<AddEditDistDialog> {
                   isLoading = true;
                 });
 
-                DateTime session = await FB().readLatestLadduSession();
+                DateTime session =
+                    widget.session ?? await FB().readLatestLadduSession();
                 await FB().deleteLadduDist(session, widget.dist!);
 
                 setState(() {
@@ -606,10 +607,8 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
       });
       return;
     } else if (widget.returnCount < widget.remaining) {
-      DateTime session = await FB().readLatestLadduSession();
-
       await FB().addLadduDist(
-          session,
+          widget.session,
           LadduDist(
               timestamp: DateTime.now(),
               user: "auto",
