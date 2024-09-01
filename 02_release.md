@@ -1,11 +1,11 @@
 - update changelog
 - push all changes in release branch
+- Raise PR to merge version branch to main
+    - merge PR
 - build apk
     - flutter clean
     - flutter pub get
     - flutter build apk --release
-- Raise PR to merge version branch to main
-    - merge PR
 - Draft a new release in github
     - apply release tag to main
     - give release title e.g. 2.0.0
