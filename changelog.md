@@ -1,3 +1,6 @@
+# 2.0.3
+- fix: order of laddu distribution
+
 # 2.0.2
 - fix: removed bar on multiple refresh
 

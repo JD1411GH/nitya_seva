@@ -133,7 +133,12 @@ class _LogState extends State<Log> {
       _logItems.sort((a, b) {
         String titleA = (a.title as Text).data ?? '';
         String titleB = (b.title as Text).data ?? '';
-        return titleB.compareTo(titleA);
+
+        DateFormat format = DateFormat("dd-MM-yyyy hh:mm:ss");
+        DateTime dateA = format.parse(titleA);
+        DateTime dateB = format.parse(titleB);
+
+        return dateB.compareTo(dateA);
       });
     });
   }
