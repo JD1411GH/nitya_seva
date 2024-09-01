@@ -1,3 +1,6 @@
+# 2.0.4
+- fix: availability bar crash
+
 # 2.0.3
 - fix: order of laddu distribution
 
