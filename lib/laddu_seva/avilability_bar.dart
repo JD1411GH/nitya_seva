@@ -99,7 +99,8 @@ class _AvailabilityBarState extends State<AvailabilityBar> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: LinearProgressIndicator(
-                  value: currentStock / total_procured,
+                  value:
+                      total_procured == 0 ? 0 : currentStock / total_procured,
                   minHeight: 30, // Increased the height to 30
                   color: progressColor,
                 ),
