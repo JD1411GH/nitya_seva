@@ -62,6 +62,7 @@ class _ServeState extends State<Serve> {
     TableRow row = TableRow(
       children: [
         TableCell(
+          verticalAlignment: TableCellVerticalAlignment.middle,
           child: Center(
             child: Text(
               'Laddu',
@@ -70,6 +71,7 @@ class _ServeState extends State<Serve> {
           ),
         ),
         TableCell(
+          verticalAlignment: TableCellVerticalAlignment.middle,
           child: Center(
             child: TextField(
               style: TextStyle(fontSize: 16),
@@ -80,6 +82,7 @@ class _ServeState extends State<Serve> {
           ),
         ),
         TableCell(
+          verticalAlignment: TableCellVerticalAlignment.middle,
           child: Center(
             child: Text(
               '0',
