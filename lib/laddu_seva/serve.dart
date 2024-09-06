@@ -6,6 +6,8 @@ class Serve extends StatefulWidget {
 }
 
 class _ServeState extends State<Serve> {
+  int _ladduPacks = 0;
+
   @override
   initState() {
     super.initState();
@@ -30,6 +32,7 @@ class _ServeState extends State<Serve> {
     // header row
     TableRow header = TableRow(
       children: [
+        // seva name
         TableCell(
           child: Center(
             child: Text(
@@ -38,6 +41,8 @@ class _ServeState extends State<Serve> {
             ),
           ),
         ),
+
+        // number of tickets
         TableCell(
           child: Center(
             child: Text(
@@ -46,6 +51,8 @@ class _ServeState extends State<Serve> {
             ),
           ),
         ),
+
+        // number of laddu packs
         TableCell(
           child: Center(
             child: Text(
@@ -61,15 +68,18 @@ class _ServeState extends State<Serve> {
     // seva ticket row
     TableRow row = TableRow(
       children: [
+        // seva name
         TableCell(
           verticalAlignment: TableCellVerticalAlignment.middle,
           child: Center(
             child: Text(
-              'Laddu',
+              'Pushpanjali 400',
               style: TextStyle(fontSize: 16),
             ),
           ),
         ),
+
+        // number of tickets
         TableCell(
           verticalAlignment: TableCellVerticalAlignment.middle,
           child: Center(
@@ -78,14 +88,21 @@ class _ServeState extends State<Serve> {
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
               ),
+              onChanged: (value) {
+                setState(() {
+                  _ladduPacks = int.tryParse(value) ?? 0;
+                });
+              },
             ),
           ),
         ),
+
+        // number of laddu packs
         TableCell(
           verticalAlignment: TableCellVerticalAlignment.middle,
           child: Center(
             child: Text(
-              '0',
+              _ladduPacks.toString(),
               style: TextStyle(fontSize: 16),
             ),
           ),
