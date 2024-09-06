@@ -7,107 +7,22 @@ class Serve extends StatefulWidget {
 }
 
 class _ServeState extends State<Serve> {
-  @override
-  initState() {
-    super.initState();
+  List<TextEditingController> _controllers = [];
 
+  @override
+  void initState() {
+    super.initState();
     _refresh();
+    _initializeControllers();
+  }
+
+  void _initializeControllers() {
+    _controllers = List.generate(
+        Const().ticketAmounts.length, (index) => TextEditingController());
   }
 
   Future<void> _refresh() async {
     setState(() {});
-  }
-
-  Widget _createTable() {
-    Table table = Table(
-      columnWidths: {
-        0: FixedColumnWidth(150.0),
-        1: FixedColumnWidth(80.0),
-        2: FlexColumnWidth(),
-      },
-      children: [],
-    );
-
-    // header row
-    TableRow header = TableRow(
-      children: [
-        // seva name
-        TableCell(
-          child: Center(
-            child: Text(
-              'Seva',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
-        ),
-
-        // number of tickets
-        TableCell(
-          child: Center(
-            child: Text(
-              'Tickets',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
-        ),
-
-        // number of laddu packs
-        TableCell(
-          child: Center(
-            child: Text(
-              'Packs',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
-        ),
-      ],
-    );
-    table.children.add(header);
-
-    // seva ticket row
-    Const().ticketAmounts.forEach((amount) {
-      TableRow row = TableRow(
-        children: [
-          // seva name
-          TableCell(
-            verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Center(
-              child: Text(
-                'Pushpanjali 400',
-                style: TextStyle(fontSize: 16),
-              ),
-            ),
-          ),
-
-          // number of tickets
-          TableCell(
-            verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Center(
-              child: TextField(
-                style: TextStyle(fontSize: 16),
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ),
-          ),
-
-          // number of laddu packs
-          TableCell(
-            verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Center(
-              child: Text(
-                "0",
-                style: TextStyle(fontSize: 16),
-              ),
-            ),
-          ),
-        ],
-      );
-      table.children.add(row);
-    });
-
-    return table;
   }
 
   @override
@@ -118,12 +33,44 @@ class _ServeState extends State<Serve> {
       ),
       body: RefreshIndicator(
         onRefresh: _refresh,
-
-        // here a ListView is used to allow the content to be scrollable and refreshable.
-        // If you use ListView.builder inside this, then the ListView here can be removed.
         child: ListView(
           children: [
-            _createTable(),
+            Table(
+              border: TableBorder.all(),
+              children: [
+                TableRow(
+                  children: [
+                    TableCell(child: Center(child: Text('Seva'))),
+                    TableCell(child: Center(child: Text('Tickets'))),
+                    TableCell(child: Center(child: Text('Packs'))),
+                  ],
+                ),
+                for (int i = 0; i < Const().ticketAmounts.length; i++)
+                  TableRow(
+                    children: [
+                      TableCell(
+                          child: Center(
+                              child: Text(
+                                  'Pushpanjali ${Const().ticketAmounts[i]}'))),
+                      TableCell(
+                        child: Center(
+                          child: TextField(
+                            controller: _controllers[i],
+                            onChanged: (value) {
+                              setState(() {});
+                            },
+                          ),
+                        ),
+                      ),
+                      TableCell(
+                        child: Center(
+                          child: Text(_controllers[i].text),
+                        ),
+                      ),
+                    ],
+                  ),
+              ],
+            ),
           ],
         ),
       ),
