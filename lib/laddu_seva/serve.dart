@@ -25,23 +25,24 @@ class _ServeState extends State<Serve> {
   Widget _createTable() {
     return Table(
       columnWidths: {
-        0: FixedColumnWidth(
-            150.0), // Set the desired width for the first column
+        0: FixedColumnWidth(150.0), // Set fixed width for the first column
       },
       children: [
-        // table header
+        // Table header
         TableRow(
           children: [
             // seva header
             TableCell(
+              verticalAlignment:
+                  TableCellVerticalAlignment.middle, // Center vertically
               child: Padding(
-                padding: EdgeInsets.all(8.0), // Add padding around the cell
+                padding: const EdgeInsets.all(8.0),
                 child: Center(
                   child: Text(
                     'Seva',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 18.0, // Increase the font size as needed
+                      fontSize: 18.0, // Increase font size
                     ),
                   ),
                 ),
@@ -50,14 +51,16 @@ class _ServeState extends State<Serve> {
 
             // tickets header
             TableCell(
+              verticalAlignment:
+                  TableCellVerticalAlignment.middle, // Center vertically
               child: Padding(
-                padding: EdgeInsets.all(8.0), // Add padding around the cell
+                padding: const EdgeInsets.all(8.0),
                 child: Center(
                   child: Text(
                     'Tickets',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 18.0, // Increase the font size as needed
+                      fontSize: 18.0, // Increase font size
                     ),
                   ),
                 ),
@@ -66,14 +69,16 @@ class _ServeState extends State<Serve> {
 
             // packs header
             TableCell(
+              verticalAlignment:
+                  TableCellVerticalAlignment.middle, // Center vertically
               child: Padding(
-                padding: EdgeInsets.all(8.0), // Add padding around the cell
+                padding: const EdgeInsets.all(8.0),
                 child: Center(
                   child: Text(
                     'Packs',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 18.0, // Increase the font size as needed
+                      fontSize: 18.0, // Increase font size
                     ),
                   ),
                 ),
@@ -82,14 +87,16 @@ class _ServeState extends State<Serve> {
           ],
         ),
 
-        // seva rows
+        // Table rows
         for (int i = 0; i < Const().ticketAmounts.length; i++)
           TableRow(
             children: [
-              // seva name
+              // seva cell
               TableCell(
+                verticalAlignment:
+                    TableCellVerticalAlignment.middle, // Center vertically
                 child: Padding(
-                  padding: EdgeInsets.all(8.0), // Add padding around the cell
+                  padding: const EdgeInsets.all(8.0),
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text('Pushpanjali ${Const().ticketAmounts[i]}'),
@@ -97,31 +104,37 @@ class _ServeState extends State<Serve> {
                 ),
               ),
 
-              // ticket count
+              // tickets cell
               TableCell(
+                verticalAlignment:
+                    TableCellVerticalAlignment.middle, // Center vertically
                 child: Padding(
-                  padding: EdgeInsets.all(8.0), // Add padding around the cell
-                  child: Align(
-                    alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
                     child: TextField(
                       controller: _controllers[i],
                       onChanged: (value) {
                         setState(() {});
                       },
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(),
+                        border:
+                            OutlineInputBorder(), // Add border around the text field
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 8.0,
+                            horizontal: 8.0), // Reduce vertical height
                       ),
                     ),
                   ),
                 ),
               ),
 
-              // pack count
+              // packs cell
               TableCell(
+                verticalAlignment:
+                    TableCellVerticalAlignment.middle, // Center vertically
                 child: Padding(
-                  padding: EdgeInsets.all(8.0), // Add padding around the cell
-                  child: Align(
-                    alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
                     child: Text(_controllers[i].text),
                   ),
                 ),
