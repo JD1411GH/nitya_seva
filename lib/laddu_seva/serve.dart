@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/const.dart';
 
 class Serve extends StatefulWidget {
   @override
@@ -6,8 +7,6 @@ class Serve extends StatefulWidget {
 }
 
 class _ServeState extends State<Serve> {
-  List<int> _ladduPacks = [];
-
   @override
   initState() {
     super.initState();
@@ -66,51 +65,47 @@ class _ServeState extends State<Serve> {
     table.children.add(header);
 
     // seva ticket row
-    _ladduPacks.add(0);
-    TableRow row = TableRow(
-      children: [
-        // seva name
-        TableCell(
-          verticalAlignment: TableCellVerticalAlignment.middle,
-          child: Center(
-            child: Text(
-              'Pushpanjali 400',
-              style: TextStyle(fontSize: 16),
-            ),
-          ),
-        ),
-
-        // number of tickets
-        TableCell(
-          verticalAlignment: TableCellVerticalAlignment.middle,
-          child: Center(
-            child: TextField(
-              style: TextStyle(fontSize: 16),
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
+    Const().ticketAmounts.forEach((amount) {
+      TableRow row = TableRow(
+        children: [
+          // seva name
+          TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
+              child: Text(
+                'Pushpanjali 400',
+                style: TextStyle(fontSize: 16),
               ),
-              onChanged: (value) {
-                setState(() {
-                  _ladduPacks[0] = int.tryParse(value) ?? 0;
-                });
-              },
             ),
           ),
-        ),
 
-        // number of laddu packs
-        TableCell(
-          verticalAlignment: TableCellVerticalAlignment.middle,
-          child: Center(
-            child: Text(
-              _ladduPacks[0].toString(),
-              style: TextStyle(fontSize: 16),
+          // number of tickets
+          TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
+              child: TextField(
+                style: TextStyle(fontSize: 16),
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                ),
+              ),
             ),
           ),
-        ),
-      ],
-    );
-    table.children.add(row);
+
+          // number of laddu packs
+          TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
+              child: Text(
+                "0",
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+          ),
+        ],
+      );
+      table.children.add(row);
+    });
 
     return table;
   }
