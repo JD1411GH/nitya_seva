@@ -71,9 +71,11 @@ class _ServeState extends State<Serve> {
         ),
         TableCell(
           child: Center(
-            child: Text(
-              '0',
+            child: TextField(
               style: TextStyle(fontSize: 16),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+              ),
             ),
           ),
         ),
