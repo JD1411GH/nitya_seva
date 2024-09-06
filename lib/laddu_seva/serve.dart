@@ -6,7 +6,7 @@ class Serve extends StatefulWidget {
 }
 
 class _ServeState extends State<Serve> {
-  int _ladduPacks = 0;
+  List<int> _ladduPacks = [];
 
   @override
   initState() {
@@ -66,6 +66,7 @@ class _ServeState extends State<Serve> {
     table.children.add(header);
 
     // seva ticket row
+    _ladduPacks.add(0);
     TableRow row = TableRow(
       children: [
         // seva name
@@ -90,7 +91,7 @@ class _ServeState extends State<Serve> {
               ),
               onChanged: (value) {
                 setState(() {
-                  _ladduPacks = int.tryParse(value) ?? 0;
+                  _ladduPacks[0] = int.tryParse(value) ?? 0;
                 });
               },
             ),
@@ -102,7 +103,7 @@ class _ServeState extends State<Serve> {
           verticalAlignment: TableCellVerticalAlignment.middle,
           child: Center(
             child: Text(
-              _ladduPacks.toString(),
+              _ladduPacks[0].toString(),
               style: TextStyle(fontSize: 16),
             ),
           ),
