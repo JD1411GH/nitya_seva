@@ -20,10 +20,7 @@ class _ServeState extends State<Serve> {
   @override
   void initState() {
     super.initState();
-    _refresh();
-  }
 
-  Future<void> _refresh() async {
     List<int?> ticketAmounts =
         Const().ticketAmounts.map((e) => e['amount']).toList();
     _controllersPushpanjali =
@@ -31,13 +28,22 @@ class _ServeState extends State<Serve> {
     _controllersOthers =
         List.generate(_otherSevas.length, (index) => TextEditingController());
 
+    _calculateTotalLadduPacks();
+    _refresh();
+  }
+
+  Future<void> _refresh() async {
     setState(() {});
   }
 
   void _calculateTotalLadduPacks() {
     _totalLadduPacks = 0;
     for (int i = 0; i < _controllersPushpanjali.length; i++) {
-      _totalLadduPacks += int.tryParse(_controllersPushpanjali[i].text) ?? 0;
+      if (_controllersPushpanjali[i].text.isNotEmpty) {
+        int multiplier = Const().ticketAmounts[i]['ladduPacks']!;
+        _totalLadduPacks +=
+            (int.tryParse(_controllersPushpanjali[i].text)! * multiplier);
+      }
     }
     for (int i = 0; i < _controllersOthers.length; i++) {
       _totalLadduPacks += int.tryParse(_controllersOthers[i].text) ?? 0;
@@ -129,7 +135,7 @@ class _ServeState extends State<Serve> {
                 ),
               ),
 
-              // tickets cell
+              // number of tickets
               TableCell(
                 verticalAlignment:
                     TableCellVerticalAlignment.middle, // Center vertically
@@ -155,14 +161,18 @@ class _ServeState extends State<Serve> {
                 ),
               ),
 
-              // packs cell
+              // number of laddu packs
               TableCell(
                 verticalAlignment:
                     TableCellVerticalAlignment.middle, // Center vertically
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Center(
-                    child: Text(_controllersPushpanjali[i].text),
+                    child: _controllersPushpanjali[i].text.isEmpty
+                        ? Text("0")
+                        : Text((int.parse(_controllersPushpanjali[i].text) *
+                                Const().ticketAmounts[i]['ladduPacks']!)
+                            .toString()),
                   ),
                 ),
               ),
@@ -293,9 +303,15 @@ class _ServeState extends State<Serve> {
                           .toList();
 
                       for (int i = 0; i < _controllersPushpanjali.length; i++) {
+                        if (_controllersPushpanjali[i].text.isEmpty) {
+                          packsPushpanjali
+                              .add({ticketAmounts[i]!.toString(): 0});
+                          continue;
+                        }
                         packsPushpanjali.add({
                           ticketAmounts[i]!.toString():
-                              int.tryParse(_controllersPushpanjali[i].text) ?? 0
+                              int.tryParse(_controllersPushpanjali[i].text)! *
+                                  Const().ticketAmounts[i]['ladduPacks']!
                         });
                       }
                       for (int i = 0; i < _controllersOthers.length; i++) {
@@ -310,7 +326,7 @@ class _ServeState extends State<Serve> {
                         user: await Const().getUserName(),
                         packsPushpanjali: packsPushpanjali,
                         packsOthers: packsOthers,
-                        note: _controllerNote.text, // Add note
+                        note: _controllerNote.text,
                       );
 
                       DateTime session = await FB().readLatestLadduSession();
