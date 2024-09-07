@@ -98,8 +98,7 @@ class _LogState extends State<Log> {
                   BorderRadius.circular(12.0), // Make the border circular
             ),
             child: Text(
-              // TODO
-              "serve.count.toString()",
+              _calculateTotalLadduPacks(serve).toString(),
               style: TextStyle(fontSize: 24.0), // Increase the font size
             ),
           ),
@@ -153,6 +152,20 @@ class _LogState extends State<Log> {
     if (mounted) {
       setState(() {});
     }
+  }
+
+  int _calculateTotalLadduPacks(LadduServe serve) {
+    int total = 0;
+
+    serve.packsPushpanjali.forEach((element) {
+      total += element.values.first;
+    });
+
+    serve.packsOthers.forEach((element) {
+      total += element.values.first;
+    });
+
+    return total;
   }
 
   Widget _getListView() {
