@@ -87,7 +87,10 @@ class _LogState extends State<Log> {
           // title - careful changing this, as the tiles are sorted based on this
           title: Text(
             DateFormat('dd-MM-yyyy HH:mm:ss').format(serve.timestamp),
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18.0, // Adjust the font size as needed
+            ),
           ),
 
           // add or remove icon
@@ -106,7 +109,7 @@ class _LogState extends State<Log> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    _calculateTotalLadduPacks(serve).toString(),
+                    _calculateTotalLadduPacksServed(serve).toString(),
                     style: TextStyle(
                       fontSize: 24.0, // Increase font size
                       fontWeight: FontWeight.bold, // Make text bold
@@ -232,7 +235,7 @@ class _LogState extends State<Log> {
     }
   }
 
-  int _calculateTotalLadduPacks(LadduServe serve) {
+  int _calculateTotalLadduPacksServed(LadduServe serve) {
     int total = 0;
 
     serve.packsPushpanjali.forEach((element) {
