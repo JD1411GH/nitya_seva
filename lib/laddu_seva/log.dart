@@ -177,7 +177,7 @@ class _LogState extends State<Log> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    '    Pushpanjali ${serve.packsPushpanjali[i].keys.first}: ${serve.packsPushpanjali[i].values.first}',
+                    '    Seva ${serve.packsPushpanjali[i].keys.first}: ${serve.packsPushpanjali[i].values.first}',
                     style: TextStyle(
                       color: serve.packsPushpanjali[i].values.first == 0
                           ? Colors.grey

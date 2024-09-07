@@ -142,7 +142,7 @@ class _ServeState extends State<Serve> {
                   padding: const EdgeInsets.all(8.0),
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text('Pushpanjali ${ticketAmounts[i]}'),
+                    child: Text('Seva ${ticketAmounts[i]}'),
                   ),
                 ),
               ),

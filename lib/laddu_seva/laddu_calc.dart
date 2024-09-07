@@ -225,6 +225,20 @@ Future<void> addEditStock(BuildContext context,
   );
 }
 
+int _calculateTotalLadduPacksServed(LadduServe serve) {
+  int total = 0;
+
+  serve.packsPushpanjali.forEach((element) {
+    total += element.values.first;
+  });
+
+  serve.packsOthers.forEach((element) {
+    total += element.values.first;
+  });
+
+  return total;
+}
+
 Future<void> returnStock(BuildContext context) async {
   DateTime session = await FB().readLatestLadduSession();
 
@@ -249,23 +263,24 @@ Future<void> returnStock(BuildContext context) async {
       stocks.fold(0, (previousValue, element) => previousValue + element.count);
 
   // sum of all distributions
-  // TODO
-  // int totalServe =
-  //     serves.fold(0, (previousValue, element) => previousValue + element.count);
+  int totalServe = 0;
+  serves.forEach((serve) {
+    totalServe += _calculateTotalLadduPacksServed(serve);
+  });
 
-  // int remaining = totalStock - totalServe;
+  int remaining = totalStock - totalServe;
 
-  // await showDialog<bool>(
-  //   context: context,
-  //   builder: (BuildContext context) {
-  //     return ReturnStockDialog(
-  //       session: session,
-  //       totalStock: totalStock,
-  //       totalServe: totalServe,
-  //       remaining: remaining,
-  //     );
-  //   },
-  // );
+  await showDialog<bool>(
+    context: context,
+    builder: (BuildContext context) {
+      return ReturnStockDialog(
+        session: session,
+        totalStock: totalStock,
+        totalServe: totalServe,
+        remaining: remaining,
+      );
+    },
+  );
 }
 
 class ReturnStockDialog extends StatefulWidget {
