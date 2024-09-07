@@ -13,8 +13,9 @@ class _ServeState extends State<Serve> {
   List<TextEditingController> _controllersOthers = [];
   TextEditingController _controllerNote = TextEditingController();
 
-  int totalLadduPacks = 0;
+  int _totalLadduPacks = 0;
   List<String> _otherSevas = ["Others", "Missing"];
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -34,12 +35,12 @@ class _ServeState extends State<Serve> {
   }
 
   void _calculateTotalLadduPacks() {
-    totalLadduPacks = 0;
+    _totalLadduPacks = 0;
     for (int i = 0; i < _controllersPushpanjali.length; i++) {
-      totalLadduPacks += int.tryParse(_controllersPushpanjali[i].text) ?? 0;
+      _totalLadduPacks += int.tryParse(_controllersPushpanjali[i].text) ?? 0;
     }
     for (int i = 0; i < _controllersOthers.length; i++) {
-      totalLadduPacks += int.tryParse(_controllersOthers[i].text) ?? 0;
+      _totalLadduPacks += int.tryParse(_controllersOthers[i].text) ?? 0;
     }
   }
 
@@ -244,7 +245,7 @@ class _ServeState extends State<Serve> {
 
             // total laddu packs
             Text(
-              "Total laddu packs = $totalLadduPacks",
+              "Total laddu packs = $_totalLadduPacks",
               style: TextStyle(
                 fontSize: 20.0, // Increase the font size
                 fontWeight: FontWeight.bold, // Make the text bold
@@ -272,38 +273,56 @@ class _ServeState extends State<Serve> {
 
             // serve button
             ElevatedButton(
-              onPressed: () async {
-                List<Map<int, int>> packsPushpanjali = [];
-                List<Map<String, int>> packsOthers = [];
+              onPressed: _isLoading
+                  ? null
+                  : () async {
+                      if (_totalLadduPacks == 0) {
+                        return;
+                      }
 
-                List<int?> ticketAmounts =
-                    Const().ticketAmounts.map((e) => e['amount']).toList();
+                      setState(() {
+                        _isLoading = true;
+                      });
 
-                for (int i = 0; i < _controllersPushpanjali.length; i++) {
-                  packsPushpanjali.add({
-                    ticketAmounts[i]!:
-                        int.tryParse(_controllersPushpanjali[i].text) ?? 0
-                  });
-                }
-                for (int i = 0; i < _controllersOthers.length; i++) {
-                  packsOthers.add({
-                    _otherSevas[i]:
-                        int.tryParse(_controllersOthers[i].text) ?? 0
-                  });
-                }
+                      List<Map<int, int>> packsPushpanjali = [];
+                      List<Map<String, int>> packsOthers = [];
 
-                LadduDist ladduDist = LadduDist(
-                  timestamp: DateTime.now(),
-                  user: await Const().getUserName(),
-                  packsPushpanjali: packsPushpanjali,
-                  packsOthers: packsOthers,
-                  note: _controllerNote.text, // Add note
-                );
+                      List<int?> ticketAmounts = Const()
+                          .ticketAmounts
+                          .map((e) => e['amount'])
+                          .toList();
 
-                DateTime session = await FB().readLatestLadduSession();
-                await FB().addLadduDist(session, ladduDist);
-              },
-              child: Text('Serve'),
+                      for (int i = 0; i < _controllersPushpanjali.length; i++) {
+                        packsPushpanjali.add({
+                          ticketAmounts[i]!:
+                              int.tryParse(_controllersPushpanjali[i].text) ?? 0
+                        });
+                      }
+                      for (int i = 0; i < _controllersOthers.length; i++) {
+                        packsOthers.add({
+                          _otherSevas[i]:
+                              int.tryParse(_controllersOthers[i].text) ?? 0
+                        });
+                      }
+
+                      LadduDist ladduDist = LadduDist(
+                        timestamp: DateTime.now(),
+                        user: await Const().getUserName(),
+                        packsPushpanjali: packsPushpanjali,
+                        packsOthers: packsOthers,
+                        note: _controllerNote.text, // Add note
+                      );
+
+                      DateTime session = await FB().readLatestLadduSession();
+                      await FB().addLadduDist(session, ladduDist);
+
+                      setState(() {
+                        _isLoading = false;
+                      });
+
+                      Navigator.pop(context);
+                    },
+              child: _isLoading ? CircularProgressIndicator() : Text('Serve'),
             ),
           ],
         ),
