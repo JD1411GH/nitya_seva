@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/const.dart';
+import 'package:garuda/fb.dart';
+import 'package:garuda/laddu_seva/datatypes.dart';
 
 class Serve extends StatefulWidget {
   @override
@@ -9,6 +11,8 @@ class Serve extends StatefulWidget {
 class _ServeState extends State<Serve> {
   List<TextEditingController> _controllersPushpanjali = [];
   List<TextEditingController> _controllersOthers = [];
+  TextEditingController _controllerNote = TextEditingController();
+
   int totalLadduPacks = 0;
   List<String> _otherSevas = ["Others", "Missing"];
 
@@ -35,7 +39,6 @@ class _ServeState extends State<Serve> {
       totalLadduPacks += int.tryParse(_controllersPushpanjali[i].text) ?? 0;
     }
     for (int i = 0; i < _controllersOthers.length; i++) {
-      print("controller: ${_controllersOthers[i].text}");
       totalLadduPacks += int.tryParse(_controllersOthers[i].text) ?? 0;
     }
   }
@@ -262,14 +265,43 @@ class _ServeState extends State<Serve> {
                     EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
                 hintText: 'Enter a note', // Add a hint text to the text field
               ),
+              controller: _controllerNote,
             ),
 
             SizedBox(height: 16.0), // Add space between children
 
             // serve button
             ElevatedButton(
-              onPressed: () {
-                // Handle the button press
+              onPressed: () async {
+                List<Map<int, int>> packsPushpanjali = [];
+                List<Map<String, int>> packsOthers = [];
+
+                List<int?> ticketAmounts =
+                    Const().ticketAmounts.map((e) => e['amount']).toList();
+
+                for (int i = 0; i < _controllersPushpanjali.length; i++) {
+                  packsPushpanjali.add({
+                    ticketAmounts[i]!:
+                        int.tryParse(_controllersPushpanjali[i].text) ?? 0
+                  });
+                }
+                for (int i = 0; i < _controllersOthers.length; i++) {
+                  packsOthers.add({
+                    _otherSevas[i]:
+                        int.tryParse(_controllersOthers[i].text) ?? 0
+                  });
+                }
+
+                LadduDist ladduDist = LadduDist(
+                  timestamp: DateTime.now(),
+                  user: await Const().getUserName(),
+                  packsPushpanjali: packsPushpanjali,
+                  packsOthers: packsOthers,
+                  note: _controllerNote.text, // Add note
+                );
+
+                DateTime session = await FB().readLatestLadduSession();
+                await FB().addLadduDist(session, ladduDist);
               },
               child: Text('Serve'),
             ),

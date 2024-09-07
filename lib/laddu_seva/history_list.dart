@@ -68,16 +68,17 @@ class _HistoryListState extends State<HistoryList> {
 
         int totalDist = 0;
         for (LadduDist dist in dists) {
-          totalDist += dist.count;
+          // totalDist += dist.count;
         }
 
         Map<String, int> purposeSum = {};
         dists.forEach((dist) {
-          if (purposeSum.containsKey(dist.purpose)) {
-            purposeSum[dist.purpose] = purposeSum[dist.purpose]! + dist.count;
-          } else {
-            purposeSum[dist.purpose] = dist.count;
-          }
+          // TODO
+          // if (purposeSum.containsKey(dist.purpose)) {
+          //   purposeSum[dist.purpose] = purposeSum[dist.purpose]! + dist.count;
+          // } else {
+          //   purposeSum[dist.purpose] = dist.count;
+          // }
         });
 
         body.add("Laddu packs served for:");

@@ -248,7 +248,7 @@ class _AddEditDistDialogState extends State<AddEditDistDialog> {
     super.initState();
     if (widget.edit && widget.dist != null) {
       _controllerNote.text = widget.dist!.note;
-      count = widget.dist!.count;
+      // count = widget.dist!.count; TODO
       note = widget.dist!.note;
     }
   }
@@ -264,7 +264,8 @@ class _AddEditDistDialogState extends State<AddEditDistDialog> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             // drop down for purpose
-            _getPurposeDropDown(context, defaultPurpose: widget.dist?.purpose),
+            // TODO
+            // _getPurposeDropDown(context, defaultPurpose: widget.dist?.purpose),
 
             // count field
             TextFormField(
@@ -279,9 +280,10 @@ class _AddEditDistDialogState extends State<AddEditDistDialog> {
                 }
                 return null;
               },
-              controller: TextEditingController(
-                text: widget.edit ? widget.dist!.count.toString() : '',
-              ),
+              // TODO
+              // controller: TextEditingController(
+              //   text: widget.edit ? widget.dist!.count.toString() : '',
+              // ),
             ),
 
             // note field
@@ -391,11 +393,13 @@ class _AddEditDistDialogState extends State<AddEditDistDialog> {
 
                 int total_distributed = 0;
                 for (var dist in dists) {
-                  total_distributed += dist.count;
+                  // TODO
+                  // total_distributed += dist.count;
                 }
 
                 if (widget.edit) {
-                  total_distributed -= dists.last.count;
+                  // TODO
+                  // total_distributed -= dists.last.count;
                 }
 
                 int available = total_procured - total_distributed;
@@ -406,40 +410,43 @@ class _AddEditDistDialogState extends State<AddEditDistDialog> {
 
                   LadduDist distNew;
                   if (widget.edit) {
-                    distNew = LadduDist(
-                      timestamp: widget.dist!.timestamp,
-                      user: username,
-                      purpose: selectedPurpose,
-                      count: count,
-                      note: note,
-                    );
+                    // TODO
+                    // distNew = LadduDist(
+                    //   timestamp: widget.dist!.timestamp,
+                    //   user: username,
+                    //   purpose: selectedPurpose,
+                    //   count: count,
+                    //   note: note,
+                    // );
                   } else {
-                    distNew = LadduDist(
-                      timestamp: DateTime.now(),
-                      user: username,
-                      purpose: selectedPurpose,
-                      count: count,
-                      note: note,
-                    );
+                    // distNew = LadduDist(
+                    //   timestamp: DateTime.now(),
+                    //   user: username,
+                    //   purpose: selectedPurpose,
+                    //   count: count,
+                    //   note: note,
+                    // );
                   }
 
                   bool status;
                   if (widget.edit) {
-                    status = await FB().editLadduDist(session, distNew);
+                    // TODO
+                    // status = await FB().editLadduDist(session, distNew);
                   } else {
-                    status = await FB().addLadduDist(session, distNew);
+                    // status = await FB().addLadduDist(session, distNew);
                   }
 
                   // reset selected purpose
                   selectedPurpose = "Others";
                   selectedPurposeChanged = false;
 
-                  if (status) {
-                    _controllerNote.clear();
-                    Toaster().info("Laddu Distributed");
-                  } else {
-                    Toaster().error("ERROR");
-                  }
+                  // TODO
+                  // if (status) {
+                  //   _controllerNote.clear();
+                  //   Toaster().info("Laddu Distributed");
+                  // } else {
+                  //   Toaster().error("ERROR");
+                  // }
                 }
 
                 setState(() {
@@ -493,22 +500,23 @@ Future<void> returnStock(BuildContext context) async {
       stocks.fold(0, (previousValue, element) => previousValue + element.count);
 
   // sum of all distributions
-  int totalDist =
-      dists.fold(0, (previousValue, element) => previousValue + element.count);
+  // TODO
+  // int totalDist =
+  //     dists.fold(0, (previousValue, element) => previousValue + element.count);
 
-  int remaining = totalStock - totalDist;
+  // int remaining = totalStock - totalDist;
 
-  await showDialog<bool>(
-    context: context,
-    builder: (BuildContext context) {
-      return ReturnStockDialog(
-        session: session,
-        totalStock: totalStock,
-        totalDist: totalDist,
-        remaining: remaining,
-      );
-    },
-  );
+  // await showDialog<bool>(
+  //   context: context,
+  //   builder: (BuildContext context) {
+  //     return ReturnStockDialog(
+  //       session: session,
+  //       totalStock: totalStock,
+  //       totalDist: totalDist,
+  //       remaining: remaining,
+  //     );
+  //   },
+  // );
 }
 
 class ReturnStockDialog extends StatefulWidget {
@@ -626,14 +634,15 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
       });
       return;
     } else if (widget.returnCount < widget.remaining) {
-      await FB().addLadduDist(
-          widget.session,
-          LadduDist(
-              timestamp: DateTime.now(),
-              user: "auto",
-              purpose: "Missing",
-              count: widget.remaining - widget.returnCount,
-              note: "Return count less than remaining packs"));
+      // TODO
+      // await FB().addLadduDist(
+      //     widget.session,
+      //     LadduDist(
+      //         timestamp: DateTime.now(),
+      //         user: "auto",
+      //         purpose: "Missing",
+      //         count: widget.remaining - widget.returnCount,
+      //         note: "Return count less than remaining packs"));
     }
 
     String username = await Const().getUserName();

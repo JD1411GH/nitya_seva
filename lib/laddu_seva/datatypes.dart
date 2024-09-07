@@ -34,37 +34,43 @@ class LadduStock {
 class LadduDist {
   final DateTime timestamp;
   final String user;
-  final String purpose;
-  final int count;
+  final List<Map<int, int>> packsPushpanjali;
+  final List<Map<String, int>> packsOthers;
   final String note;
 
-  LadduDist(
-      {required this.timestamp,
-      required this.user,
-      required this.purpose,
-      required this.count,
-      required this.note});
+  LadduDist({
+    required this.timestamp,
+    required this.user,
+    required this.packsPushpanjali,
+    required this.packsOthers,
+    required this.note,
+  });
 
-  // Convert a LadduStock instance to a JSON map
-  Map<String, dynamic> toJson() {
-    return {
-      'timestamp': timestamp.toIso8601String(),
-      'user': user,
-      'purpose': purpose,
-      'count': count,
-      'note': note,
-    };
-  }
-
-  // Create a LadduStock instance from a JSON map
   factory LadduDist.fromJson(Map<String, dynamic> json) {
     return LadduDist(
       timestamp: DateTime.parse(json['timestamp']),
       user: json['user'],
-      purpose: json['purpose'],
-      count: json['count'],
+      packsPushpanjali: (json['packsPushpanjali'] as List)
+          .map((item) => Map<int, int>.from(item))
+          .toList(),
+      packsOthers: (json['packsOthers'] as List)
+          .map((item) => Map<String, int>.from(item))
+          .toList(),
       note: json['note'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'timestamp': timestamp.toIso8601String(),
+      'user': user,
+      'packsPushpanjali': packsPushpanjali
+          .map((item) =>
+              item.map((key, value) => MapEntry(key.toString(), value)))
+          .toList(),
+      'packsOthers': packsOthers,
+      'note': note,
+    };
   }
 }
 

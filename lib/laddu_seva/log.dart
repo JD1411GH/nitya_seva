@@ -97,7 +97,8 @@ class _LogState extends State<Log> {
                     BorderRadius.circular(12.0), // Make the border circular
               ),
               child: Text(
-                dist.count.toString(),
+                // TODO
+                "dist.count.toString()",
                 style: TextStyle(fontSize: 24.0), // Increase the font size
               ),
             ),
@@ -109,11 +110,13 @@ class _LogState extends State<Log> {
                 ),
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Text('Laddu packs served: ${dist.count}'),
+                  child: Text('Laddu packs served: '), // TODO
+                  // child: Text('Laddu packs served: ${dist.count}'),
                 ),
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Text('Purpose: ${dist.purpose}'),
+                  child: Text('Purpose: '), // TODO
+                  // child: Text('Purpose: ${dist.purpose}'),
                 ),
                 if (dist.note.isNotEmpty)
                   Align(

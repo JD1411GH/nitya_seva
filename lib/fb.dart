@@ -770,14 +770,14 @@ class FB {
   }
 
   Future<bool> addLadduDist(DateTime session, LadduDist dist) async {
-    String a = session.toIso8601String().replaceAll(".", "^");
+    String s = session.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance
-        .ref('record_db${Const().dbVersion}/ladduSeva/$a');
+        .ref('record_db${Const().dbVersion}/ladduSeva/$s');
 
     // Add a new laddu distribution
     DateTime timestamp = dist.timestamp;
     DatabaseReference ref = dbRef
-        .child('dists')
+        .child('serves')
         .child(timestamp.toIso8601String().replaceAll(".", "^"));
     try {
       await ref.set(dist.toJson());

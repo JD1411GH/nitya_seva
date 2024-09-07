@@ -42,7 +42,8 @@ class _AvailabilityBarState extends State<AvailabilityBar> {
 
       total_distributed = 0;
       for (var dist in dists) {
-        total_distributed += dist.count;
+        // TODO
+        // total_distributed += dist.count;
       }
     });
   }
