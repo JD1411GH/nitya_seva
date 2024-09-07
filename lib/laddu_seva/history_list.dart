@@ -3,7 +3,6 @@ import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/laddu_seva/history_edit.dart';
-import 'package:garuda/laddu_seva/main.dart';
 import 'package:intl/intl.dart';
 import 'package:synchronized/synchronized.dart';
 
