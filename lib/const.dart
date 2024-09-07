@@ -21,7 +21,12 @@ class Const {
   String appVersion = '1.0.0';
   String dbVersion = '1';
 
-  List<int> ticketAmounts = [400, 500, 1000, 2500];
+  List<Map<String, int>> ticketAmounts = [
+    {'amount': 400, 'ladduPacks': 1},
+    {'amount': 500, 'ladduPacks': 1},
+    {'amount': 1000, 'ladduPacks': 2},
+    {'amount': 2500, 'ladduPacks': 3},
+  ];
 
   // theme ticketColors
   final Color colorPrimary =

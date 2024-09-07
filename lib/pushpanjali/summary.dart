@@ -41,7 +41,9 @@ class _SummaryState extends State<Summary> {
     int totalCashAmount = 0;
     int totalCardAmount = 0;
 
-    for (int amount in Const().ticketAmounts) {
+    List<int?> ticketAmounts =
+        Const().ticketAmounts.map((e) => e['amount']).toList();
+    for (int? amount in ticketAmounts) {
       List<SevaTicket> listFiltered =
           _listEntries!.where((e) => e.amount == amount).toList();
 

@@ -16,13 +16,18 @@ class _ServeState extends State<Serve> {
   }
 
   Future<void> _refresh() async {
-    _controllers = List.generate(
-        Const().ticketAmounts.length, (index) => TextEditingController());
+    List<int?> ticketAmounts =
+        Const().ticketAmounts.map((e) => e['amount']).toList();
+    _controllers =
+        List.generate(ticketAmounts.length, (index) => TextEditingController());
 
     setState(() {});
   }
 
   Widget _createTable() {
+    List<int?> ticketAmounts =
+        Const().ticketAmounts.map((e) => e['amount']).toList();
+
     return Table(
       columnWidths: {
         0: FixedColumnWidth(150.0), // Set fixed width for the first column
@@ -99,7 +104,7 @@ class _ServeState extends State<Serve> {
                   padding: const EdgeInsets.all(8.0),
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text('Pushpanjali ${Const().ticketAmounts[i]}'),
+                    child: Text('Pushpanjali ${ticketAmounts[i]}'),
                   ),
                 ),
               ),

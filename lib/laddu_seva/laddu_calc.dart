@@ -655,8 +655,10 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
 }
 
 Widget _getPurposeDropDown(BuildContext context, {String? defaultPurpose}) {
+  List<int?> ticketAmounts =
+      Const().ticketAmounts.map((e) => e['amount']).toList();
   List<String> Purposes =
-      Const().ticketAmounts.map((e) => "Seva ${e.toString()}").toList();
+      ticketAmounts.map((e) => "Seva ${e.toString()}").toList();
 
   Purposes.add("Others");
   Purposes.add("Missing");
