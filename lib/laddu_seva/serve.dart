@@ -7,7 +7,10 @@ class Serve extends StatefulWidget {
 }
 
 class _ServeState extends State<Serve> {
-  List<TextEditingController> _controllers = [];
+  List<TextEditingController> _controllersPushpanjali = [];
+  List<TextEditingController> _controllersOthers = [];
+  int totalLadduPacks = 0;
+  List<String> _otherSevas = ["Others", "Missing"];
 
   @override
   void initState() {
@@ -18,10 +21,23 @@ class _ServeState extends State<Serve> {
   Future<void> _refresh() async {
     List<int?> ticketAmounts =
         Const().ticketAmounts.map((e) => e['amount']).toList();
-    _controllers =
+    _controllersPushpanjali =
         List.generate(ticketAmounts.length, (index) => TextEditingController());
+    _controllersOthers =
+        List.generate(_otherSevas.length, (index) => TextEditingController());
 
     setState(() {});
+  }
+
+  void _calculateTotalLadduPacks() {
+    totalLadduPacks = 0;
+    for (int i = 0; i < _controllersPushpanjali.length; i++) {
+      totalLadduPacks += int.tryParse(_controllersPushpanjali[i].text) ?? 0;
+    }
+    for (int i = 0; i < _controllersOthers.length; i++) {
+      print("controller: ${_controllersOthers[i].text}");
+      totalLadduPacks += int.tryParse(_controllersOthers[i].text) ?? 0;
+    }
   }
 
   Widget _createTable() {
@@ -92,7 +108,7 @@ class _ServeState extends State<Serve> {
           ],
         ),
 
-        // Table rows
+        // Table rows for pushpanjali
         for (int i = 0; i < Const().ticketAmounts.length; i++)
           TableRow(
             children: [
@@ -117,9 +133,11 @@ class _ServeState extends State<Serve> {
                   padding: const EdgeInsets.all(8.0),
                   child: Center(
                     child: TextField(
-                      controller: _controllers[i],
+                      controller: _controllersPushpanjali[i],
                       onChanged: (value) {
-                        setState(() {});
+                        setState(() {
+                          _calculateTotalLadduPacks();
+                        });
                       },
                       decoration: InputDecoration(
                         border:
@@ -140,7 +158,63 @@ class _ServeState extends State<Serve> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Center(
-                    child: Text(_controllers[i].text),
+                    child: Text(_controllersPushpanjali[i].text),
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+        // Table rows for Others and Missing
+        for (String seva in _otherSevas)
+          TableRow(
+            children: [
+              // seva cell
+              TableCell(
+                verticalAlignment:
+                    TableCellVerticalAlignment.middle, // Center vertically
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text('$seva'),
+                  ),
+                ),
+              ),
+
+              // empty tickets cell
+              TableCell(
+                verticalAlignment:
+                    TableCellVerticalAlignment.middle, // Center vertically
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                    child: Text(''),
+                  ),
+                ),
+              ),
+
+              // packs cell
+              TableCell(
+                verticalAlignment:
+                    TableCellVerticalAlignment.middle, // Center vertically
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                    child: TextField(
+                      onChanged: (value) {
+                        setState(() {
+                          _calculateTotalLadduPacks();
+                        });
+                      },
+                      decoration: InputDecoration(
+                        border:
+                            OutlineInputBorder(), // Add border around the text field
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 8.0),
+                      ),
+                      controller: _controllersOthers[_otherSevas.indexOf(seva)],
+                    ),
                   ),
                 ),
               ),
@@ -160,7 +234,45 @@ class _ServeState extends State<Serve> {
         onRefresh: _refresh,
         child: ListView(
           children: [
+            // table of entries
             _createTable(),
+
+            SizedBox(height: 16.0), // Add space between children
+
+            // total laddu packs
+            Text(
+              "Total laddu packs = $totalLadduPacks",
+              style: TextStyle(
+                fontSize: 20.0, // Increase the font size
+                fontWeight: FontWeight.bold, // Make the text bold
+              ),
+              textAlign: TextAlign.center, // Center the text
+            ),
+
+            SizedBox(height: 16.0), // Add space between children
+
+            // note
+            TextField(
+              onChanged: (value) {
+                // Handle the changes in the text field
+              },
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+                hintText: 'Enter a note', // Add a hint text to the text field
+              ),
+            ),
+
+            SizedBox(height: 16.0), // Add space between children
+
+            // serve button
+            ElevatedButton(
+              onPressed: () {
+                // Handle the button press
+              },
+              child: Text('Serve'),
+            ),
           ],
         ),
       ),
