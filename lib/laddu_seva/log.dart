@@ -116,7 +116,31 @@ class _LogState extends State<Log> {
             children: [
               Align(
                 alignment: Alignment.centerLeft,
-                child: Text('Sevakarta: ${serve.user}'),
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'Sevakarta: ',
+                        style: TextStyle(
+                          fontSize: 16.0, // Replace with your desired font size
+                          color:
+                              Colors.black, // Replace with your desired color
+                        ),
+                      ),
+                      TextSpan(
+                        text: '${serve.user}',
+                        style: TextStyle(
+                          fontFamily:
+                              'YourFontFamily', // Replace with your font family
+                          fontSize: 16.0, // Replace with your desired font size
+                          color:
+                              Colors.black, // Replace with your desired color
+                          fontStyle: FontStyle.italic, // Make the text italic
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
               Align(
                 alignment: Alignment.centerLeft,
@@ -126,13 +150,25 @@ class _LogState extends State<Log> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                      '    Pushpanjali ${serve.packsPushpanjali[i].keys.first}: ${serve.packsPushpanjali[i].values.first}'),
+                    '    Pushpanjali ${serve.packsPushpanjali[i].keys.first}: ${serve.packsPushpanjali[i].values.first}',
+                    style: TextStyle(
+                      color: serve.packsPushpanjali[i].values.first == 0
+                          ? Colors.grey
+                          : Colors.black,
+                    ),
+                  ),
                 ),
               for (int i = 0; i < serve.packsOthers.length; i++)
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                      '    ${serve.packsOthers[i].keys.first}: ${serve.packsOthers[i].values.first}'),
+                    '    ${serve.packsOthers[i].keys.first}: ${serve.packsOthers[i].values.first}',
+                    style: TextStyle(
+                      color: serve.packsOthers[i].values.first == 0
+                          ? Colors.grey
+                          : Colors.black,
+                    ),
+                  ),
                 ),
               if (serve.note.isNotEmpty)
                 Align(
