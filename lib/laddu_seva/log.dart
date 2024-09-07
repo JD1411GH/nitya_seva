@@ -90,16 +90,26 @@ class _LogState extends State<Log> {
           ),
           leading: const Icon(Icons.remove),
           trailing: Container(
-            padding: EdgeInsets.all(8.0), // Add padding around the text
+            padding: EdgeInsets.all(8.0),
             decoration: BoxDecoration(
-              border:
-                  Border.all(color: Colors.black, width: 2.0), // Add a border
-              borderRadius:
-                  BorderRadius.circular(12.0), // Make the border circular
+              border: Border.all(color: Colors.black),
+              borderRadius: BorderRadius.circular(8.0),
             ),
-            child: Text(
-              _calculateTotalLadduPacks(serve).toString(),
-              style: TextStyle(fontSize: 24.0), // Increase the font size
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    _calculateTotalLadduPacks(serve).toString(),
+                    style: TextStyle(
+                      fontSize: 24.0, // Increase font size
+                      fontWeight: FontWeight.bold, // Make text bold
+                    ),
+                  ),
+                  Text("Total"),
+                ],
+              ),
             ),
           ),
           subtitle: Column(
@@ -110,14 +120,20 @@ class _LogState extends State<Log> {
               ),
               Align(
                 alignment: Alignment.centerLeft,
-                child: Text('Laddu packs served: '), // TODO
-                // child: Text('Laddu packs served: ${serve.count}'),
+                child: Text('Laddu packs served: '),
               ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text('Purpose: '), // TODO
-                // child: Text('Purpose: ${serve.purpose}'),
-              ),
+              for (int i = 0; i < serve.packsPushpanjali.length; i++)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                      '    Pushpanjali ${serve.packsPushpanjali[i].keys.first}: ${serve.packsPushpanjali[i].values.first}'),
+                ),
+              for (int i = 0; i < serve.packsOthers.length; i++)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                      '    ${serve.packsOthers[i].keys.first}: ${serve.packsOthers[i].values.first}'),
+                ),
               if (serve.note.isNotEmpty)
                 Align(
                   alignment: Alignment.centerLeft,
