@@ -37,6 +37,7 @@ class LadduServe {
   final List<Map<String, int>> packsPushpanjali;
   final List<Map<String, int>> packsOthers;
   final String note;
+  final String title;
 
   LadduServe({
     required this.timestamp,
@@ -44,6 +45,7 @@ class LadduServe {
     required this.packsPushpanjali,
     required this.packsOthers,
     required this.note,
+    required this.title,
   });
 
   factory LadduServe.fromJson(Map<String, dynamic> json) {
@@ -57,6 +59,7 @@ class LadduServe {
           .map((item) => Map<String, int>.from(item))
           .toList(),
       note: json['note'],
+      title: json['title'],
     );
   }
 
@@ -70,6 +73,7 @@ class LadduServe {
           .toList(),
       'packsOthers': packsOthers,
       'note': note,
+      'title': title,
     };
   }
 }

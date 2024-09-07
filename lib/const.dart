@@ -21,6 +21,9 @@ class Const {
   String appVersion = '1.0.0';
   String dbVersion = '1';
 
+  DateTime morningCutoff = DateTime(
+      DateTime.now().year, DateTime.now().month, DateTime.now().day, 14, 0);
+
   List<Map<String, int>> ticketAmounts = [
     {'amount': 400, 'ladduPacks': 1},
     {'amount': 500, 'ladduPacks': 1},

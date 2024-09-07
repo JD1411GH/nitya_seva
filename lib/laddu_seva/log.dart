@@ -84,11 +84,16 @@ class _LogState extends State<Log> {
       List<LadduServe> serves = await FB().readLadduServes(session);
       for (LadduServe serve in serves) {
         _logItems.add(ListTile(
+          // title - careful changing this, as the tiles are sorted based on this
           title: Text(
             DateFormat('dd-MM-yyyy HH:mm:ss').format(serve.timestamp),
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
+
+          // add or remove icon
           leading: const Icon(Icons.remove),
+
+          // total count
           trailing: Container(
             padding: EdgeInsets.all(8.0),
             decoration: BoxDecoration(
@@ -112,8 +117,25 @@ class _LogState extends State<Log> {
               ),
             ),
           ),
+
+          // all details
           subtitle: Column(
             children: [
+              // slot name
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  color: Colors.black, // Dark background color
+                  child: Text(
+                    serve.title,
+                    style: TextStyle(
+                      color: Colors.white, // Light text color
+                    ),
+                  ),
+                ),
+              ),
+
+              // sevakarta
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text.rich(
@@ -142,6 +164,8 @@ class _LogState extends State<Log> {
                   ),
                 ),
               ),
+
+              // laddu packs served
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text('Laddu packs served: '),
@@ -170,6 +194,8 @@ class _LogState extends State<Log> {
                     ),
                   ),
                 ),
+
+              // note
               if (serve.note.isNotEmpty)
                 Align(
                   alignment: Alignment.centerLeft,

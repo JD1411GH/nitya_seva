@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
+import 'package:intl/intl.dart';
 
 class Serve extends StatefulWidget {
   @override
@@ -12,6 +13,7 @@ class _ServeState extends State<Serve> {
   List<TextEditingController> _controllersPushpanjali = [];
   List<TextEditingController> _controllersOthers = [];
   TextEditingController _controllerNote = TextEditingController();
+  TextEditingController _controllerTitle = TextEditingController();
 
   int _totalLadduPacks = 0;
   List<String> _otherSevas = ["Others", "Missing"];
@@ -27,6 +29,16 @@ class _ServeState extends State<Serve> {
         List.generate(ticketAmounts.length, (index) => TextEditingController());
     _controllersOthers =
         List.generate(_otherSevas.length, (index) => TextEditingController());
+
+    // formulate title for the slot
+    final now = DateTime.now();
+    final dayOfWeek = DateFormat('EEEE').format(now);
+    final cutoff = Const().morningCutoff;
+    if (now.isBefore(cutoff)) {
+      _controllerTitle.text = '$dayOfWeek Morning';
+    } else {
+      _controllerTitle.text = '$dayOfWeek Evening';
+    }
 
     _calculateTotalLadduPacks();
     _refresh();
@@ -248,6 +260,18 @@ class _ServeState extends State<Serve> {
         onRefresh: _refresh,
         child: ListView(
           children: [
+            // title
+            Padding(
+              padding: const EdgeInsets.all(
+                  8.0), // Adjust the padding value as needed
+              child: TextField(
+                decoration: InputDecoration(
+                  labelText: 'Seva slot',
+                ),
+                controller: _controllerTitle,
+              ),
+            ),
+
             // table of entries
             _createTable(),
 
@@ -321,12 +345,14 @@ class _ServeState extends State<Serve> {
                         });
                       }
 
+                      DateTime now = DateTime.now();
                       LadduServe ladduDist = LadduServe(
-                        timestamp: DateTime.now(),
+                        timestamp: now,
                         user: await Const().getUserName(),
                         packsPushpanjali: packsPushpanjali,
                         packsOthers: packsOthers,
                         note: _controllerNote.text,
+                        title: _controllerTitle.text,
                       );
 
                       DateTime session = await FB().readLatestLadduSession();
