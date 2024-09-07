@@ -231,8 +231,8 @@ Future<void> returnStock(BuildContext context) async {
   List<LadduStock> stocks = await FB().readLadduStocks(session);
   stocks.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
-  List<LadduServe> dists = await FB().readLadduServes(session);
-  dists.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+  List<LadduServe> serves = await FB().readLadduServes(session);
+  serves.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
   if (stocks.isEmpty) {
     Toaster().error("No stock available");
@@ -240,8 +240,8 @@ Future<void> returnStock(BuildContext context) async {
   }
 
   DateTime lastEntry = stocks.last.timestamp;
-  if (dists.isNotEmpty && dists.last.timestamp.isAfter(lastEntry)) {
-    lastEntry = dists.last.timestamp;
+  if (serves.isNotEmpty && serves.last.timestamp.isAfter(lastEntry)) {
+    lastEntry = serves.last.timestamp;
   }
 
   // sum of all stocks
@@ -250,10 +250,10 @@ Future<void> returnStock(BuildContext context) async {
 
   // sum of all distributions
   // TODO
-  // int totalDist =
-  //     dists.fold(0, (previousValue, element) => previousValue + element.count);
+  // int totalServe =
+  //     serves.fold(0, (previousValue, element) => previousValue + element.count);
 
-  // int remaining = totalStock - totalDist;
+  // int remaining = totalStock - totalServe;
 
   // await showDialog<bool>(
   //   context: context,
@@ -261,7 +261,7 @@ Future<void> returnStock(BuildContext context) async {
   //     return ReturnStockDialog(
   //       session: session,
   //       totalStock: totalStock,
-  //       totalDist: totalDist,
+  //       totalServe: totalServe,
   //       remaining: remaining,
   //     );
   //   },
@@ -271,7 +271,7 @@ Future<void> returnStock(BuildContext context) async {
 class ReturnStockDialog extends StatefulWidget {
   final DateTime session;
   final int totalStock;
-  final int totalDist;
+  final int totalServe;
   int remaining;
   String returnedTo;
   int returnCount = 0;
@@ -279,7 +279,7 @@ class ReturnStockDialog extends StatefulWidget {
   ReturnStockDialog({
     required this.session,
     required this.totalStock,
-    required this.totalDist,
+    required this.totalServe,
     required this.remaining,
     this.returnedTo = '',
   });
@@ -315,7 +315,7 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                  'Total laddu packs served: ${widget.totalDist.toString()}'),
+                  'Total laddu packs served: ${widget.totalServe.toString()}'),
             ),
             SizedBox(height: 8.0),
             Align(
