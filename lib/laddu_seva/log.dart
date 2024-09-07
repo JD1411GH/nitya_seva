@@ -80,8 +80,8 @@ class _LogState extends State<Log> {
             }));
       }
 
-      List<LadduDist> dists = await FB().readLadduDists(session);
-      for (LadduDist dist in dists) {
+      List<LadduServe> dists = await FB().readLadduServes(session);
+      for (LadduServe dist in dists) {
         _logItems.add(ListTile(
             title: Text(
               DateFormat('dd-MM-yyyy HH:mm:ss').format(dist.timestamp),

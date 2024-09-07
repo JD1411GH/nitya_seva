@@ -31,14 +31,14 @@ class LadduStock {
   }
 }
 
-class LadduDist {
+class LadduServe {
   final DateTime timestamp;
   final String user;
-  final List<Map<int, int>> packsPushpanjali;
+  final List<Map<String, int>> packsPushpanjali;
   final List<Map<String, int>> packsOthers;
   final String note;
 
-  LadduDist({
+  LadduServe({
     required this.timestamp,
     required this.user,
     required this.packsPushpanjali,
@@ -46,12 +46,12 @@ class LadduDist {
     required this.note,
   });
 
-  factory LadduDist.fromJson(Map<String, dynamic> json) {
-    return LadduDist(
+  factory LadduServe.fromJson(Map<String, dynamic> json) {
+    return LadduServe(
       timestamp: DateTime.parse(json['timestamp']),
       user: json['user'],
       packsPushpanjali: (json['packsPushpanjali'] as List)
-          .map((item) => Map<int, int>.from(item))
+          .map((item) => Map<String, int>.from(item))
           .toList(),
       packsOthers: (json['packsOthers'] as List)
           .map((item) => Map<String, int>.from(item))

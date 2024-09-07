@@ -37,7 +37,7 @@ class _SummaryState extends State<Summary> {
     await _lockInit.synchronized(() async {
       DateTime session = await FB().readLatestLadduSession();
       List<LadduStock> stocks = await FB().readLadduStocks(session);
-      // List<LadduDist> dists = await FB().readLadduDists(session);
+      // List<LadduServe> dists = await FB().readLadduServes(session);
 
       sessionTitle = DateFormat("EEE, MMM dd").format(session);
 

@@ -227,7 +227,7 @@ Future<void> addEditStock(BuildContext context,
 
 class AddEditDistDialog extends StatefulWidget {
   final bool edit;
-  final LadduDist? dist;
+  final LadduServe? dist;
   final DateTime? session;
 
   AddEditDistDialog({required this.edit, this.dist, this.session});
@@ -383,7 +383,7 @@ class _AddEditDistDialogState extends State<AddEditDistDialog> {
 
                 // validate against availability
                 List<LadduStock> stocks = await FB().readLadduStocks(session);
-                List<LadduDist> dists = await FB().readLadduDists(session);
+                List<LadduServe> dists = await FB().readLadduServes(session);
                 dists.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
                 int total_procured = 0;
@@ -408,10 +408,10 @@ class _AddEditDistDialogState extends State<AddEditDistDialog> {
                 } else {
                   String username = await Const().getUserName();
 
-                  LadduDist distNew;
+                  LadduServe distNew;
                   if (widget.edit) {
                     // TODO
-                    // distNew = LadduDist(
+                    // distNew = LadduServe(
                     //   timestamp: widget.dist!.timestamp,
                     //   user: username,
                     //   purpose: selectedPurpose,
@@ -419,7 +419,7 @@ class _AddEditDistDialogState extends State<AddEditDistDialog> {
                     //   note: note,
                     // );
                   } else {
-                    // distNew = LadduDist(
+                    // distNew = LadduServe(
                     //   timestamp: DateTime.now(),
                     //   user: username,
                     //   purpose: selectedPurpose,
@@ -433,7 +433,7 @@ class _AddEditDistDialogState extends State<AddEditDistDialog> {
                     // TODO
                     // status = await FB().editLadduDist(session, distNew);
                   } else {
-                    // status = await FB().addLadduDist(session, distNew);
+                    // status = await FB().addLadduServe(session, distNew);
                   }
 
                   // reset selected purpose
@@ -467,7 +467,7 @@ class _AddEditDistDialogState extends State<AddEditDistDialog> {
 }
 
 Future<void> addEditDist(BuildContext context,
-    {bool edit = false, LadduDist? dist = null, DateTime? session}) async {
+    {bool edit = false, LadduServe? dist = null, DateTime? session}) async {
   showDialog(
     context: context,
     builder: (context) {
@@ -482,7 +482,7 @@ Future<void> returnStock(BuildContext context) async {
   List<LadduStock> stocks = await FB().readLadduStocks(session);
   stocks.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
-  List<LadduDist> dists = await FB().readLadduDists(session);
+  List<LadduServe> dists = await FB().readLadduServes(session);
   dists.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
   if (stocks.isEmpty) {
@@ -635,9 +635,9 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
       return;
     } else if (widget.returnCount < widget.remaining) {
       // TODO
-      // await FB().addLadduDist(
+      // await FB().addLadduServe(
       //     widget.session,
-      //     LadduDist(
+      //     LadduServe(
       //         timestamp: DateTime.now(),
       //         user: "auto",
       //         purpose: "Missing",

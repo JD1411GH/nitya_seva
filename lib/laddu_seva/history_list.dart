@@ -42,7 +42,7 @@ class _HistoryListState extends State<HistoryList> {
         List<LadduStock> stocks = await FB().readLadduStocks(session);
         stocks.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
-        List<LadduDist> dists = await FB().readLadduDists(session);
+        List<LadduServe> dists = await FB().readLadduServes(session);
         dists.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
         DateTime startSession = session;
@@ -67,7 +67,7 @@ class _HistoryListState extends State<HistoryList> {
         body.add("Total laddu packs procured = $totalStock");
 
         int totalDist = 0;
-        for (LadduDist dist in dists) {
+        for (LadduServe dist in dists) {
           // totalDist += dist.count;
         }
 

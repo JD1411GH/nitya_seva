@@ -284,7 +284,7 @@ class _ServeState extends State<Serve> {
                         _isLoading = true;
                       });
 
-                      List<Map<int, int>> packsPushpanjali = [];
+                      List<Map<String, int>> packsPushpanjali = [];
                       List<Map<String, int>> packsOthers = [];
 
                       List<int?> ticketAmounts = Const()
@@ -294,7 +294,7 @@ class _ServeState extends State<Serve> {
 
                       for (int i = 0; i < _controllersPushpanjali.length; i++) {
                         packsPushpanjali.add({
-                          ticketAmounts[i]!:
+                          ticketAmounts[i]!.toString():
                               int.tryParse(_controllersPushpanjali[i].text) ?? 0
                         });
                       }
@@ -305,7 +305,7 @@ class _ServeState extends State<Serve> {
                         });
                       }
 
-                      LadduDist ladduDist = LadduDist(
+                      LadduServe ladduDist = LadduServe(
                         timestamp: DateTime.now(),
                         user: await Const().getUserName(),
                         packsPushpanjali: packsPushpanjali,
@@ -314,7 +314,7 @@ class _ServeState extends State<Serve> {
                       );
 
                       DateTime session = await FB().readLatestLadduSession();
-                      await FB().addLadduDist(session, ladduDist);
+                      await FB().addLadduServe(session, ladduDist);
 
                       setState(() {
                         _isLoading = false;

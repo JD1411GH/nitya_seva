@@ -21,7 +21,7 @@ class _AvailabilityBarState extends State<AvailabilityBar> {
 
   // primitive local variables
   int total_procured = 0;
-  int total_distributed = 0;
+  int total_served = 0;
   int procured_today = 0;
   int distributed_today = 0;
 
@@ -33,17 +33,26 @@ class _AvailabilityBarState extends State<AvailabilityBar> {
       returned = lr.count >= 0;
 
       List<LadduStock> stocks = await FB().readLadduStocks(session);
-      List<LadduDist> dists = await FB().readLadduDists(session);
+      List<LadduServe> serves = await FB().readLadduServes(session);
 
       total_procured = 0;
       for (var stock in stocks) {
         total_procured += stock.count;
       }
 
-      total_distributed = 0;
-      for (var dist in dists) {
-        // TODO
-        // total_distributed += dist.count;
+      total_served = 0;
+      for (LadduServe serve in serves) {
+        serve.packsPushpanjali.forEach((element) {
+          element.forEach((key, value) {
+            total_served += value;
+          });
+        });
+
+        serve.packsOthers.forEach((element) {
+          element.forEach((key, value) {
+            total_served += value;
+          });
+        });
       }
     });
   }
@@ -54,7 +63,7 @@ class _AvailabilityBarState extends State<AvailabilityBar> {
   }
 
   Widget _getAvailabilityBar(BuildContext context) {
-    int currentStock = total_procured - total_distributed;
+    int currentStock = total_procured - total_served;
 
     Color progressColor;
     if (currentStock / total_procured < 0.2) {
