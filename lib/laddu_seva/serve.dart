@@ -5,6 +5,10 @@ import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:intl/intl.dart';
 
 class Serve extends StatefulWidget {
+  final LadduServe? serve;
+
+  Serve({this.serve});
+
   @override
   _ServeState createState() => _ServeState();
 }
@@ -25,19 +29,44 @@ class _ServeState extends State<Serve> {
 
     List<int?> ticketAmounts =
         Const().ticketAmounts.map((e) => e['amount']).toList();
+
+    // default populate the controllers
     _controllersPushpanjali =
         List.generate(ticketAmounts.length, (index) => TextEditingController());
     _controllersOthers =
         List.generate(_otherSevas.length, (index) => TextEditingController());
 
-    // formulate title for the slot
-    final now = DateTime.now();
-    final dayOfWeek = DateFormat('EEEE').format(now);
-    final cutoff = Const().morningCutoff;
-    if (now.isBefore(cutoff)) {
-      _controllerTitle.text = '$dayOfWeek Morning';
+    // in edit mode, prefill all the controllers
+    if (widget.serve != null) {
+      // assuming that all sequences are correct
+
+      // controllers for pushpanjali
+      for (int i = 0; i < widget.serve!.packsPushpanjali.length; i++) {
+        int divider = Const().ticketAmounts[i]['ladduPacks']!;
+        int value = widget.serve!.packsPushpanjali[i].values.first ~/ divider;
+        _controllersPushpanjali[i].text =
+            value.toString(); // assuming that there is only one key-value pair
+      }
+
+      // controllers for other sevas
+      for (int i = 0; i < widget.serve!.packsOthers.length; i++) {
+        _controllersOthers[i].text = widget.serve!.packsOthers[i].values.first
+            .toString(); // assuming that there is only one key-value pair
+      }
+
+      // controller for title and note
+      _controllerTitle.text = widget.serve!.title;
+      _controllerNote.text = widget.serve!.note;
     } else {
-      _controllerTitle.text = '$dayOfWeek Evening';
+      // formulate title for the slot
+      final now = DateTime.now();
+      final dayOfWeek = DateFormat('EEEE').format(now);
+      final cutoff = Const().morningCutoff;
+      if (now.isBefore(cutoff)) {
+        _controllerTitle.text = '$dayOfWeek Morning';
+      } else {
+        _controllerTitle.text = '$dayOfWeek Evening';
+      }
     }
 
     _calculateTotalLadduPacks();
@@ -364,7 +393,9 @@ class _ServeState extends State<Serve> {
 
                       Navigator.pop(context);
                     },
-              child: _isLoading ? CircularProgressIndicator() : Text('Serve'),
+              child: _isLoading
+                  ? CircularProgressIndicator()
+                  : Text(widget.serve != null ? 'Update' : 'Serve'),
             ),
           ],
         ),

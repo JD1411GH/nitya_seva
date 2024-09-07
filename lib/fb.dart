@@ -808,31 +808,6 @@ class FB {
     return serves;
   }
 
-  Future<List<LadduServe>> readLadduDistsByDateRange(
-      DateTime startDate, DateTime endDate) async {
-    final DatabaseReference dbRef = FirebaseDatabase.instance
-        .ref('record_db${Const().dbVersion}/ladduSeva/dists');
-
-    final Query query = dbRef
-        .orderByKey()
-        .startAt(startDate.toIso8601String().replaceAll(".", "^"))
-        .endAt(endDate.toIso8601String().replaceAll(".", "^"));
-
-    final DataSnapshot snapshot = await query.get();
-
-    if (snapshot.exists) {
-      final Map<String, dynamic> data =
-          Map<String, dynamic>.from(snapshot.value as Map);
-      final List<LadduServe> ladduDists = data.entries
-          .map((entry) =>
-              LadduServe.fromJson(Map<String, dynamic>.from(entry.value)))
-          .toList();
-      return ladduDists;
-    } else {
-      return [];
-    }
-  }
-
   Future<void> returnLadduStock(DateTime session, LadduReturn lr) async {
     String a = session.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance
