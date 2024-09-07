@@ -6,9 +6,15 @@ class LadduMain extends StatefulWidget {
 }
 
 class _LadduSevaState extends State<LadduMain> {
+  @override
+  initState() {
+    super.initState();
+
+    _refresh();
+  }
+
   Future<void> _refresh() async {
-    // Simulate a network call
-    await Future.delayed(Duration(seconds: 2));
+    setState(() {});
   }
 
   @override

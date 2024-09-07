@@ -31,40 +31,46 @@ class LadduStock {
   }
 }
 
-class LadduDist {
+class LadduServe {
   final DateTime timestamp;
   final String user;
-  final String purpose;
-  final int count;
+  final List<Map<String, int>> packsPushpanjali;
+  final List<Map<String, int>> packsOthers;
   final String note;
 
-  LadduDist(
-      {required this.timestamp,
-      required this.user,
-      required this.purpose,
-      required this.count,
-      required this.note});
+  LadduServe({
+    required this.timestamp,
+    required this.user,
+    required this.packsPushpanjali,
+    required this.packsOthers,
+    required this.note,
+  });
 
-  // Convert a LadduStock instance to a JSON map
+  factory LadduServe.fromJson(Map<String, dynamic> json) {
+    return LadduServe(
+      timestamp: DateTime.parse(json['timestamp']),
+      user: json['user'],
+      packsPushpanjali: (json['packsPushpanjali'] as List)
+          .map((item) => Map<String, int>.from(item))
+          .toList(),
+      packsOthers: (json['packsOthers'] as List)
+          .map((item) => Map<String, int>.from(item))
+          .toList(),
+      note: json['note'],
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'timestamp': timestamp.toIso8601String(),
       'user': user,
-      'purpose': purpose,
-      'count': count,
+      'packsPushpanjali': packsPushpanjali
+          .map((item) =>
+              item.map((key, value) => MapEntry(key.toString(), value)))
+          .toList(),
+      'packsOthers': packsOthers,
       'note': note,
     };
-  }
-
-  // Create a LadduStock instance from a JSON map
-  factory LadduDist.fromJson(Map<String, dynamic> json) {
-    return LadduDist(
-      timestamp: DateTime.parse(json['timestamp']),
-      user: json['user'],
-      purpose: json['purpose'],
-      count: json['count'],
-      note: json['note'],
-    );
   }
 }
 

@@ -5,10 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
-import 'package:garuda/toaster.dart';
 import 'package:intl/intl.dart';
 import 'package:synchronized/synchronized.dart';
-import 'dart:math';
 
 class Summary extends StatefulWidget {
   const Summary({super.key});
@@ -37,7 +35,7 @@ class _SummaryState extends State<Summary> {
     await _lockInit.synchronized(() async {
       DateTime session = await FB().readLatestLadduSession();
       List<LadduStock> stocks = await FB().readLadduStocks(session);
-      List<LadduDist> dists = await FB().readLadduDists(session);
+      // List<LadduServe> dists = await FB().readLadduServes(session);
 
       sessionTitle = DateFormat("EEE, MMM dd").format(session);
 
@@ -60,9 +58,10 @@ class _SummaryState extends State<Summary> {
       }
 
       total_distributed = 0;
-      for (var dist in dists) {
-        total_distributed += dist.count;
-      }
+      // for (var dist in dists) {
+      // TODO
+      // total_distributed += dist.count;
+      // }
 
       pieSections = [];
       pieLegends = [];
@@ -70,15 +69,16 @@ class _SummaryState extends State<Summary> {
       List<String> labels = [];
       List<int> values = [];
 
-      dists.forEach((dist) {
-        if (labels.contains(dist.purpose)) {
-          int index = labels.indexOf(dist.purpose);
-          values[index] += dist.count;
-        } else {
-          labels.add(dist.purpose);
-          values.add(dist.count);
-        }
-      });
+      // TODO
+      // dists.forEach((dist) {
+      //   if (labels.contains(dist.purpose)) {
+      //     int index = labels.indexOf(dist.purpose);
+      //     values[index] += dist.count;
+      //   } else {
+      //     labels.add(dist.purpose);
+      //     values.add(dist.count);
+      //   }
+      // });
 
       // add the pie sections and legends
       for (int i = 0; i < labels.length; i++) {

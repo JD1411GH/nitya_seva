@@ -3,7 +3,6 @@ import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/laddu_seva/history_edit.dart';
-import 'package:garuda/laddu_seva/main.dart';
 import 'package:intl/intl.dart';
 import 'package:synchronized/synchronized.dart';
 
@@ -42,7 +41,7 @@ class _HistoryListState extends State<HistoryList> {
         List<LadduStock> stocks = await FB().readLadduStocks(session);
         stocks.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
-        List<LadduDist> dists = await FB().readLadduDists(session);
+        List<LadduServe> dists = await FB().readLadduServes(session);
         dists.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
         DateTime startSession = session;
@@ -67,17 +66,18 @@ class _HistoryListState extends State<HistoryList> {
         body.add("Total laddu packs procured = $totalStock");
 
         int totalDist = 0;
-        for (LadduDist dist in dists) {
-          totalDist += dist.count;
+        for (LadduServe dist in dists) {
+          // totalDist += dist.count;
         }
 
         Map<String, int> purposeSum = {};
         dists.forEach((dist) {
-          if (purposeSum.containsKey(dist.purpose)) {
-            purposeSum[dist.purpose] = purposeSum[dist.purpose]! + dist.count;
-          } else {
-            purposeSum[dist.purpose] = dist.count;
-          }
+          // TODO
+          // if (purposeSum.containsKey(dist.purpose)) {
+          //   purposeSum[dist.purpose] = purposeSum[dist.purpose]! + dist.count;
+          // } else {
+          //   purposeSum[dist.purpose] = dist.count;
+          // }
         });
 
         body.add("Laddu packs served for:");
