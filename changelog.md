@@ -1,3 +1,7 @@
+# 2.1.1
+- Laddu seva
+    - disable edit serve
+
 # 2.1.0
 - Laddu seva
     - changed the interface for serve
