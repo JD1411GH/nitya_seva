@@ -85,146 +85,145 @@ class _LogState extends State<Log> {
       List<LadduServe> serves = await FB().readLadduServes(session);
       for (LadduServe serve in serves) {
         _logItems.add(ListTile(
-            // title - careful changing this, as the tiles are sorted based on this
-            title: Text(
-              DateFormat('dd-MM-yyyy HH:mm:ss').format(serve.timestamp),
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18.0, // Adjust the font size as needed
+          // title - careful changing this, as the tiles are sorted based on this
+          title: Text(
+            DateFormat('dd-MM-yyyy HH:mm:ss').format(serve.timestamp),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18.0, // Adjust the font size as needed
+            ),
+          ),
+
+          // add or remove icon
+          leading: const Icon(Icons.remove),
+
+          // total count
+          trailing: Container(
+            padding: EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.black),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    _calculateTotalLadduPacksServed(serve).toString(),
+                    style: TextStyle(
+                      fontSize: 24.0, // Increase font size
+                      fontWeight: FontWeight.bold, // Make text bold
+                    ),
+                  ),
+                  Text("Total"),
+                ],
               ),
             ),
+          ),
 
-            // add or remove icon
-            leading: const Icon(Icons.remove),
-
-            // total count
-            trailing: Container(
-              padding: EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black),
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      _calculateTotalLadduPacksServed(serve).toString(),
-                      style: TextStyle(
-                        fontSize: 24.0, // Increase font size
-                        fontWeight: FontWeight.bold, // Make text bold
-                      ),
+          // all details
+          subtitle: Column(
+            children: [
+              // slot name
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  color: Colors.black, // Dark background color
+                  child: Text(
+                    serve.title,
+                    style: TextStyle(
+                      color: Colors.white, // Light text color
                     ),
-                    Text("Total"),
-                  ],
+                  ),
                 ),
               ),
-            ),
 
-            // all details
-            subtitle: Column(
-              children: [
-                // slot name
+              // sevakarta
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'Sevakarta: ',
+                        style: TextStyle(
+                          fontSize: 16.0, // Replace with your desired font size
+                          color:
+                              Colors.black, // Replace with your desired color
+                        ),
+                      ),
+                      TextSpan(
+                        text: '${serve.user}',
+                        style: TextStyle(
+                          fontFamily:
+                              'YourFontFamily', // Replace with your font family
+                          fontSize: 16.0, // Replace with your desired font size
+                          color:
+                              Colors.black, // Replace with your desired color
+                          fontStyle: FontStyle.italic, // Make the text italic
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // laddu packs served
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text('Laddu packs served: '),
+              ),
+              for (int i = 0; i < serve.packsPushpanjali.length; i++)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '    Seva ${serve.packsPushpanjali[i].keys.first}: ${serve.packsPushpanjali[i].values.first}',
+                    style: TextStyle(
+                      color: serve.packsPushpanjali[i].values.first == 0
+                          ? Colors.grey
+                          : Colors.black,
+                    ),
+                  ),
+                ),
+              for (int i = 0; i < serve.packsOthers.length; i++)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '    ${serve.packsOthers[i].keys.first}: ${serve.packsOthers[i].values.first}',
+                    style: TextStyle(
+                      color: serve.packsOthers[i].values.first == 0
+                          ? Colors.grey
+                          : Colors.black,
+                    ),
+                  ),
+                ),
+
+              // note
+              if (serve.note.isNotEmpty)
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Container(
-                    color: Colors.black, // Dark background color
-                    child: Text(
-                      serve.title,
-                      style: TextStyle(
-                        color: Colors.white, // Light text color
-                      ),
-                    ),
+                    color: Colors.yellow,
+                    child: Text('Note: ${serve.note}'),
                   ),
                 ),
+            ],
+          ),
 
-                // sevakarta
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'Sevakarta: ',
-                          style: TextStyle(
-                            fontSize:
-                                16.0, // Replace with your desired font size
-                            color:
-                                Colors.black, // Replace with your desired color
-                          ),
-                        ),
-                        TextSpan(
-                          text: '${serve.user}',
-                          style: TextStyle(
-                            fontFamily:
-                                'YourFontFamily', // Replace with your font family
-                            fontSize:
-                                16.0, // Replace with your desired font size
-                            color:
-                                Colors.black, // Replace with your desired color
-                            fontStyle: FontStyle.italic, // Make the text italic
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // laddu packs served
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text('Laddu packs served: '),
-                ),
-                for (int i = 0; i < serve.packsPushpanjali.length; i++)
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      '    Seva ${serve.packsPushpanjali[i].keys.first}: ${serve.packsPushpanjali[i].values.first}',
-                      style: TextStyle(
-                        color: serve.packsPushpanjali[i].values.first == 0
-                            ? Colors.grey
-                            : Colors.black,
-                      ),
-                    ),
-                  ),
-                for (int i = 0; i < serve.packsOthers.length; i++)
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      '    ${serve.packsOthers[i].keys.first}: ${serve.packsOthers[i].values.first}',
-                      style: TextStyle(
-                        color: serve.packsOthers[i].values.first == 0
-                            ? Colors.grey
-                            : Colors.black,
-                      ),
-                    ),
-                  ),
-
-                // note
-                if (serve.note.isNotEmpty)
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Container(
-                      color: Colors.yellow,
-                      child: Text('Note: ${serve.note}'),
-                    ),
-                  ),
-              ],
-            ),
-
-            // edit on tap
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => Serve(
-                          serve: serve,
-                        )),
-              );
-              // addEditDist(context,
-              //     edit: true, serve: serve, session: widget.session);
-            }));
+          // edit on tap
+          // onTap: () {
+          //   Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (context) => Serve(
+          //               serve: serve,
+          //             )),
+          //   );
+          //   // addEditDist(context,
+          //   //     edit: true, serve: serve, session: widget.session);
+          // }
+        ));
       }
 
       _logItems.sort((a, b) {
