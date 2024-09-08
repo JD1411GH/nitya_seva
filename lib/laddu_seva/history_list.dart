@@ -3,7 +3,6 @@ import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/laddu_seva/history_edit.dart';
-import 'package:garuda/laddu_seva/main.dart';
 import 'package:intl/intl.dart';
 import 'package:synchronized/synchronized.dart';
 
@@ -42,14 +41,14 @@ class _HistoryListState extends State<HistoryList> {
         List<LadduStock> stocks = await FB().readLadduStocks(session);
         stocks.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
-        List<LadduDist> dists = await FB().readLadduDists(session);
-        dists.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+        List<LadduServe> serves = await FB().readLadduServes(session);
+        serves.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
         DateTime startSession = session;
         DateTime endSession = session;
 
-        if (dists.isNotEmpty &&
-            stocks.last.timestamp.isAfter(dists.last.timestamp)) {
+        if (serves.isNotEmpty &&
+            stocks.last.timestamp.isAfter(serves.last.timestamp)) {
           endSession = stocks.last.timestamp;
         }
 
@@ -66,19 +65,29 @@ class _HistoryListState extends State<HistoryList> {
         }
         body.add("Total laddu packs procured = $totalStock");
 
-        int totalDist = 0;
-        for (LadduDist dist in dists) {
-          totalDist += dist.count;
-        }
-
+        int totalServed = 0;
         Map<String, int> purposeSum = {};
-        dists.forEach((dist) {
-          if (purposeSum.containsKey(dist.purpose)) {
-            purposeSum[dist.purpose] = purposeSum[dist.purpose]! + dist.count;
-          } else {
-            purposeSum[dist.purpose] = dist.count;
-          }
-        });
+        for (LadduServe serve in serves) {
+          totalServed += _calculateTotalLadduPacksServed(serve);
+
+          serve.packsPushpanjali.forEach((element) {
+            String key = "Seva ${element.keys.first}";
+            if (purposeSum.containsKey(key)) {
+              purposeSum[key] = purposeSum[key]! + element.values.first;
+            } else {
+              purposeSum[key] = element.values.first;
+            }
+          });
+
+          serve.packsOthers.forEach((element) {
+            String key = element.keys.first;
+            if (purposeSum.containsKey(key)) {
+              purposeSum[key] = purposeSum[key]! + element.values.first;
+            } else {
+              purposeSum[key] = element.values.first;
+            }
+          });
+        }
 
         body.add("Laddu packs served for:");
         purposeSum.forEach((purpose, count) {
@@ -91,7 +100,7 @@ class _HistoryListState extends State<HistoryList> {
 
         LadduReturn lr = await FB().readLadduReturnStatus(session);
         if (lr.count >= 0) {
-          body.add("Laddu packs returned = ${totalStock - totalDist}");
+          body.add("Laddu packs returned = ${totalStock - totalServed}");
         } else {
           body.add("---Service in progress---");
         }
@@ -118,14 +127,14 @@ class _HistoryListState extends State<HistoryList> {
               children: body.map((e) => Text(e)).toList(),
             ),
 
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        HistoryEdit(startSession: startSession)),
-              );
-            },
+            // onTap: () {
+            //   Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //         builder: (context) =>
+            //             HistoryEdit(startSession: startSession)),
+            //   );
+            // },
           ),
         );
       }
@@ -135,6 +144,20 @@ class _HistoryListState extends State<HistoryList> {
   Future<void> refresh(DateTime month) async {
     await _futureInit(month);
     setState(() {});
+  }
+
+  int _calculateTotalLadduPacksServed(LadduServe serve) {
+    int total = 0;
+
+    serve.packsPushpanjali.forEach((element) {
+      total += element.values.first;
+    });
+
+    serve.packsOthers.forEach((element) {
+      total += element.values.first;
+    });
+
+    return total;
   }
 
   @override

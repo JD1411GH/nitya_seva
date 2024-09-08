@@ -5,6 +5,7 @@ import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/laddu_seva/history.dart';
 import 'package:garuda/laddu_seva/laddu_calc.dart';
 import 'package:garuda/laddu_seva/log.dart';
+import 'package:garuda/laddu_seva/serve.dart';
 import 'package:garuda/laddu_seva/summary.dart';
 
 class LadduMain extends StatefulWidget {
@@ -100,7 +101,10 @@ class _LadduSevaState extends State<LadduMain> {
                 ElevatedButton.icon(
                   onPressed: (lr == null || lr!.count == -1)
                       ? () {
-                          addEditDist(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Serve()),
+                          );
                         }
                       : null,
                   icon: Icon(Icons.remove),

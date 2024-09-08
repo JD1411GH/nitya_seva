@@ -225,248 +225,18 @@ Future<void> addEditStock(BuildContext context,
   );
 }
 
-class AddEditDistDialog extends StatefulWidget {
-  final bool edit;
-  final LadduDist? dist;
-  final DateTime? session;
+int _calculateTotalLadduPacksServed(LadduServe serve) {
+  int total = 0;
 
-  AddEditDistDialog({required this.edit, this.dist, this.session});
+  serve.packsPushpanjali.forEach((element) {
+    total += element.values.first;
+  });
 
-  @override
-  _AddEditDistDialogState createState() => _AddEditDistDialogState();
-}
+  serve.packsOthers.forEach((element) {
+    total += element.values.first;
+  });
 
-class _AddEditDistDialogState extends State<AddEditDistDialog> {
-  final _formKey = GlobalKey<FormState>();
-  TextEditingController _controllerNote = TextEditingController();
-  int count = 0;
-  String note = '';
-  bool isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.edit && widget.dist != null) {
-      _controllerNote.text = widget.dist!.note;
-      count = widget.dist!.count;
-      note = widget.dist!.note;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title:
-          widget.edit ? Text("Edit served packs") : Text('Serve laddu packs'),
-      content: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            // drop down for purpose
-            _getPurposeDropDown(context, defaultPurpose: widget.dist?.purpose),
-
-            // count field
-            TextFormField(
-              decoration: InputDecoration(labelText: 'Packs served'),
-              keyboardType: TextInputType.number,
-              onChanged: (String value) {
-                if (value.isNotEmpty) count = int.parse(value);
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty || value == '0') {
-                  return 'Please enter a count';
-                }
-                return null;
-              },
-              controller: TextEditingController(
-                text: widget.edit ? widget.dist!.count.toString() : '',
-              ),
-            ),
-
-            // note field
-            TextFormField(
-              decoration: InputDecoration(labelText: 'Note'),
-              controller: _controllerNote,
-              onChanged: (String value) {
-                note = value;
-              },
-            ),
-
-            if (isLoading)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CircularProgressIndicator(),
-              ),
-          ],
-        ),
-      ),
-
-      // action buttons
-      actions: <Widget>[
-        // delete button
-        if (widget.edit)
-          ElevatedButton(
-            onPressed: () async {
-              bool? confirm = await showDialog<bool>(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text('Confirmation'),
-                    content: Text('Are you sure you want to delete?'),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(false); // Return false
-                        },
-                        child: Text('Cancel'),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(true); // Return true
-                        },
-                        child: Text('Confirm'),
-                      ),
-                    ],
-                  );
-                },
-              );
-
-              if (confirm == true) {
-                setState(() {
-                  isLoading = true;
-                });
-
-                DateTime session =
-                    widget.session ?? await FB().readLatestLadduSession();
-                await FB().deleteLadduDist(session, widget.dist!);
-
-                setState(() {
-                  isLoading = false;
-                });
-
-                Navigator.pop(context);
-              }
-            },
-            child: Text('Delete'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red, // Set the background color to red
-              padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-            ),
-          ),
-
-        // cancel button
-        ElevatedButton(
-          child: Text('Cancel'),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          style: ElevatedButton.styleFrom(
-            padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-          ),
-        ),
-
-        // add/update button
-        ElevatedButton(
-          child: Text(widget.edit ? 'Update' : 'OK'),
-          onPressed: () async {
-            if (_formKey.currentState!.validate()) {
-              setState(() {
-                isLoading = true;
-              });
-
-              if (count > 0) {
-                DateTime session =
-                    widget.session ?? await FB().readLatestLadduSession();
-
-                // validate against availability
-                List<LadduStock> stocks = await FB().readLadduStocks(session);
-                List<LadduDist> dists = await FB().readLadduDists(session);
-                dists.sort((a, b) => a.timestamp.compareTo(b.timestamp));
-
-                int total_procured = 0;
-                for (var stock in stocks) {
-                  total_procured += stock.count;
-                }
-
-                int total_distributed = 0;
-                for (var dist in dists) {
-                  total_distributed += dist.count;
-                }
-
-                if (widget.edit) {
-                  total_distributed -= dists.last.count;
-                }
-
-                int available = total_procured - total_distributed;
-                if (count > available) {
-                  Toaster().error("Not enough stock");
-                } else {
-                  String username = await Const().getUserName();
-
-                  LadduDist distNew;
-                  if (widget.edit) {
-                    distNew = LadduDist(
-                      timestamp: widget.dist!.timestamp,
-                      user: username,
-                      purpose: selectedPurpose,
-                      count: count,
-                      note: note,
-                    );
-                  } else {
-                    distNew = LadduDist(
-                      timestamp: DateTime.now(),
-                      user: username,
-                      purpose: selectedPurpose,
-                      count: count,
-                      note: note,
-                    );
-                  }
-
-                  bool status;
-                  if (widget.edit) {
-                    status = await FB().editLadduDist(session, distNew);
-                  } else {
-                    status = await FB().addLadduDist(session, distNew);
-                  }
-
-                  // reset selected purpose
-                  selectedPurpose = "Others";
-                  selectedPurposeChanged = false;
-
-                  if (status) {
-                    _controllerNote.clear();
-                    Toaster().info("Laddu Distributed");
-                  } else {
-                    Toaster().error("ERROR");
-                  }
-                }
-
-                setState(() {
-                  isLoading = false;
-                });
-              }
-
-              Navigator.of(context).pop();
-            }
-          },
-          style: ElevatedButton.styleFrom(
-            padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-Future<void> addEditDist(BuildContext context,
-    {bool edit = false, LadduDist? dist = null, DateTime? session}) async {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AddEditDistDialog(edit: edit, dist: dist, session: session);
-    },
-  );
+  return total;
 }
 
 Future<void> returnStock(BuildContext context) async {
@@ -475,8 +245,8 @@ Future<void> returnStock(BuildContext context) async {
   List<LadduStock> stocks = await FB().readLadduStocks(session);
   stocks.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
-  List<LadduDist> dists = await FB().readLadduDists(session);
-  dists.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+  List<LadduServe> serves = await FB().readLadduServes(session);
+  serves.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
   if (stocks.isEmpty) {
     Toaster().error("No stock available");
@@ -484,8 +254,8 @@ Future<void> returnStock(BuildContext context) async {
   }
 
   DateTime lastEntry = stocks.last.timestamp;
-  if (dists.isNotEmpty && dists.last.timestamp.isAfter(lastEntry)) {
-    lastEntry = dists.last.timestamp;
+  if (serves.isNotEmpty && serves.last.timestamp.isAfter(lastEntry)) {
+    lastEntry = serves.last.timestamp;
   }
 
   // sum of all stocks
@@ -493,10 +263,12 @@ Future<void> returnStock(BuildContext context) async {
       stocks.fold(0, (previousValue, element) => previousValue + element.count);
 
   // sum of all distributions
-  int totalDist =
-      dists.fold(0, (previousValue, element) => previousValue + element.count);
+  int totalServe = 0;
+  serves.forEach((serve) {
+    totalServe += _calculateTotalLadduPacksServed(serve);
+  });
 
-  int remaining = totalStock - totalDist;
+  int remaining = totalStock - totalServe;
 
   await showDialog<bool>(
     context: context,
@@ -504,7 +276,7 @@ Future<void> returnStock(BuildContext context) async {
       return ReturnStockDialog(
         session: session,
         totalStock: totalStock,
-        totalDist: totalDist,
+        totalServe: totalServe,
         remaining: remaining,
       );
     },
@@ -514,7 +286,7 @@ Future<void> returnStock(BuildContext context) async {
 class ReturnStockDialog extends StatefulWidget {
   final DateTime session;
   final int totalStock;
-  final int totalDist;
+  final int totalServe;
   int remaining;
   String returnedTo;
   int returnCount = 0;
@@ -522,7 +294,7 @@ class ReturnStockDialog extends StatefulWidget {
   ReturnStockDialog({
     required this.session,
     required this.totalStock,
-    required this.totalDist,
+    required this.totalServe,
     required this.remaining,
     this.returnedTo = '',
   });
@@ -558,7 +330,7 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                  'Total laddu packs served: ${widget.totalDist.toString()}'),
+                  'Total laddu packs served: ${widget.totalServe.toString()}'),
             ),
             SizedBox(height: 8.0),
             Align(
@@ -626,14 +398,15 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
       });
       return;
     } else if (widget.returnCount < widget.remaining) {
-      await FB().addLadduDist(
-          widget.session,
-          LadduDist(
-              timestamp: DateTime.now(),
-              user: "auto",
-              purpose: "Missing",
-              count: widget.remaining - widget.returnCount,
-              note: "Return count less than remaining packs"));
+      // TODO
+      // await FB().addLadduServe(
+      //     widget.session,
+      //     LadduServe(
+      //         timestamp: DateTime.now(),
+      //         user: "auto",
+      //         purpose: "Missing",
+      //         count: widget.remaining - widget.returnCount,
+      //         note: "Return count less than remaining packs"));
     }
 
     String username = await Const().getUserName();
@@ -655,8 +428,10 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
 }
 
 Widget _getPurposeDropDown(BuildContext context, {String? defaultPurpose}) {
+  List<int?> ticketAmounts =
+      Const().ticketAmounts.map((e) => e['amount']).toList();
   List<String> Purposes =
-      Const().ticketAmounts.map((e) => "Seva ${e.toString()}").toList();
+      ticketAmounts.map((e) => "Seva ${e.toString()}").toList();
 
   Purposes.add("Others");
   Purposes.add("Missing");

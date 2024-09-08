@@ -1,3 +1,11 @@
+# 2.1.0
+- Laddu seva
+    - changed the interface for serve
+    - number of laddu packets calculated from number of tickets
+    - changed the interface for serve log
+    - disable edit of history
+    - slot can be named
+
 # 2.0.4
 - fix: availability bar crash
 

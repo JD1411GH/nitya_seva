@@ -21,19 +21,27 @@ class Const {
   String appVersion = '1.0.0';
   String dbVersion = '1';
 
-  List<int> ticketAmounts = [400, 500, 1000, 2500];
+  DateTime morningCutoff = DateTime(
+      DateTime.now().year, DateTime.now().month, DateTime.now().day, 14, 0);
+
+  List<Map<String, int>> ticketAmounts = [
+    {'amount': 400, 'ladduPacks': 1},
+    {'amount': 500, 'ladduPacks': 1},
+    {'amount': 1000, 'ladduPacks': 2},
+    {'amount': 2500, 'ladduPacks': 3},
+  ];
 
   // theme ticketColors
   final Color colorPrimary =
       ColorScheme.fromSeed(seedColor: const Color(0xFF3B4043)).primary;
   final ticketColors = {
-    '400': Colors.blue[400],
+    '400': Colors.blue[300],
     '400variant': Colors.blue[900],
     '500': Colors.yellow[600],
     '500variant': Colors.yellow[900],
-    '1000': Colors.green[400],
+    '1000': Colors.green[300],
     '1000variant': Colors.green[900],
-    '2500': Colors.pink[300],
+    '2500': Colors.pink[200],
     '2500variant': Colors.pink[900],
   };
 

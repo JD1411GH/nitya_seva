@@ -5,10 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
-import 'package:garuda/toaster.dart';
 import 'package:intl/intl.dart';
 import 'package:synchronized/synchronized.dart';
-import 'dart:math';
 
 class Summary extends StatefulWidget {
   const Summary({super.key});
@@ -24,7 +22,7 @@ class _SummaryState extends State<Summary> {
   final _lockInit = Lock();
 
   int total_procured = 0;
-  int total_distributed = 0;
+  int total_served = 0;
 
   LadduReturn? lr;
 
@@ -37,48 +35,64 @@ class _SummaryState extends State<Summary> {
     await _lockInit.synchronized(() async {
       DateTime session = await FB().readLatestLadduSession();
       List<LadduStock> stocks = await FB().readLadduStocks(session);
-      List<LadduDist> dists = await FB().readLadduDists(session);
+      List<LadduServe> serves = await FB().readLadduServes(session);
 
       sessionTitle = DateFormat("EEE, MMM dd").format(session);
 
+      // formulate session title for summary widget
       DateTime now = DateTime.now();
       if (session.day != now.day) {
         sessionTitle += DateFormat(" - EEE, MMM dd").format(now);
       }
-      // lr = await FB().readLadduReturnStatus(session);
-      // if (lr!.count >= 0) {
-      //   String endSession =
-      //       "${lr!.timestamp.day}/${lr!.timestamp.month}/${lr!.timestamp.year}";
-      //   if (sessionTitle != endSession) {
-      //     sessionTitle += " - $endSession";
-      //   }
-      // }
+      lr = await FB().readLadduReturnStatus(session);
+      if (lr!.count >= 0) {
+        String endSession =
+            "${lr!.timestamp.day}/${lr!.timestamp.month}/${lr!.timestamp.year}";
+        if (sessionTitle != endSession) {
+          sessionTitle += " - $endSession";
+        }
+      }
 
       total_procured = 0;
       for (var stock in stocks) {
         total_procured += stock.count;
       }
 
-      total_distributed = 0;
-      for (var dist in dists) {
-        total_distributed += dist.count;
-      }
-
       pieSections = [];
       pieLegends = [];
-
       List<String> labels = [];
       List<int> values = [];
 
-      dists.forEach((dist) {
-        if (labels.contains(dist.purpose)) {
-          int index = labels.indexOf(dist.purpose);
-          values[index] += dist.count;
-        } else {
-          labels.add(dist.purpose);
-          values.add(dist.count);
-        }
-      });
+      total_served = 0;
+      for (var serve in serves) {
+        total_served += _calculateTotalLadduPacksServed(serve);
+
+        // calculate pie chart values for Seva
+        serve.packsPushpanjali.forEach((element) {
+          String purpose = "Seva ${element.keys.first}";
+          int count = element.values.first;
+          if (labels.contains(purpose)) {
+            int index = labels.indexOf(purpose);
+            values[index] += count;
+          } else {
+            labels.add(purpose);
+            values.add(count);
+          }
+        });
+
+        // calculate pie chart values for Others
+        serve.packsOthers.forEach((element) {
+          String purpose = element.keys.first;
+          int count = element.values.first;
+          if (labels.contains(purpose)) {
+            int index = labels.indexOf(purpose);
+            values[index] += count;
+          } else {
+            labels.add(purpose);
+            values.add(count);
+          }
+        });
+      }
 
       // add the pie sections and legends
       for (int i = 0; i < labels.length; i++) {
@@ -123,6 +137,7 @@ class _SummaryState extends State<Summary> {
       pieLegends.sort((a, b) {
         String textA = ((a as Row).children[2] as Text).data ?? '';
         String textB = ((b as Row).children[2] as Text).data ?? '';
+        print("textA: $textA, textB: $textB");
         return textB.compareTo(textA);
       });
 
@@ -144,6 +159,20 @@ class _SummaryState extends State<Summary> {
   Future<void> refresh() async {
     await _futureInit();
     setState(() {});
+  }
+
+  int _calculateTotalLadduPacksServed(LadduServe serve) {
+    int total = 0;
+
+    serve.packsPushpanjali.forEach((element) {
+      total += element.values.first;
+    });
+
+    serve.packsOthers.forEach((element) {
+      total += element.values.first;
+    });
+
+    return total;
   }
 
   void restock(int procured) {
@@ -298,7 +327,7 @@ class _SummaryState extends State<Summary> {
                 padding: const EdgeInsets.only(left: 16.0),
                 child: Align(
                   alignment: Alignment.centerLeft,
-                  child: Text("Total laddu packs served = $total_distributed"),
+                  child: Text("Total laddu packs served = $total_served"),
                 ),
               ),
 
