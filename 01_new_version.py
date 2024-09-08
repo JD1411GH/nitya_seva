@@ -30,12 +30,15 @@ def main():
         sys.exit(1)
 
     # Get the latest remote branch
-    try:
-        output = subprocess.check_output(["git", "ls-remote", "--heads", "origin"]).decode("utf-8")
-        branches = [line.split("\t")[1].split("refs/heads/")[1] for line in output.splitlines()]
-        latest_branch = max(branches)
-    except subprocess.CalledProcessError:
-        print("Failed to retrieve remote branches")
+    if len(sys.argv) > 1:
+        latest_branch = sys.argv[1]
+    else:
+        try:
+            output = subprocess.check_output(["git", "ls-remote", "--heads", "origin"]).decode("utf-8")
+            branches = [line.split("\t")[1].split("refs/heads/")[1] for line in output.splitlines()]
+            latest_branch = max(branches)
+        except subprocess.CalledProcessError:
+            print("Failed to retrieve remote branches")
 
     # Increment the version number based on user selection
     if version == "major":
