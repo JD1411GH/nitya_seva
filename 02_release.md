@@ -7,10 +7,11 @@
     - flutter pub get
     - flutter build apk --release
 - Draft a new release in github
+    - https://github.com/JD1411GH/nitya_seva/releases/new
     - apply release tag to main
     - give release title e.g. 2.0.0
     - upload apk from `build\app\outputs\flutter-apk\app-release.apk`
-    - publish release
+    - publish release. mark as pre-release if all changes are not tested.
 - release in play store for internal testing
     - create app bundle `flutter build appbundle --release`
     - Create new release
