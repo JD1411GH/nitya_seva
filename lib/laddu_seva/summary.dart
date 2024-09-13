@@ -350,6 +350,20 @@ class _SummaryState extends State<Summary> {
                     child: Text("Total laddu packs returned = ${lr!.count}"),
                   ),
                 ),
+
+                // calculate missing if any
+                if (total_procured != total_served + lr!.count) ...[
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Total laddu packs missing = ${total_procured - total_served - lr!.count}",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  ),
+                ],
               ],
 
               // padding before pie chart
