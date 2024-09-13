@@ -71,12 +71,14 @@ class _SummaryState extends State<Summary> {
         serve.packsPushpanjali.forEach((element) {
           String purpose = "Seva ${element.keys.first}";
           int count = element.values.first;
-          if (labels.contains(purpose)) {
-            int index = labels.indexOf(purpose);
-            values[index] += count;
-          } else {
-            labels.add(purpose);
-            values.add(count);
+          if (count > 0) {
+            if (labels.contains(purpose)) {
+              int index = labels.indexOf(purpose);
+              values[index] += count;
+            } else {
+              labels.add(purpose);
+              values.add(count);
+            }
           }
         });
 
@@ -84,12 +86,14 @@ class _SummaryState extends State<Summary> {
         serve.packsOtherSeva.forEach((element) {
           String purpose = "${element.keys.first}";
           int count = element.values.first;
-          if (labels.contains(purpose)) {
-            int index = labels.indexOf(purpose);
-            values[index] += count;
-          } else {
-            labels.add(purpose);
-            values.add(count);
+          if (count > 0) {
+            if (labels.contains(purpose)) {
+              int index = labels.indexOf(purpose);
+              values[index] += count;
+            } else {
+              labels.add(purpose);
+              values.add(count);
+            }
           }
         });
 
@@ -97,12 +101,14 @@ class _SummaryState extends State<Summary> {
         serve.packsMisc.forEach((element) {
           String purpose = element.keys.first;
           int count = element.values.first;
-          if (labels.contains(purpose)) {
-            int index = labels.indexOf(purpose);
-            values[index] += count;
-          } else {
-            labels.add(purpose);
-            values.add(count);
+          if (count > 0) {
+            if (labels.contains(purpose)) {
+              int index = labels.indexOf(purpose);
+              values[index] += count;
+            } else {
+              labels.add(purpose);
+              values.add(count);
+            }
           }
         });
       }
