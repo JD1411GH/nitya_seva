@@ -84,7 +84,7 @@ class _LogState extends State<Log> {
       // add the logs for laddu serves
       List<LadduServe> serves = await FB().readLadduServes(session);
       for (LadduServe serve in serves) {
-        _logItems.add(ListTile(
+        ListTile tile = ListTile(
           // title - careful changing this, as the tiles are sorted based on this
           title: Text(
             DateFormat('dd-MM-yyyy HH:mm:ss').format(serve.timestamp),
@@ -168,46 +168,6 @@ class _LogState extends State<Log> {
                   ),
                 ),
               ),
-
-              // laddu packs served
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text('Laddu packs served: '),
-              ),
-              for (int i = 0; i < serve.packsPushpanjali.length; i++)
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    '    Seva ${serve.packsPushpanjali[i].keys.first}: ${serve.packsPushpanjali[i].values.first}',
-                    style: TextStyle(
-                      color: serve.packsPushpanjali[i].values.first == 0
-                          ? Colors.grey
-                          : Colors.black,
-                    ),
-                  ),
-                ),
-              for (int i = 0; i < serve.packsOthers.length; i++)
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    '    ${serve.packsOthers[i].keys.first}: ${serve.packsOthers[i].values.first}',
-                    style: TextStyle(
-                      color: serve.packsOthers[i].values.first == 0
-                          ? Colors.grey
-                          : Colors.black,
-                    ),
-                  ),
-                ),
-
-              // note
-              if (serve.note.isNotEmpty)
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Container(
-                    color: Colors.yellow,
-                    child: Text('Note: ${serve.note}'),
-                  ),
-                ),
             ],
           ),
 
@@ -223,7 +183,61 @@ class _LogState extends State<Log> {
           //   // addEditDist(context,
           //   //     edit: true, serve: serve, session: widget.session);
           // }
-        ));
+        );
+
+        // heading for laddu packs served
+        (tile.subtitle as Column).children.add(Align(
+              alignment: Alignment.centerLeft,
+              child: Text('Laddu packs served: '),
+            ));
+
+        // all pushpanjali tickets
+        for (int i = 0; i < serve.packsPushpanjali.length; i++) {
+          if (serve.packsPushpanjali[i].values.first != 0) {
+            (tile.subtitle as Column).children.add(Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '    Seva ${serve.packsPushpanjali[i].keys.first}: ${serve.packsPushpanjali[i].values.first}',
+                  ),
+                ));
+          }
+        }
+
+        // other seva tickets
+        for (int i = 0; i < serve.packsPushpanjali.length; i++) {
+          if (serve.packsPushpanjali[i].values.first != 0) {
+            (tile.subtitle as Column).children.add(Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '    Seva ${serve.packsPushpanjali[i].keys.first}: ${serve.packsPushpanjali[i].values.first}',
+                  ),
+                ));
+          }
+        }
+
+        // all misc
+        for (int i = 0; i < serve.packsMisc.length; i++) {
+          if (serve.packsMisc[i].values.first != 0) {
+            (tile.subtitle as Column).children.add(Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '    ${serve.packsMisc[i].keys.first}: ${serve.packsMisc[i].values.first}',
+                  ),
+                ));
+          }
+        }
+
+        // note
+        if (serve.note.isNotEmpty)
+          (tile.subtitle as Column).children.add(Align(
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  color: Colors.yellow,
+                  child: Text('Note: ${serve.note}'),
+                ),
+              ));
+
+        _logItems.add(tile);
       }
 
       _logItems.sort((a, b) {
@@ -253,7 +267,7 @@ class _LogState extends State<Log> {
       total += element.values.first;
     });
 
-    serve.packsOthers.forEach((element) {
+    serve.packsMisc.forEach((element) {
       total += element.values.first;
     });
 

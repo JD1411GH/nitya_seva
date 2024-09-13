@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
+import 'package:garuda/toaster.dart';
 import 'package:intl/intl.dart';
 
 class Serve extends StatefulWidget {
@@ -15,12 +16,13 @@ class Serve extends StatefulWidget {
 
 class _ServeState extends State<Serve> {
   List<TextEditingController> _controllersPushpanjali = [];
-  List<TextEditingController> _controllersOthers = [];
+  List<TextEditingController> _controllersOtherSeva = [];
+  List<TextEditingController> _controllerMisc = [];
   TextEditingController _controllerNote = TextEditingController();
   TextEditingController _controllerTitle = TextEditingController();
 
   int _totalLadduPacks = 0;
-  List<String> _otherSevas = ["Others"];
+  List<String> _misc = ["Miscellaneous"];
   bool _isLoading = false;
 
   @override
@@ -33,8 +35,10 @@ class _ServeState extends State<Serve> {
     // default populate the controllers
     _controllersPushpanjali = List.generate(
         pushpanjaliTickets.length, (index) => TextEditingController());
-    _controllersOthers =
-        List.generate(_otherSevas.length, (index) => TextEditingController());
+    _controllersOtherSeva = List.generate(
+        Const().otherSevaTickets.length, (index) => TextEditingController());
+    _controllerMisc =
+        List.generate(_misc.length, (index) => TextEditingController());
 
     // in edit mode, prefill all the controllers
     if (widget.serve != null) {
@@ -48,9 +52,11 @@ class _ServeState extends State<Serve> {
             value.toString(); // assuming that there is only one key-value pair
       }
 
-      // controllers for other sevas
-      for (int i = 0; i < widget.serve!.packsOthers.length; i++) {
-        _controllersOthers[i].text = widget.serve!.packsOthers[i].values.first
+      // TODO: controllers for other sevas
+
+      // controllers for misc
+      for (int i = 0; i < widget.serve!.packsMisc.length; i++) {
+        _controllerMisc[i].text = widget.serve!.packsMisc[i].values.first
             .toString(); // assuming that there is only one key-value pair
       }
 
@@ -79,6 +85,8 @@ class _ServeState extends State<Serve> {
 
   void _calculateTotalLadduPacks() {
     _totalLadduPacks = 0;
+
+    // add all entries for pushpanjali
     for (int i = 0; i < _controllersPushpanjali.length; i++) {
       if (_controllersPushpanjali[i].text.isNotEmpty) {
         int multiplier = Const().pushpanjaliTickets[i]['ladduPacks']!;
@@ -86,8 +94,19 @@ class _ServeState extends State<Serve> {
             (int.tryParse(_controllersPushpanjali[i].text)! * multiplier);
       }
     }
-    for (int i = 0; i < _controllersOthers.length; i++) {
-      _totalLadduPacks += int.tryParse(_controllersOthers[i].text) ?? 0;
+
+    // add all entries for other sevas
+    for (int i = 0; i < _controllersOtherSeva.length; i++) {
+      if (_controllersOtherSeva[i].text.isNotEmpty) {
+        int multiplier = Const().otherSevaTickets[i]['ladduPacks']!;
+        _totalLadduPacks +=
+            (int.tryParse(_controllersOtherSeva[i].text)! * multiplier);
+      }
+    }
+
+    // add all entries for misc
+    for (int i = 0; i < _controllerMisc.length; i++) {
+      _totalLadduPacks += int.tryParse(_controllerMisc[i].text) ?? 0;
     }
   }
 
@@ -220,8 +239,69 @@ class _ServeState extends State<Serve> {
             ],
           ),
 
+        // Table rows for other sevas
+        for (int i = 0; i < Const().otherSevaTickets.length; i++)
+          TableRow(
+            children: [
+              // seva cell
+              TableCell(
+                verticalAlignment:
+                    TableCellVerticalAlignment.middle, // Center vertically
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text("${Const().otherSevaTickets[i]['name']}"),
+                  ),
+                ),
+              ),
+
+              // number of tickets
+              TableCell(
+                verticalAlignment:
+                    TableCellVerticalAlignment.middle, // Center vertically
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                    child: TextField(
+                      controller: _controllersOtherSeva[i],
+                      onChanged: (value) {
+                        setState(() {
+                          _calculateTotalLadduPacks();
+                        });
+                      },
+                      decoration: InputDecoration(
+                        border:
+                            OutlineInputBorder(), // Add border around the text field
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 8.0,
+                            horizontal: 8.0), // Reduce vertical height
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              // number of laddu packs
+              TableCell(
+                verticalAlignment:
+                    TableCellVerticalAlignment.middle, // Center vertically
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                    child: _controllersOtherSeva[i].text.isEmpty
+                        ? Text("0")
+                        : Text((int.parse(_controllersOtherSeva[i].text) *
+                                Const().otherSevaTickets[i]['ladduPacks']!)
+                            .toString()),
+                  ),
+                ),
+              ),
+            ],
+          ),
+
         // Table rows for Others and Missing
-        for (String seva in _otherSevas)
+        for (String seva in _misc)
           TableRow(
             children: [
               // seva cell
@@ -268,7 +348,7 @@ class _ServeState extends State<Serve> {
                         contentPadding: EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 8.0),
                       ),
-                      controller: _controllersOthers[_otherSevas.indexOf(seva)],
+                      controller: _controllerMisc[_misc.indexOf(seva)],
                     ),
                   ),
                 ),
@@ -340,6 +420,7 @@ class _ServeState extends State<Serve> {
                   ? null
                   : () async {
                       if (_totalLadduPacks == 0) {
+                        Toaster().error('No laddu packs entered');
                         return;
                       }
 
@@ -348,7 +429,7 @@ class _ServeState extends State<Serve> {
                       });
 
                       List<Map<String, int>> packsPushpanjali = [];
-                      List<Map<String, int>> packsOthers = [];
+                      List<Map<String, int>> packsMisc = [];
 
                       List<int?> pushpanjaliTickets = Const()
                           .pushpanjaliTickets
@@ -367,10 +448,9 @@ class _ServeState extends State<Serve> {
                                   Const().pushpanjaliTickets[i]['ladduPacks']!
                         });
                       }
-                      for (int i = 0; i < _controllersOthers.length; i++) {
-                        packsOthers.add({
-                          _otherSevas[i]:
-                              int.tryParse(_controllersOthers[i].text) ?? 0
+                      for (int i = 0; i < _controllerMisc.length; i++) {
+                        packsMisc.add({
+                          _misc[i]: int.tryParse(_controllerMisc[i].text) ?? 0
                         });
                       }
 
@@ -379,7 +459,7 @@ class _ServeState extends State<Serve> {
                         timestamp: now,
                         user: await Const().getUserName(),
                         packsPushpanjali: packsPushpanjali,
-                        packsOthers: packsOthers,
+                        packsMisc: packsMisc,
                         note: _controllerNote.text,
                         title: _controllerTitle.text,
                       );

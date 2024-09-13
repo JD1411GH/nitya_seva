@@ -232,7 +232,7 @@ int _calculateTotalLadduPacksServed(LadduServe serve) {
     total += element.values.first;
   });
 
-  serve.packsOthers.forEach((element) {
+  serve.packsMisc.forEach((element) {
     total += element.values.first;
   });
 

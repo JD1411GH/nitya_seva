@@ -79,7 +79,7 @@ class _HistoryListState extends State<HistoryList> {
             }
           });
 
-          serve.packsOthers.forEach((element) {
+          serve.packsMisc.forEach((element) {
             String key = element.keys.first;
             if (purposeSum.containsKey(key)) {
               purposeSum[key] = purposeSum[key]! + element.values.first;
@@ -153,7 +153,7 @@ class _HistoryListState extends State<HistoryList> {
       total += element.values.first;
     });
 
-    serve.packsOthers.forEach((element) {
+    serve.packsMisc.forEach((element) {
       total += element.values.first;
     });
 

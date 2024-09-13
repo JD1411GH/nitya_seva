@@ -31,6 +31,11 @@ class Const {
     {'amount': 2500, 'ladduPacks': 3},
   ];
 
+  List<Map<String, dynamic>> otherSevaTickets = [
+    {'name': "Special Puja", 'amount': 0, 'ladduPacks': 1},
+    {'name': "Festival", 'amount': 500, 'ladduPacks': 2},
+  ];
+
   // theme ticketColors
   final Color colorPrimary =
       ColorScheme.fromSeed(seedColor: const Color(0xFF3B4043)).primary;

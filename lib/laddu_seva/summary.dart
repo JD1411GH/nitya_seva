@@ -81,7 +81,7 @@ class _SummaryState extends State<Summary> {
         });
 
         // calculate pie chart values for Others
-        serve.packsOthers.forEach((element) {
+        serve.packsMisc.forEach((element) {
           String purpose = element.keys.first;
           int count = element.values.first;
           if (labels.contains(purpose)) {
@@ -168,7 +168,7 @@ class _SummaryState extends State<Summary> {
       total += element.values.first;
     });
 
-    serve.packsOthers.forEach((element) {
+    serve.packsMisc.forEach((element) {
       total += element.values.first;
     });
 

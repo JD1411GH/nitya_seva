@@ -48,7 +48,7 @@ class _AvailabilityBarState extends State<AvailabilityBar> {
           });
         });
 
-        serve.packsOthers.forEach((element) {
+        serve.packsMisc.forEach((element) {
           element.forEach((key, value) {
             total_served += value;
           });

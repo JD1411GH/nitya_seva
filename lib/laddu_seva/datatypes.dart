@@ -35,7 +35,7 @@ class LadduServe {
   final DateTime timestamp;
   final String user;
   final List<Map<String, int>> packsPushpanjali;
-  final List<Map<String, int>> packsOthers;
+  final List<Map<String, int>> packsMisc;
   final String note;
   final String title;
 
@@ -43,7 +43,7 @@ class LadduServe {
     required this.timestamp,
     required this.user,
     required this.packsPushpanjali,
-    required this.packsOthers,
+    required this.packsMisc,
     required this.note,
     required this.title,
   });
@@ -55,7 +55,7 @@ class LadduServe {
       packsPushpanjali: (json['packsPushpanjali'] as List)
           .map((item) => Map<String, int>.from(item))
           .toList(),
-      packsOthers: (json['packsOthers'] as List)
+      packsMisc: (json['packsMisc'] as List)
           .map((item) => Map<String, int>.from(item))
           .toList(),
       note: json['note'],
@@ -71,7 +71,7 @@ class LadduServe {
           .map((item) =>
               item.map((key, value) => MapEntry(key.toString(), value)))
           .toList(),
-      'packsOthers': packsOthers,
+      'packsMisc': packsMisc,
       'note': note,
       'title': title,
     };
