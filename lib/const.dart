@@ -32,8 +32,18 @@ class Const {
   ];
 
   List<Map<String, dynamic>> otherSevaTickets = [
-    {'name': "Special Puja", 'amount': 0, 'ladduPacks': 1},
-    {'name': "Festival", 'amount': 500, 'ladduPacks': 2},
+    {
+      'name': "Special Puja",
+      'amount': 0,
+      'ladduPacks': 1,
+      'color': Colors.pink[900]
+    },
+    {
+      'name': "Festival",
+      'amount': 500,
+      'ladduPacks': 2,
+      'color': Colors.indigo[900]
+    },
   ];
 
   // theme ticketColors

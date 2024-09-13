@@ -48,6 +48,12 @@ class _AvailabilityBarState extends State<AvailabilityBar> {
           });
         });
 
+        serve.packsOtherSeva.forEach((element) {
+          element.forEach((key, value) {
+            total_served += value;
+          });
+        });
+
         serve.packsMisc.forEach((element) {
           element.forEach((key, value) {
             total_served += value;

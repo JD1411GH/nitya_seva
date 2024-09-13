@@ -45,14 +45,19 @@ class _ServeState extends State<Serve> {
       // assuming that all sequences are correct
 
       // controllers for pushpanjali
+      for (int i = 0; i < widget.serve!.packsOtherSeva.length; i++) {
+        int divider = Const().otherSevaTickets[i]['ladduPacks']!;
+        int value = widget.serve!.packsOtherSeva[i].values.first ~/ divider;
+        _controllersOtherSeva[i].text = value.toString();
+      }
+
+      // controllers for other sevas
       for (int i = 0; i < widget.serve!.packsPushpanjali.length; i++) {
         int divider = Const().pushpanjaliTickets[i]['ladduPacks']!;
         int value = widget.serve!.packsPushpanjali[i].values.first ~/ divider;
         _controllersPushpanjali[i].text =
             value.toString(); // assuming that there is only one key-value pair
       }
-
-      // TODO: controllers for other sevas
 
       // controllers for misc
       for (int i = 0; i < widget.serve!.packsMisc.length; i++) {

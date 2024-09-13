@@ -79,6 +79,15 @@ class _HistoryListState extends State<HistoryList> {
             }
           });
 
+          serve.packsOtherSeva.forEach((element) {
+            String key = "${element.keys.first}";
+            if (purposeSum.containsKey(key)) {
+              purposeSum[key] = purposeSum[key]! + element.values.first;
+            } else {
+              purposeSum[key] = element.values.first;
+            }
+          });
+
           serve.packsMisc.forEach((element) {
             String key = element.keys.first;
             if (purposeSum.containsKey(key)) {

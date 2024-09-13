@@ -67,7 +67,7 @@ class _SummaryState extends State<Summary> {
       for (var serve in serves) {
         total_served += _calculateTotalLadduPacksServed(serve);
 
-        // calculate pie chart values for Seva
+        // calculate pie chart values for Pushpanjali Seva
         serve.packsPushpanjali.forEach((element) {
           String purpose = "Seva ${element.keys.first}";
           int count = element.values.first;
@@ -80,7 +80,20 @@ class _SummaryState extends State<Summary> {
           }
         });
 
-        // calculate pie chart values for Others
+        // calculate pie chart values for other Seva
+        serve.packsOtherSeva.forEach((element) {
+          String purpose = "${element.keys.first}";
+          int count = element.values.first;
+          if (labels.contains(purpose)) {
+            int index = labels.indexOf(purpose);
+            values[index] += count;
+          } else {
+            labels.add(purpose);
+            values.add(count);
+          }
+        });
+
+        // calculate pie chart values for misc
         serve.packsMisc.forEach((element) {
           String purpose = element.keys.first;
           int count = element.values.first;
@@ -94,6 +107,10 @@ class _SummaryState extends State<Summary> {
         });
       }
 
+      List<String> sevaNames = Const().otherSevaTickets.map((e) {
+        String name = e['name'];
+        return name;
+      }).toList();
       // add the pie sections and legends
       for (int i = 0; i < labels.length; i++) {
         Color pieColor = Colors.grey;
@@ -103,11 +120,12 @@ class _SummaryState extends State<Summary> {
           pieColor = Const().ticketColors[amount]!;
           textColor =
               amount == "500" ? Theme.of(context).primaryColor : Colors.white;
+        } else if (sevaNames.contains(labels[i])) {
+          int index = sevaNames.indexOf(labels[i]);
+          pieColor = Const().otherSevaTickets[index]['color'];
         } else {
-          if (labels[i] == "Others") {
+          if (labels[i] == "Miscellaneous") {
             pieColor = Colors.grey;
-          } else if (labels[i] == "Missing") {
-            pieColor = Colors.redAccent;
           } else {
             pieColor = Const().getRandomDarkColor();
           }
@@ -165,6 +183,10 @@ class _SummaryState extends State<Summary> {
     int total = 0;
 
     serve.packsPushpanjali.forEach((element) {
+      total += element.values.first;
+    });
+
+    serve.packsOtherSeva.forEach((element) {
       total += element.values.first;
     });
 
