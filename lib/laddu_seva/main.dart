@@ -134,10 +134,11 @@ class _LadduSevaState extends State<LadduMain> {
                     "Click '+ Stock' to start",
                     style: TextStyle(color: Colors.red, fontSize: 20.0),
                   ),
+                  Divider()
                 ],
               ),
 
-            if (lr == null || lr!.count == -1) Log(key: LogKey),
+            Log(key: LogKey),
           ],
         ),
       ),

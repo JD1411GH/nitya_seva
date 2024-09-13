@@ -68,7 +68,7 @@ class _HistoryListState extends State<HistoryList> {
         int totalServed = 0;
         Map<String, int> purposeSum = {};
         for (LadduServe serve in serves) {
-          totalServed += _calculateTotalLadduPacksServed(serve);
+          totalServed += serve.totalPacks();
 
           serve.packsPushpanjali.forEach((element) {
             String key = "Seva ${element.keys.first}";
@@ -106,6 +106,7 @@ class _HistoryListState extends State<HistoryList> {
             body.add("    $purpose = $count");
           }
         });
+        body.add("Total laddu packs served = $totalServed");
 
         LadduReturn lr = await FB().readLadduReturnStatus(session);
         if (lr.count >= 0) {
@@ -153,20 +154,6 @@ class _HistoryListState extends State<HistoryList> {
   Future<void> refresh(DateTime month) async {
     await _futureInit(month);
     setState(() {});
-  }
-
-  int _calculateTotalLadduPacksServed(LadduServe serve) {
-    int total = 0;
-
-    serve.packsPushpanjali.forEach((element) {
-      total += element.values.first;
-    });
-
-    serve.packsMisc.forEach((element) {
-      total += element.values.first;
-    });
-
-    return total;
   }
 
   @override

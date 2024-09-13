@@ -225,20 +225,6 @@ Future<void> addEditStock(BuildContext context,
   );
 }
 
-int _calculateTotalLadduPacksServed(LadduServe serve) {
-  int total = 0;
-
-  serve.packsPushpanjali.forEach((element) {
-    total += element.values.first;
-  });
-
-  serve.packsMisc.forEach((element) {
-    total += element.values.first;
-  });
-
-  return total;
-}
-
 Future<void> returnStock(BuildContext context) async {
   DateTime session = await FB().readLatestLadduSession();
 
@@ -265,7 +251,7 @@ Future<void> returnStock(BuildContext context) async {
   // sum of all distributions
   int totalServe = 0;
   serves.forEach((serve) {
-    totalServe += _calculateTotalLadduPacksServed(serve);
+    totalServe += serve.totalPacks();
   });
 
   int remaining = totalStock - totalServe;

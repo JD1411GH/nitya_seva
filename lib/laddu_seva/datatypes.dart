@@ -85,6 +85,29 @@ class LadduServe {
       'title': title,
     };
   }
+
+  int totalPacks() {
+    int total = 0;
+    packsPushpanjali.forEach((element) {
+      element.forEach((key, value) {
+        total += value;
+      });
+    });
+
+    packsOtherSeva.forEach((element) {
+      element.forEach((key, value) {
+        total += value;
+      });
+    });
+
+    packsMisc.forEach((element) {
+      element.forEach((key, value) {
+        total += value;
+      });
+    });
+
+    return total;
+  }
 }
 
 class LadduDistAccumulated {

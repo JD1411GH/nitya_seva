@@ -65,7 +65,7 @@ class _SummaryState extends State<Summary> {
 
       total_served = 0;
       for (var serve in serves) {
-        total_served += _calculateTotalLadduPacksServed(serve);
+        total_served += serve.totalPacks();
 
         // calculate pie chart values for Pushpanjali Seva
         serve.packsPushpanjali.forEach((element) {
@@ -177,24 +177,6 @@ class _SummaryState extends State<Summary> {
   Future<void> refresh() async {
     await _futureInit();
     setState(() {});
-  }
-
-  int _calculateTotalLadduPacksServed(LadduServe serve) {
-    int total = 0;
-
-    serve.packsPushpanjali.forEach((element) {
-      total += element.values.first;
-    });
-
-    serve.packsOtherSeva.forEach((element) {
-      total += element.values.first;
-    });
-
-    serve.packsMisc.forEach((element) {
-      total += element.values.first;
-    });
-
-    return total;
   }
 
   void restock(int procured) {

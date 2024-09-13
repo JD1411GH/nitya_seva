@@ -110,7 +110,7 @@ class _LogState extends State<Log> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      _calculateTotalLadduPacksServed(serve).toString(),
+                      serve.totalPacks().toString(),
                       style: TextStyle(
                         fontSize: 24.0, // Increase font size
                         fontWeight: FontWeight.bold, // Make text bold
@@ -259,24 +259,6 @@ class _LogState extends State<Log> {
     if (mounted) {
       setState(() {});
     }
-  }
-
-  int _calculateTotalLadduPacksServed(LadduServe serve) {
-    int total = 0;
-
-    serve.packsPushpanjali.forEach((element) {
-      total += element.values.first;
-    });
-
-    serve.packsOtherSeva.forEach((element) {
-      total += element.values.first;
-    });
-
-    serve.packsMisc.forEach((element) {
-      total += element.values.first;
-    });
-
-    return total;
   }
 
   Widget _getListView() {

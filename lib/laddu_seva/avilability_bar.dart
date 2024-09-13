@@ -42,23 +42,7 @@ class _AvailabilityBarState extends State<AvailabilityBar> {
 
       total_served = 0;
       for (LadduServe serve in serves) {
-        serve.packsPushpanjali.forEach((element) {
-          element.forEach((key, value) {
-            total_served += value;
-          });
-        });
-
-        serve.packsOtherSeva.forEach((element) {
-          element.forEach((key, value) {
-            total_served += value;
-          });
-        });
-
-        serve.packsMisc.forEach((element) {
-          element.forEach((key, value) {
-            total_served += value;
-          });
-        });
+        total_served += serve.totalPacks();
       }
     });
   }
