@@ -88,6 +88,17 @@ class _AddEditStockDialogState extends State<AddEditStockDialog> {
         if (widget.edit)
           ElevatedButton(
             onPressed: () async {
+              DateTime session =
+                  widget.session ?? await FB().readLatestLadduSession();
+
+              // check if this is the only stock entry
+              List<LadduStock> stocks = await FB().readLadduStocks(session);
+              if (stocks.length == 1) {
+                Toaster().error("Cannot delete the only stock entry");
+                return;
+              }
+
+              // confirm delete
               bool? confirm = await showDialog<bool>(
                 context: context,
                 builder: (BuildContext context) {
@@ -117,8 +128,6 @@ class _AddEditStockDialogState extends State<AddEditStockDialog> {
                   isLoading = true;
                 });
 
-                DateTime session =
-                    widget.session ?? await FB().readLatestLadduSession();
                 await FB().deleteLadduStock(session, widget.stock!);
 
                 setState(() {
