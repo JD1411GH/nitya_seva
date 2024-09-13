@@ -429,6 +429,7 @@ class _ServeState extends State<Serve> {
                       });
 
                       List<Map<String, int>> packsPushpanjali = [];
+                      List<Map<String, int>> packsOtherSeva = [];
                       List<Map<String, int>> packsMisc = [];
 
                       List<int?> pushpanjaliTickets = Const()
@@ -436,6 +437,7 @@ class _ServeState extends State<Serve> {
                           .map((e) => e['amount'])
                           .toList();
 
+                      // pushpanjali
                       for (int i = 0; i < _controllersPushpanjali.length; i++) {
                         if (_controllersPushpanjali[i].text.isEmpty) {
                           packsPushpanjali
@@ -448,6 +450,25 @@ class _ServeState extends State<Serve> {
                                   Const().pushpanjaliTickets[i]['ladduPacks']!
                         });
                       }
+
+                      // other sevas
+                      for (int i = 0; i < _controllersOtherSeva.length; i++) {
+                        // no entries
+                        if (_controllersOtherSeva[i].text.isEmpty) {
+                          packsOtherSeva
+                              .add({Const().otherSevaTickets[i]['name']: 0});
+                          continue;
+                        }
+
+                        // add entries
+                        int mul = Const().otherSevaTickets[i]['ladduPacks']!;
+                        packsOtherSeva.add({
+                          Const().otherSevaTickets[i]['name']:
+                              int.tryParse(_controllersOtherSeva[i].text)! * mul
+                        });
+                      }
+
+                      // misc
                       for (int i = 0; i < _controllerMisc.length; i++) {
                         packsMisc.add({
                           _misc[i]: int.tryParse(_controllerMisc[i].text) ?? 0
@@ -459,6 +480,7 @@ class _ServeState extends State<Serve> {
                         timestamp: now,
                         user: await Const().getUserName(),
                         packsPushpanjali: packsPushpanjali,
+                        packsOtherSeva: packsOtherSeva,
                         packsMisc: packsMisc,
                         note: _controllerNote.text,
                         title: _controllerTitle.text,
