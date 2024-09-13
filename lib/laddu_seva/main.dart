@@ -16,6 +16,7 @@ class LadduMain extends StatefulWidget {
 class _LadduSevaState extends State<LadduMain> {
   DateTime? session;
   LadduReturn? lr;
+  DateTime lastRefresh = DateTime.now();
 
   @override
   initState() {
@@ -30,6 +31,11 @@ class _LadduSevaState extends State<LadduMain> {
   }
 
   Future<void> refresh() async {
+    if (DateTime.now().difference(lastRefresh).inSeconds < 2) {
+      return;
+    }
+    lastRefresh = DateTime.now();
+
     // refresh the main widget
     session = await FB().readLatestLadduSession();
     lr = await FB().readLadduReturnStatus(session!);
