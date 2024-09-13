@@ -24,7 +24,7 @@ class Const {
   DateTime morningCutoff = DateTime(
       DateTime.now().year, DateTime.now().month, DateTime.now().day, 14, 0);
 
-  List<Map<String, int>> ticketAmounts = [
+  List<Map<String, int>> pushpanjaliTickets = [
     {'amount': 400, 'ladduPacks': 1},
     {'amount': 500, 'ladduPacks': 1},
     {'amount': 1000, 'ladduPacks': 2},

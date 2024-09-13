@@ -20,19 +20,19 @@ class _ServeState extends State<Serve> {
   TextEditingController _controllerTitle = TextEditingController();
 
   int _totalLadduPacks = 0;
-  List<String> _otherSevas = ["Others", "Missing"];
+  List<String> _otherSevas = ["Others"];
   bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
 
-    List<int?> ticketAmounts =
-        Const().ticketAmounts.map((e) => e['amount']).toList();
+    List<int?> pushpanjaliTickets =
+        Const().pushpanjaliTickets.map((e) => e['amount']).toList();
 
     // default populate the controllers
-    _controllersPushpanjali =
-        List.generate(ticketAmounts.length, (index) => TextEditingController());
+    _controllersPushpanjali = List.generate(
+        pushpanjaliTickets.length, (index) => TextEditingController());
     _controllersOthers =
         List.generate(_otherSevas.length, (index) => TextEditingController());
 
@@ -42,7 +42,7 @@ class _ServeState extends State<Serve> {
 
       // controllers for pushpanjali
       for (int i = 0; i < widget.serve!.packsPushpanjali.length; i++) {
-        int divider = Const().ticketAmounts[i]['ladduPacks']!;
+        int divider = Const().pushpanjaliTickets[i]['ladduPacks']!;
         int value = widget.serve!.packsPushpanjali[i].values.first ~/ divider;
         _controllersPushpanjali[i].text =
             value.toString(); // assuming that there is only one key-value pair
@@ -81,7 +81,7 @@ class _ServeState extends State<Serve> {
     _totalLadduPacks = 0;
     for (int i = 0; i < _controllersPushpanjali.length; i++) {
       if (_controllersPushpanjali[i].text.isNotEmpty) {
-        int multiplier = Const().ticketAmounts[i]['ladduPacks']!;
+        int multiplier = Const().pushpanjaliTickets[i]['ladduPacks']!;
         _totalLadduPacks +=
             (int.tryParse(_controllersPushpanjali[i].text)! * multiplier);
       }
@@ -92,8 +92,8 @@ class _ServeState extends State<Serve> {
   }
 
   Widget _createTable() {
-    List<int?> ticketAmounts =
-        Const().ticketAmounts.map((e) => e['amount']).toList();
+    List<int?> pushpanjaliTickets =
+        Const().pushpanjaliTickets.map((e) => e['amount']).toList();
 
     return Table(
       columnWidths: {
@@ -160,7 +160,7 @@ class _ServeState extends State<Serve> {
         ),
 
         // Table rows for pushpanjali
-        for (int i = 0; i < Const().ticketAmounts.length; i++)
+        for (int i = 0; i < Const().pushpanjaliTickets.length; i++)
           TableRow(
             children: [
               // seva cell
@@ -171,7 +171,7 @@ class _ServeState extends State<Serve> {
                   padding: const EdgeInsets.all(8.0),
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text('Seva ${ticketAmounts[i]}'),
+                    child: Text('Seva ${pushpanjaliTickets[i]}'),
                   ),
                 ),
               ),
@@ -212,7 +212,7 @@ class _ServeState extends State<Serve> {
                     child: _controllersPushpanjali[i].text.isEmpty
                         ? Text("0")
                         : Text((int.parse(_controllersPushpanjali[i].text) *
-                                Const().ticketAmounts[i]['ladduPacks']!)
+                                Const().pushpanjaliTickets[i]['ladduPacks']!)
                             .toString()),
                   ),
                 ),
@@ -350,21 +350,21 @@ class _ServeState extends State<Serve> {
                       List<Map<String, int>> packsPushpanjali = [];
                       List<Map<String, int>> packsOthers = [];
 
-                      List<int?> ticketAmounts = Const()
-                          .ticketAmounts
+                      List<int?> pushpanjaliTickets = Const()
+                          .pushpanjaliTickets
                           .map((e) => e['amount'])
                           .toList();
 
                       for (int i = 0; i < _controllersPushpanjali.length; i++) {
                         if (_controllersPushpanjali[i].text.isEmpty) {
                           packsPushpanjali
-                              .add({ticketAmounts[i]!.toString(): 0});
+                              .add({pushpanjaliTickets[i]!.toString(): 0});
                           continue;
                         }
                         packsPushpanjali.add({
-                          ticketAmounts[i]!.toString():
+                          pushpanjaliTickets[i]!.toString():
                               int.tryParse(_controllersPushpanjali[i].text)! *
-                                  Const().ticketAmounts[i]['ladduPacks']!
+                                  Const().pushpanjaliTickets[i]['ladduPacks']!
                         });
                       }
                       for (int i = 0; i < _controllersOthers.length; i++) {
