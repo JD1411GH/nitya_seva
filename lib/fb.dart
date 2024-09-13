@@ -636,20 +636,20 @@ class FB {
     await refRet.set(lr.to);
   }
 
-  Future<bool> editLadduDist(DateTime session, LadduServe dist) async {
-    String a = session.toIso8601String().replaceAll(".", "^");
+  Future<bool> editLadduServe(DateTime session, LadduServe serve) async {
+    String s = session.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance
-        .ref('record_db${Const().dbVersion}/ladduSeva/$a');
+        .ref('record_db${Const().dbVersion}/ladduSeva/$s');
 
-    // Add a new laddu stock
-    DateTime timestamp = dist.timestamp;
+    // edit laddu stock
+    DateTime timestamp = serve.timestamp;
     DatabaseReference ref = dbRef
-        .child('dists')
+        .child('serves')
         .child(timestamp.toIso8601String().replaceAll(".", "^"));
     try {
       DataSnapshot snapshot = await ref.get();
       if (snapshot.exists) {
-        await ref.set(dist.toJson());
+        await ref.set(serve.toJson());
       } else {
         return false;
       }
@@ -684,6 +684,7 @@ class FB {
     return true;
   }
 
+  // TODO
   Future<bool> deleteLadduDist(DateTime session, LadduServe dist) async {
     String a = session.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance

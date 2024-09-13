@@ -364,6 +364,85 @@ class _ServeState extends State<Serve> {
     );
   }
 
+  Future<void> _onpressServe() async {
+    if (_totalLadduPacks == 0) {
+      Toaster().error('No laddu packs entered');
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    List<Map<String, int>> packsPushpanjali = [];
+    List<Map<String, int>> packsOtherSeva = [];
+    List<Map<String, int>> packsMisc = [];
+
+    List<int?> pushpanjaliTickets =
+        Const().pushpanjaliTickets.map((e) => e['amount']).toList();
+
+    // pushpanjali
+    for (int i = 0; i < _controllersPushpanjali.length; i++) {
+      if (_controllersPushpanjali[i].text.isEmpty) {
+        packsPushpanjali.add({pushpanjaliTickets[i]!.toString(): 0});
+        continue;
+      }
+      packsPushpanjali.add({
+        pushpanjaliTickets[i]!.toString():
+            int.tryParse(_controllersPushpanjali[i].text)! *
+                Const().pushpanjaliTickets[i]['ladduPacks']!
+      });
+    }
+
+    // other sevas
+    for (int i = 0; i < _controllersOtherSeva.length; i++) {
+      // no entries
+      if (_controllersOtherSeva[i].text.isEmpty) {
+        packsOtherSeva.add({Const().otherSevaTickets[i]['name']: 0});
+        continue;
+      }
+
+      // add entries
+      int mul = Const().otherSevaTickets[i]['ladduPacks']!;
+      packsOtherSeva.add({
+        Const().otherSevaTickets[i]['name']:
+            int.tryParse(_controllersOtherSeva[i].text)! * mul
+      });
+    }
+
+    // misc
+    for (int i = 0; i < _controllerMisc.length; i++) {
+      packsMisc.add({_misc[i]: int.tryParse(_controllerMisc[i].text) ?? 0});
+    }
+
+    DateTime now = DateTime.now();
+    if (widget.serve != null) {
+      now = widget.serve!.timestamp;
+    }
+    LadduServe ladduServe = LadduServe(
+      timestamp: now,
+      user: await Const().getUserName(),
+      packsPushpanjali: packsPushpanjali,
+      packsOtherSeva: packsOtherSeva,
+      packsMisc: packsMisc,
+      note: _controllerNote.text,
+      title: _controllerTitle.text,
+    );
+
+    DateTime session = await FB().readLatestLadduSession();
+    if (widget.serve != null) {
+      await FB().editLadduServe(session, ladduServe);
+    } else {
+      await FB().addLadduServe(session, ladduServe);
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -421,85 +500,7 @@ class _ServeState extends State<Serve> {
 
             // serve button
             ElevatedButton(
-              onPressed: _isLoading
-                  ? null
-                  : () async {
-                      if (_totalLadduPacks == 0) {
-                        Toaster().error('No laddu packs entered');
-                        return;
-                      }
-
-                      setState(() {
-                        _isLoading = true;
-                      });
-
-                      List<Map<String, int>> packsPushpanjali = [];
-                      List<Map<String, int>> packsOtherSeva = [];
-                      List<Map<String, int>> packsMisc = [];
-
-                      List<int?> pushpanjaliTickets = Const()
-                          .pushpanjaliTickets
-                          .map((e) => e['amount'])
-                          .toList();
-
-                      // pushpanjali
-                      for (int i = 0; i < _controllersPushpanjali.length; i++) {
-                        if (_controllersPushpanjali[i].text.isEmpty) {
-                          packsPushpanjali
-                              .add({pushpanjaliTickets[i]!.toString(): 0});
-                          continue;
-                        }
-                        packsPushpanjali.add({
-                          pushpanjaliTickets[i]!.toString():
-                              int.tryParse(_controllersPushpanjali[i].text)! *
-                                  Const().pushpanjaliTickets[i]['ladduPacks']!
-                        });
-                      }
-
-                      // other sevas
-                      for (int i = 0; i < _controllersOtherSeva.length; i++) {
-                        // no entries
-                        if (_controllersOtherSeva[i].text.isEmpty) {
-                          packsOtherSeva
-                              .add({Const().otherSevaTickets[i]['name']: 0});
-                          continue;
-                        }
-
-                        // add entries
-                        int mul = Const().otherSevaTickets[i]['ladduPacks']!;
-                        packsOtherSeva.add({
-                          Const().otherSevaTickets[i]['name']:
-                              int.tryParse(_controllersOtherSeva[i].text)! * mul
-                        });
-                      }
-
-                      // misc
-                      for (int i = 0; i < _controllerMisc.length; i++) {
-                        packsMisc.add({
-                          _misc[i]: int.tryParse(_controllerMisc[i].text) ?? 0
-                        });
-                      }
-
-                      DateTime now = DateTime.now();
-                      LadduServe ladduDist = LadduServe(
-                        timestamp: now,
-                        user: await Const().getUserName(),
-                        packsPushpanjali: packsPushpanjali,
-                        packsOtherSeva: packsOtherSeva,
-                        packsMisc: packsMisc,
-                        note: _controllerNote.text,
-                        title: _controllerTitle.text,
-                      );
-
-                      DateTime session = await FB().readLatestLadduSession();
-                      await FB().addLadduServe(session, ladduDist);
-
-                      setState(() {
-                        _isLoading = false;
-                      });
-
-                      Navigator.pop(context);
-                    },
+              onPressed: _isLoading ? null : _onpressServe,
               child: _isLoading
                   ? CircularProgressIndicator()
                   : Text(widget.serve != null ? 'Update' : 'Serve'),

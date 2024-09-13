@@ -182,8 +182,6 @@ class _LogState extends State<Log> {
                           serve: serve,
                         )),
               );
-              // addEditDist(context,
-              //     edit: true, serve: serve, session: widget.session);
             });
 
         // heading for laddu packs served
