@@ -204,12 +204,12 @@ class _LogState extends State<Log> {
         }
 
         // other seva tickets
-        for (int i = 0; i < serve.packsPushpanjali.length; i++) {
-          if (serve.packsPushpanjali[i].values.first != 0) {
+        for (int i = 0; i < serve.packsOtherSeva.length; i++) {
+          if (serve.packsOtherSeva[i].values.first != 0) {
             (tile.subtitle as Column).children.add(Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    '    Seva ${serve.packsPushpanjali[i].keys.first}: ${serve.packsPushpanjali[i].values.first}',
+                    '    ${serve.packsOtherSeva[i].keys.first}: ${serve.packsOtherSeva[i].values.first}',
                   ),
                 ));
           }
