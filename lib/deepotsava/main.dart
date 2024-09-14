@@ -1,131 +1,131 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'dart:math';
 
 class Deepotsava extends StatefulWidget {
   @override
   _DeepotsavaState createState() => _DeepotsavaState();
 }
 
-class _DeepotsavaState extends State<Deepotsava> {
-  Card _rkcSalesCard = Card();
-  Card _rrgSalesCard = Card();
-  Card _deepamMakingCard = Card();
-  Card _inventoryCard = Card();
-
-  double cardWidth = 300;
-  double cardHeight = 100;
-  List<bool> _isVisible = [false, false, false, false];
-  List<Offset> _positions = [
-    Offset(0, 0),
-    Offset(0, 0),
-    Offset(0, 0),
-    Offset(0, 0)
-  ];
-  Random _random = Random();
+class _DeepotsavaState extends State<Deepotsava>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<Offset> _animationRKC;
+  late Animation<Offset> _animationRRG;
+  late Animation<Offset> _animationMaking;
+  late Animation<Offset> _animationAccounting;
 
   @override
   void initState() {
     super.initState();
-    _refresh();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _animateCards());
-  }
-
-  Future<void> _refresh() async {
-    _rkcSalesCard = Card(
-      color: Colors.amber, // Set the background color to golden
-      child: Padding(
-        padding: const EdgeInsets.all(8.0), // Add padding around the content
-        child: Container(
-          width: cardWidth,
-          height: cardHeight,
-          child: Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Text('RKC Deepam Sales'),
-                ),
-                SizedBox(width: 10), // Add some space between text and image
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(
-                      10.0), // Set the border radius to a smaller value
-                  child: Image.asset(
-                    'assets/images/RKC.png', // Replace with your image path
-                    width: 80, // Set the width of the image
-                    height: 80, // Set the height of the image
-                    fit: BoxFit
-                        .contain, // Ensure the image fits within the container
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+    _controller = AnimationController(
+      duration:
+          const Duration(milliseconds: 500), // Reduced duration to 1 second
+      vsync: this,
     );
 
-    setState(() {});
+    _animationRKC = Tween<Offset>(begin: Offset(-1, 0), end: Offset(0, 0))
+        .animate(_controller);
+    _animationRRG = Tween<Offset>(begin: Offset(1, 0), end: Offset(0, 0))
+        .animate(_controller);
+    _animationMaking = Tween<Offset>(begin: Offset(-1, 0), end: Offset(0, 0))
+        .animate(_controller);
+    _animationAccounting = Tween<Offset>(begin: Offset(1, 0), end: Offset(0, 0))
+        .animate(_controller);
+
+    _controller.forward();
   }
 
-  void _animateCards() {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double centerX = (screenWidth - cardWidth) / 2;
-    double topPadding = 50;
-
-    for (int i = 0; i < 4; i++) {
-      Future.delayed(Duration(milliseconds: i * 200), () {
-        setState(() {
-          _isVisible[i] = true;
-          _positions[i] = _random.nextBool()
-              ? Offset(0, topPadding + i * (cardHeight + 20))
-              : Offset(
-                  screenWidth - cardWidth, topPadding + i * (cardHeight + 20));
-        });
-
-        Future.delayed(Duration(milliseconds: 500), () {
-          setState(() {
-            _positions[i] = Offset(centerX, topPadding + i * (cardHeight + 20));
-          });
-        });
-      });
-    }
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Deepotsava'),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          SlideTransition(
+            position: _animationRKC,
+            child: CardWidget(
+              image: 'assets/images/RKC.png',
+              text: 'RKC Deepam Sales',
+              isImageLeft: true,
+            ),
+          ),
+          SlideTransition(
+            position: _animationRRG,
+            child: CardWidget(
+              image: 'assets/images/RRG.png',
+              text: 'RRG Deepam Sales',
+              isImageLeft: false,
+            ),
+          ),
+          SlideTransition(
+            position: _animationMaking,
+            child: CardWidget(
+              image: 'assets/images/deepotsava.jpg',
+              text: 'Deepam Making',
+              isImageLeft: true,
+            ),
+          ),
+          SlideTransition(
+            position: _animationAccounting,
+            child: CardWidget(
+              image: 'assets/images/icon_cash.png',
+              text: 'Accounting',
+              isImageLeft: false,
+            ),
+          ),
+        ],
       ),
-      body: RefreshIndicator(
-        onRefresh: _refresh,
-        child: Stack(
-          children: [
-            AnimatedPositioned(
-              duration: Duration(milliseconds: 500),
-              left: _isVisible[0] ? _positions[0].dx : -100,
-              top: _isVisible[0] ? _positions[0].dy : -100,
-              child: _rkcSalesCard,
-            ),
-            AnimatedPositioned(
-              duration: Duration(milliseconds: 500),
-              left: _isVisible[1] ? _positions[1].dx : -100,
-              top: _isVisible[1] ? _positions[1].dy : -100,
-              child: _rrgSalesCard,
-            ),
-            AnimatedPositioned(
-              duration: Duration(milliseconds: 500),
-              left: _isVisible[2] ? _positions[2].dx : -100,
-              top: _isVisible[2] ? _positions[2].dy : -100,
-              child: _deepamMakingCard,
-            ),
-            AnimatedPositioned(
-              duration: Duration(milliseconds: 500),
-              left: _isVisible[3] ? _positions[3].dx : -100,
-              top: _isVisible[3] ? _positions[3].dy : -100,
-              child: _inventoryCard,
-            ),
+    );
+  }
+}
+
+class CardWidget extends StatelessWidget {
+  final String image;
+  final String text;
+  final bool isImageLeft;
+
+  CardWidget(
+      {required this.image, required this.text, required this.isImageLeft});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.all(10),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(20),
+        child: Row(
+          children: <Widget>[
+            if (isImageLeft) ...[
+              Image.asset(image, width: 50, height: 50),
+              SizedBox(width: 20),
+              Expanded(
+                child: Text(
+                  text,
+                  style: TextStyle(
+                    fontFamily: 'Cursive',
+                    fontSize: 20,
+                  ),
+                ),
+              ),
+            ] else ...[
+              Expanded(
+                child: Text(
+                  text,
+                  style: TextStyle(
+                    fontFamily: 'Cursive',
+                    fontSize: 20,
+                  ),
+                ),
+              ),
+              SizedBox(width: 20),
+              Image.asset(image, width: 50, height: 50),
+            ],
           ],
         ),
       ),
