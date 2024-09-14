@@ -110,6 +110,19 @@ flutter:
     - family: JackInput
       fonts:
         - asset: assets/fonts/JackInput.ttf
+    - family: Monofonto
+      fonts:
+        - asset: assets/fonts/monofonto.otf
+          weight: 400
+          style: normal
+    - family: ConsolaMono
+      fonts:
+        - asset: assets/fonts/ConsolaMono-Book.ttf
+          weight: 400
+          style: normal
+        - asset: assets/fonts/ConsolaMono-Bold.ttf
+          weight: 700
+          style: normal 
   
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

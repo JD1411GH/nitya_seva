@@ -5,7 +5,7 @@ ThemeData themeDefault = ThemeData(
   brightness: Brightness.light,
 
   // text theme
-  fontFamily: 'JackInput',
+  fontFamily: 'ConsolaMono',
   textTheme: TextTheme(
     bodyMedium: TextStyle(
       color: Colors.black,
