@@ -1,25 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:synchronized/synchronized.dart';
 
-class Stock extends StatefulWidget {
+class StockPage extends StatefulWidget {
   final String stall;
 
-  const Stock({super.key, required this.stall});
+  const StockPage({super.key, required this.stall});
 
   @override
-  State<Stock> createState() => _StockState();
+  State<StockPage> createState() => _StockPageState();
 }
 
 // hint: templateKey.currentState!.refresh();
-final GlobalKey<_StockState> templateKey = GlobalKey<_StockState>();
+final GlobalKey<_StockPageState> templateKey = GlobalKey<_StockPageState>();
 
-class _StockState extends State<Stock> {
+class _StockPageState extends State<StockPage> {
   final _lockInit = Lock();
+  final TextEditingController _preparedLampsController =
+      TextEditingController();
+  final TextEditingController _unpreparedLampsController =
+      TextEditingController();
+  final TextEditingController _wicksController = TextEditingController();
+  final TextEditingController _gheePacketsController = TextEditingController();
+  final TextEditingController _oilCansController = TextEditingController();
+
+  @override
+  void dispose() {
+    _preparedLampsController.dispose();
+    _unpreparedLampsController.dispose();
+    _wicksController.dispose();
+    _gheePacketsController.dispose();
+    _oilCansController.dispose();
+    super.dispose();
+  }
 
   Future<void> _futureInit() async {
-    await _lockInit.synchronized(() async {
-      await Future.delayed(const Duration(seconds: 2));
-    });
+    await _lockInit.synchronized(() async {});
   }
 
   Future<void> refresh() async {
@@ -37,20 +53,25 @@ class _StockState extends State<Stock> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const TextField(
+                TextField(
                   decoration: InputDecoration(labelText: 'Prepared lamps'),
+                  controller: _preparedLampsController,
                 ),
-                const TextField(
+                TextField(
                   decoration: InputDecoration(labelText: 'Unprepared lamps'),
+                  controller: _unpreparedLampsController,
                 ),
-                const TextField(
+                TextField(
                   decoration: InputDecoration(labelText: 'Wicks'),
+                  controller: _wicksController,
                 ),
-                const TextField(
+                TextField(
                   decoration: InputDecoration(labelText: 'Ghee packets'),
+                  controller: _gheePacketsController,
                 ),
-                const TextField(
+                TextField(
                   decoration: InputDecoration(labelText: 'Oil cans'),
+                  controller: _oilCansController,
                 ),
               ],
             ),
@@ -64,7 +85,14 @@ class _StockState extends State<Stock> {
             ),
             TextButton(
               onPressed: () {
-                // Save button action
+                Stock stock = Stock(
+                  preparedLamps: int.parse(_preparedLampsController.text),
+                  unpreparedLamps: int.parse(_unpreparedLampsController.text),
+                  wicks: int.parse(_wicksController.text),
+                  gheePackets: int.parse(_gheePacketsController.text),
+                  oilCans: int.parse(_oilCansController.text),
+                );
+
                 Navigator.of(context).pop();
               },
               child: const Text('Save'),
@@ -83,7 +111,7 @@ class _StockState extends State<Stock> {
         children: [
           Center(
             child: Text(
-              'Stock for ${widget.stall}',
+              'StockPage for ${widget.stall}',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
           ),
@@ -106,15 +134,11 @@ class _StockState extends State<Stock> {
                 ),
                 IconButton(
                   icon: Icon(Icons.edit),
-                  onPressed: () {
-                    // Edit button action
-                  },
+                  onPressed: null,
                 ),
                 IconButton(
                   icon: Icon(Icons.undo),
-                  onPressed: () {
-                    // Delete button action
-                  },
+                  onPressed: null,
                 ),
               ],
             ),
