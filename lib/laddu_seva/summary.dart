@@ -38,6 +38,11 @@ class _SummaryState extends State<Summary> {
       List<LadduStock> stocks = await FB().readLadduStocks(session);
       List<LadduServe> serves = await FB().readLadduServes(session);
 
+      // set laddu return status
+      FB().readLadduReturnStatus(session).then((value) {
+        lr = value;
+      });
+
       // formulate session title for summary widget
       sessionTitle = await CalculateSessionTitle(session);
 
@@ -190,12 +195,21 @@ class _SummaryState extends State<Summary> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SizedBox(
-          height: 100, // Set the desired height
-          width: 100, // Set the desired width
-          child: PieChart(
-            PieChartData(
-              sections: pieSections,
-            ),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 100, // Set the desired height for the PieChart
+                width: 100, // Set the desired width for the PieChart
+                child: PieChart(
+                  PieChartData(
+                    sections: pieSections,
+                  ),
+                ),
+              ),
+              Text(
+                'Laddu packs served', // Replace with your desired text
+              ),
+            ],
           ),
         ),
         SizedBox(width: 40), // Increased space between the chart and the legend
