@@ -22,6 +22,30 @@ class _SalesState extends State<Sales> {
     setState(() {});
   }
 
+  Widget _createCardPage() {
+    return Card(
+      child: SizedBox(
+        height: 200.0,
+        child: PageView(
+          children: <Widget>[
+            Container(
+              color: Colors.red,
+              child: Center(child: Text('Page 1')),
+            ),
+            Container(
+              color: Colors.green,
+              child: Center(child: Text('Page 2')),
+            ),
+            Container(
+              color: Colors.blue,
+              child: Center(child: Text('Page 3')),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // Select theme based on the value of stall
@@ -47,7 +71,7 @@ class _SalesState extends State<Sales> {
           // If you use ListView.builder inside this, then the ListView here can be removed.
           child: ListView(
             children: [
-              Text('This is the body'),
+              _createCardPage(),
             ],
           ),
         ),

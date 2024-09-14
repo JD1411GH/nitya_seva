@@ -28,6 +28,21 @@ class _LadduSevaState extends State<LadduMain> {
 
         // here a ListView is used to allow the content to be scrollable and refreshable.
         // If you use ListView.builder inside this, then the ListView here can be removed.
+        // Often putting widget inside ListView causes app to crash. One possible way
+        // to solve this is to use a SizedBox inside the child widget.
+        // e.g. Card(
+        //   child: SizedBox(
+        //     height: 300.0, // Set a fixed height for the PageView
+        //     child: PageView(
+        //       children: <Widget>[
+        //         Container(
+        //           color: Colors.red,
+        //           child: Center(child: Text('Page 1')),
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // )
         child: ListView(
           children: [
             Text('body'),
