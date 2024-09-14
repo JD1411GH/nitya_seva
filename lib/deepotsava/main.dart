@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/deepotsava/sales.dart';
+import 'package:garuda/toaster.dart';
 
 class Deepotsava extends StatefulWidget {
   @override
@@ -40,19 +42,25 @@ class _DeepotsavaState extends State<Deepotsava>
   }
 
   void _onRKCDeepamSalesTap() {
-    print('RKC Deepam Sales tapped');
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Sales(stall: "RKC")),
+    );
   }
 
   void _onRRGDeepamSalesTap() {
-    print('RRG Deepam Sales tapped');
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Sales(stall: "RRG")),
+    );
   }
 
   void _onDeepamMakingTap() {
-    print('Deepam Making tapped');
+    Toaster().error("Not implemented");
   }
 
   void _onAccountingTap() {
-    print('Accounting tapped');
+    Toaster().error("Not implemented");
   }
 
   @override
