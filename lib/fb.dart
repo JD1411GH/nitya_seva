@@ -809,14 +809,15 @@ class FB {
   }
 
   Future<void> returnLadduStock(DateTime session, LadduReturn lr) async {
-    String a = session.toIso8601String().replaceAll(".", "^");
+    String s = session.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance
-        .ref('record_db${Const().dbVersion}/ladduSeva/$a/returned');
+        .ref('record_db${Const().dbVersion}/ladduSeva/$s/returned');
 
     await dbRef.update({
       'count': lr.count,
       'to': lr.to,
       'timestamp': lr.timestamp.toIso8601String(),
+      'user': lr.user,
     });
   }
 }

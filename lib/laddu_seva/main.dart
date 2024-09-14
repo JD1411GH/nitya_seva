@@ -64,26 +64,38 @@ class _LadduSevaState extends State<LadduMain> {
   Widget _createReturnTile(LadduReturn lr) {
     return ListTile(
         // title
-        title: Text(DateFormat('dd-MM-yyyy HH:mm:ss').format(lr.timestamp),
-            style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          DateFormat('dd-MM-yyyy HH:mm:ss').format(lr.timestamp),
+          style:
+              TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF8A0303)),
+        ),
 
         // icon
-        leading: const Icon(Icons.undo),
+        leading: Icon(Icons.undo, color: Color(0xFF8A0303)),
 
         // body
         subtitle: Column(
           children: [
             Align(
               alignment: Alignment.centerLeft,
-              child: Text('Sevakarta: ${lr.user}'),
+              child: Text(
+                'Sevakarta: ${lr.user}',
+                style: TextStyle(color: Color(0xFF8A0303)),
+              ),
             ),
             Align(
               alignment: Alignment.centerLeft,
-              child: Text('Laddu packs returned: ${lr.count}'),
+              child: Text(
+                'Laddu packs returned: ${lr.count}',
+                style: TextStyle(color: Color(0xFF8A0303)),
+              ),
             ),
             Align(
               alignment: Alignment.centerLeft,
-              child: Text('Returned to: ${lr.to}'),
+              child: Text(
+                'Returned to: ${lr.to}',
+                style: TextStyle(color: Color(0xFF8A0303)),
+              ),
             ),
           ],
         ),
@@ -92,13 +104,17 @@ class _LadduSevaState extends State<LadduMain> {
         trailing: Container(
           padding: EdgeInsets.all(8.0), // Add padding around the text
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.black, width: 2.0), // Add a border
+            color: Colors.red[50], // Change background color to red
+            border: Border.all(
+                color: Color(0xFF8A0303), width: 2.0), // Add a border
             borderRadius:
                 BorderRadius.circular(12.0), // Make the border circular
           ),
           child: Text(
             lr.count.toString(),
-            style: TextStyle(fontSize: 24.0), // Increase the font size
+            style: TextStyle(
+                fontSize: 24.0,
+                color: Color(0xFF8A0303)), // Increase the font size
           ),
         ),
 
