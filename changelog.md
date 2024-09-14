@@ -1,3 +1,66 @@
+# 2.2.0
+- fix return
+- laddu return count in summary
+- serve keyboard is now numeric
+- slot balance is shown in serve tile
+- title in seva history made uniform with summary
+- delete serve
+- all fields are made mandatory in a dialog
+- return is editable
+- missing laddu packs
+- pie display only served tickets
+- prevent multiple refresh
+- edit serve
+- Refactor laddu_seva/avilability_bar.dart and laddu_seva/history_list.dart
+- Related to #issue_number
+- new serve types added
+- log serve
+- other seva fb entry
+- Refactor variable names in laddu_calc.dart and avilability_bar.dart
+- rename ticketAmounts
+
+# 2.2.0
+- fix return
+- laddu return count in summary
+- serve keyboard is now numeric
+- slot balance is shown in serve tile
+- title in seva history made uniform with summary
+- delete serve
+- all fields are made mandatory in a dialog
+- return is editable
+- missing laddu packs
+- pie display only served tickets
+- prevent multiple refresh
+- edit serve
+- Refactor laddu_seva/avilability_bar.dart and laddu_seva/history_list.dart
+- Related to #issue_number
+- new serve types added
+- log serve
+- other seva fb entry
+- Refactor variable names in laddu_calc.dart and avilability_bar.dart
+- rename ticketAmounts
+
+# 2.2.0
+- fix return
+- laddu return count in summary
+- serve keyboard is now numeric
+- slot balance is shown in serve tile
+- title in seva history made uniform with summary
+- delete serve
+- all fields are made mandatory in a dialog
+- return is editable
+- missing laddu packs
+- pie display only served tickets
+- prevent multiple refresh
+- edit serve
+- Refactor laddu_seva/avilability_bar.dart and laddu_seva/history_list.dart
+- Related to #issue_number
+- new serve types added
+- log serve
+- other seva fb entry
+- Refactor variable names in laddu_calc.dart and avilability_bar.dart
+- rename ticketAmounts
+
 # 2.1.1
 - Laddu seva
     - disable edit serve
