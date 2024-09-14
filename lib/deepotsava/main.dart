@@ -8,6 +8,8 @@ class Deepotsava extends StatefulWidget {
 }
 
 class _DeepotsavaState extends State<Deepotsava> {
+  Card _rkcCard = Card();
+
   List<bool> _isVisible = [false, false, false, false];
   List<Offset> _positions = [
     Offset(0, 0),
@@ -25,6 +27,14 @@ class _DeepotsavaState extends State<Deepotsava> {
   }
 
   Future<void> _refresh() async {
+    _rkcCard = Card(
+      child: Container(
+        width: 250,
+        height: 100,
+        child: Center(child: Text('RKC Deepam Counter')),
+      ),
+    );
+
     setState(() {});
   }
 
@@ -33,7 +43,7 @@ class _DeepotsavaState extends State<Deepotsava> {
     double cardWidth = screenWidth * 0.7; // 70% of the screen width
     double cardHeight = 100;
     double centerX = (screenWidth - cardWidth) / 2;
-    double topPadding = 50; // Padding from the top
+    double topPadding = 50;
 
     for (int i = 0; i < 4; i++) {
       Future.delayed(Duration(milliseconds: i * 200), () {
@@ -56,9 +66,6 @@ class _DeepotsavaState extends State<Deepotsava> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double cardWidth = screenWidth * 0.7; // 70% of the screen width
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Deepotsava'),
@@ -66,20 +73,50 @@ class _DeepotsavaState extends State<Deepotsava> {
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: Stack(
-          children: List.generate(4, (index) {
-            return AnimatedPositioned(
+          children: [
+            AnimatedPositioned(
               duration: Duration(milliseconds: 500),
-              left: _isVisible[index] ? _positions[index].dx : -100,
-              top: _isVisible[index] ? _positions[index].dy : -100,
+              left: _isVisible[0] ? _positions[0].dx : -100,
+              top: _isVisible[0] ? _positions[0].dy : -100,
+              child: _rkcCard,
+            ),
+            AnimatedPositioned(
+              duration: Duration(milliseconds: 500),
+              left: _isVisible[1] ? _positions[1].dx : -100,
+              top: _isVisible[1] ? _positions[1].dy : -100,
               child: Card(
                 child: Container(
-                  width: cardWidth, // 70% of the screen width
+                  width: 250,
                   height: 100,
-                  child: Center(child: Text('Card ${index + 1}')),
+                  child: Center(child: Text('Card 2')),
                 ),
               ),
-            );
-          }),
+            ),
+            AnimatedPositioned(
+              duration: Duration(milliseconds: 500),
+              left: _isVisible[2] ? _positions[2].dx : -100,
+              top: _isVisible[2] ? _positions[2].dy : -100,
+              child: Card(
+                child: Container(
+                  width: 250,
+                  height: 100,
+                  child: Center(child: Text('Card 3')),
+                ),
+              ),
+            ),
+            AnimatedPositioned(
+              duration: Duration(milliseconds: 500),
+              left: _isVisible[3] ? _positions[3].dx : -100,
+              top: _isVisible[3] ? _positions[3].dy : -100,
+              child: Card(
+                child: Container(
+                  width: 250,
+                  height: 100,
+                  child: Center(child: Text('Card 4')),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
