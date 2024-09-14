@@ -684,16 +684,15 @@ class FB {
     return true;
   }
 
-  // TODO
-  Future<bool> deleteLadduDist(DateTime session, LadduServe dist) async {
+  Future<bool> deleteLadduServe(DateTime session, LadduServe serve) async {
     String a = session.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/ladduSeva/$a');
 
-    // delete laddu stock
-    DateTime timestamp = dist.timestamp;
+    // delete laddu serve
+    DateTime timestamp = serve.timestamp;
     DatabaseReference ref = dbRef
-        .child('dists')
+        .child('serves')
         .child(timestamp.toIso8601String().replaceAll(".", "^"));
     try {
       DataSnapshot snapshot = await ref.get();

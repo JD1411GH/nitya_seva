@@ -443,6 +443,32 @@ class _ServeState extends State<Serve> {
     Navigator.pop(context);
   }
 
+  Future<bool?> _createConfirmDialog() async {
+    return await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirmation'),
+          content: Text('Are you sure you want to delete?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: Text('Confirm'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -505,6 +531,38 @@ class _ServeState extends State<Serve> {
                   ? CircularProgressIndicator()
                   : Text(widget.serve != null ? 'Update' : 'Serve'),
             ),
+
+            // delete button
+            if (widget.serve != null)
+              ElevatedButton(
+                onPressed: _isLoading
+                    ? null
+                    : () async {
+                        bool? confirm = await _createConfirmDialog();
+
+                        if (confirm == true) {
+                          setState(() {
+                            _isLoading = true;
+                          });
+
+                          DateTime session =
+                              await FB().readLatestLadduSession();
+                          await FB().deleteLadduServe(session, widget.serve!);
+
+                          setState(() {
+                            _isLoading = false;
+                          });
+
+                          Navigator.pop(context);
+                        }
+                      },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:
+                      Colors.red, // Set the background color to red
+                ),
+                child:
+                    _isLoading ? CircularProgressIndicator() : Text('Delete'),
+              ),
           ],
         ),
       ),
