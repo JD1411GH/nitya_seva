@@ -14,7 +14,7 @@ def main():
         word_count = len(first_line.split())
         if first_line.startswith("Merge pull request"):
             break
-        if word_count <= 8:
+        if word_count <= 8 and not first_line.startswith("Refactor"):
             filtered_log_messages.append(log_message)
     log_messages = filtered_log_messages
 
