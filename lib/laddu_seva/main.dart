@@ -7,6 +7,7 @@ import 'package:garuda/laddu_seva/laddu_calc.dart';
 import 'package:garuda/laddu_seva/log.dart';
 import 'package:garuda/laddu_seva/serve.dart';
 import 'package:garuda/laddu_seva/summary.dart';
+import 'package:intl/intl.dart';
 
 class LadduMain extends StatefulWidget {
   @override
@@ -57,6 +58,53 @@ class _LadduSevaState extends State<LadduMain> {
         await LogKey.currentState!.refresh();
       }
     }
+  }
+
+  Widget _getReturnTile(LadduReturn lr) {
+    return ListTile(
+        // title
+        title: Text(DateFormat('dd-MM-yyyy HH:mm:ss').format(lr.timestamp),
+            style: TextStyle(fontWeight: FontWeight.bold)),
+
+        // icon
+        leading: const Icon(Icons.undo),
+
+        // body
+        subtitle: Column(
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text('Sevakarta: ${lr.user}'),
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text('Laddu packs returned: ${lr.count}'),
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text('Returned to: ${lr.to}'),
+            ),
+          ],
+        ),
+
+        // the count
+        trailing: Container(
+          padding: EdgeInsets.all(8.0), // Add padding around the text
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black, width: 2.0), // Add a border
+            borderRadius:
+                BorderRadius.circular(12.0), // Make the border circular
+          ),
+          child: Text(
+            lr.count.toString(),
+            style: TextStyle(fontSize: 24.0), // Increase the font size
+          ),
+        ),
+
+        // on tap
+        onTap: () async {
+          returnStock(context, lr: lr);
+        });
   }
 
   @override
@@ -132,15 +180,17 @@ class _LadduSevaState extends State<LadduMain> {
 
             Divider(),
 
-            // if session is closed, display a message
+            // if session is closed, display a message and the return tile
             if (lr != null && lr!.count >= 0)
               Column(
                 children: [
                   Text(
-                    "Click '+ Stock' to start",
+                    "Click '+ Stock' to start new session",
                     style: TextStyle(color: Colors.red, fontSize: 20.0),
                   ),
-                  Divider()
+                  Divider(),
+                  _getReturnTile(lr!),
+                  Divider(),
                 ],
               ),
 

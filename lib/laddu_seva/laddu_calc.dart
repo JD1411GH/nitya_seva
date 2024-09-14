@@ -234,7 +234,7 @@ Future<void> addEditStock(BuildContext context,
   );
 }
 
-Future<void> returnStock(BuildContext context) async {
+Future<void> returnStock(BuildContext context, {LadduReturn? lr}) async {
   DateTime session = await FB().readLatestLadduSession();
 
   List<LadduStock> stocks = await FB().readLadduStocks(session);
@@ -273,18 +273,21 @@ Future<void> returnStock(BuildContext context) async {
         totalStock: totalStock,
         totalServe: totalServe,
         remaining: remaining,
+        lr: lr,
       );
     },
   );
 }
 
+// ignore: must_be_immutable
 class ReturnStockDialog extends StatefulWidget {
   final DateTime session;
   final int totalStock;
   final int totalServe;
   int remaining;
   String returnedTo;
-  int returnCount = 0;
+  int returnCount;
+  LadduReturn? lr;
 
   ReturnStockDialog({
     required this.session,
@@ -292,6 +295,8 @@ class ReturnStockDialog extends StatefulWidget {
     required this.totalServe,
     required this.remaining,
     this.returnedTo = '',
+    this.returnCount = 0,
+    this.lr,
   });
 
   @override
@@ -304,7 +309,11 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
   @override
   void initState() {
     super.initState();
-    widget.returnCount = widget.remaining;
+    if (widget.lr != null) {
+      widget.returnCount = widget.lr!.count;
+    } else {
+      widget.returnCount = widget.remaining;
+    }
   }
 
   @override
@@ -316,21 +325,11 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 8.0),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                  'Total laddu packs procured: ${widget.totalStock.toString()}'),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                  'Total laddu packs served: ${widget.totalServe.toString()}'),
-            ),
-            SizedBox(height: 8.0),
             Align(
               alignment: Alignment.centerLeft,
               child: TextField(
+                controller: TextEditingController(
+                    text: widget.lr != null ? widget.lr!.to : ''),
                 decoration: InputDecoration(
                   labelText: 'Returned to',
                 ),
@@ -343,8 +342,10 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
             Align(
               alignment: Alignment.centerLeft,
               child: TextField(
-                controller:
-                    TextEditingController(text: widget.remaining.toString()),
+                controller: TextEditingController(
+                    text: widget.lr != null
+                        ? widget.lr!.count.toString()
+                        : widget.remaining.toString()),
                 decoration: InputDecoration(
                   labelText: 'Packs returned',
                 ),
@@ -361,6 +362,9 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
         ),
       ),
       actions: <Widget>[
+        // TODO delete button
+
+        // cancel button
         ElevatedButton(
           onPressed: () {
             Navigator.of(context).pop(false);
@@ -370,9 +374,11 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
             padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
           ),
         ),
+
+        // confirm button
         ElevatedButton(
           onPressed: _isLoading ? null : _confirm,
-          child: Text('Confirm'),
+          child: Text(widget.lr != null ? 'Update' : 'Return'),
           style: ElevatedButton.styleFrom(
             padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
           ),
@@ -392,16 +398,6 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
         _isLoading = false;
       });
       return;
-    } else if (widget.returnCount < widget.remaining) {
-      // TODO
-      // await FB().addLadduServe(
-      //     widget.session,
-      //     LadduServe(
-      //         timestamp: DateTime.now(),
-      //         user: "auto",
-      //         purpose: "Missing",
-      //         count: widget.remaining - widget.returnCount,
-      //         note: "Return count less than remaining packs"));
     }
 
     String username = await Const().getUserName();
