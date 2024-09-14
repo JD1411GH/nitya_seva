@@ -169,7 +169,7 @@ class CardWidget extends StatelessWidget {
                   text,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontFamily: 'Cursive',
+                    fontFamily: 'HowdyLemon',
                     fontSize: 32, // Increased font size
                     fontWeight: FontWeight.bold,
                     color: textColor, // Use the textColor parameter
@@ -183,7 +183,7 @@ class CardWidget extends StatelessWidget {
                   text,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontFamily: 'Cursive',
+                    fontFamily: 'HowdyLemon',
                     fontSize: 32, // Increased font size
                     fontWeight: FontWeight.bold,
                     color: textColor, // Use the textColor parameter
