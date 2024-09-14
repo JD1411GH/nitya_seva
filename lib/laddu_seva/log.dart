@@ -186,7 +186,7 @@ class _LogState extends State<Log> {
                                 16.0, // Replace with your desired font size
                             color:
                                 Colors.black, // Replace with your desired color
-                            fontStyle: FontStyle.italic, // Make the text italic
+                            // fontStyle: FontStyle.italic, // Make the text italic
                           ),
                         ),
                       ],
