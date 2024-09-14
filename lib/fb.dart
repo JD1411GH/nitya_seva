@@ -636,20 +636,20 @@ class FB {
     await refRet.set(lr.to);
   }
 
-  Future<bool> editLadduDist(DateTime session, LadduServe dist) async {
-    String a = session.toIso8601String().replaceAll(".", "^");
+  Future<bool> editLadduServe(DateTime session, LadduServe serve) async {
+    String s = session.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance
-        .ref('record_db${Const().dbVersion}/ladduSeva/$a');
+        .ref('record_db${Const().dbVersion}/ladduSeva/$s');
 
-    // Add a new laddu stock
-    DateTime timestamp = dist.timestamp;
+    // edit laddu stock
+    DateTime timestamp = serve.timestamp;
     DatabaseReference ref = dbRef
-        .child('dists')
+        .child('serves')
         .child(timestamp.toIso8601String().replaceAll(".", "^"));
     try {
       DataSnapshot snapshot = await ref.get();
       if (snapshot.exists) {
-        await ref.set(dist.toJson());
+        await ref.set(serve.toJson());
       } else {
         return false;
       }
@@ -684,15 +684,15 @@ class FB {
     return true;
   }
 
-  Future<bool> deleteLadduDist(DateTime session, LadduServe dist) async {
+  Future<bool> deleteLadduServe(DateTime session, LadduServe serve) async {
     String a = session.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/ladduSeva/$a');
 
-    // delete laddu stock
-    DateTime timestamp = dist.timestamp;
+    // delete laddu serve
+    DateTime timestamp = serve.timestamp;
     DatabaseReference ref = dbRef
-        .child('dists')
+        .child('serves')
         .child(timestamp.toIso8601String().replaceAll(".", "^"));
     try {
       DataSnapshot snapshot = await ref.get();
@@ -809,19 +809,16 @@ class FB {
   }
 
   Future<void> returnLadduStock(DateTime session, LadduReturn lr) async {
-    String a = session.toIso8601String().replaceAll(".", "^");
+    String s = session.toIso8601String().replaceAll(".", "^");
     final DatabaseReference dbRef = FirebaseDatabase.instance
-        .ref('record_db${Const().dbVersion}/ladduSeva/$a/returned');
+        .ref('record_db${Const().dbVersion}/ladduSeva/$s/returned');
 
-    // set return status
-    DatabaseReference refRet = dbRef.child('count');
-    await refRet.set(lr.count);
-
-    refRet = dbRef.child('to');
-    await refRet.set(lr.to);
-
-    refRet = dbRef.child('timestamp');
-    await refRet.set(lr.timestamp.toIso8601String());
+    await dbRef.update({
+      'count': lr.count,
+      'to': lr.to,
+      'timestamp': lr.timestamp.toIso8601String(),
+      'user': lr.user,
+    });
   }
 }
 

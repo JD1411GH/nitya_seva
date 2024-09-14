@@ -76,9 +76,9 @@ class _DashboardState extends State<Dashboard> {
       amountTableTicketRow = [];
       Map<String, List<SevaTicket>> tickets =
           await FB().readSevaTicketsByDate(selectedDate);
-      List<int?> ticketAmounts =
-          Const().ticketAmounts.map((e) => e['amount']).toList();
-      for (var amount in ticketAmounts) {
+      List<int?> pushpanjaliTickets =
+          Const().pushpanjaliTickets.map((e) => e['amount']).toList();
+      for (var amount in pushpanjaliTickets) {
         List<int> row = _getRowData(tickets, amount!);
         bool rowReplaced = false;
         for (int i = 0; i < amountTableTicketRow.length; i++) {

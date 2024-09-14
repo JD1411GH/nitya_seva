@@ -7,6 +7,7 @@ import 'package:garuda/laddu_seva/laddu_calc.dart';
 import 'package:garuda/laddu_seva/log.dart';
 import 'package:garuda/laddu_seva/serve.dart';
 import 'package:garuda/laddu_seva/summary.dart';
+import 'package:intl/intl.dart';
 
 class LadduMain extends StatefulWidget {
   @override
@@ -16,6 +17,7 @@ class LadduMain extends StatefulWidget {
 class _LadduSevaState extends State<LadduMain> {
   DateTime? session;
   LadduReturn? lr;
+  DateTime? lastRefresh;
 
   @override
   initState() {
@@ -30,6 +32,12 @@ class _LadduSevaState extends State<LadduMain> {
   }
 
   Future<void> refresh() async {
+    if (lastRefresh != null &&
+        DateTime.now().difference(lastRefresh!).inSeconds < 2) {
+      return;
+    }
+    lastRefresh = DateTime.now();
+
     // refresh the main widget
     session = await FB().readLatestLadduSession();
     lr = await FB().readLadduReturnStatus(session!);
@@ -51,6 +59,69 @@ class _LadduSevaState extends State<LadduMain> {
         await LogKey.currentState!.refresh();
       }
     }
+  }
+
+  Widget _createReturnTile(LadduReturn lr) {
+    return ListTile(
+        // title
+        title: Text(
+          DateFormat('dd-MM-yyyy HH:mm:ss').format(lr.timestamp),
+          style:
+              TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF8A0303)),
+        ),
+
+        // icon
+        leading: Icon(Icons.undo, color: Color(0xFF8A0303)),
+
+        // body
+        subtitle: Column(
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Sevakarta: ${lr.user}',
+                style: TextStyle(color: Color(0xFF8A0303)),
+              ),
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Laddu packs returned: ${lr.count}',
+                style: TextStyle(color: Color(0xFF8A0303)),
+              ),
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Returned to: ${lr.to}',
+                style: TextStyle(color: Color(0xFF8A0303)),
+              ),
+            ),
+          ],
+        ),
+
+        // the count
+        trailing: Container(
+          padding: EdgeInsets.all(8.0), // Add padding around the text
+          decoration: BoxDecoration(
+            color: Colors.red[50], // Change background color to red
+            border: Border.all(
+                color: Color(0xFF8A0303), width: 2.0), // Add a border
+            borderRadius:
+                BorderRadius.circular(12.0), // Make the border circular
+          ),
+          child: Text(
+            lr.count.toString(),
+            style: TextStyle(
+                fontSize: 24.0,
+                color: Color(0xFF8A0303)), // Increase the font size
+          ),
+        ),
+
+        // on tap
+        onTap: () async {
+          returnStock(context, lr: lr);
+        });
   }
 
   @override
@@ -126,18 +197,21 @@ class _LadduSevaState extends State<LadduMain> {
 
             Divider(),
 
-            // if session is closed, display a message
+            // if session is closed, display a message and the return tile
             if (lr != null && lr!.count >= 0)
               Column(
                 children: [
                   Text(
-                    "Click '+ Stock' to start",
+                    "Click '+ Stock' to start new session",
                     style: TextStyle(color: Colors.red, fontSize: 20.0),
                   ),
+                  Divider(),
+                  _createReturnTile(lr!),
+                  Divider(),
                 ],
               ),
 
-            if (lr == null || lr!.count == -1) Log(key: LogKey),
+            Log(key: LogKey),
           ],
         ),
       ),

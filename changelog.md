@@ -1,3 +1,24 @@
+# 2.2.0
+- release 2.2.0
+- fix return
+- laddu return count in summary
+- serve keyboard is now numeric
+- slot balance is shown in serve tile
+- title in seva history made uniform with summary
+- delete serve
+- all fields are made mandatory in a dialog
+- return is editable
+- missing laddu packs
+- pie display only served tickets
+- prevent multiple refresh
+- edit serve
+- Related to #issue_number
+- new serve types added
+- log serve
+- other seva fb entry
+- rename ticketAmounts
+
+
 # 2.1.1
 - Laddu seva
     - disable edit serve

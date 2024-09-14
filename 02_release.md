@@ -1,11 +1,6 @@
-- update changelog
-- push all changes in release branch
+- execute 03_release_helper.py
 - Raise PR to merge version branch to main
     - merge PR
-- build apk
-    - flutter clean
-    - flutter pub get
-    - flutter build apk --release
 - Draft a new release in github
     - https://github.com/JD1411GH/nitya_seva/releases/new
     - apply release tag to main
@@ -13,7 +8,6 @@
     - upload apk from `build\app\outputs\flutter-apk\app-release.apk`
     - publish release. mark as pre-release if all changes are not tested.
 - release in play store for internal testing
-    - create app bundle `flutter build appbundle --release`
     - Create new release
     - upload the app bundle from `build\app\outputs\bundle\release\app-release.aab`
 

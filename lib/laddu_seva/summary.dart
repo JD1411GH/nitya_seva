@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
+import 'package:garuda/laddu_seva/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:synchronized/synchronized.dart';
 
@@ -37,21 +38,13 @@ class _SummaryState extends State<Summary> {
       List<LadduStock> stocks = await FB().readLadduStocks(session);
       List<LadduServe> serves = await FB().readLadduServes(session);
 
-      sessionTitle = DateFormat("EEE, MMM dd").format(session);
+      // set laddu return status
+      FB().readLadduReturnStatus(session).then((value) {
+        lr = value;
+      });
 
       // formulate session title for summary widget
-      DateTime now = DateTime.now();
-      if (session.day != now.day) {
-        sessionTitle += DateFormat(" - EEE, MMM dd").format(now);
-      }
-      lr = await FB().readLadduReturnStatus(session);
-      if (lr!.count >= 0) {
-        String endSession =
-            "${lr!.timestamp.day}/${lr!.timestamp.month}/${lr!.timestamp.year}";
-        if (sessionTitle != endSession) {
-          sessionTitle += " - $endSession";
-        }
-      }
+      sessionTitle = await CalculateSessionTitle(session);
 
       total_procured = 0;
       for (var stock in stocks) {
@@ -65,35 +58,58 @@ class _SummaryState extends State<Summary> {
 
       total_served = 0;
       for (var serve in serves) {
-        total_served += _calculateTotalLadduPacksServed(serve);
+        total_served += CalculateTotalLadduPacksServed(serve);
 
-        // calculate pie chart values for Seva
+        // calculate pie chart values for Pushpanjali Seva
         serve.packsPushpanjali.forEach((element) {
           String purpose = "Seva ${element.keys.first}";
           int count = element.values.first;
-          if (labels.contains(purpose)) {
-            int index = labels.indexOf(purpose);
-            values[index] += count;
-          } else {
-            labels.add(purpose);
-            values.add(count);
+          if (count > 0) {
+            if (labels.contains(purpose)) {
+              int index = labels.indexOf(purpose);
+              values[index] += count;
+            } else {
+              labels.add(purpose);
+              values.add(count);
+            }
           }
         });
 
-        // calculate pie chart values for Others
-        serve.packsOthers.forEach((element) {
+        // calculate pie chart values for other Seva
+        serve.packsOtherSeva.forEach((element) {
+          String purpose = "${element.keys.first}";
+          int count = element.values.first;
+          if (count > 0) {
+            if (labels.contains(purpose)) {
+              int index = labels.indexOf(purpose);
+              values[index] += count;
+            } else {
+              labels.add(purpose);
+              values.add(count);
+            }
+          }
+        });
+
+        // calculate pie chart values for misc
+        serve.packsMisc.forEach((element) {
           String purpose = element.keys.first;
           int count = element.values.first;
-          if (labels.contains(purpose)) {
-            int index = labels.indexOf(purpose);
-            values[index] += count;
-          } else {
-            labels.add(purpose);
-            values.add(count);
+          if (count > 0) {
+            if (labels.contains(purpose)) {
+              int index = labels.indexOf(purpose);
+              values[index] += count;
+            } else {
+              labels.add(purpose);
+              values.add(count);
+            }
           }
         });
       }
 
+      List<String> sevaNames = Const().otherSevaTickets.map((e) {
+        String name = e['name'];
+        return name;
+      }).toList();
       // add the pie sections and legends
       for (int i = 0; i < labels.length; i++) {
         Color pieColor = Colors.grey;
@@ -103,11 +119,12 @@ class _SummaryState extends State<Summary> {
           pieColor = Const().ticketColors[amount]!;
           textColor =
               amount == "500" ? Theme.of(context).primaryColor : Colors.white;
+        } else if (sevaNames.contains(labels[i])) {
+          int index = sevaNames.indexOf(labels[i]);
+          pieColor = Const().otherSevaTickets[index]['color'];
         } else {
-          if (labels[i] == "Others") {
+          if (labels[i] == "Miscellaneous") {
             pieColor = Colors.grey;
-          } else if (labels[i] == "Missing") {
-            pieColor = Colors.redAccent;
           } else {
             pieColor = Const().getRandomDarkColor();
           }
@@ -161,20 +178,6 @@ class _SummaryState extends State<Summary> {
     setState(() {});
   }
 
-  int _calculateTotalLadduPacksServed(LadduServe serve) {
-    int total = 0;
-
-    serve.packsPushpanjali.forEach((element) {
-      total += element.values.first;
-    });
-
-    serve.packsOthers.forEach((element) {
-      total += element.values.first;
-    });
-
-    return total;
-  }
-
   void restock(int procured) {
     total_procured += procured;
     setState(() {});
@@ -192,12 +195,21 @@ class _SummaryState extends State<Summary> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SizedBox(
-          height: 100, // Set the desired height
-          width: 100, // Set the desired width
-          child: PieChart(
-            PieChartData(
-              sections: pieSections,
-            ),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 100, // Set the desired height for the PieChart
+                width: 100, // Set the desired width for the PieChart
+                child: PieChart(
+                  PieChartData(
+                    sections: pieSections,
+                  ),
+                ),
+              ),
+              Text(
+                'Laddu packs served', // Replace with your desired text
+              ),
+            ],
           ),
         ),
         SizedBox(width: 40), // Increased space between the chart and the legend
@@ -340,6 +352,20 @@ class _SummaryState extends State<Summary> {
                     child: Text("Total laddu packs returned = ${lr!.count}"),
                   ),
                 ),
+
+                // calculate missing if any
+                if (total_procured != total_served + lr!.count) ...[
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Total laddu packs missing = ${total_procured - total_served - lr!.count}",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  ),
+                ],
               ],
 
               // padding before pie chart

@@ -35,17 +35,21 @@ class LadduServe {
   final DateTime timestamp;
   final String user;
   final List<Map<String, int>> packsPushpanjali;
-  final List<Map<String, int>> packsOthers;
+  final List<Map<String, int>> packsOtherSeva;
+  final List<Map<String, int>> packsMisc;
   final String note;
   final String title;
+  final int balance; // New member
 
   LadduServe({
     required this.timestamp,
     required this.user,
     required this.packsPushpanjali,
-    required this.packsOthers,
+    required this.packsMisc,
+    required this.packsOtherSeva,
     required this.note,
     required this.title,
+    required this.balance, // Updated constructor
   });
 
   factory LadduServe.fromJson(Map<String, dynamic> json) {
@@ -55,11 +59,15 @@ class LadduServe {
       packsPushpanjali: (json['packsPushpanjali'] as List)
           .map((item) => Map<String, int>.from(item))
           .toList(),
-      packsOthers: (json['packsOthers'] as List)
+      packsMisc: (json['packsMisc'] as List)
+          .map((item) => Map<String, int>.from(item))
+          .toList(),
+      packsOtherSeva: (json['packsOtherSeva'] as List)
           .map((item) => Map<String, int>.from(item))
           .toList(),
       note: json['note'],
       title: json['title'],
+      balance: json['balance'], // Updated fromJson
     );
   }
 
@@ -71,42 +79,14 @@ class LadduServe {
           .map((item) =>
               item.map((key, value) => MapEntry(key.toString(), value)))
           .toList(),
-      'packsOthers': packsOthers,
+      'packsMisc': packsMisc,
+      'packsOtherSeva': packsOtherSeva
+          .map((item) =>
+              item.map((key, value) => MapEntry(key.toString(), value)))
+          .toList(),
       'note': note,
       'title': title,
-    };
-  }
-}
-
-class LadduDistAccumulated {
-  final String date;
-  int count;
-  List<String> users;
-  List<String> notes;
-
-  LadduDistAccumulated(
-      {required this.date,
-      required this.count,
-      required this.users,
-      required this.notes});
-
-  // Factory constructor to create an instance from a JSON map
-  factory LadduDistAccumulated.fromJson(Map<String, dynamic> json) {
-    return LadduDistAccumulated(
-      date: json['date'],
-      count: json['count'],
-      users: List<String>.from(json['users']),
-      notes: List<String>.from(json['notes']),
-    );
-  }
-
-  // Method to convert an instance to a JSON map
-  Map<String, dynamic> toJson() {
-    return {
-      'date': date,
-      'count': count,
-      'users': users,
-      'notes': notes,
+      'balance': balance, // Updated toJson
     };
   }
 }

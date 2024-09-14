@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
-import 'package:garuda/laddu_seva/history_edit.dart';
+import 'package:garuda/laddu_seva/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:synchronized/synchronized.dart';
 
@@ -44,18 +44,7 @@ class _HistoryListState extends State<HistoryList> {
         List<LadduServe> serves = await FB().readLadduServes(session);
         serves.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
-        DateTime startSession = session;
-        DateTime endSession = session;
-
-        if (serves.isNotEmpty &&
-            stocks.last.timestamp.isAfter(serves.last.timestamp)) {
-          endSession = stocks.last.timestamp;
-        }
-
-        String title = DateFormat("EEE, MMM dd").format(startSession);
-        if (startSession.day != endSession.day) {
-          title += DateFormat(" - EEE, MMM dd").format(endSession);
-        }
+        String title = await CalculateSessionTitle(session);
 
         List<String> body = [];
 
@@ -68,7 +57,7 @@ class _HistoryListState extends State<HistoryList> {
         int totalServed = 0;
         Map<String, int> purposeSum = {};
         for (LadduServe serve in serves) {
-          totalServed += _calculateTotalLadduPacksServed(serve);
+          totalServed += CalculateTotalLadduPacksServed(serve);
 
           serve.packsPushpanjali.forEach((element) {
             String key = "Seva ${element.keys.first}";
@@ -79,7 +68,16 @@ class _HistoryListState extends State<HistoryList> {
             }
           });
 
-          serve.packsOthers.forEach((element) {
+          serve.packsOtherSeva.forEach((element) {
+            String key = "${element.keys.first}";
+            if (purposeSum.containsKey(key)) {
+              purposeSum[key] = purposeSum[key]! + element.values.first;
+            } else {
+              purposeSum[key] = element.values.first;
+            }
+          });
+
+          serve.packsMisc.forEach((element) {
             String key = element.keys.first;
             if (purposeSum.containsKey(key)) {
               purposeSum[key] = purposeSum[key]! + element.values.first;
@@ -97,6 +95,7 @@ class _HistoryListState extends State<HistoryList> {
             body.add("    $purpose = $count");
           }
         });
+        body.add("Total laddu packs served = $totalServed");
 
         LadduReturn lr = await FB().readLadduReturnStatus(session);
         if (lr.count >= 0) {
@@ -144,20 +143,6 @@ class _HistoryListState extends State<HistoryList> {
   Future<void> refresh(DateTime month) async {
     await _futureInit(month);
     setState(() {});
-  }
-
-  int _calculateTotalLadduPacksServed(LadduServe serve) {
-    int total = 0;
-
-    serve.packsPushpanjali.forEach((element) {
-      total += element.values.first;
-    });
-
-    serve.packsOthers.forEach((element) {
-      total += element.values.first;
-    });
-
-    return total;
   }
 
   @override

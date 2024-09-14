@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
+import 'package:garuda/laddu_seva/utils.dart';
 import 'package:garuda/toaster.dart';
 
 String selectedPurpose = "Others";
@@ -52,6 +53,12 @@ class _AddEditStockDialogState extends State<AddEditStockDialog> {
               controller: TextEditingController(
                 text: widget.edit ? widget.stock!.from : '',
               ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a valid name';
+                }
+                return null;
+              },
             ),
 
             // text input for packs procured
@@ -88,6 +95,17 @@ class _AddEditStockDialogState extends State<AddEditStockDialog> {
         if (widget.edit)
           ElevatedButton(
             onPressed: () async {
+              DateTime session =
+                  widget.session ?? await FB().readLatestLadduSession();
+
+              // check if this is the only stock entry
+              List<LadduStock> stocks = await FB().readLadduStocks(session);
+              if (stocks.length == 1) {
+                Toaster().error("Cannot delete the only stock entry");
+                return;
+              }
+
+              // confirm delete
               bool? confirm = await showDialog<bool>(
                 context: context,
                 builder: (BuildContext context) {
@@ -117,8 +135,6 @@ class _AddEditStockDialogState extends State<AddEditStockDialog> {
                   isLoading = true;
                 });
 
-                DateTime session =
-                    widget.session ?? await FB().readLatestLadduSession();
                 await FB().deleteLadduStock(session, widget.stock!);
 
                 setState(() {
@@ -225,21 +241,7 @@ Future<void> addEditStock(BuildContext context,
   );
 }
 
-int _calculateTotalLadduPacksServed(LadduServe serve) {
-  int total = 0;
-
-  serve.packsPushpanjali.forEach((element) {
-    total += element.values.first;
-  });
-
-  serve.packsOthers.forEach((element) {
-    total += element.values.first;
-  });
-
-  return total;
-}
-
-Future<void> returnStock(BuildContext context) async {
+Future<void> returnStock(BuildContext context, {LadduReturn? lr}) async {
   DateTime session = await FB().readLatestLadduSession();
 
   List<LadduStock> stocks = await FB().readLadduStocks(session);
@@ -265,7 +267,7 @@ Future<void> returnStock(BuildContext context) async {
   // sum of all distributions
   int totalServe = 0;
   serves.forEach((serve) {
-    totalServe += _calculateTotalLadduPacksServed(serve);
+    totalServe += CalculateTotalLadduPacksServed(serve);
   });
 
   int remaining = totalStock - totalServe;
@@ -278,18 +280,21 @@ Future<void> returnStock(BuildContext context) async {
         totalStock: totalStock,
         totalServe: totalServe,
         remaining: remaining,
+        lr: lr,
       );
     },
   );
 }
 
+// ignore: must_be_immutable
 class ReturnStockDialog extends StatefulWidget {
   final DateTime session;
   final int totalStock;
   final int totalServe;
   int remaining;
   String returnedTo;
-  int returnCount = 0;
+  int returnCount;
+  LadduReturn? lr;
 
   ReturnStockDialog({
     required this.session,
@@ -297,6 +302,8 @@ class ReturnStockDialog extends StatefulWidget {
     required this.totalServe,
     required this.remaining,
     this.returnedTo = '',
+    this.returnCount = 0,
+    this.lr,
   });
 
   @override
@@ -305,11 +312,16 @@ class ReturnStockDialog extends StatefulWidget {
 
 class _ReturnStockDialogState extends State<ReturnStockDialog> {
   bool _isLoading = false;
+  final _formKey = GlobalKey<FormState>(); // required for form valudation
 
   @override
   void initState() {
     super.initState();
-    widget.returnCount = widget.remaining;
+    if (widget.lr != null) {
+      widget.returnCount = widget.lr!.count;
+    } else {
+      widget.returnCount = widget.remaining;
+    }
   }
 
   @override
@@ -317,55 +329,57 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
     return AlertDialog(
       title: Text('Return laddu stock'),
       content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 8.0),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                  'Total laddu packs procured: ${widget.totalStock.toString()}'),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                  'Total laddu packs served: ${widget.totalServe.toString()}'),
-            ),
-            SizedBox(height: 8.0),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: TextField(
-                decoration: InputDecoration(
-                  labelText: 'Returned to',
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextFormField(
+                  controller: TextEditingController(
+                      text: widget.lr != null ? widget.lr!.to : ''),
+                  decoration: InputDecoration(
+                    labelText: 'Returned to',
+                  ),
+                  onChanged: (value) {
+                    widget.returnedTo = value;
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a name';
+                    }
+                    return null;
+                  },
                 ),
-                onChanged: (value) {
-                  widget.returnedTo = value;
-                },
               ),
-            ),
-            SizedBox(height: 8.0),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: TextField(
-                controller:
-                    TextEditingController(text: widget.remaining.toString()),
-                decoration: InputDecoration(
-                  labelText: 'Packs returned',
+              SizedBox(height: 8.0),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextField(
+                  controller: TextEditingController(
+                      text: widget.lr != null
+                          ? widget.lr!.count.toString()
+                          : widget.remaining.toString()),
+                  decoration: InputDecoration(
+                    labelText: 'Packs returned',
+                  ),
+                  onChanged: (value) {
+                    if (value.isNotEmpty) widget.returnCount = int.parse(value);
+                  },
                 ),
-                onChanged: (value) {
-                  if (value.isNotEmpty) widget.returnCount = int.parse(value);
-                },
               ),
-            ),
-            if (_isLoading)
-              Center(
-                child: CircularProgressIndicator(),
-              ),
-          ],
+              if (_isLoading)
+                Center(
+                  child: CircularProgressIndicator(),
+                ),
+            ],
+          ),
         ),
       ),
       actions: <Widget>[
+        // cancel button
         ElevatedButton(
           onPressed: () {
             Navigator.of(context).pop(false);
@@ -375,9 +389,11 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
             padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
           ),
         ),
+
+        // confirm button
         ElevatedButton(
           onPressed: _isLoading ? null : _confirm,
-          child: Text('Confirm'),
+          child: Text(widget.lr != null ? 'Update' : 'Return'),
           style: ElevatedButton.styleFrom(
             padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
           ),
@@ -387,6 +403,11 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
   }
 
   Future<void> _confirm() async {
+    // validate the form
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
     setState(() {
       _isLoading = true;
     });
@@ -397,16 +418,6 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
         _isLoading = false;
       });
       return;
-    } else if (widget.returnCount < widget.remaining) {
-      // TODO
-      // await FB().addLadduServe(
-      //     widget.session,
-      //     LadduServe(
-      //         timestamp: DateTime.now(),
-      //         user: "auto",
-      //         purpose: "Missing",
-      //         count: widget.remaining - widget.returnCount,
-      //         note: "Return count less than remaining packs"));
     }
 
     String username = await Const().getUserName();
@@ -428,10 +439,10 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
 }
 
 Widget _getPurposeDropDown(BuildContext context, {String? defaultPurpose}) {
-  List<int?> ticketAmounts =
-      Const().ticketAmounts.map((e) => e['amount']).toList();
+  List<int?> pushpanjaliTickets =
+      Const().pushpanjaliTickets.map((e) => e['amount']).toList();
   List<String> Purposes =
-      ticketAmounts.map((e) => "Seva ${e.toString()}").toList();
+      pushpanjaliTickets.map((e) => "Seva ${e.toString()}").toList();
 
   Purposes.add("Others");
   Purposes.add("Missing");

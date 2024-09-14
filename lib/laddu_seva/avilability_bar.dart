@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
+import 'package:garuda/laddu_seva/utils.dart';
 import 'package:synchronized/synchronized.dart';
 
 class AvailabilityBar extends StatefulWidget {
@@ -42,17 +43,7 @@ class _AvailabilityBarState extends State<AvailabilityBar> {
 
       total_served = 0;
       for (LadduServe serve in serves) {
-        serve.packsPushpanjali.forEach((element) {
-          element.forEach((key, value) {
-            total_served += value;
-          });
-        });
-
-        serve.packsOthers.forEach((element) {
-          element.forEach((key, value) {
-            total_served += value;
-          });
-        });
+        total_served += CalculateTotalLadduPacksServed(serve);
       }
     });
   }
