@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/theme.dart';
 
 class Sales extends StatefulWidget {
   final String stall;
@@ -23,19 +24,32 @@ class _SalesState extends State<Sales> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('${widget.stall} Deepam Sales'),
-      ),
-      body: RefreshIndicator(
-        onRefresh: _refresh,
+    // Select theme based on the value of stall
+    ThemeData selectedTheme;
+    if (widget.stall == 'RRG') {
+      selectedTheme = themeRRG;
+    } else if (widget.stall == 'RKC') {
+      selectedTheme = themeRKC;
+    } else {
+      selectedTheme = themeDefault;
+    }
 
-        // here a ListView is used to allow the content to be scrollable and refreshable.
-        // If you use ListView.builder inside this, then the ListView here can be removed.
-        child: ListView(
-          children: [
-            Text('body'),
-          ],
+    return Theme(
+      data: selectedTheme,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('${widget.stall} Deepam Sales'),
+        ),
+        body: RefreshIndicator(
+          onRefresh: _refresh,
+
+          // here a ListView is used to allow the content to be scrollable and refreshable.
+          // If you use ListView.builder inside this, then the ListView here can be removed.
+          child: ListView(
+            children: [
+              Text('This is the body'),
+            ],
+          ),
         ),
       ),
     );

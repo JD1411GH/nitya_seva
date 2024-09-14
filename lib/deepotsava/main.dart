@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/sales.dart';
+import 'package:garuda/font.dart';
 import 'package:garuda/toaster.dart';
 
 class Deepotsava extends StatefulWidget {
@@ -42,9 +43,13 @@ class _DeepotsavaState extends State<Deepotsava>
   }
 
   void _onRKCDeepamSalesTap() {
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => Sales(stall: "RKC")),
+    // );
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Sales(stall: "RKC")),
+      MaterialPageRoute(builder: (context) => Font()),
     );
   }
 
