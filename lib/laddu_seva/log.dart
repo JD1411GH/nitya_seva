@@ -36,11 +36,18 @@ class _LogState extends State<Log> {
 
             // title
             title: Text(
-                DateFormat('dd-MM-yyyy HH:mm:ss').format(stock.timestamp),
-                style: TextStyle(fontWeight: FontWeight.bold)),
+              DateFormat('dd-MM-yyyy HH:mm:ss').format(stock.timestamp),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.green[800],
+              ),
+            ),
 
             // leading icon
-            leading: const Icon(Icons.add),
+            leading: Icon(
+              Icons.add,
+              color: Colors.green[800],
+            ),
 
             // body
             subtitle: Column(
@@ -64,6 +71,8 @@ class _LogState extends State<Log> {
             trailing: Container(
               padding: EdgeInsets.all(8.0), // Add padding around the text
               decoration: BoxDecoration(
+                color:
+                    Colors.green[100], // Change background color to light green
                 border:
                     Border.all(color: Colors.black, width: 2.0), // Add a border
                 borderRadius:
@@ -102,7 +111,7 @@ class _LogState extends State<Log> {
             // add or remove icon
             leading: const Icon(Icons.remove),
 
-            // total count
+            // trailer : total count
             trailing: Container(
               padding: EdgeInsets.all(8.0),
               decoration: BoxDecoration(
@@ -115,7 +124,7 @@ class _LogState extends State<Log> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      CalculateTotalLadduPacks(serve).toString(),
+                      CalculateTotalLadduPacksServed(serve).toString(),
                       style: TextStyle(
                         fontSize: 24.0, // Increase font size
                         fontWeight: FontWeight.bold, // Make text bold
@@ -230,6 +239,12 @@ class _LogState extends State<Log> {
                 ));
           }
         }
+
+        // balance
+        (tile.subtitle as Column).children.add(Align(
+              alignment: Alignment.centerLeft,
+              child: Text('Balance: ${serve.balance}'),
+            ));
 
         // note
         if (serve.note.isNotEmpty)

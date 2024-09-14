@@ -43,7 +43,7 @@ class _AvailabilityBarState extends State<AvailabilityBar> {
 
       total_served = 0;
       for (LadduServe serve in serves) {
-        total_served += CalculateTotalLadduPacks(serve);
+        total_served += CalculateTotalLadduPacksServed(serve);
       }
     });
   }

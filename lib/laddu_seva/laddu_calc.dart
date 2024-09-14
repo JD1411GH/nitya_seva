@@ -267,7 +267,7 @@ Future<void> returnStock(BuildContext context, {LadduReturn? lr}) async {
   // sum of all distributions
   int totalServe = 0;
   serves.forEach((serve) {
-    totalServe += CalculateTotalLadduPacks(serve);
+    totalServe += CalculateTotalLadduPacksServed(serve);
   });
 
   int remaining = totalStock - totalServe;
@@ -379,8 +379,6 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
         ),
       ),
       actions: <Widget>[
-        // TODO delete button
-
         // cancel button
         ElevatedButton(
           onPressed: () {

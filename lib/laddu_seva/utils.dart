@@ -2,7 +2,7 @@ import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:intl/intl.dart';
 
-int CalculateTotalLadduPacks(LadduServe serve) {
+int CalculateTotalLadduPacksServed(LadduServe serve) {
   int total = 0;
   serve.packsPushpanjali.forEach((element) {
     element.forEach((key, value) {

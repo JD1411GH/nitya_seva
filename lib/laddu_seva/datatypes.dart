@@ -39,6 +39,7 @@ class LadduServe {
   final List<Map<String, int>> packsMisc;
   final String note;
   final String title;
+  final int balance; // New member
 
   LadduServe({
     required this.timestamp,
@@ -48,6 +49,7 @@ class LadduServe {
     required this.packsOtherSeva,
     required this.note,
     required this.title,
+    required this.balance, // Updated constructor
   });
 
   factory LadduServe.fromJson(Map<String, dynamic> json) {
@@ -65,6 +67,7 @@ class LadduServe {
           .toList(),
       note: json['note'],
       title: json['title'],
+      balance: json['balance'], // Updated fromJson
     );
   }
 
@@ -83,39 +86,7 @@ class LadduServe {
           .toList(),
       'note': note,
       'title': title,
-    };
-  }
-}
-
-class LadduDistAccumulated {
-  final String date;
-  int count;
-  List<String> users;
-  List<String> notes;
-
-  LadduDistAccumulated(
-      {required this.date,
-      required this.count,
-      required this.users,
-      required this.notes});
-
-  // Factory constructor to create an instance from a JSON map
-  factory LadduDistAccumulated.fromJson(Map<String, dynamic> json) {
-    return LadduDistAccumulated(
-      date: json['date'],
-      count: json['count'],
-      users: List<String>.from(json['users']),
-      notes: List<String>.from(json['notes']),
-    );
-  }
-
-  // Method to convert an instance to a JSON map
-  Map<String, dynamic> toJson() {
-    return {
-      'date': date,
-      'count': count,
-      'users': users,
-      'notes': notes,
+      'balance': balance, // Updated toJson
     };
   }
 }

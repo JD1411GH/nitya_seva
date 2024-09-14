@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
+import 'package:garuda/laddu_seva/utils.dart';
 import 'package:garuda/toaster.dart';
 import 'package:intl/intl.dart';
 
@@ -415,6 +416,26 @@ class _ServeState extends State<Serve> {
       packsMisc.add({_misc[i]: int.tryParse(_controllerMisc[i].text) ?? 0});
     }
 
+    // calculate balance
+    int total_procured = 0;
+    int total_served = 0;
+    DateTime session = await FB().readLatestLadduSession();
+    await FB().readLadduStocks(session).then((stocks) {
+      for (LadduStock stock in stocks) {
+        total_procured += stock.count;
+      }
+    });
+    await FB().readLadduServes(session).then((serves) {
+      for (LadduServe serve in serves) {
+        total_served += CalculateTotalLadduPacksServed(serve);
+      }
+    });
+    if (widget.serve != null) {
+      // in edit mode, remove the previous serve count
+      total_served -= CalculateTotalLadduPacksServed(widget.serve!);
+    }
+    total_served += _totalLadduPacks;
+
     DateTime now = DateTime.now();
     if (widget.serve != null) {
       now = widget.serve!.timestamp;
@@ -427,9 +448,9 @@ class _ServeState extends State<Serve> {
       packsMisc: packsMisc,
       note: _controllerNote.text,
       title: _controllerTitle.text,
+      balance: total_procured - total_served,
     );
 
-    DateTime session = await FB().readLatestLadduSession();
     if (widget.serve != null) {
       await FB().editLadduServe(session, ladduServe);
     } else {

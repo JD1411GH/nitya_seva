@@ -57,7 +57,7 @@ class _HistoryListState extends State<HistoryList> {
         int totalServed = 0;
         Map<String, int> purposeSum = {};
         for (LadduServe serve in serves) {
-          totalServed += CalculateTotalLadduPacks(serve);
+          totalServed += CalculateTotalLadduPacksServed(serve);
 
           serve.packsPushpanjali.forEach((element) {
             String key = "Seva ${element.keys.first}";

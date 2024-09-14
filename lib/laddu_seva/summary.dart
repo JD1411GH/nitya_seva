@@ -53,7 +53,7 @@ class _SummaryState extends State<Summary> {
 
       total_served = 0;
       for (var serve in serves) {
-        total_served += CalculateTotalLadduPacks(serve);
+        total_served += CalculateTotalLadduPacksServed(serve);
 
         // calculate pie chart values for Pushpanjali Seva
         serve.packsPushpanjali.forEach((element) {
