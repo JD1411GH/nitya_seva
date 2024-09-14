@@ -8,8 +8,13 @@ class Deepotsava extends StatefulWidget {
 }
 
 class _DeepotsavaState extends State<Deepotsava> {
-  Card _rkcCard = Card();
+  Card _rkcSalesCard = Card();
+  Card _rrgSalesCard = Card();
+  Card _deepamMakingCard = Card();
+  Card _inventoryCard = Card();
 
+  double cardWidth = 300;
+  double cardHeight = 100;
   List<bool> _isVisible = [false, false, false, false];
   List<Offset> _positions = [
     Offset(0, 0),
@@ -27,11 +32,36 @@ class _DeepotsavaState extends State<Deepotsava> {
   }
 
   Future<void> _refresh() async {
-    _rkcCard = Card(
-      child: Container(
-        width: 250,
-        height: 100,
-        child: Center(child: Text('RKC Deepam Counter')),
+    _rkcSalesCard = Card(
+      color: Colors.amber, // Set the background color to golden
+      child: Padding(
+        padding: const EdgeInsets.all(8.0), // Add padding around the content
+        child: Container(
+          width: cardWidth,
+          height: cardHeight,
+          child: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Text('RKC Deepam Sales'),
+                ),
+                SizedBox(width: 10), // Add some space between text and image
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(
+                      10.0), // Set the border radius to a smaller value
+                  child: Image.asset(
+                    'assets/images/RKC.png', // Replace with your image path
+                    width: 80, // Set the width of the image
+                    height: 80, // Set the height of the image
+                    fit: BoxFit
+                        .contain, // Ensure the image fits within the container
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
 
@@ -40,8 +70,6 @@ class _DeepotsavaState extends State<Deepotsava> {
 
   void _animateCards() {
     double screenWidth = MediaQuery.of(context).size.width;
-    double cardWidth = screenWidth * 0.7; // 70% of the screen width
-    double cardHeight = 100;
     double centerX = (screenWidth - cardWidth) / 2;
     double topPadding = 50;
 
@@ -78,43 +106,25 @@ class _DeepotsavaState extends State<Deepotsava> {
               duration: Duration(milliseconds: 500),
               left: _isVisible[0] ? _positions[0].dx : -100,
               top: _isVisible[0] ? _positions[0].dy : -100,
-              child: _rkcCard,
+              child: _rkcSalesCard,
             ),
             AnimatedPositioned(
               duration: Duration(milliseconds: 500),
               left: _isVisible[1] ? _positions[1].dx : -100,
               top: _isVisible[1] ? _positions[1].dy : -100,
-              child: Card(
-                child: Container(
-                  width: 250,
-                  height: 100,
-                  child: Center(child: Text('Card 2')),
-                ),
-              ),
+              child: _rrgSalesCard,
             ),
             AnimatedPositioned(
               duration: Duration(milliseconds: 500),
               left: _isVisible[2] ? _positions[2].dx : -100,
               top: _isVisible[2] ? _positions[2].dy : -100,
-              child: Card(
-                child: Container(
-                  width: 250,
-                  height: 100,
-                  child: Center(child: Text('Card 3')),
-                ),
-              ),
+              child: _deepamMakingCard,
             ),
             AnimatedPositioned(
               duration: Duration(milliseconds: 500),
               left: _isVisible[3] ? _positions[3].dx : -100,
               top: _isVisible[3] ? _positions[3].dy : -100,
-              child: Card(
-                child: Container(
-                  width: 250,
-                  height: 100,
-                  child: Center(child: Text('Card 4')),
-                ),
-              ),
+              child: _inventoryCard,
             ),
           ],
         ),
