@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
+import 'package:garuda/laddu_seva/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:synchronized/synchronized.dart';
 
@@ -51,9 +52,18 @@ class _HistoryListState extends State<HistoryList> {
           endSession = stocks.last.timestamp;
         }
 
-        String title = DateFormat("EEE, MMM dd").format(startSession);
-        if (startSession.day != endSession.day) {
-          title += DateFormat(" - EEE, MMM dd").format(endSession);
+        String sessionTitle = DateFormat("EEE, MMM dd").format(session);
+        LadduReturn lr = await FB().readLadduReturnStatus(session);
+        if (lr.count >= 0) {
+          String endSession = DateFormat("EEE, MMM dd").format(lr.timestamp);
+          if (sessionTitle != endSession) {
+            sessionTitle += " - $endSession";
+          }
+        } else {
+          DateTime now = DateTime.now();
+          if (session.day != now.day) {
+            sessionTitle += DateFormat(" - EEE, MMM dd").format(now);
+          }
         }
 
         List<String> body = [];
@@ -67,7 +77,7 @@ class _HistoryListState extends State<HistoryList> {
         int totalServed = 0;
         Map<String, int> purposeSum = {};
         for (LadduServe serve in serves) {
-          totalServed += serve.totalPacks();
+          totalServed += CalculateTotalLadduPacks(serve);
 
           serve.packsPushpanjali.forEach((element) {
             String key = "Seva ${element.keys.first}";

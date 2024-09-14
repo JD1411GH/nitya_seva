@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
+import 'package:garuda/laddu_seva/utils.dart';
 import 'package:garuda/toaster.dart';
 
 String selectedPurpose = "Others";
@@ -266,7 +267,7 @@ Future<void> returnStock(BuildContext context, {LadduReturn? lr}) async {
   // sum of all distributions
   int totalServe = 0;
   serves.forEach((serve) {
-    totalServe += serve.totalPacks();
+    totalServe += CalculateTotalLadduPacks(serve);
   });
 
   int remaining = totalStock - totalServe;

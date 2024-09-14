@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
+import 'package:garuda/laddu_seva/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:synchronized/synchronized.dart';
 
@@ -37,19 +38,18 @@ class _SummaryState extends State<Summary> {
       List<LadduStock> stocks = await FB().readLadduStocks(session);
       List<LadduServe> serves = await FB().readLadduServes(session);
 
-      sessionTitle = DateFormat("EEE, MMM dd").format(session);
-
       // formulate session title for summary widget
-      DateTime now = DateTime.now();
-      if (session.day != now.day) {
-        sessionTitle += DateFormat(" - EEE, MMM dd").format(now);
-      }
+      sessionTitle = DateFormat("EEE, MMM dd").format(session);
       lr = await FB().readLadduReturnStatus(session);
       if (lr!.count >= 0) {
-        String endSession =
-            "${lr!.timestamp.day}/${lr!.timestamp.month}/${lr!.timestamp.year}";
+        String endSession = DateFormat("EEE, MMM dd").format(lr!.timestamp);
         if (sessionTitle != endSession) {
           sessionTitle += " - $endSession";
+        }
+      } else {
+        DateTime now = DateTime.now();
+        if (session.day != now.day) {
+          sessionTitle += DateFormat(" - EEE, MMM dd").format(now);
         }
       }
 
@@ -65,7 +65,7 @@ class _SummaryState extends State<Summary> {
 
       total_served = 0;
       for (var serve in serves) {
-        total_served += serve.totalPacks();
+        total_served += CalculateTotalLadduPacks(serve);
 
         // calculate pie chart values for Pushpanjali Seva
         serve.packsPushpanjali.forEach((element) {

@@ -3,6 +3,7 @@ import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/laddu_seva/laddu_calc.dart';
 import 'package:garuda/laddu_seva/serve.dart';
+import 'package:garuda/laddu_seva/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:synchronized/synchronized.dart';
 
@@ -114,7 +115,7 @@ class _LogState extends State<Log> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      serve.totalPacks().toString(),
+                      CalculateTotalLadduPacks(serve).toString(),
                       style: TextStyle(
                         fontSize: 24.0, // Increase font size
                         fontWeight: FontWeight.bold, // Make text bold
