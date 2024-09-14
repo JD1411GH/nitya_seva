@@ -27,6 +27,54 @@ class _StockState extends State<Stock> {
     setState(() {});
   }
 
+  void _createDialogAddStock(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Add stock'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const TextField(
+                  decoration: InputDecoration(labelText: 'Prepared lamps'),
+                ),
+                const TextField(
+                  decoration: InputDecoration(labelText: 'Unprepared lamps'),
+                ),
+                const TextField(
+                  decoration: InputDecoration(labelText: 'Wicks'),
+                ),
+                const TextField(
+                  decoration: InputDecoration(labelText: 'Ghee packets'),
+                ),
+                const TextField(
+                  decoration: InputDecoration(labelText: 'Oil cans'),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Save button action
+                Navigator.of(context).pop();
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _createStock() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -53,13 +101,19 @@ class _StockState extends State<Stock> {
                 IconButton(
                   icon: Icon(Icons.add),
                   onPressed: () {
-                    // Add button action
+                    _createDialogAddStock(context);
                   },
                 ),
                 IconButton(
                   icon: Icon(Icons.edit),
                   onPressed: () {
                     // Edit button action
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.undo),
+                  onPressed: () {
+                    // Delete button action
                   },
                 ),
               ],

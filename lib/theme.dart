@@ -39,6 +39,20 @@ ThemeData themeDefault = ThemeData(
       fontFamily: 'HowdyLemon',
     ),
   ),
+
+  // dialog theme
+  dialogTheme: DialogTheme(
+    backgroundColor: Colors.grey[300],
+    titleTextStyle: TextStyle(
+      fontSize: 20.0,
+      fontWeight: FontWeight.bold,
+      color: Colors.black,
+    ),
+    contentTextStyle: TextStyle(
+      fontSize: 16.0,
+      color: Colors.black,
+    ),
+  ),
 );
 
 final primaryColorRKC = Colors.deepOrange;
@@ -77,6 +91,17 @@ ThemeData themeRKC = themeDefault.copyWith(
   iconTheme: themeDefault.iconTheme.copyWith(
     color: textColorRKC,
   ),
+
+  // dialog theme
+  dialogTheme: themeDefault.dialogTheme.copyWith(
+    backgroundColor: variantColorRKC,
+    titleTextStyle: themeDefault.dialogTheme.titleTextStyle?.copyWith(
+      color: textColorRKC,
+    ),
+    contentTextStyle: themeDefault.dialogTheme.contentTextStyle?.copyWith(
+      color: textColorRKC,
+    ),
+  ),
 );
 
 final primaryColorRRG = Colors.green;
@@ -114,5 +139,16 @@ ThemeData themeRRG = themeDefault.copyWith(
   // icon theme
   iconTheme: themeDefault.iconTheme.copyWith(
     color: textColorRRG,
+  ),
+
+  // dialog theme
+  dialogTheme: themeDefault.dialogTheme.copyWith(
+    backgroundColor: variantColorRRG,
+    titleTextStyle: themeDefault.dialogTheme.titleTextStyle?.copyWith(
+      color: textColorRRG,
+    ),
+    contentTextStyle: themeDefault.dialogTheme.contentTextStyle?.copyWith(
+      color: textColorRRG,
+    ),
   ),
 );
