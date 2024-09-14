@@ -37,6 +37,8 @@ class _DashboardState extends State<Dashboard> {
     'Card': 0,
   };
 
+  DateTime? _lastRefresh;
+
   @override
   void initState() {
     super.initState();
@@ -169,6 +171,12 @@ class _DashboardState extends State<Dashboard> {
   }
 
   void _onSlotChange(String changeType, dynamic data) {
+    if (_lastRefresh != null &&
+        DateTime.now().difference(_lastRefresh!) < const Duration(seconds: 2)) {
+      return;
+    }
+    _lastRefresh = DateTime.now();
+
     Map<String, dynamic> dataMap = (data as Map).cast<String, dynamic>();
     SevaSlot slot = SevaSlot.fromJson(dataMap);
 
@@ -185,6 +193,12 @@ class _DashboardState extends State<Dashboard> {
   }
 
   void _onTicketChange(String changeType, dynamic data) {
+    if (_lastRefresh != null &&
+        DateTime.now().difference(_lastRefresh!) < const Duration(seconds: 2)) {
+      return;
+    }
+    _lastRefresh = DateTime.now();
+
     var dataMap = data as Map;
     for (var entry in dataMap.entries) {
       var json = (entry.value as Map).cast<String, dynamic>();

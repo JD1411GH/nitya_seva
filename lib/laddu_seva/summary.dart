@@ -206,6 +206,10 @@ class _SummaryState extends State<Summary> {
                   ),
                 ),
               ),
+
+              SizedBox(
+                  height: 16), // Increased space between the chart and the text
+
               Text(
                 'Laddu packs served', // Replace with your desired text
               ),
