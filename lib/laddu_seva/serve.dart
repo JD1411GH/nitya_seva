@@ -210,6 +210,8 @@ class _ServeState extends State<Serve> {
                   child: Center(
                     child: TextField(
                       controller: _controllersPushpanjali[i],
+                      keyboardType:
+                          TextInputType.number, // Set keyboard to numeric
                       onChanged: (value) {
                         setState(() {
                           _calculateTotalLadduPacks();
@@ -262,7 +264,7 @@ class _ServeState extends State<Serve> {
                 ),
               ),
 
-              // number of tickets
+              // number of tickets for other Seva
               TableCell(
                 verticalAlignment:
                     TableCellVerticalAlignment.middle, // Center vertically
@@ -271,6 +273,7 @@ class _ServeState extends State<Serve> {
                   child: Center(
                     child: TextField(
                       controller: _controllersOtherSeva[i],
+                      keyboardType: TextInputType.number,
                       onChanged: (value) {
                         setState(() {
                           _calculateTotalLadduPacks();
@@ -335,7 +338,7 @@ class _ServeState extends State<Serve> {
                 ),
               ),
 
-              // packs cell
+              // packs cell for misc
               TableCell(
                 verticalAlignment:
                     TableCellVerticalAlignment.middle, // Center vertically
@@ -355,6 +358,7 @@ class _ServeState extends State<Serve> {
                             vertical: 8.0, horizontal: 8.0),
                       ),
                       controller: _controllerMisc[_misc.indexOf(seva)],
+                      keyboardType: TextInputType.number,
                     ),
                   ),
                 ),

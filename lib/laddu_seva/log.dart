@@ -54,15 +54,24 @@ class _LogState extends State<Log> {
               children: [
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Text('Sevakarta: ${stock.user}'),
+                  child: Text(
+                    'Sevakarta: ${stock.user}',
+                    style: TextStyle(color: Colors.green[900]),
+                  ),
                 ),
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Text('Laddu packs collected: ${stock.count}'),
+                  child: Text(
+                    'Laddu packs collected: ${stock.count}',
+                    style: TextStyle(color: Colors.green[900]),
+                  ),
                 ),
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Text('Collected from: ${stock.from}'),
+                  child: Text(
+                    'Collected from: ${stock.from}',
+                    style: TextStyle(color: Colors.green[900]),
+                  ),
                 ),
               ],
             ),
