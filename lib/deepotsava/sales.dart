@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/deepotsava/date_header.dart';
+import 'package:garuda/deepotsava/stats.dart';
+import 'package:garuda/deepotsava/stock.dart';
 import 'package:garuda/theme.dart';
 
 class Sales extends StatefulWidget {
@@ -27,19 +30,9 @@ class _SalesState extends State<Sales> {
       child: SizedBox(
         height: 200.0,
         child: PageView(
-          children: <Widget>[
-            Container(
-              color: Colors.red,
-              child: Center(child: Text('Page 1')),
-            ),
-            Container(
-              color: Colors.green,
-              child: Center(child: Text('Page 2')),
-            ),
-            Container(
-              color: Colors.blue,
-              child: Center(child: Text('Page 3')),
-            ),
+          children: [
+            Stock(stall: widget.stall),
+            Stats(stall: widget.stall),
           ],
         ),
       ),
@@ -71,6 +64,7 @@ class _SalesState extends State<Sales> {
           // If you use ListView.builder inside this, then the ListView here can be removed.
           child: ListView(
             children: [
+              DateHeader(),
               _createCardPage(),
             ],
           ),
