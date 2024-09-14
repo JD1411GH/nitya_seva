@@ -1,3 +1,6 @@
+# 2.2.2
+- fix [laddu]: increase space between pie and label
+
 # 2.2.1
 - autorefresh pushpanjali with delay
 
