@@ -27,6 +27,49 @@ class _StockState extends State<Stock> {
     setState(() {});
   }
 
+  Widget _createStock() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Text(
+              'Stock for ${widget.stall}',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Text('Prepared lamps: '),
+          const Text('Unprepared lamps: '),
+          const Text('Wicks: '),
+          const Text('Ghee packets: '),
+          const Text('Oil cans: '),
+          const SizedBox(height: 16),
+          Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () {
+                    // Add button action
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () {
+                    // Edit button action
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<void>(
@@ -39,7 +82,7 @@ class _StockState extends State<Stock> {
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
-          return const Placeholder();
+          return _createStock();
         }
       },
     );

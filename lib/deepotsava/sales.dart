@@ -28,7 +28,7 @@ class _SalesState extends State<Sales> {
   Widget _createCardPage() {
     return Card(
       child: SizedBox(
-        height: 200.0,
+        height: 250.0,
         child: PageView(
           children: [
             Stock(stall: widget.stall),
