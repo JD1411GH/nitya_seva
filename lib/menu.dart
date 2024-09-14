@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:garuda/admin/admin.dart';
 import 'package:garuda/admin/user.dart';
+import 'package:garuda/deepotsava/main.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/main.dart';
 import 'package:garuda/loading.dart';
@@ -100,7 +101,10 @@ class Menu extends StatelessWidget {
         'imagePath': 'assets/images/deepotsava.jpg',
         'label': 'Deepotsava',
         'action': () {
-          Toaster().error("Not Implemented!");
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Deepotsava()),
+          );
         }
       },
       {
