@@ -52,6 +52,12 @@ class _AddEditStockDialogState extends State<AddEditStockDialog> {
               controller: TextEditingController(
                 text: widget.edit ? widget.stock!.from : '',
               ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a valid name';
+                }
+                return null;
+              },
             ),
 
             // text input for packs procured
@@ -305,6 +311,7 @@ class ReturnStockDialog extends StatefulWidget {
 
 class _ReturnStockDialogState extends State<ReturnStockDialog> {
   bool _isLoading = false;
+  final _formKey = GlobalKey<FormState>(); // required for form valudation
 
   @override
   void initState() {
@@ -321,44 +328,53 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
     return AlertDialog(
       title: Text('Return laddu stock'),
       content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Align(
-              alignment: Alignment.centerLeft,
-              child: TextField(
-                controller: TextEditingController(
-                    text: widget.lr != null ? widget.lr!.to : ''),
-                decoration: InputDecoration(
-                  labelText: 'Returned to',
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextFormField(
+                  controller: TextEditingController(
+                      text: widget.lr != null ? widget.lr!.to : ''),
+                  decoration: InputDecoration(
+                    labelText: 'Returned to',
+                  ),
+                  onChanged: (value) {
+                    widget.returnedTo = value;
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a name';
+                    }
+                    return null;
+                  },
                 ),
-                onChanged: (value) {
-                  widget.returnedTo = value;
-                },
               ),
-            ),
-            SizedBox(height: 8.0),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: TextField(
-                controller: TextEditingController(
-                    text: widget.lr != null
-                        ? widget.lr!.count.toString()
-                        : widget.remaining.toString()),
-                decoration: InputDecoration(
-                  labelText: 'Packs returned',
+              SizedBox(height: 8.0),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextField(
+                  controller: TextEditingController(
+                      text: widget.lr != null
+                          ? widget.lr!.count.toString()
+                          : widget.remaining.toString()),
+                  decoration: InputDecoration(
+                    labelText: 'Packs returned',
+                  ),
+                  onChanged: (value) {
+                    if (value.isNotEmpty) widget.returnCount = int.parse(value);
+                  },
                 ),
-                onChanged: (value) {
-                  if (value.isNotEmpty) widget.returnCount = int.parse(value);
-                },
               ),
-            ),
-            if (_isLoading)
-              Center(
-                child: CircularProgressIndicator(),
-              ),
-          ],
+              if (_isLoading)
+                Center(
+                  child: CircularProgressIndicator(),
+                ),
+            ],
+          ),
         ),
       ),
       actions: <Widget>[
@@ -388,6 +404,11 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
   }
 
   Future<void> _confirm() async {
+    // validate the form
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
     setState(() {
       _isLoading = true;
     });

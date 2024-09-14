@@ -814,15 +814,11 @@ class FB {
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/ladduSeva/$a/returned');
 
-    // set return status
-    DatabaseReference refRet = dbRef.child('count');
-    await refRet.set(lr.count);
-
-    refRet = dbRef.child('to');
-    await refRet.set(lr.to);
-
-    refRet = dbRef.child('timestamp');
-    await refRet.set(lr.timestamp.toIso8601String());
+    await dbRef.update({
+      'count': lr.count,
+      'to': lr.to,
+      'timestamp': lr.timestamp.toIso8601String(),
+    });
   }
 }
 

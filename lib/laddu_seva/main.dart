@@ -17,7 +17,7 @@ class LadduMain extends StatefulWidget {
 class _LadduSevaState extends State<LadduMain> {
   DateTime? session;
   LadduReturn? lr;
-  DateTime lastRefresh = DateTime.now();
+  DateTime? lastRefresh;
 
   @override
   initState() {
@@ -32,7 +32,8 @@ class _LadduSevaState extends State<LadduMain> {
   }
 
   Future<void> refresh() async {
-    if (DateTime.now().difference(lastRefresh).inSeconds < 2) {
+    if (lastRefresh != null &&
+        DateTime.now().difference(lastRefresh!).inSeconds < 2) {
       return;
     }
     lastRefresh = DateTime.now();
@@ -60,7 +61,7 @@ class _LadduSevaState extends State<LadduMain> {
     }
   }
 
-  Widget _getReturnTile(LadduReturn lr) {
+  Widget _createReturnTile(LadduReturn lr) {
     return ListTile(
         // title
         title: Text(DateFormat('dd-MM-yyyy HH:mm:ss').format(lr.timestamp),
@@ -189,7 +190,7 @@ class _LadduSevaState extends State<LadduMain> {
                     style: TextStyle(color: Colors.red, fontSize: 20.0),
                   ),
                   Divider(),
-                  _getReturnTile(lr!),
+                  _createReturnTile(lr!),
                   Divider(),
                 ],
               ),
