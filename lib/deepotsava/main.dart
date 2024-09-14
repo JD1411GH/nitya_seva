@@ -43,13 +43,9 @@ class _DeepotsavaState extends State<Deepotsava>
   }
 
   void _onRKCDeepamSalesTap() {
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => Sales(stall: "RKC")),
-    // );
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Font()),
+      MaterialPageRoute(builder: (context) => Sales(stall: "RKC")),
     );
   }
 

@@ -7,28 +7,31 @@ ThemeData themeDefault = ThemeData(
   // text theme
   fontFamily: 'Georgia',
   textTheme: TextTheme(
-    bodyLarge: TextStyle(
-      color: Colors.black,
-    ),
     bodyMedium: TextStyle(
-      color: Colors.black54,
+      color: Colors.black,
     ),
   ),
 
   // color scheme
-  primaryColor: const Color(0xFF3B4043),
-  colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blueGrey)
-      .copyWith(secondary: const Color.fromARGB(255, 94, 124, 148)),
+  primaryColor: Colors.blueGrey,
+  colorScheme: ColorScheme.fromSwatch(
+    primarySwatch: Colors.blueGrey,
+  ),
+  scaffoldBackgroundColor: const Color.fromARGB(255, 242, 251, 255),
 );
 
 ThemeData themeRKC = themeDefault.copyWith(
   primaryColor: Colors.deepOrange,
-  colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.deepOrange)
-      .copyWith(secondary: Colors.deepOrange[600]),
+  colorScheme: ColorScheme.fromSwatch(
+    primarySwatch: Colors.deepOrange,
+  ),
+  scaffoldBackgroundColor: Colors.orange[50],
 );
 
 ThemeData themeRRG = themeDefault.copyWith(
   primaryColor: Colors.green,
-  colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.green)
-      .copyWith(secondary: Colors.green[600]),
+  colorScheme: ColorScheme.fromSwatch(
+    primarySwatch: Colors.green,
+  ),
+  scaffoldBackgroundColor: Colors.lightGreen[50],
 );
