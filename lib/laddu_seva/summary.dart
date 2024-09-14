@@ -39,19 +39,7 @@ class _SummaryState extends State<Summary> {
       List<LadduServe> serves = await FB().readLadduServes(session);
 
       // formulate session title for summary widget
-      sessionTitle = DateFormat("EEE, MMM dd").format(session);
-      lr = await FB().readLadduReturnStatus(session);
-      if (lr!.count >= 0) {
-        String endSession = DateFormat("EEE, MMM dd").format(lr!.timestamp);
-        if (sessionTitle != endSession) {
-          sessionTitle += " - $endSession";
-        }
-      } else {
-        DateTime now = DateTime.now();
-        if (session.day != now.day) {
-          sessionTitle += DateFormat(" - EEE, MMM dd").format(now);
-        }
-      }
+      sessionTitle = await CalculateSessionTitle(session);
 
       total_procured = 0;
       for (var stock in stocks) {

@@ -44,27 +44,7 @@ class _HistoryListState extends State<HistoryList> {
         List<LadduServe> serves = await FB().readLadduServes(session);
         serves.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
-        DateTime startSession = session;
-        DateTime endSession = session;
-
-        if (serves.isNotEmpty &&
-            stocks.last.timestamp.isAfter(serves.last.timestamp)) {
-          endSession = stocks.last.timestamp;
-        }
-
-        String sessionTitle = DateFormat("EEE, MMM dd").format(session);
-        LadduReturn lr = await FB().readLadduReturnStatus(session);
-        if (lr.count >= 0) {
-          String endSession = DateFormat("EEE, MMM dd").format(lr.timestamp);
-          if (sessionTitle != endSession) {
-            sessionTitle += " - $endSession";
-          }
-        } else {
-          DateTime now = DateTime.now();
-          if (session.day != now.day) {
-            sessionTitle += DateFormat(" - EEE, MMM dd").format(now);
-          }
-        }
+        String title = await CalculateSessionTitle(session);
 
         List<String> body = [];
 
