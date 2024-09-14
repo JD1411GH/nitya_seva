@@ -32,9 +32,13 @@ class _LogState extends State<Log> {
       List<LadduStock> stocks = await FB().readLadduStocks(session);
       for (LadduStock stock in stocks) {
         _logItems.add(ListTile(
+
+            // title
             title: Text(
                 DateFormat('dd-MM-yyyy HH:mm:ss').format(stock.timestamp),
                 style: TextStyle(fontWeight: FontWeight.bold)),
+
+            // leading icon
             leading: const Icon(Icons.add),
 
             // body
