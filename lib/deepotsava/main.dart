@@ -73,7 +73,7 @@ class _DeepotsavaState extends State<Deepotsava>
                   image: 'assets/images/RKC.png',
                   text: 'RKC Deepam Sales',
                   isImageLeft: true,
-                  color: Colors.red, // Set desired card color
+                  color: Colors.deepOrange, // Set desired card color
                   textColor: Colors.white, // Set desired text color
                 ),
               ),
