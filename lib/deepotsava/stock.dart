@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
+import 'package:garuda/deepotsava/fbl.dart';
 import 'package:synchronized/synchronized.dart';
 
 class StockPage extends StatefulWidget {
@@ -84,14 +85,27 @@ class _StockPageState extends State<StockPage> {
               child: const Text('Cancel'),
             ),
             TextButton(
-              onPressed: () {
-                Stock stock = Stock(
-                  preparedLamps: int.parse(_preparedLampsController.text),
-                  unpreparedLamps: int.parse(_unpreparedLampsController.text),
-                  wicks: int.parse(_wicksController.text),
-                  gheePackets: int.parse(_gheePacketsController.text),
-                  oilCans: int.parse(_oilCansController.text),
+              onPressed: () async {
+                DeepamStock stock = DeepamStock(
+                  preparedLamps: int.parse(_preparedLampsController.text.isEmpty
+                      ? '0'
+                      : _preparedLampsController.text),
+                  unpreparedLamps: int.parse(
+                      _unpreparedLampsController.text.isEmpty
+                          ? '0'
+                          : _unpreparedLampsController.text),
+                  wicks: int.parse(_wicksController.text.isEmpty
+                      ? '0'
+                      : _wicksController.text),
+                  gheePackets: int.parse(_gheePacketsController.text.isEmpty
+                      ? '0'
+                      : _gheePacketsController.text),
+                  oilCans: int.parse(_oilCansController.text.isEmpty
+                      ? '0'
+                      : _oilCansController.text),
                 );
+
+                await FBL().addStock(widget.stall, stock);
 
                 Navigator.of(context).pop();
               },

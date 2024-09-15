@@ -31,8 +31,8 @@ class _SalesState extends State<Sales> {
         height: 250.0,
         child: PageView(
           children: [
-            Stock(stall: widget.stall),
-            Stats(stall: widget.stall),
+            StockPage(stall: widget.stall),
+            StatsPage(stall: widget.stall),
           ],
         ),
       ),

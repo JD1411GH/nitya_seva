@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:synchronized/synchronized.dart';
 
-class Stats extends StatefulWidget {
+class StatsPage extends StatefulWidget {
   final String stall;
-  const Stats({super.key, required this.stall});
+  const StatsPage({super.key, required this.stall});
 
   @override
-  State<Stats> createState() => _StatsState();
+  State<StatsPage> createState() => _StatsPageState();
 }
 
 // hint: templateKey.currentState!.refresh();
-final GlobalKey<_StatsState> templateKey = GlobalKey<_StatsState>();
+final GlobalKey<_StatsPageState> templateKey = GlobalKey<_StatsPageState>();
 
-class _StatsState extends State<Stats> {
+class _StatsPageState extends State<StatsPage> {
   final _lockInit = Lock();
 
   Future<void> _futureInit() async {

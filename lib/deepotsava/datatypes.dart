@@ -1,11 +1,11 @@
-class Stock {
+class DeepamStock {
   final int preparedLamps;
   final int unpreparedLamps;
   final int wicks;
   final int gheePackets;
   final int oilCans;
 
-  Stock({
+  DeepamStock({
     required this.preparedLamps,
     required this.unpreparedLamps,
     required this.wicks,
@@ -13,8 +13,8 @@ class Stock {
     required this.oilCans,
   });
 
-  factory Stock.fromJson(Map<String, dynamic> json) {
-    return Stock(
+  factory DeepamStock.fromJson(Map<String, dynamic> json) {
+    return DeepamStock(
       preparedLamps: json['preparedLamps'] as int,
       unpreparedLamps: json['unpreparedLamps'] as int,
       wicks: json['wicks'] as int,
