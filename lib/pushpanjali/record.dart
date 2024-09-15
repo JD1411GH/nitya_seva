@@ -8,8 +8,6 @@ class Record {
   Map<DateTime, List<SevaTicket>> sevaTickets = {}; // to FB from List to Map
   RecordCallbacks? callbacks;
 
-  DateTime? _lastRefresh;
-
   // Private constructor
   Record._internal();
 
@@ -25,12 +23,6 @@ class Record {
   }
 
   void onSevaSlotChange(String changeType, dynamic sevaSlot) {
-    if (_lastRefresh != null &&
-        DateTime.now().difference(_lastRefresh!) < const Duration(seconds: 2)) {
-      return;
-    }
-    _lastRefresh = DateTime.now();
-
     switch (changeType) {
       case 'ADD_SEVA_SLOT':
         SevaSlot slot = SevaSlot.fromJson(Map<String, dynamic>.from(sevaSlot));
@@ -56,12 +48,6 @@ class Record {
   }
 
   void onSevaTicketChange(String changeType, dynamic sevaTicketMap) {
-    if (_lastRefresh != null &&
-        DateTime.now().difference(_lastRefresh!) < const Duration(seconds: 2)) {
-      return;
-    }
-    _lastRefresh = DateTime.now();
-
     switch (changeType) {
       case 'ADD_SEVA_TICKET':
         sevaTicketMap.forEach((dynamic timestampTicket, dynamic ticketData) {
