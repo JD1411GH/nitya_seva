@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/laddu_seva/laddu_calc.dart';
@@ -205,6 +206,10 @@ class _LogState extends State<Log> {
                 MaterialPageRoute(
                     builder: (context) => Serve(
                           serve: serve,
+                          slot: PushpanjaliSlot(
+                              timestampSlot: serve.pushpanjaliSlot!,
+                              title: serve.title,
+                              sevakartaSlot: serve.user),
                         )),
               );
             });
@@ -214,6 +219,18 @@ class _LogState extends State<Log> {
               alignment: Alignment.centerLeft,
               child: Text('Laddu packs served: '),
             ));
+
+        // calculate ticket sold
+        List<SevaTicket> tickets = [];
+        if (serve.pushpanjaliSlot != null) {
+          Map<String, List<SevaTicket>> ticketMap =
+              await FB().readPushpanjaliTicketsByDate(serve.pushpanjaliSlot!);
+
+          for (var key in ticketMap.keys) {
+            // Add all elements from each List<SevaTicket> to the combined list
+            tickets.addAll(ticketMap[key]!);
+          }
+        }
 
         // all pushpanjali tickets
         (tile.subtitle as Column).children.add(
@@ -266,7 +283,11 @@ class _LogState extends State<Log> {
                                 Text('${serve.packsPushpanjali[i].keys.first}'),
                           ),
                           Center(
-                            child: Text('0'), // Tickets issued
+                            child: Text(_getTicketCount(
+                                    tickets,
+                                    int.parse(
+                                        serve.packsPushpanjali[i].keys.first))
+                                .toString()), // Tickets issued
                           ),
                           Center(
                             child: Text('0'), // Slip collected
@@ -347,8 +368,14 @@ class _LogState extends State<Log> {
     }
   }
 
-  int _getTicketCount(PushpanjaliSlot slot, int amount) {
-    return 0;
+  int _getTicketCount(List<SevaTicket> tickets, int amount) {
+    int count = 0;
+    for (SevaTicket ticket in tickets) {
+      if (ticket.amount == amount) {
+        count++;
+      }
+    }
+    return count;
   }
 
   Widget _getListView() {

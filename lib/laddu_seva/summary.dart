@@ -154,7 +154,6 @@ class _SummaryState extends State<Summary> {
       pieLegends.sort((a, b) {
         String textA = ((a as Row).children[2] as Text).data ?? '';
         String textB = ((b as Row).children[2] as Text).data ?? '';
-        print("textA: $textA, textB: $textB");
         return textB.compareTo(textA);
       });
 

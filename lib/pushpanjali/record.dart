@@ -207,7 +207,8 @@ class Record {
   }
 
   Future<void> refreshSevaTickets(DateTime timestampSlot) async {
-    sevaTickets[timestampSlot] = await FB().readSevaTickets(timestampSlot);
+    sevaTickets[timestampSlot] =
+        await FB().readPushpanjaliTickets(timestampSlot);
     sevaTickets[timestampSlot]!
         .sort((a, b) => b.timestampTicket.compareTo(a.timestampTicket));
   }

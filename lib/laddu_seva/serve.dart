@@ -8,7 +8,7 @@ import 'package:garuda/toaster.dart';
 import 'package:intl/intl.dart';
 
 class Serve extends StatefulWidget {
-  final LadduServe? serve;
+  final LadduServe? serve; // for update
   final PushpanjaliSlot? slot;
 
   Serve({this.serve, this.slot});
@@ -462,6 +462,9 @@ class _ServeState extends State<Serve> {
     });
 
     Navigator.pop(context);
+    if (widget.serve == null) {
+      Navigator.pop(context);
+    }
   }
 
   Future<bool?> _createConfirmDialog() async {

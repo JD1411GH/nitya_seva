@@ -76,7 +76,7 @@ class _DashboardState extends State<Dashboard> {
       // count all tickets for the selected date
       amountTableTicketRow = [];
       Map<String, List<SevaTicket>> tickets =
-          await FB().readSevaTicketsByDate(selectedDate);
+          await FB().readPushpanjaliTicketsByDate(selectedDate);
       List<int?> pushpanjaliTickets =
           Const().pushpanjaliTickets.map((e) => e['amount']).toList();
       for (var amount in pushpanjaliTickets) {

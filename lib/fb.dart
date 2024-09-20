@@ -68,7 +68,8 @@ class FB {
     }
   }
 
-  Future<List<SevaTicket>> readSevaTickets(DateTime timestampSlot) async {
+  Future<List<SevaTicket>> readPushpanjaliTickets(
+      DateTime timestampSlot) async {
     final dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/sevaTickets');
     DatabaseReference ref =
@@ -88,7 +89,7 @@ class FB {
   }
 
   // "Sat Morning": [ticket1, ticket2], "Sat Evening": [ticket3, ticket4]
-  Future<Map<String, List<SevaTicket>>> readSevaTicketsByDate(
+  Future<Map<String, List<SevaTicket>>> readPushpanjaliTicketsByDate(
       DateTime date) async {
     final dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/sevaTickets');
