@@ -28,7 +28,7 @@ class FB {
     // Code to be executed when first instantiated
   }
 
-  Future<List<SevaSlot>> readSevaSlots() async {
+  Future<List<SevaSlot>> readPushpanjaliSlots() async {
     final dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/sevaSlots');
     DatabaseEvent event = await dbRef.once();
@@ -46,7 +46,7 @@ class FB {
     return sevaSlots;
   }
 
-  Future<List<SevaSlot>> readSevaSlotsByDate(DateTime date) async {
+  Future<List<SevaSlot>> readPushpanjaliSlotsByDate(DateTime date) async {
     final dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/sevaSlots');
 

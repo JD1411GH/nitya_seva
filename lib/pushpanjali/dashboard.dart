@@ -61,7 +61,8 @@ class _DashboardState extends State<Dashboard> {
         'Card': 0,
       };
       grandTotal = [0, 0];
-      List<SevaSlot> slots = await FB().readSevaSlotsByDate(selectedDate);
+      List<SevaSlot> slots =
+          await FB().readPushpanjaliSlotsByDate(selectedDate);
       if (slots.isEmpty) {
         return;
       } else {
