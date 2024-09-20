@@ -8,7 +8,7 @@ class ServiceSelect extends StatefulWidget {
 }
 
 class _ServiceSelectDialogState extends State<ServiceSelect> {
-  List<SevaSlot> slots = [];
+  List<PushpanjaliSlot> slots = [];
   List<String> services = [];
   String status = "loading";
 
@@ -20,7 +20,7 @@ class _ServiceSelectDialogState extends State<ServiceSelect> {
 
   void _loadServices() async {
     slots = await FB().readPushpanjaliSlotsByDate(DateTime.now());
-    List<SevaSlot> slotsYest = await FB()
+    List<PushpanjaliSlot> slotsYest = await FB()
         .readPushpanjaliSlotsByDate(DateTime.now().subtract(Duration(days: 1)));
     slots.addAll(slotsYest);
 

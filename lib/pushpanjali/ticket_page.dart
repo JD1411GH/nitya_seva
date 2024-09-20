@@ -29,7 +29,7 @@ class _TicketListState extends State<TicketTable> {
 
     Record().registerCallbacks(RecordCallbacks(onTicketChange: refresh));
 
-    // Initialize SevaSlot data asynchronously and updates UI with the slot's date, time, and tickets.
+    // Initialize PushpanjaliSlot data asynchronously and updates UI with the slot's date, time, and tickets.
     asyncInit().then((value) {
       setState(() {
         var st = Record().sevaTickets[timestampSlot];
@@ -164,7 +164,7 @@ class _TicketListState extends State<TicketTable> {
   PreferredSizeWidget? _widgetAppbar() {
     String title = 'Seva tickets';
     // ignore: unused_local_variable
-    SevaSlot? sevaSlot = Record().sevaSlots.firstWhere(
+    PushpanjaliSlot? sevaSlot = Record().sevaSlots.firstWhere(
           (slot) => slot.timestampSlot == timestampSlot,
         );
     title = sevaSlot.title;

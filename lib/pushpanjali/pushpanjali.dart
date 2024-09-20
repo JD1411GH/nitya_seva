@@ -19,7 +19,7 @@ class Pushpanjali extends StatefulWidget {
 }
 
 class _HomePageState extends State<Pushpanjali> {
-  List<SevaSlot> sevaSlots = Record().sevaSlots;
+  List<PushpanjaliSlot> sevaSlots = Record().sevaSlots;
   final TextEditingController _slotNameController = TextEditingController();
 
   @override
@@ -65,7 +65,7 @@ class _HomePageState extends State<Pushpanjali> {
             TextButton(
               child: const Text('OK'),
               onPressed: () {
-                SevaSlot slot = SevaSlot(
+                PushpanjaliSlot slot = PushpanjaliSlot(
                     timestampSlot: timestampSlot,
                     title: _slotNameController.text,
                     sevakartaSlot: username!);

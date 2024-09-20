@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 
 class Serve extends StatefulWidget {
   final LadduServe? serve;
-  final SevaSlot? slot;
+  final PushpanjaliSlot? slot;
 
   Serve({this.serve, this.slot});
 

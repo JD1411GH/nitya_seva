@@ -28,25 +28,26 @@ class FB {
     // Code to be executed when first instantiated
   }
 
-  Future<List<SevaSlot>> readPushpanjaliSlots() async {
+  Future<List<PushpanjaliSlot>> readPushpanjaliSlots() async {
     final dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/sevaSlots');
     DatabaseEvent event = await dbRef.once();
     DataSnapshot snapshot = event.snapshot;
-    List<SevaSlot> sevaSlots = [];
+    List<PushpanjaliSlot> sevaSlots = [];
 
     if (snapshot.value != null) {
       sevaSlots = (snapshot.value as Map)
           .values
           .map((value) =>
-              SevaSlot.fromJson(Map<String, dynamic>.from(value as Map)))
+              PushpanjaliSlot.fromJson(Map<String, dynamic>.from(value as Map)))
           .toList();
     }
 
     return sevaSlots;
   }
 
-  Future<List<SevaSlot>> readPushpanjaliSlotsByDate(DateTime date) async {
+  Future<List<PushpanjaliSlot>> readPushpanjaliSlotsByDate(
+      DateTime date) async {
     final dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/sevaSlots');
 
@@ -60,7 +61,7 @@ class FB {
       return (snapshot.value as Map)
           .values
           .map((value) =>
-              SevaSlot.fromJson(Map<String, dynamic>.from(value as Map)))
+              PushpanjaliSlot.fromJson(Map<String, dynamic>.from(value as Map)))
           .toList();
     } else {
       return [];

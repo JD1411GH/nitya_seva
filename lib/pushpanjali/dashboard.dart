@@ -61,7 +61,7 @@ class _DashboardState extends State<Dashboard> {
         'Card': 0,
       };
       grandTotal = [0, 0];
-      List<SevaSlot> slots =
+      List<PushpanjaliSlot> slots =
           await FB().readPushpanjaliSlotsByDate(selectedDate);
       if (slots.isEmpty) {
         return;
@@ -171,7 +171,7 @@ class _DashboardState extends State<Dashboard> {
 
   void _onSlotChange(String changeType, dynamic data) {
     Map<String, dynamic> dataMap = (data as Map).cast<String, dynamic>();
-    SevaSlot slot = SevaSlot.fromJson(dataMap);
+    PushpanjaliSlot slot = PushpanjaliSlot.fromJson(dataMap);
 
     DateTime slotDate = DateTime(slot.timestampSlot.year,
         slot.timestampSlot.month, slot.timestampSlot.day);
