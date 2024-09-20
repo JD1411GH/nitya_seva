@@ -227,24 +227,54 @@ class _LogState extends State<Log> {
                 children: [
                   TableRow(
                     children: [
-                      Text('Seva amount',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text('Tickets issued',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text('Slip collected',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text('Laddu packs',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Center(
+                        child: Text(
+                          'Seva amount',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Center(
+                        child: Text(
+                          'Tickets issued',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Center(
+                        child: Text(
+                          'Slips received',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Center(
+                        child: Text(
+                          'Laddu packs',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                     ],
                   ),
                   for (int i = 0; i < serve.packsPushpanjali.length; i++)
                     if (serve.packsPushpanjali[i].values.first != 0)
                       TableRow(
                         children: [
-                          Text('${serve.packsPushpanjali[i].keys.first}'),
-                          Text('0'), // Tickets issued
-                          Text('0'), // Slip collected
-                          Text('${serve.packsPushpanjali[i].values.first}'),
+                          Center(
+                            child:
+                                Text('${serve.packsPushpanjali[i].keys.first}'),
+                          ),
+                          Center(
+                            child: Text('0'), // Tickets issued
+                          ),
+                          Center(
+                            child: Text('0'), // Slip collected
+                          ),
+                          Center(
+                            child: Text(
+                                '${serve.packsPushpanjali[i].values.first}'),
+                          ),
                         ],
                       ),
                 ],
