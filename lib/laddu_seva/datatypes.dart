@@ -1,3 +1,5 @@
+import 'package:garuda/pushpanjali/sevaslot.dart';
+
 class LadduStock {
   final DateTime timestamp;
   final String user;
@@ -40,6 +42,7 @@ class LadduServe {
   final String note;
   final String title;
   final int balance; // New member
+  final PushpanjaliSlot slot; // New member
 
   LadduServe({
     required this.timestamp,
@@ -50,6 +53,7 @@ class LadduServe {
     required this.note,
     required this.title,
     required this.balance, // Updated constructor
+    required this.slot, // Updated constructor
   });
 
   factory LadduServe.fromJson(Map<String, dynamic> json) {
@@ -68,6 +72,7 @@ class LadduServe {
       note: json['note'],
       title: json['title'],
       balance: json['balance'], // Updated fromJson
+      slot: PushpanjaliSlot.fromJson(json['slot']), // Updated fromJson
     );
   }
 
@@ -87,6 +92,7 @@ class LadduServe {
       'note': note,
       'title': title,
       'balance': balance, // Updated toJson
+      'slot': slot.toJson(), // Updated toJson
     };
   }
 }

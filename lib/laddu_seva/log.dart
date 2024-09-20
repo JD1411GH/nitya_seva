@@ -4,6 +4,8 @@ import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/laddu_seva/laddu_calc.dart';
 import 'package:garuda/laddu_seva/serve.dart';
 import 'package:garuda/laddu_seva/utils.dart';
+import 'package:garuda/pushpanjali/pushpanjali.dart';
+import 'package:garuda/pushpanjali/sevaslot.dart';
 import 'package:intl/intl.dart';
 import 'package:synchronized/synchronized.dart';
 
@@ -214,16 +216,32 @@ class _LogState extends State<Log> {
             ));
 
         // all pushpanjali tickets
-        for (int i = 0; i < serve.packsPushpanjali.length; i++) {
-          if (serve.packsPushpanjali[i].values.first != 0) {
-            (tile.subtitle as Column).children.add(Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    '    Seva ${serve.packsPushpanjali[i].keys.first}: ${serve.packsPushpanjali[i].values.first}',
+        (tile.subtitle as Column).children.add(
+              Table(
+                columnWidths: const <int, TableColumnWidth>{
+                  0: FlexColumnWidth(),
+                  1: FlexColumnWidth(),
+                },
+                children: [
+                  TableRow(
+                    children: [
+                      Text('Seva amount',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text('Laddu packs',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                    ],
                   ),
-                ));
-          }
-        }
+                  for (int i = 0; i < serve.packsPushpanjali.length; i++)
+                    if (serve.packsPushpanjali[i].values.first != 0)
+                      TableRow(
+                        children: [
+                          Text('${serve.packsPushpanjali[i].keys.first}'),
+                          Text('${serve.packsPushpanjali[i].values.first}'),
+                        ],
+                      ),
+                ],
+              ),
+            );
 
         // other seva tickets
         for (int i = 0; i < serve.packsOtherSeva.length; i++) {
@@ -286,6 +304,10 @@ class _LogState extends State<Log> {
     if (mounted) {
       setState(() {});
     }
+  }
+
+  int _getTicketCount(PushpanjaliSlot slot, int amount) {
+    return 0;
   }
 
   Widget _getListView() {

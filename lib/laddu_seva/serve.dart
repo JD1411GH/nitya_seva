@@ -448,6 +448,7 @@ class _ServeState extends State<Serve> {
       note: _controllerNote.text,
       title: _controllerTitle.text,
       balance: total_procured - total_served,
+      slot: widget.slot!,
     );
 
     if (widget.serve != null) {
