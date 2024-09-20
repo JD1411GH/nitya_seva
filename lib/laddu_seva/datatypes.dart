@@ -42,7 +42,7 @@ class LadduServe {
   final String note;
   final String title;
   final int balance;
-  final PushpanjaliSlot? slot; // Updated to nullable
+  final DateTime? pushpanjaliSlot; // Nullable member
 
   LadduServe({
     required this.timestamp,
@@ -53,7 +53,7 @@ class LadduServe {
     required this.note,
     required this.title,
     required this.balance,
-    this.slot, // Updated constructor
+    this.pushpanjaliSlot, // Nullable in constructor
   });
 
   factory LadduServe.fromJson(Map<String, dynamic> json) {
@@ -72,14 +72,14 @@ class LadduServe {
       note: json['note'],
       title: json['title'],
       balance: json['balance'],
-      slot: json['slot'] != null
-          ? PushpanjaliSlot.fromJson(json['slot'])
-          : null, // Updated fromJson
+      pushpanjaliSlot: json['pushpanjaliSlot'] != null
+          ? DateTime.parse(json['pushpanjaliSlot'])
+          : null, // Handle nullable pushpanjaliSlot
     );
   }
 
   Map<String, dynamic> toJson() {
-    final data = {
+    return {
       'timestamp': timestamp.toIso8601String(),
       'user': user,
       'packsPushpanjali': packsPushpanjali
@@ -94,11 +94,9 @@ class LadduServe {
       'note': note,
       'title': title,
       'balance': balance,
+      'pushpanjaliSlot':
+          pushpanjaliSlot?.toIso8601String(), // Handle nullable pushpanjaliSlot
     };
-    if (slot != null) {
-      data['slot'] = slot!.toJson(); // Updated toJson
-    }
-    return data;
   }
 }
 
