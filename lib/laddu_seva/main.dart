@@ -6,6 +6,7 @@ import 'package:garuda/laddu_seva/history.dart';
 import 'package:garuda/laddu_seva/laddu_calc.dart';
 import 'package:garuda/laddu_seva/log.dart';
 import 'package:garuda/laddu_seva/serve.dart';
+import 'package:garuda/laddu_seva/service_select.dart';
 import 'package:garuda/laddu_seva/summary.dart';
 import 'package:intl/intl.dart';
 
@@ -174,7 +175,8 @@ class _LadduSevaState extends State<LadduMain> {
                       ? () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => Serve()),
+                            MaterialPageRoute(
+                                builder: (context) => ServiceSelect()),
                           );
                         }
                       : null,
