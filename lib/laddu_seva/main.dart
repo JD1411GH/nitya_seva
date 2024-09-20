@@ -125,6 +125,15 @@ class _LadduSevaState extends State<LadduMain> {
         });
   }
 
+  void _createServeDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ServiceSelect();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -173,11 +182,7 @@ class _LadduSevaState extends State<LadduMain> {
                 ElevatedButton.icon(
                   onPressed: (lr == null || lr!.count == -1)
                       ? () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ServiceSelect()),
-                          );
+                          _createServeDialog(context);
                         }
                       : null,
                   icon: Icon(Icons.remove),

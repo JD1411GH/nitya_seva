@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/fb.dart';
+import 'package:garuda/laddu_seva/serve.dart';
 import 'package:garuda/pushpanjali/sevaslot.dart';
 
 class ServiceSelect extends StatefulWidget {
@@ -55,8 +56,11 @@ class _ServiceSelectDialogState extends State<ServiceSelect> {
               itemBuilder: (context, index) {
                 return ElevatedButton(
                   onPressed: () {
-                    // Take action when the button is pressed
-                    Navigator.pop(context, services[index]);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Serve(slot: slots[index])),
+                    );
                   },
                   child: Text(services[index]),
                 );
