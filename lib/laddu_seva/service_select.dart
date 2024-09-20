@@ -8,8 +8,8 @@ class ServiceSelect extends StatefulWidget {
 }
 
 class _ServiceSelectDialogState extends State<ServiceSelect> {
+  List<SevaSlot> slots = [];
   List<String> services = [];
-  String? selectedService;
   String status = "loading";
 
   @override
@@ -19,8 +19,10 @@ class _ServiceSelectDialogState extends State<ServiceSelect> {
   }
 
   void _loadServices() async {
-    List<SevaSlot> slots =
-        await FB().readPushpanjaliSlotsByDate(DateTime.now());
+    slots = await FB().readPushpanjaliSlotsByDate(DateTime.now());
+    List<SevaSlot> slotsYest = await FB()
+        .readPushpanjaliSlotsByDate(DateTime.now().subtract(Duration(days: 1)));
+    slots.addAll(slotsYest);
 
     setState(() {
       services = slots.map((e) => e.title).toList();
@@ -39,7 +41,7 @@ class _ServiceSelectDialogState extends State<ServiceSelect> {
             CircularProgressIndicator()
           else if (status == "empty")
             Text(
-              "No services today",
+              "No services found",
               style: TextStyle(
                 fontSize: 20.0, // Increase the font size
                 fontWeight: FontWeight.bold, // Make the text bold
@@ -51,28 +53,18 @@ class _ServiceSelectDialogState extends State<ServiceSelect> {
               shrinkWrap: true,
               itemCount: services.length,
               itemBuilder: (context, index) {
-                return RadioListTile<String>(
-                  title: Text(services[index]),
-                  value: services[index],
-                  groupValue: selectedService,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedService = value;
-                    });
+                return ElevatedButton(
+                  onPressed: () {
+                    // Take action when the button is pressed
+                    Navigator.pop(context, services[index]);
                   },
+                  child: Text(services[index]),
                 );
               },
             ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              if (status == "loaded")
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context, selectedService);
-                  },
-                  child: Text("Select"),
-                ),
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
