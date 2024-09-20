@@ -221,11 +221,17 @@ class _LogState extends State<Log> {
                 columnWidths: const <int, TableColumnWidth>{
                   0: FlexColumnWidth(),
                   1: FlexColumnWidth(),
+                  2: FlexColumnWidth(),
+                  3: FlexColumnWidth(),
                 },
                 children: [
                   TableRow(
                     children: [
                       Text('Seva amount',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text('Tickets issued',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text('Slip collected',
                           style: TextStyle(fontWeight: FontWeight.bold)),
                       Text('Laddu packs',
                           style: TextStyle(fontWeight: FontWeight.bold)),
@@ -236,6 +242,8 @@ class _LogState extends State<Log> {
                       TableRow(
                         children: [
                           Text('${serve.packsPushpanjali[i].keys.first}'),
+                          Text('0'), // Tickets issued
+                          Text('0'), // Slip collected
                           Text('${serve.packsPushpanjali[i].values.first}'),
                         ],
                       ),
@@ -249,7 +257,7 @@ class _LogState extends State<Log> {
             (tile.subtitle as Column).children.add(Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    '    ${serve.packsOtherSeva[i].keys.first}: ${serve.packsOtherSeva[i].values.first}',
+                    '${serve.packsOtherSeva[i].keys.first}: ${serve.packsOtherSeva[i].values.first}',
                   ),
                 ));
           }
@@ -261,7 +269,7 @@ class _LogState extends State<Log> {
             (tile.subtitle as Column).children.add(Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    '    ${serve.packsMisc[i].keys.first}: ${serve.packsMisc[i].values.first}',
+                    '${serve.packsMisc[i].keys.first}: ${serve.packsMisc[i].values.first}',
                   ),
                 ));
           }
@@ -270,7 +278,10 @@ class _LogState extends State<Log> {
         // balance
         (tile.subtitle as Column).children.add(Align(
               alignment: Alignment.centerLeft,
-              child: Text('Balance: ${serve.balance}'),
+              child: Text(
+                'Balance: ${serve.balance}',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ));
 
         // note
