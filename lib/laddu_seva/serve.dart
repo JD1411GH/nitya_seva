@@ -73,14 +73,7 @@ class _ServeState extends State<Serve> {
       _controllerNote.text = widget.serve!.note;
     } else {
       // formulate title for the slot
-      final now = DateTime.now();
-      final dayOfWeek = DateFormat('EEEE').format(now);
-      final cutoff = Const().morningCutoff;
-      if (now.isBefore(cutoff)) {
-        _controllerTitle.text = '$dayOfWeek Morning';
-      } else {
-        _controllerTitle.text = '$dayOfWeek Evening';
-      }
+      _controllerTitle.text = widget.slot!.title;
     }
 
     _calculateTotalLadduPacks();
