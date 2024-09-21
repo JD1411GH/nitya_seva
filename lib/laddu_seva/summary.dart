@@ -6,7 +6,6 @@ import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/laddu_seva/utils.dart';
-import 'package:garuda/laddu_seva/bar_chart.dart';
 import 'package:synchronized/synchronized.dart';
 
 class Summary extends StatefulWidget {
@@ -201,7 +200,7 @@ class _SummaryState extends State<Summary> {
           ),
           SizedBox(height: 16),
           Container(
-            height: 200,
+            height: 300,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: List.generate(barLabels.length, (index) {
