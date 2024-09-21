@@ -110,6 +110,7 @@ class _SummaryState extends State<Summary> {
       // populate bar chart data
       barLabels = labels;
       barValues = values;
+      _sortBarLabelsAndValues(barLabels, barValues);
 
       List<String> sevaNames = Const().otherSevaTickets.map((e) {
         String name = e['name'];
@@ -183,6 +184,42 @@ class _SummaryState extends State<Summary> {
     setState(() {});
   }
 
+  void _sortBarLabelsAndValues(List<String> labels, List<int> values) {
+    // Step 1: Combine labels and values into a list of tuples
+    List<MapEntry<String, int>> combinedList = [];
+    for (int i = 0; i < labels.length; i++) {
+      combinedList.add(MapEntry(labels[i], values[i]));
+    }
+
+    // Step 2: Define the custom comparator function
+    int customComparator(MapEntry<String, int> a, MapEntry<String, int> b) {
+      bool aIsSeva = a.key.startsWith('Seva');
+      bool bIsSeva = b.key.startsWith('Seva');
+
+      if (aIsSeva && bIsSeva) {
+        // Extract numeric part after 'Seva' and compare numerically
+        int aNum = int.parse(a.key.substring(4));
+        int bNum = int.parse(b.key.substring(4));
+        return aNum.compareTo(bNum);
+      } else if (aIsSeva) {
+        return -1; // 'Seva' labels come before others
+      } else if (bIsSeva) {
+        return 1; // 'Seva' labels come before others
+      } else {
+        return a.key.compareTo(b.key); // Standard string comparison
+      }
+    }
+
+    // Step 3: Sort the combined list using the custom comparator
+    combinedList.sort(customComparator);
+
+    // Step 4: Separate the sorted tuples back into barLabels and barValues
+    for (int i = 0; i < combinedList.length; i++) {
+      labels[i] = combinedList[i].key;
+      values[i] = combinedList[i].value;
+    }
+  }
+
   void restock(int procured) {
     total_procured += procured;
     setState(() {});
@@ -194,10 +231,6 @@ class _SummaryState extends State<Summary> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Bar Chart',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
           SizedBox(height: 16),
           Container(
             height: 300,
