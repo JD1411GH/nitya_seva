@@ -26,6 +26,8 @@ class _SummaryState extends State<Summary> {
 
   LadduReturn? lr;
 
+  List<BarChartGroupData> barChartData = [];
+  List<String> labels = [];
   List<PieChartSectionData> pieSections = [];
   List<Widget> pieLegends = [];
 
@@ -52,7 +54,7 @@ class _SummaryState extends State<Summary> {
 
       pieSections = [];
       pieLegends = [];
-      List<String> labels = [];
+      labels = [];
       List<int> values = [];
 
       total_served = 0;
@@ -105,10 +107,27 @@ class _SummaryState extends State<Summary> {
         });
       }
 
+      print("labels: $labels");
+      print("values: $values");
+      barChartData = [];
+      for (int i = 0; i < values.length; i++) {
+        barChartData.add(BarChartGroupData(
+          x: i,
+          barRods: [
+            BarChartRodData(
+              toY: values[i].toDouble(),
+              color: Colors.blue,
+            ),
+          ],
+          showingTooltipIndicators: [0], // Optional: to show tooltips
+        ));
+      }
+
       List<String> sevaNames = Const().otherSevaTickets.map((e) {
         String name = e['name'];
         return name;
       }).toList();
+
       // add the pie sections and legends
       for (int i = 0; i < labels.length; i++) {
         Color pieColor = Colors.grey;
@@ -179,6 +198,40 @@ class _SummaryState extends State<Summary> {
   void restock(int procured) {
     total_procured += procured;
     setState(() {});
+  }
+
+  Widget _getBarChart(BuildContext context) {
+    return SizedBox(
+      width: double.infinity, // Set the desired width
+      height: 150, // Set the desired height
+      child: BarChart(
+        BarChartData(
+          titlesData: FlTitlesData(
+            show: true,
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                getTitlesWidget: (double value, TitleMeta meta) {
+                  int index = value.toInt();
+                  if (index < 0 || index >= labels.length) {
+                    return const SizedBox.shrink();
+                  }
+                  return SideTitleWidget(
+                    axisSide: meta.axisSide,
+                    child: Text(labels[index]),
+                  );
+                },
+              ),
+            ),
+            leftTitles: AxisTitles(
+              sideTitles: SideTitles(showTitles: true),
+            ),
+          ),
+          gridData: FlGridData(show: true),
+          barGroups: barChartData,
+        ),
+      ),
+    );
   }
 
   Widget _getPieChart(BuildContext context) {
@@ -373,7 +426,7 @@ class _SummaryState extends State<Summary> {
               // padding before pie chart
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: _getPieChart(context),
+                child: _getBarChart(context),
               ),
             ],
           );
