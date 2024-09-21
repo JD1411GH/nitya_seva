@@ -267,45 +267,66 @@ class _SummaryState extends State<Summary> {
     );
   }
 
-  Widget _getPieChart(BuildContext context) {
-    if (pieSections.isEmpty) {
-      return _getPieChartEmpty(context);
-    }
+  Widget _getBarChartEmpty(BuildContext context) {
+    const double barChartHeight = 150.0; // Set a fixed height for the bar chart
+    const int numberOfBars = 5; // Define the number of bars for the placeholder
+    const List<String> barLabels = [
+      'loading values',
+      'loading values',
+      'loading values',
+      'loading values',
+      'loading values'
+    ]; // Placeholder labels
+    const List<int> barValues = [
+      50,
+      40,
+      30,
+      20,
+      10
+    ]; // Values in descending order
+    const Color barColor = Colors.grey; // Set bar color to grey
+    const Color textColor = Colors.grey; // Set text color to grey
 
-    // Shuffle the pie sections to avoid adjacent placement
-    pieSections.shuffle(Random());
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SizedBox(
-          child: Column(
-            children: [
-              SizedBox(
-                height: 100, // Set the desired height for the PieChart
-                width: 100, // Set the desired width for the PieChart
-                child: PieChart(
-                  PieChartData(
-                    sections: pieSections,
+    return Container(
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 16),
+          Container(
+            height: barChartHeight,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: List.generate(numberOfBars, (index) {
+                return Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        barValues[index].toString(),
+                        style: TextStyle(color: textColor), // Set text color
+                      ),
+                      SizedBox(height: 4),
+                      Flexible(
+                        child: Container(
+                          height:
+                              barValues[index].toDouble(), // Height for bars
+                          color: barColor,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        barLabels[index],
+                        style: TextStyle(color: textColor), // Set text color
+                      ),
+                    ],
                   ),
-                ),
-              ),
-
-              SizedBox(
-                  height: 16), // Increased space between the chart and the text
-
-              Text(
-                'Laddu packs served', // Replace with your desired text
-              ),
-            ],
+                );
+              }),
+            ),
           ),
-        ),
-        SizedBox(width: 40), // Increased space between the chart and the legend
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: pieLegends,
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -319,41 +340,6 @@ class _SummaryState extends State<Summary> {
         ),
         SizedBox(width: 8),
         Text(text),
-      ],
-    );
-  }
-
-  Widget _getPieChartEmpty(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SizedBox(
-          height: 100, // Set the desired height
-          width: 100, // Set the desired width
-          child: PieChart(
-            PieChartData(
-              sections: [
-                PieChartSectionData(
-                  color: Colors.grey,
-                  value: 100,
-                  title: '',
-                  radius: 50,
-                  titleStyle: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-        ),
-        SizedBox(width: 40), // Increased space between the chart and the legend
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildLegendItem(Colors.grey, 'No data'),
-          ],
-        ),
       ],
     );
   }
@@ -380,7 +366,7 @@ class _SummaryState extends State<Summary> {
         // padding before pie chart
         Padding(
           padding: const EdgeInsets.all(16.0),
-          child: _getPieChartEmpty(context),
+          child: _getBarChartEmpty(context),
         ),
       ],
     );
