@@ -257,6 +257,9 @@ class _SummaryState extends State<Summary> {
                     barColor = Const().getRandomDarkColor();
                 }
 
+                // Add newline character to the labels
+                String label = barLabels[index].replaceAll(' ', '\n') + ' ';
+
                 return Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -273,7 +276,7 @@ class _SummaryState extends State<Summary> {
                         ),
                       ),
                       SizedBox(height: 4),
-                      Text(barLabels[index]),
+                      Text(label, textAlign: TextAlign.center),
                     ],
                   ),
                 );
