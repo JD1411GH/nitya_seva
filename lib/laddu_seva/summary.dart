@@ -239,6 +239,24 @@ class _SummaryState extends State<Summary> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: List.generate(barLabels.length, (index) {
+                Color barColor;
+                switch (barLabels[index]) {
+                  case "Seva 400":
+                    barColor = Const().ticketColors['400']!;
+                    break;
+                  case "Seva 500":
+                    barColor = Const().ticketColors['500']!;
+                    break;
+                  case "Seva 1000":
+                    barColor = Const().ticketColors['1000']!;
+                    break;
+                  case "Seva 2500":
+                    barColor = Const().ticketColors['2500']!;
+                    break;
+                  default:
+                    barColor = Const().getRandomDarkColor();
+                }
+
                 return Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -251,7 +269,7 @@ class _SummaryState extends State<Summary> {
                                   barValues.reduce((a, b) => a > b ? a : b)) *
                               (barChartHeight -
                                   50), // Adjust bar height proportionally
-                          color: Const().getRandomDarkColor(),
+                          color: barColor,
                         ),
                       ),
                       SizedBox(height: 4),
