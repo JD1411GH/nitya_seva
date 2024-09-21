@@ -366,13 +366,31 @@ class _ServeState extends State<Serve> {
 
   Future<void> _onpressServe() async {
     if (_totalLadduPacks == 0) {
-      Toaster().error('No laddu packs entered');
+      Toaster().error('Nothing entered');
       return;
     }
 
     setState(() {
       _isLoading = true;
     });
+
+    // calculate available laddu packs
+    int available = 0;
+    if (widget.serve != null) {
+      available = widget.serve!.available ?? 0;
+    } else {
+      DateTime session = await FB().readLatestLadduSession();
+      await FB().readLadduStocks(session).then((stocks) {
+        for (LadduStock stock in stocks) {
+          available += stock.count;
+        }
+      });
+      await FB().readLadduServes(session).then((serves) {
+        for (LadduServe serve in serves) {
+          available -= CalculateTotalLadduPacksServed(serve);
+        }
+      });
+    }
 
     List<Map<String, int>> packsPushpanjali = [];
     List<Map<String, int>> packsOtherSeva = [];
@@ -449,6 +467,7 @@ class _ServeState extends State<Serve> {
       title: _controllerTitle.text,
       balance: total_procured - total_served,
       pushpanjaliSlot: widget.slot!.timestampSlot,
+      available: available,
     );
 
     if (widget.serve != null) {
