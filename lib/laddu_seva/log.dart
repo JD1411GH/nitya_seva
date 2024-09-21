@@ -279,20 +279,28 @@ class _LogState extends State<Log> {
                       TableRow(
                         children: [
                           Center(
+                            // ticket amount
                             child:
                                 Text('${serve.packsPushpanjali[i].keys.first}'),
                           ),
                           Center(
+                            // Tickets issued
                             child: Text(_getTicketCount(
                                     tickets,
                                     int.parse(
                                         serve.packsPushpanjali[i].keys.first))
-                                .toString()), // Tickets issued
+                                .toString()),
                           ),
                           Center(
-                            child: Text('0'), // Slip collected
+                            // Slip collected
+                            child: Text(_getSlipCount(
+                                    int.parse(
+                                        serve.packsPushpanjali[i].keys.first),
+                                    serve.packsPushpanjali[i].values.first)
+                                .toString()),
                           ),
                           Center(
+                            // laddu packs
                             child: Text(
                                 '${serve.packsPushpanjali[i].values.first}'),
                           ),
@@ -375,6 +383,16 @@ class _LogState extends State<Log> {
         count++;
       }
     }
+    return count;
+  }
+
+  int _getSlipCount(int amount, int ladduCount) {
+    int count = 0;
+    Const().pushpanjaliTickets.forEach((element) {
+      if (element['amount'] == amount) {
+        count = ladduCount ~/ element['ladduPacks']!;
+      }
+    });
     return count;
   }
 
