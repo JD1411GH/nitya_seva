@@ -1,5 +1,6 @@
 - execute 03_release_helper.py
 - Raise PR to merge version branch to main
+    - https://github.com/JD1411GH/nitya_seva
     - merge PR
 - Draft a new release in github
     - https://github.com/JD1411GH/nitya_seva/releases/new
