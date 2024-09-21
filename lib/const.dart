@@ -1,6 +1,7 @@
 // ignore_for_file: unused_local_variable
 
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:garuda/admin/user.dart';
@@ -70,12 +71,17 @@ class Const {
     Colors.lightBlueAccent,
     Colors.indigoAccent,
     Colors.brown,
-    Colors.grey,
     Colors.blueGrey,
+    Colors.black,
+    Colors.grey,
+    Colors.deepOrange,
+    Colors.teal,
+    Colors.cyan,
+    Colors.orange,
   ];
-
   Color getRandomDarkColor() {
-    return darkColors[DateTime.now().millisecond % darkColors.length];
+    final random = Random();
+    return darkColors[random.nextInt(darkColors.length)];
   }
 
   final List<Color> lightColors = [

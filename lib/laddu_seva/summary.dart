@@ -247,7 +247,7 @@ class _SummaryState extends State<Summary> {
                         height: (barValues[index] /
                                 barValues.reduce((a, b) => a > b ? a : b)) *
                             150,
-                        color: Colors.blue,
+                        color: Const().getRandomDarkColor(),
                       ),
                       SizedBox(height: 4),
                       Text(barLabels[index]),
