@@ -6,6 +6,7 @@ import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/laddu_seva/utils.dart';
+import 'package:garuda/laddu_seva/bar_chart.dart';
 import 'package:synchronized/synchronized.dart';
 
 class Summary extends StatefulWidget {
@@ -26,8 +27,8 @@ class _SummaryState extends State<Summary> {
 
   LadduReturn? lr;
 
-  List<BarChartGroupData> barChartData = [];
-  List<String> labels = [];
+  List<String> barLabels = [];
+  List<int> barValues = [];
   List<PieChartSectionData> pieSections = [];
   List<Widget> pieLegends = [];
 
@@ -54,7 +55,7 @@ class _SummaryState extends State<Summary> {
 
       pieSections = [];
       pieLegends = [];
-      labels = [];
+      List<String> labels = [];
       List<int> values = [];
 
       total_served = 0;
@@ -107,21 +108,9 @@ class _SummaryState extends State<Summary> {
         });
       }
 
-      print("labels: $labels");
-      print("values: $values");
-      barChartData = [];
-      for (int i = 0; i < values.length; i++) {
-        barChartData.add(BarChartGroupData(
-          x: i,
-          barRods: [
-            BarChartRodData(
-              toY: values[i].toDouble(),
-              color: Colors.blue,
-            ),
-          ],
-          showingTooltipIndicators: [0], // Optional: to show tooltips
-        ));
-      }
+      // populate bar chart data
+      barLabels = labels;
+      barValues = values;
 
       List<String> sevaNames = Const().otherSevaTickets.map((e) {
         String name = e['name'];
@@ -201,43 +190,42 @@ class _SummaryState extends State<Summary> {
   }
 
   Widget _getBarChart(BuildContext context) {
-    return SizedBox(
-      width: double.infinity, // Set the desired width
-      height: 150, // Set the desired height
-      child: BarChart(
-        BarChartData(
-          titlesData: FlTitlesData(
-            show: true,
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                getTitlesWidget: (double value, TitleMeta meta) {
-                  final index = value.toInt();
-                  if (index < 0 || index >= labels.length) {
-                    return const SizedBox.shrink();
-                  }
-                  return SideTitleWidget(
-                    axisSide: meta.axisSide,
-                    child: Transform.rotate(
-                      angle: -45 *
-                          3.1415926535897932 /
-                          180, // Rotate by -45 degrees
-                      child: Text(labels[index]),
-                    ),
-                  );
-                },
-              ),
-            ),
-            leftTitles: AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-            topTitles: AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
+    return Container(
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Bar Chart',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 16),
+          Container(
+            height: 200,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: List.generate(barLabels.length, (index) {
+                return Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(barValues[index].toString()),
+                      SizedBox(height: 4),
+                      Container(
+                        height: (barValues[index] /
+                                barValues.reduce((a, b) => a > b ? a : b)) *
+                            150,
+                        color: Colors.blue,
+                      ),
+                      SizedBox(height: 4),
+                      Text(barLabels[index]),
+                    ],
+                  ),
+                );
+              }),
             ),
           ),
-          gridData: FlGridData(show: true),
-          barGroups: barChartData,
-        ),
+        ],
       ),
     );
   }
