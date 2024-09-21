@@ -212,13 +212,18 @@ class _SummaryState extends State<Summary> {
               sideTitles: SideTitles(
                 showTitles: true,
                 getTitlesWidget: (double value, TitleMeta meta) {
-                  int index = value.toInt();
+                  final index = value.toInt();
                   if (index < 0 || index >= labels.length) {
                     return const SizedBox.shrink();
                   }
                   return SideTitleWidget(
                     axisSide: meta.axisSide,
-                    child: Text(labels[index]),
+                    child: Transform.rotate(
+                      angle: -45 *
+                          3.1415926535897932 /
+                          180, // Rotate by -45 degrees
+                      child: Text(labels[index]),
+                    ),
                   );
                 },
               ),
