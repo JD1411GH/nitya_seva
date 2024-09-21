@@ -207,7 +207,8 @@ class _LogState extends State<Log> {
                     builder: (context) => Serve(
                           serve: serve,
                           slot: PushpanjaliSlot(
-                              timestampSlot: serve.pushpanjaliSlot!,
+                              timestampSlot:
+                                  serve.pushpanjaliSlot ?? DateTime.now(),
                               title: serve.title,
                               sevakartaSlot: serve.user),
                         )),
@@ -319,7 +320,7 @@ class _LogState extends State<Log> {
             (tile.subtitle as Column).children.add(Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    '${serve.packsOtherSeva[i].keys.first}: ${serve.packsOtherSeva[i].values.first}',
+                    '${serve.packsOtherSeva[i].keys.first}: ${serve.packsOtherSeva[i].values.first} packs',
                   ),
                 ));
           }
@@ -331,7 +332,7 @@ class _LogState extends State<Log> {
             (tile.subtitle as Column).children.add(Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    '${serve.packsMisc[i].keys.first}: ${serve.packsMisc[i].values.first}',
+                    '${serve.packsMisc[i].keys.first}: ${serve.packsMisc[i].values.first} packs',
                   ),
                 ));
           }
