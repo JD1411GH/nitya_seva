@@ -226,6 +226,8 @@ class _SummaryState extends State<Summary> {
   }
 
   Widget _getBarChart(BuildContext context) {
+    const double barChartHeight = 150.0; // Set a fixed height for the bar chart
+
     return Container(
       padding: EdgeInsets.all(16.0),
       child: Column(
@@ -233,7 +235,7 @@ class _SummaryState extends State<Summary> {
         children: [
           SizedBox(height: 16),
           Container(
-            height: 300,
+            height: barChartHeight,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: List.generate(barLabels.length, (index) {
@@ -246,7 +248,8 @@ class _SummaryState extends State<Summary> {
                       Container(
                         height: (barValues[index] /
                                 barValues.reduce((a, b) => a > b ? a : b)) *
-                            150,
+                            (barChartHeight -
+                                50), // Adjust bar height proportionally
                         color: Const().getRandomDarkColor(),
                       ),
                       SizedBox(height: 4),
