@@ -5,7 +5,7 @@ import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/laddu_seva/history.dart';
 import 'package:garuda/laddu_seva/laddu_calc.dart';
 import 'package:garuda/laddu_seva/log.dart';
-import 'package:garuda/laddu_seva/serve.dart';
+import 'package:garuda/laddu_seva/service_select.dart';
 import 'package:garuda/laddu_seva/summary.dart';
 import 'package:intl/intl.dart';
 
@@ -17,7 +17,6 @@ class LadduMain extends StatefulWidget {
 class _LadduSevaState extends State<LadduMain> {
   DateTime? session;
   LadduReturn? lr;
-  DateTime? lastRefresh;
 
   @override
   initState() {
@@ -32,12 +31,6 @@ class _LadduSevaState extends State<LadduMain> {
   }
 
   Future<void> refresh() async {
-    if (lastRefresh != null &&
-        DateTime.now().difference(lastRefresh!).inSeconds < 2) {
-      return;
-    }
-    lastRefresh = DateTime.now();
-
     // refresh the main widget
     session = await FB().readLatestLadduSession();
     lr = await FB().readLadduReturnStatus(session!);
@@ -124,6 +117,15 @@ class _LadduSevaState extends State<LadduMain> {
         });
   }
 
+  void _createServeDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ServiceSelect();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -172,10 +174,7 @@ class _LadduSevaState extends State<LadduMain> {
                 ElevatedButton.icon(
                   onPressed: (lr == null || lr!.count == -1)
                       ? () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => Serve()),
-                          );
+                          _createServeDialog(context);
                         }
                       : null,
                   icon: Icon(Icons.remove),

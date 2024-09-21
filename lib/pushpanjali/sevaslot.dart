@@ -43,17 +43,17 @@ class SevaTicket {
   }
 }
 
-class SevaSlot {
+class PushpanjaliSlot {
   DateTime timestampSlot;
   final String title;
   final String sevakartaSlot;
 
-  SevaSlot(
+  PushpanjaliSlot(
       {required this.timestampSlot,
       required this.title,
       required this.sevakartaSlot});
 
-  // Convert a SevaSlot instance to a Map
+  // Convert a PushpanjaliSlot instance to a Map
   Map<String, dynamic> toJson() {
     return {
       'timestampSlot': timestampSlot.toIso8601String(),
@@ -62,9 +62,9 @@ class SevaSlot {
     };
   }
 
-  // Create a SevaSlot instance from a Map
-  factory SevaSlot.fromJson(Map<String, dynamic> json) {
-    return SevaSlot(
+  // Create a PushpanjaliSlot instance from a Map
+  factory PushpanjaliSlot.fromJson(Map<String, dynamic> json) {
+    return PushpanjaliSlot(
       timestampSlot: DateTime.parse(json['timestampSlot'] as String),
       title: json['title'] as String,
       sevakartaSlot: json['sevakartaSlot'] as String,

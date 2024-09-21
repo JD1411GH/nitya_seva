@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/laddu_seva/laddu_calc.dart';
 import 'package:garuda/laddu_seva/serve.dart';
 import 'package:garuda/laddu_seva/utils.dart';
+import 'package:garuda/pushpanjali/sevaslot.dart';
 import 'package:intl/intl.dart';
 import 'package:synchronized/synchronized.dart';
 
@@ -30,6 +32,7 @@ class _LogState extends State<Log> {
 
       DateTime session = widget.session ?? await FB().readLatestLadduSession();
 
+      // stock tile
       List<LadduStock> stocks = await FB().readLadduStocks(session);
       for (LadduStock stock in stocks) {
         _logItems.add(ListTile(
@@ -104,11 +107,11 @@ class _LogState extends State<Log> {
             }));
       }
 
-      // add the logs for laddu serves
+      // serve tiles
       List<LadduServe> serves = await FB().readLadduServes(session);
       for (LadduServe serve in serves) {
         ListTile tile = ListTile(
-            // title - careful changing this, as the tiles are sorted based on this
+            // title - WARNING! careful changing this, as the tiles are sorted based on this
             title: Text(
               DateFormat('dd-MM-yyyy HH:mm:ss').format(serve.timestamp),
               style: TextStyle(
@@ -203,27 +206,113 @@ class _LogState extends State<Log> {
                 MaterialPageRoute(
                     builder: (context) => Serve(
                           serve: serve,
+                          slot: PushpanjaliSlot(
+                              timestampSlot:
+                                  serve.pushpanjaliSlot ?? DateTime.now(),
+                              title: serve.title,
+                              sevakartaSlot: serve.user),
                         )),
               );
             });
 
-        // heading for laddu packs served
+        /* henceforth, add all the details in the subtitle */
+
+        // Available laddu packs
         (tile.subtitle as Column).children.add(Align(
               alignment: Alignment.centerLeft,
-              child: Text('Laddu packs served: '),
+              child: Row(
+                children: [
+                  Text('Available laddu packs: '),
+                  Text((serve.available == null || serve.available == 0)
+                      ? '-'
+                      : '${serve.available}'),
+                ],
+              ),
             ));
 
-        // all pushpanjali tickets
-        for (int i = 0; i < serve.packsPushpanjali.length; i++) {
-          if (serve.packsPushpanjali[i].values.first != 0) {
-            (tile.subtitle as Column).children.add(Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    '    Seva ${serve.packsPushpanjali[i].keys.first}: ${serve.packsPushpanjali[i].values.first}',
-                  ),
-                ));
-          }
+        // calculate ticket sold
+        List<SevaTicket> tickets = [];
+        if (serve.pushpanjaliSlot != null) {
+          tickets = await FB().readPushpanjaliTickets(serve.pushpanjaliSlot!);
         }
+
+        // all pushpanjali tickets
+        (tile.subtitle as Column).children.add(
+              Table(
+                columnWidths: const <int, TableColumnWidth>{
+                  0: FlexColumnWidth(),
+                  1: FlexColumnWidth(),
+                  2: FlexColumnWidth(),
+                  3: FlexColumnWidth(),
+                },
+                children: [
+                  TableRow(
+                    children: [
+                      Center(
+                        child: Text(
+                          'Seva amount',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Center(
+                        child: Text(
+                          'Tickets issued',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Center(
+                        child: Text(
+                          'Slips received',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Center(
+                        child: Text(
+                          'Laddu packs',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
+                  for (int i = 0; i < serve.packsPushpanjali.length; i++)
+                    if (serve.packsPushpanjali[i].values.first != 0)
+                      TableRow(
+                        children: [
+                          Center(
+                            // ticket amount
+                            child:
+                                Text('${serve.packsPushpanjali[i].keys.first}'),
+                          ),
+                          Center(
+                            // Tickets issued
+                            child: Text(_getTicketCount(
+                                    tickets,
+                                    int.parse(
+                                        serve.packsPushpanjali[i].keys.first))
+                                .toString()),
+                          ),
+                          Center(
+                            // Slip collected
+                            child: Text(_getSlipCount(
+                                    int.parse(
+                                        serve.packsPushpanjali[i].keys.first),
+                                    serve.packsPushpanjali[i].values.first)
+                                .toString()),
+                          ),
+                          Center(
+                            // laddu packs
+                            child: Text(
+                                '${serve.packsPushpanjali[i].values.first}'),
+                          ),
+                        ],
+                      ),
+                ],
+              ),
+            );
 
         // other seva tickets
         for (int i = 0; i < serve.packsOtherSeva.length; i++) {
@@ -231,7 +320,7 @@ class _LogState extends State<Log> {
             (tile.subtitle as Column).children.add(Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    '    ${serve.packsOtherSeva[i].keys.first}: ${serve.packsOtherSeva[i].values.first}',
+                    '${serve.packsOtherSeva[i].keys.first}: ${serve.packsOtherSeva[i].values.first} packs',
                   ),
                 ));
           }
@@ -243,7 +332,7 @@ class _LogState extends State<Log> {
             (tile.subtitle as Column).children.add(Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    '    ${serve.packsMisc[i].keys.first}: ${serve.packsMisc[i].values.first}',
+                    '${serve.packsMisc[i].keys.first}: ${serve.packsMisc[i].values.first} packs',
                   ),
                 ));
           }
@@ -252,7 +341,10 @@ class _LogState extends State<Log> {
         // balance
         (tile.subtitle as Column).children.add(Align(
               alignment: Alignment.centerLeft,
-              child: Text('Balance: ${serve.balance}'),
+              child: Text(
+                'Balance: ${serve.balance}',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ));
 
         // note
@@ -286,6 +378,26 @@ class _LogState extends State<Log> {
     if (mounted) {
       setState(() {});
     }
+  }
+
+  int _getTicketCount(List<SevaTicket> tickets, int amount) {
+    int count = 0;
+    for (SevaTicket ticket in tickets) {
+      if (ticket.amount == amount) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  int _getSlipCount(int amount, int ladduCount) {
+    int count = 0;
+    Const().pushpanjaliTickets.forEach((element) {
+      if (element['amount'] == amount) {
+        count = ladduCount ~/ element['ladduPacks']!;
+      }
+    });
+    return count;
   }
 
   Widget _getListView() {

@@ -4,7 +4,7 @@ import 'package:garuda/pushpanjali/sevaslot.dart';
 
 class Record {
   static final Record _instance = Record._internal();
-  List<SevaSlot> sevaSlots = [];
+  List<PushpanjaliSlot> sevaSlots = [];
   Map<DateTime, List<SevaTicket>> sevaTickets = {}; // to FB from List to Map
   RecordCallbacks? callbacks;
 
@@ -25,7 +25,8 @@ class Record {
   void onSevaSlotChange(String changeType, dynamic sevaSlot) {
     switch (changeType) {
       case 'ADD_SEVA_SLOT':
-        SevaSlot slot = SevaSlot.fromJson(Map<String, dynamic>.from(sevaSlot));
+        PushpanjaliSlot slot =
+            PushpanjaliSlot.fromJson(Map<String, dynamic>.from(sevaSlot));
 
         if (sevaSlots
             .any((element) => element.timestampSlot == slot.timestampSlot)) {
@@ -37,7 +38,8 @@ class Record {
 
         break;
       case 'REMOVE_SEVA_SLOT':
-        SevaSlot slot = SevaSlot.fromJson(Map<String, dynamic>.from(sevaSlot));
+        PushpanjaliSlot slot =
+            PushpanjaliSlot.fromJson(Map<String, dynamic>.from(sevaSlot));
         deleteSevaSlot(slot.timestampSlot);
         break;
       case 'UPDATE_SEVA_SLOT':
@@ -108,7 +110,7 @@ class Record {
     }
   }
 
-  void addSevaSlot(DateTime timestampSlot, SevaSlot slot) {
+  void addSevaSlot(DateTime timestampSlot, PushpanjaliSlot slot) {
     sevaSlots.add(slot);
     sevaSlots.sort((a, b) => b.timestampSlot.compareTo(a.timestampSlot));
 
@@ -200,12 +202,13 @@ class Record {
   }
 
   Future<void> refreshSevaSlots() async {
-    sevaSlots = await FB().readSevaSlots();
+    sevaSlots = await FB().readPushpanjaliSlots();
     sevaSlots.sort((a, b) => b.timestampSlot.compareTo(a.timestampSlot));
   }
 
   Future<void> refreshSevaTickets(DateTime timestampSlot) async {
-    sevaTickets[timestampSlot] = await FB().readSevaTickets(timestampSlot);
+    sevaTickets[timestampSlot] =
+        await FB().readPushpanjaliTickets(timestampSlot);
     sevaTickets[timestampSlot]!
         .sort((a, b) => b.timestampTicket.compareTo(a.timestampTicket));
   }
