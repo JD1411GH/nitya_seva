@@ -229,7 +229,10 @@ class _SummaryState extends State<Summary> {
               ),
             ),
             leftTitles: AxisTitles(
-              sideTitles: SideTitles(showTitles: true),
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            topTitles: AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
             ),
           ),
           gridData: FlGridData(show: true),
