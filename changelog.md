@@ -1,3 +1,5 @@
+# 2.3.3
+
 # 2.3.0
 - feature laddu: bar chart instead of pie chart
 - fix laddu: last refresh check disabled
