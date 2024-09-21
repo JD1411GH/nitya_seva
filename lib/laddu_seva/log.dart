@@ -232,13 +232,7 @@ class _LogState extends State<Log> {
         // calculate ticket sold
         List<SevaTicket> tickets = [];
         if (serve.pushpanjaliSlot != null) {
-          Map<String, List<SevaTicket>> ticketMap =
-              await FB().readPushpanjaliTicketsByDate(serve.pushpanjaliSlot!);
-
-          for (var key in ticketMap.keys) {
-            // Add all elements from each List<SevaTicket> to the combined list
-            tickets.addAll(ticketMap[key]!);
-          }
+          tickets = await FB().readPushpanjaliTickets(serve.pushpanjaliSlot!);
         }
 
         // all pushpanjali tickets
