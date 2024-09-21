@@ -1,3 +1,11 @@
+# 2.3.0
+- feature laddu: bar chart instead of pie chart
+- fix laddu: last refresh check disabled
+- fix laddu: incorrect number of tickets displayed
+- feature laddu: available packs displayed in serve log
+- feature laddu: collected slips displayed on serve log
+- feature laddu: ticket count displayed in serve log
+
 # 2.2.3
 - fix pushpanjali: auto refresh enabled
 
