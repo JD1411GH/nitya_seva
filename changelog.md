@@ -1,6 +1,9 @@
 # 2.3.2
 - fix laddu: serve dialog crash
 
+# 2.3.1
+- fix laddu: bar bottom alignment
+
 # 2.3.0
 - feature laddu: bar chart instead of pie chart
 - fix laddu: last refresh check disabled
