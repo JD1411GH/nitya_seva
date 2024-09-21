@@ -132,7 +132,16 @@ class _HomePageState extends State<Pushpanjali> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Are you sure?'),
-          content: Text('Do you really want to delete this item?'),
+          content: Row(
+            children: [
+              Text('Delete slot:  '),
+              Text(
+                "${sevaSlots[index].title}",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text("  ?"),
+            ],
+          ),
           actions: <Widget>[
             TextButton(
               child: Text('Cancel'),
