@@ -245,12 +245,14 @@ class _SummaryState extends State<Summary> {
                     children: [
                       Text(barValues[index].toString()),
                       SizedBox(height: 4),
-                      Container(
-                        height: (barValues[index] /
-                                barValues.reduce((a, b) => a > b ? a : b)) *
-                            (barChartHeight -
-                                50), // Adjust bar height proportionally
-                        color: Const().getRandomDarkColor(),
+                      Flexible(
+                        child: Container(
+                          height: (barValues[index] /
+                                  barValues.reduce((a, b) => a > b ? a : b)) *
+                              (barChartHeight -
+                                  50), // Adjust bar height proportionally
+                          color: Const().getRandomDarkColor(),
+                        ),
                       ),
                       SizedBox(height: 4),
                       Text(barLabels[index]),
