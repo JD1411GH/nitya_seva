@@ -35,49 +35,50 @@ class _ServiceSelectDialogState extends State<ServiceSelect> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text("Select Service"),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          if (status == "loading")
-            CircularProgressIndicator()
-          else if (status == "empty")
-            Text(
-              "No services found",
-              style: TextStyle(
-                fontSize: 20.0, // Increase the font size
-                fontWeight: FontWeight.bold, // Make the text bold
-                color: Colors.red, // Color the text red
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            if (status == "loading")
+              CircularProgressIndicator()
+            else if (status == "empty")
+              Text(
+                "No services found",
+                style: TextStyle(
+                  fontSize: 20.0, // Increase the font size
+                  fontWeight: FontWeight.bold, // Make the text bold
+                  color: Colors.red, // Color the text red
+                ),
+              )
+            else
+              Column(
+                children: services.map((service) {
+                  int index = services.indexOf(service);
+                  return ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Serve(slot: slots[index])),
+                      );
+                    },
+                    child: Text(service),
+                  );
+                }).toList(),
               ),
-            )
-          else
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: services.length,
-              itemBuilder: (context, index) {
-                return ElevatedButton(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                TextButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => Serve(slot: slots[index])),
-                    );
+                    Navigator.pop(context);
                   },
-                  child: Text(services[index]),
-                );
-              },
+                  child: Text("Cancel"),
+                ),
+              ],
             ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text("Cancel"),
-              ),
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
