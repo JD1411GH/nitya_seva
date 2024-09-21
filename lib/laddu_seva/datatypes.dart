@@ -1,4 +1,3 @@
-import 'package:garuda/pushpanjali/sevaslot.dart';
 
 class LadduStock {
   final DateTime timestamp;
