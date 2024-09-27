@@ -7,6 +7,8 @@ import 'package:garuda/laddu_seva/laddu_calc.dart';
 import 'package:garuda/laddu_seva/log.dart';
 import 'package:garuda/laddu_seva/service_select.dart';
 import 'package:garuda/laddu_seva/summary.dart';
+import 'package:garuda/laddu_seva/utils.dart';
+import 'package:garuda/toaster.dart';
 import 'package:intl/intl.dart';
 
 class LadduMain extends StatefulWidget {
@@ -22,12 +24,14 @@ class _LadduSevaState extends State<LadduMain> {
   initState() {
     super.initState();
 
-    refresh();
+    refresh().then((data) async {
+      await _ensureReturn(context);
 
-    FB().listenForChange("ladduSeva",
-        FBCallbacks(onChange: (String changeType, dynamic data) async {
-      await refresh();
-    }));
+      FB().listenForChange("ladduSeva",
+          FBCallbacks(onChange: (String changeType, dynamic data) async {
+        await refresh();
+      }));
+    });
   }
 
   Future<void> refresh() async {
@@ -117,6 +121,49 @@ class _LadduSevaState extends State<LadduMain> {
         });
   }
 
+  Future<void> _ensureReturn(BuildContext context) async {
+    if (lr == null || lr!.count == -1) {
+      // session in progress
+
+      DateTime session = await FB().readLatestLadduSession();
+      List<LadduServe> serves = await FB().readLadduServes(session);
+
+      // check if last serve is more than 2 days old
+      if (serves.last.timestamp
+          .isBefore(DateTime.now().subtract(Duration(days: 2)))) {
+        // totatl stock
+        List<LadduStock> stocks = await FB().readLadduStocks(session);
+        stocks.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+        if (stocks.isEmpty) {
+          return;
+        }
+        int totalStock = stocks.fold(
+            0, (previousValue, element) => previousValue + element.count);
+
+        // total serve
+        int totalServe = 0;
+        serves.forEach((serve) {
+          totalServe += CalculateTotalLadduPacksServed(serve);
+        });
+
+        int remaining = totalStock - totalServe;
+        if (remaining < 0) {
+          remaining = 0;
+        }
+
+        await FB().returnLadduStock(
+            session,
+            LadduReturn(
+                timestamp: DateTime.now(),
+                count: remaining,
+                to: "Unknown",
+                user: "Auto Return"));
+
+        Toaster().info("Auto returned");
+      }
+    }
+  }
+
   void _createServeDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -173,7 +220,7 @@ class _LadduSevaState extends State<LadduMain> {
                 // serve button
                 ElevatedButton.icon(
                   onPressed: (lr == null || lr!.count == -1)
-                      ? () {
+                      ? () async {
                           _createServeDialog(context);
                         }
                       : null,
