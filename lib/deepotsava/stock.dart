@@ -19,26 +19,41 @@ final GlobalKey<_StockPageState> templateKey = GlobalKey<_StockPageState>();
 
 class _StockPageState extends State<StockPage> {
   final _lockInit = Lock();
-  final TextEditingController _preparedLampsController =
-      TextEditingController();
-  final TextEditingController _unpreparedLampsController =
-      TextEditingController();
-  final TextEditingController _wicksController = TextEditingController();
-  final TextEditingController _gheePacketsController = TextEditingController();
-  final TextEditingController _oilCansController = TextEditingController();
+
+  int _preparedLamps = 0;
+  int _unpreparedLamps = 0;
+  int _wicks = 0;
+  int _gheePackets = 0;
+  int _oilCans = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   void dispose() {
-    _preparedLampsController.dispose();
-    _unpreparedLampsController.dispose();
-    _wicksController.dispose();
-    _gheePacketsController.dispose();
-    _oilCansController.dispose();
     super.dispose();
   }
 
   Future<void> _futureInit() async {
-    await _lockInit.synchronized(() async {});
+    await _lockInit.synchronized(() async {
+      List<DeepamStock> stocks = await FBL().getStocks(widget.stall);
+      _preparedLamps = 0;
+      _unpreparedLamps = 0;
+      _wicks = 0;
+      _gheePackets = 0;
+      _oilCans = 0;
+
+      stocks.forEach((stock) {
+        _preparedLamps += stock.preparedLamps;
+        _unpreparedLamps += stock.unpreparedLamps;
+        _wicks += stock.wicks;
+        _gheePackets += stock.gheePackets;
+        _oilCans += stock.oilCans;
+      });
+    });
   }
 
   Future<void> refresh() async {
@@ -46,10 +61,21 @@ class _StockPageState extends State<StockPage> {
     setState(() {});
   }
 
+  void callbackAdd(DeepamStock stock) {
+    setState(() {
+      _preparedLamps += stock.preparedLamps;
+      _unpreparedLamps += stock.unpreparedLamps;
+      _wicks += stock.wicks;
+      _gheePackets += stock.gheePackets;
+      _oilCans += stock.oilCans;
+    });
+  }
+
   void _createAddStockPage(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => StockAdd(stall: widget.stall),
+        builder: (context) => StockAdd(
+            stall: widget.stall, callbacks: StockCallbacks(add: callbackAdd)),
       ),
     );
   }
@@ -60,19 +86,11 @@ class _StockPageState extends State<StockPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Center(
-            child: Text(
-              'StockPage for ${widget.stall}',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ),
-          const SizedBox(height: 16),
-          const Text('Prepared lamps: '),
-          const Text('Unprepared lamps: '),
-          const Text('Wicks: '),
-          const Text('Ghee packets: '),
-          const Text('Oil cans: '),
-          const SizedBox(height: 16),
+          Text('Prepared lamps: $_preparedLamps'),
+          Text('Unprepared lamps: $_unpreparedLamps'),
+          Text('Wicks: $_wicks'),
+          Text('Ghee packets: $_gheePackets'),
+          Text('Oil cans: $_oilCans'),
           Center(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,

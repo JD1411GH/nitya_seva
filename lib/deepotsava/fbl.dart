@@ -29,4 +29,23 @@ class FBL {
       Toaster().error("failed to add stock: $e");
     }
   }
+
+  Future<List<DeepamStock>> getStocks(String stall) async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/deepotsava/stocks/$stall');
+
+    List<DeepamStock> stocks = [];
+    try {
+      DataSnapshot snapshot = await dbRef.get();
+      Map<dynamic, dynamic> values = snapshot.value as Map;
+      values.forEach((key, value) {
+        Map<String, dynamic> v = Map<String, dynamic>.from(value as Map);
+        DeepamStock stock = DeepamStock.fromJson(v);
+        stocks.add(stock);
+      });
+    } catch (e) {
+      Toaster().error("failed to get stocks: $e");
+    }
+    return stocks;
+  }
 }

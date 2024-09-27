@@ -5,8 +5,9 @@ import 'package:garuda/theme.dart';
 
 class StockAdd extends StatefulWidget {
   final String stall;
+  final StockCallbacks callbacks;
 
-  StockAdd({required this.stall});
+  StockAdd({required this.stall, required this.callbacks});
 
   @override
   _StockAddState createState() => _StockAddState();
@@ -104,7 +105,7 @@ class _StockAddState extends State<StockAdd> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: ElevatedButton(
-                          onPressed: () async {
+                          onPressed: () {
                             DeepamStock stock = DeepamStock(
                               preparedLamps: int.parse(
                                   _preparedLampsController.text.isEmpty
@@ -126,7 +127,8 @@ class _StockAddState extends State<StockAdd> {
                                   : _oilCansController.text),
                             );
 
-                            await FBL().addStock(widget.stall, stock);
+                            widget.callbacks.add(stock);
+                            FBL().addStock(widget.stall, stock);
 
                             Navigator.of(context).pop();
                           },
@@ -141,4 +143,14 @@ class _StockAddState extends State<StockAdd> {
           ),
         ));
   }
+}
+
+class StockCallbacks {
+  void Function(DeepamStock data) add;
+  // void Function(DeepamStock data) edit;
+  // void Function(DeepamStock data) delete;
+
+  StockCallbacks({
+    required this.add,
+  });
 }
