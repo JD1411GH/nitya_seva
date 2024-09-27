@@ -63,6 +63,23 @@ ThemeData themeDefault = ThemeData(
       borderSide: BorderSide(color: Colors.black),
     ),
   ),
+
+  // elevated button theme
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ButtonStyle(
+      backgroundColor: WidgetStateProperty.all<Color>(Colors.blueGrey),
+      foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+      textStyle: WidgetStateProperty.all<TextStyle>(
+        TextStyle(
+          fontSize: 18.0,
+          fontFamily: 'ConsolaMono',
+        ),
+      ),
+      padding: WidgetStateProperty.all<EdgeInsets>(
+        EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
+      ),
+    ),
+  ),
 );
 
 final primaryColorRKC = Colors.deepOrange;
@@ -122,6 +139,23 @@ ThemeData themeRKC = themeDefault.copyWith(
       borderSide: BorderSide(color: textColorRKC),
     ),
   ),
+
+  // elevated button theme
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ButtonStyle(
+      backgroundColor: WidgetStateProperty.all<Color>(primaryColorRKC),
+      foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+      textStyle: WidgetStateProperty.all<TextStyle>(
+        TextStyle(
+          fontSize: 18.0,
+          fontFamily: 'ConsolaMono',
+        ),
+      ),
+      padding: WidgetStateProperty.all<EdgeInsets>(
+        EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
+      ),
+    ),
+  ),
 );
 
 final primaryColorRRG = Colors.green;
@@ -179,6 +213,23 @@ ThemeData themeRRG = themeDefault.copyWith(
     ),
     enabledBorder: themeDefault.inputDecorationTheme.enabledBorder?.copyWith(
       borderSide: BorderSide(color: textColorRRG ?? Colors.black),
+    ),
+  ),
+
+  // elevated button theme
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ButtonStyle(
+      backgroundColor: WidgetStateProperty.all<Color>(primaryColorRRG),
+      foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+      textStyle: WidgetStateProperty.all<TextStyle>(
+        TextStyle(
+          fontSize: 18.0,
+          fontFamily: 'ConsolaMono',
+        ),
+      ),
+      padding: WidgetStateProperty.all<EdgeInsets>(
+        EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
+      ),
     ),
   ),
 );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/deepotsava/fbl.dart';
+import 'package:garuda/deepotsava/stock_add.dart';
 import 'package:garuda/fb.dart';
 import 'package:synchronized/synchronized.dart';
 
@@ -45,76 +46,11 @@ class _StockPageState extends State<StockPage> {
     setState(() {});
   }
 
-  void _createDialogAddStock(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Add stock'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  decoration: InputDecoration(labelText: 'Prepared lamps'),
-                  controller: _preparedLampsController,
-                ),
-                TextField(
-                  decoration: InputDecoration(labelText: 'Unprepared lamps'),
-                  controller: _unpreparedLampsController,
-                ),
-                TextField(
-                  decoration: InputDecoration(labelText: 'Wicks'),
-                  controller: _wicksController,
-                ),
-                TextField(
-                  decoration: InputDecoration(labelText: 'Ghee packets'),
-                  controller: _gheePacketsController,
-                ),
-                TextField(
-                  decoration: InputDecoration(labelText: 'Oil cans'),
-                  controller: _oilCansController,
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () async {
-                DeepamStock stock = DeepamStock(
-                  preparedLamps: int.parse(_preparedLampsController.text.isEmpty
-                      ? '0'
-                      : _preparedLampsController.text),
-                  unpreparedLamps: int.parse(
-                      _unpreparedLampsController.text.isEmpty
-                          ? '0'
-                          : _unpreparedLampsController.text),
-                  wicks: int.parse(_wicksController.text.isEmpty
-                      ? '0'
-                      : _wicksController.text),
-                  gheePackets: int.parse(_gheePacketsController.text.isEmpty
-                      ? '0'
-                      : _gheePacketsController.text),
-                  oilCans: int.parse(_oilCansController.text.isEmpty
-                      ? '0'
-                      : _oilCansController.text),
-                );
-
-                await FBL().addStock(widget.stall, stock);
-
-                Navigator.of(context).pop();
-              },
-              child: const Text('Save'),
-            ),
-          ],
-        );
-      },
+  void _createAddStockPage(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => StockAdd(stall: widget.stall),
+      ),
     );
   }
 
@@ -144,7 +80,7 @@ class _StockPageState extends State<StockPage> {
                 IconButton(
                   icon: Icon(Icons.add),
                   onPressed: () {
-                    _createDialogAddStock(context);
+                    _createAddStockPage(context);
                   },
                 ),
                 IconButton(
