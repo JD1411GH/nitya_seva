@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:garuda/const.dart';
+import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/toaster.dart';
 import 'package:garuda/pushpanjali/sevaslot.dart';
@@ -821,6 +822,20 @@ class FB {
       'timestamp': lr.timestamp.toIso8601String(),
       'user': lr.user,
     });
+  }
+
+  Future<void> DeepamAddStock(String stall, DeepamStock stock) async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/deepostava/stocks/$stall');
+
+    DateTime timestamp = DateTime.now();
+    DatabaseReference ref =
+        dbRef.child(timestamp.toIso8601String().replaceAll(".", "^"));
+    try {
+      await ref.set(stock.toJson());
+    } catch (e) {
+      Toaster().error("failed to add stock: $e");
+    }
   }
 }
 

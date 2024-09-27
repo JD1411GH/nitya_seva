@@ -53,6 +53,16 @@ ThemeData themeDefault = ThemeData(
       color: Colors.black,
     ),
   ),
+
+  // input decoration theme
+  inputDecorationTheme: InputDecorationTheme(
+    focusedBorder: UnderlineInputBorder(
+      borderSide: BorderSide(color: Colors.black),
+    ),
+    enabledBorder: UnderlineInputBorder(
+      borderSide: BorderSide(color: Colors.black),
+    ),
+  ),
 );
 
 final primaryColorRKC = Colors.deepOrange;
@@ -102,6 +112,16 @@ ThemeData themeRKC = themeDefault.copyWith(
       color: textColorRKC,
     ),
   ),
+
+  // input decoration theme
+  inputDecorationTheme: themeDefault.inputDecorationTheme.copyWith(
+    focusedBorder: themeDefault.inputDecorationTheme.focusedBorder?.copyWith(
+      borderSide: BorderSide(color: textColorRKC),
+    ),
+    enabledBorder: themeDefault.inputDecorationTheme.enabledBorder?.copyWith(
+      borderSide: BorderSide(color: textColorRKC),
+    ),
+  ),
 );
 
 final primaryColorRRG = Colors.green;
@@ -149,6 +169,16 @@ ThemeData themeRRG = themeDefault.copyWith(
     ),
     contentTextStyle: themeDefault.dialogTheme.contentTextStyle?.copyWith(
       color: textColorRRG,
+    ),
+  ),
+
+  // input decoration theme
+  inputDecorationTheme: themeDefault.inputDecorationTheme.copyWith(
+    focusedBorder: themeDefault.inputDecorationTheme.focusedBorder?.copyWith(
+      borderSide: BorderSide(color: textColorRRG ?? Colors.black),
+    ),
+    enabledBorder: themeDefault.inputDecorationTheme.enabledBorder?.copyWith(
+      borderSide: BorderSide(color: textColorRRG ?? Colors.black),
     ),
   ),
 );
