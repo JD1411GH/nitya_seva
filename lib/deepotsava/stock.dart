@@ -28,8 +28,12 @@ class _StockPageState extends State<StockPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+
+    FBL().listenForChange("deepotsava",
+        FBLCallbacks(onChange: (String changeType, dynamic data) async {
+      print("$changeType: $data");
+    }));
   }
 
   @override

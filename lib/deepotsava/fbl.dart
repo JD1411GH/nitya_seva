@@ -16,6 +16,36 @@ class FBL {
     // Code to be executed when first instantiated
   }
 
+  Future<void> listenForChange(String path, FBLCallbacks callbacks) async {
+    final dbRef =
+        FirebaseDatabase.instance.ref('record_db${Const().dbVersion}/$path');
+
+    bool initialLoad = true;
+
+    dbRef.onChildAdded.listen((event) {
+      if (!initialLoad) {
+        callbacks.onChange("ADD", event.snapshot.value);
+      }
+    });
+
+    dbRef.onChildChanged.listen((event) {
+      if (!initialLoad) {
+        callbacks.onChange("UPDATE", event.snapshot.value);
+      }
+    });
+
+    dbRef.onChildRemoved.listen((event) {
+      if (!initialLoad) {
+        callbacks.onChange("REMOVE", event.snapshot.value);
+      }
+    });
+
+    // Set initialLoad to false after the first set of events
+    dbRef.once().then((_) {
+      initialLoad = false;
+    });
+  }
+
   Future<void> addStock(String stall, DeepamStock stock) async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/deepotsava/stocks/$stall');
@@ -48,4 +78,12 @@ class FBL {
     }
     return stocks;
   }
+}
+
+class FBLCallbacks {
+  void Function(String changeType, dynamic data) onChange;
+
+  FBLCallbacks({
+    required this.onChange,
+  });
 }
