@@ -1,3 +1,10 @@
+# 2.3.4
+- fix login: disable button on pressing once
+- feature laddu: auto return
+- Fix button label in laddu_seva/main.dart
+- Merge branch 'v2.3.3' into v2.3.4
+- dart fix
+
 # 2.3.3
 - fix laddu: rename serve button to issue
 
