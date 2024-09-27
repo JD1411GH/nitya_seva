@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
+import 'package:garuda/deepotsava/fbl.dart';
 import 'package:garuda/fb.dart';
 import 'package:synchronized/synchronized.dart';
 
@@ -105,7 +106,7 @@ class _StockPageState extends State<StockPage> {
                       : _oilCansController.text),
                 );
 
-                await FB().DeepamAddStock(widget.stall, stock);
+                await FBL().addStock(widget.stall, stock);
 
                 Navigator.of(context).pop();
               },

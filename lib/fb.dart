@@ -823,20 +823,6 @@ class FB {
       'user': lr.user,
     });
   }
-
-  Future<void> DeepamAddStock(String stall, DeepamStock stock) async {
-    final DatabaseReference dbRef = FirebaseDatabase.instance
-        .ref('record_db${Const().dbVersion}/deepotsava/stocks/$stall');
-
-    DateTime timestamp = DateTime.now();
-    DatabaseReference ref =
-        dbRef.child(timestamp.toIso8601String().replaceAll(".", "^"));
-    try {
-      await ref.set(stock.toJson());
-    } catch (e) {
-      Toaster().error("failed to add stock: $e");
-    }
-  }
 }
 
 class FBCallbacks {
