@@ -30,9 +30,11 @@ class _StockPageState extends State<StockPage> {
   void initState() {
     super.initState();
 
-    FBL().listenForChange("deepotsava",
-        FBLCallbacks(onChange: (String changeType, dynamic data) async {
-      print("$changeType: $data");
+    FBL().listenForChange("deepotsava/stocks/${widget.stall}",
+        FBLCallbacks(add: (dynamic data) async {
+      Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
+      DeepamStock stock = DeepamStock.fromJson(map);
+      callbackAdd(stock);
     }));
   }
 

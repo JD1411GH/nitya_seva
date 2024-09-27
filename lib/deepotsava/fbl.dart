@@ -24,21 +24,21 @@ class FBL {
 
     dbRef.onChildAdded.listen((event) {
       if (!initialLoad) {
-        callbacks.onChange("ADD", event.snapshot.value);
+        callbacks.add(event.snapshot.value);
       }
     });
 
-    dbRef.onChildChanged.listen((event) {
-      if (!initialLoad) {
-        callbacks.onChange("UPDATE", event.snapshot.value);
-      }
-    });
+    // dbRef.onChildChanged.listen((event) {
+    //   if (!initialLoad) {
+    //     callbacks.onChange("UPDATE", event.snapshot.value);
+    //   }
+    // });
 
-    dbRef.onChildRemoved.listen((event) {
-      if (!initialLoad) {
-        callbacks.onChange("REMOVE", event.snapshot.value);
-      }
-    });
+    // dbRef.onChildRemoved.listen((event) {
+    //   if (!initialLoad) {
+    //     callbacks.onChange("REMOVE", event.snapshot.value);
+    //   }
+    // });
 
     // Set initialLoad to false after the first set of events
     dbRef.once().then((_) {
@@ -81,9 +81,11 @@ class FBL {
 }
 
 class FBLCallbacks {
-  void Function(String changeType, dynamic data) onChange;
+  void Function(dynamic data) add;
+  // void Function(dynamic data) edit;
+  // void Function(dynamic data) delete;
 
   FBLCallbacks({
-    required this.onChange,
+    required this.add,
   });
 }
