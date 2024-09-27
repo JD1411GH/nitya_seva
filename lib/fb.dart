@@ -826,7 +826,7 @@ class FB {
 
   Future<void> DeepamAddStock(String stall, DeepamStock stock) async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
-        .ref('record_db${Const().dbVersion}/deepostava/stocks/$stall');
+        .ref('record_db${Const().dbVersion}/deepotsava/stocks/$stall');
 
     DateTime timestamp = DateTime.now();
     DatabaseReference ref =
