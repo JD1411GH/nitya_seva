@@ -571,7 +571,7 @@ class _ServeState extends State<Serve> {
               onPressed: _isLoading ? null : _onpressServe,
               child: _isLoading
                   ? CircularProgressIndicator()
-                  : Text(widget.serve != null ? 'Update' : 'Issue'),
+                  : Text(widget.serve != null ? 'Update' : 'Serve'),
             ),
 
             // delete button
