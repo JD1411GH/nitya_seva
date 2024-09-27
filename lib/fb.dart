@@ -28,25 +28,26 @@ class FB {
     // Code to be executed when first instantiated
   }
 
-  Future<List<SevaSlot>> readSevaSlots() async {
+  Future<List<PushpanjaliSlot>> readPushpanjaliSlots() async {
     final dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/sevaSlots');
     DatabaseEvent event = await dbRef.once();
     DataSnapshot snapshot = event.snapshot;
-    List<SevaSlot> sevaSlots = [];
+    List<PushpanjaliSlot> sevaSlots = [];
 
     if (snapshot.value != null) {
       sevaSlots = (snapshot.value as Map)
           .values
           .map((value) =>
-              SevaSlot.fromJson(Map<String, dynamic>.from(value as Map)))
+              PushpanjaliSlot.fromJson(Map<String, dynamic>.from(value as Map)))
           .toList();
     }
 
     return sevaSlots;
   }
 
-  Future<List<SevaSlot>> readSevaSlotsByDate(DateTime date) async {
+  Future<List<PushpanjaliSlot>> readPushpanjaliSlotsByDate(
+      DateTime date) async {
     final dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/sevaSlots');
 
@@ -60,14 +61,15 @@ class FB {
       return (snapshot.value as Map)
           .values
           .map((value) =>
-              SevaSlot.fromJson(Map<String, dynamic>.from(value as Map)))
+              PushpanjaliSlot.fromJson(Map<String, dynamic>.from(value as Map)))
           .toList();
     } else {
       return [];
     }
   }
 
-  Future<List<SevaTicket>> readSevaTickets(DateTime timestampSlot) async {
+  Future<List<SevaTicket>> readPushpanjaliTickets(
+      DateTime timestampSlot) async {
     final dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/sevaTickets');
     DatabaseReference ref =
@@ -87,7 +89,7 @@ class FB {
   }
 
   // "Sat Morning": [ticket1, ticket2], "Sat Evening": [ticket3, ticket4]
-  Future<Map<String, List<SevaTicket>>> readSevaTicketsByDate(
+  Future<Map<String, List<SevaTicket>>> readPushpanjaliTicketsByDate(
       DateTime date) async {
     final dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/sevaTickets');

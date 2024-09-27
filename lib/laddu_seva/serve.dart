@@ -3,13 +3,14 @@ import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/laddu_seva/utils.dart';
+import 'package:garuda/pushpanjali/sevaslot.dart';
 import 'package:garuda/toaster.dart';
-import 'package:intl/intl.dart';
 
 class Serve extends StatefulWidget {
-  final LadduServe? serve;
+  final LadduServe? serve; // for update
+  final PushpanjaliSlot? slot;
 
-  Serve({this.serve});
+  Serve({this.serve, this.slot});
 
   @override
   _ServeState createState() => _ServeState();
@@ -71,14 +72,7 @@ class _ServeState extends State<Serve> {
       _controllerNote.text = widget.serve!.note;
     } else {
       // formulate title for the slot
-      final now = DateTime.now();
-      final dayOfWeek = DateFormat('EEEE').format(now);
-      final cutoff = Const().morningCutoff;
-      if (now.isBefore(cutoff)) {
-        _controllerTitle.text = '$dayOfWeek Morning';
-      } else {
-        _controllerTitle.text = '$dayOfWeek Evening';
-      }
+      _controllerTitle.text = widget.slot!.title;
     }
 
     _calculateTotalLadduPacks();
@@ -371,13 +365,31 @@ class _ServeState extends State<Serve> {
 
   Future<void> _onpressServe() async {
     if (_totalLadduPacks == 0) {
-      Toaster().error('No laddu packs entered');
+      Toaster().error('Nothing entered');
       return;
     }
 
     setState(() {
       _isLoading = true;
     });
+
+    // calculate available laddu packs
+    int available = 0;
+    if (widget.serve != null) {
+      available = widget.serve!.available ?? 0;
+    } else {
+      DateTime session = await FB().readLatestLadduSession();
+      await FB().readLadduStocks(session).then((stocks) {
+        for (LadduStock stock in stocks) {
+          available += stock.count;
+        }
+      });
+      await FB().readLadduServes(session).then((serves) {
+        for (LadduServe serve in serves) {
+          available -= CalculateTotalLadduPacksServed(serve);
+        }
+      });
+    }
 
     List<Map<String, int>> packsPushpanjali = [];
     List<Map<String, int>> packsOtherSeva = [];
@@ -453,6 +465,8 @@ class _ServeState extends State<Serve> {
       note: _controllerNote.text,
       title: _controllerTitle.text,
       balance: total_procured - total_served,
+      pushpanjaliSlot: widget.slot!.timestampSlot,
+      available: available,
     );
 
     if (widget.serve != null) {
@@ -466,6 +480,9 @@ class _ServeState extends State<Serve> {
     });
 
     Navigator.pop(context);
+    if (widget.serve == null) {
+      Navigator.pop(context);
+    }
   }
 
   Future<bool?> _createConfirmDialog() async {

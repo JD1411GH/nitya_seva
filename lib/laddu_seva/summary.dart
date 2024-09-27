@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +5,6 @@ import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/laddu_seva/utils.dart';
-import 'package:intl/intl.dart';
 import 'package:synchronized/synchronized.dart';
 
 class Summary extends StatefulWidget {
@@ -27,6 +25,8 @@ class _SummaryState extends State<Summary> {
 
   LadduReturn? lr;
 
+  List<String> barLabels = [];
+  List<int> barValues = [];
   List<PieChartSectionData> pieSections = [];
   List<Widget> pieLegends = [];
 
@@ -106,10 +106,16 @@ class _SummaryState extends State<Summary> {
         });
       }
 
+      // populate bar chart data
+      barLabels = labels;
+      barValues = values;
+      _sortBarLabelsAndValues(barLabels, barValues);
+
       List<String> sevaNames = Const().otherSevaTickets.map((e) {
         String name = e['name'];
         return name;
       }).toList();
+
       // add the pie sections and legends
       for (int i = 0; i < labels.length; i++) {
         Color pieColor = Colors.grey;
@@ -154,7 +160,6 @@ class _SummaryState extends State<Summary> {
       pieLegends.sort((a, b) {
         String textA = ((a as Row).children[2] as Text).data ?? '';
         String textB = ((b as Row).children[2] as Text).data ?? '';
-        print("textA: $textA, textB: $textB");
         return textB.compareTo(textA);
       });
 
@@ -178,50 +183,170 @@ class _SummaryState extends State<Summary> {
     setState(() {});
   }
 
+  void _sortBarLabelsAndValues(List<String> labels, List<int> values) {
+    // Step 1: Combine labels and values into a list of tuples
+    List<MapEntry<String, int>> combinedList = [];
+    for (int i = 0; i < labels.length; i++) {
+      combinedList.add(MapEntry(labels[i], values[i]));
+    }
+
+    // Step 2: Define the custom comparator function
+    int customComparator(MapEntry<String, int> a, MapEntry<String, int> b) {
+      bool aIsSeva = a.key.startsWith('Seva');
+      bool bIsSeva = b.key.startsWith('Seva');
+
+      if (aIsSeva && bIsSeva) {
+        // Extract numeric part after 'Seva' and compare numerically
+        int aNum = int.parse(a.key.substring(4));
+        int bNum = int.parse(b.key.substring(4));
+        return aNum.compareTo(bNum);
+      } else if (aIsSeva) {
+        return -1; // 'Seva' labels come before others
+      } else if (bIsSeva) {
+        return 1; // 'Seva' labels come before others
+      } else {
+        return a.key.compareTo(b.key); // Standard string comparison
+      }
+    }
+
+    // Step 3: Sort the combined list using the custom comparator
+    combinedList.sort(customComparator);
+
+    // Step 4: Separate the sorted tuples back into barLabels and barValues
+    for (int i = 0; i < combinedList.length; i++) {
+      labels[i] = combinedList[i].key;
+      values[i] = combinedList[i].value;
+    }
+  }
+
   void restock(int procured) {
     total_procured += procured;
     setState(() {});
   }
 
-  Widget _getPieChart(BuildContext context) {
-    if (pieSections.isEmpty) {
-      return _getPieChartEmpty(context);
-    }
+  Widget _getBarChart(BuildContext context) {
+    const double barChartHeight = 150.0; // Set a fixed height for the bar chart
 
-    // Shuffle the pie sections to avoid adjacent placement
-    pieSections.shuffle(Random());
+    return Container(
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 16),
+          Container(
+            height: barChartHeight,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: List.generate(barLabels.length, (index) {
+                Color barColor;
+                switch (barLabels[index]) {
+                  case "Seva 400":
+                    barColor = Const().ticketColors['400']!;
+                    break;
+                  case "Seva 500":
+                    barColor = Const().ticketColors['500']!;
+                    break;
+                  case "Seva 1000":
+                    barColor = Const().ticketColors['1000']!;
+                    break;
+                  case "Seva 2500":
+                    barColor = Const().ticketColors['2500']!;
+                    break;
+                  default:
+                    barColor = Const().getRandomDarkColor();
+                }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SizedBox(
-          child: Column(
-            children: [
-              SizedBox(
-                height: 100, // Set the desired height for the PieChart
-                width: 100, // Set the desired width for the PieChart
-                child: PieChart(
-                  PieChartData(
-                    sections: pieSections,
+                // Add newline character to the labels
+                String label = barLabels[index].replaceAll(' ', '\n') + ' ';
+
+                return Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(barValues[index].toString()),
+                      SizedBox(height: 4),
+                      Flexible(
+                        child: Container(
+                          height: (barValues[index] /
+                                  barValues.reduce((a, b) => a > b ? a : b)) *
+                              (barChartHeight -
+                                  50), // Adjust bar height proportionally
+                          color: barColor,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(label, textAlign: TextAlign.center),
+                    ],
                   ),
-                ),
-              ),
-
-              SizedBox(
-                  height: 16), // Increased space between the chart and the text
-
-              Text(
-                'Laddu packs served', // Replace with your desired text
-              ),
-            ],
+                );
+              }),
+            ),
           ),
-        ),
-        SizedBox(width: 40), // Increased space between the chart and the legend
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: pieLegends,
-        ),
-      ],
+        ],
+      ),
+    );
+  }
+
+  Widget _getBarChartEmpty(BuildContext context) {
+    const double barChartHeight = 150.0; // Set a fixed height for the bar chart
+    const int numberOfBars = 5; // Define the number of bars for the placeholder
+    const List<String> barLabels = [
+      'loading values',
+      'loading values',
+      'loading values',
+      'loading values',
+      'loading values'
+    ]; // Placeholder labels
+    const List<int> barValues = [
+      50,
+      40,
+      30,
+      20,
+      10
+    ]; // Values in descending order
+    const Color barColor = Colors.grey; // Set bar color to grey
+    const Color textColor = Colors.grey; // Set text color to grey
+
+    return Container(
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 16),
+          Container(
+            height: barChartHeight,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: List.generate(numberOfBars, (index) {
+                return Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        barValues[index].toString(),
+                        style: TextStyle(color: textColor), // Set text color
+                      ),
+                      SizedBox(height: 4),
+                      Flexible(
+                        child: Container(
+                          height:
+                              barValues[index].toDouble(), // Height for bars
+                          color: barColor,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        barLabels[index],
+                        style: TextStyle(color: textColor), // Set text color
+                      ),
+                    ],
+                  ),
+                );
+              }),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -235,41 +360,6 @@ class _SummaryState extends State<Summary> {
         ),
         SizedBox(width: 8),
         Text(text),
-      ],
-    );
-  }
-
-  Widget _getPieChartEmpty(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SizedBox(
-          height: 100, // Set the desired height
-          width: 100, // Set the desired width
-          child: PieChart(
-            PieChartData(
-              sections: [
-                PieChartSectionData(
-                  color: Colors.grey,
-                  value: 100,
-                  title: '',
-                  radius: 50,
-                  titleStyle: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-        ),
-        SizedBox(width: 40), // Increased space between the chart and the legend
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildLegendItem(Colors.grey, 'No data'),
-          ],
-        ),
       ],
     );
   }
@@ -296,7 +386,7 @@ class _SummaryState extends State<Summary> {
         // padding before pie chart
         Padding(
           padding: const EdgeInsets.all(16.0),
-          child: _getPieChartEmpty(context),
+          child: _getBarChartEmpty(context),
         ),
       ],
     );
@@ -375,7 +465,7 @@ class _SummaryState extends State<Summary> {
               // padding before pie chart
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: _getPieChart(context),
+                child: _getBarChart(context),
               ),
             ],
           );

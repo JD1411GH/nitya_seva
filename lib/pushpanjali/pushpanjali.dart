@@ -19,7 +19,7 @@ class Pushpanjali extends StatefulWidget {
 }
 
 class _HomePageState extends State<Pushpanjali> {
-  List<SevaSlot> sevaSlots = Record().sevaSlots;
+  List<PushpanjaliSlot> sevaSlots = Record().sevaSlots;
   final TextEditingController _slotNameController = TextEditingController();
 
   @override
@@ -65,7 +65,7 @@ class _HomePageState extends State<Pushpanjali> {
             TextButton(
               child: const Text('OK'),
               onPressed: () {
-                SevaSlot slot = SevaSlot(
+                PushpanjaliSlot slot = PushpanjaliSlot(
                     timestampSlot: timestampSlot,
                     title: _slotNameController.text,
                     sevakartaSlot: username!);
@@ -132,7 +132,16 @@ class _HomePageState extends State<Pushpanjali> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Are you sure?'),
-          content: Text('Do you really want to delete this item?'),
+          content: Row(
+            children: [
+              Text('Delete slot:  '),
+              Text(
+                "${sevaSlots[index].title}",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text("  ?"),
+            ],
+          ),
           actions: <Widget>[
             TextButton(
               child: Text('Cancel'),

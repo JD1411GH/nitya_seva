@@ -67,7 +67,11 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _sendOTP() async {
-    // Continue with the OTP sending process
+    setState(() {
+      _isSendOtpButtonEnabled = false;
+      Toaster().info("Verifying");
+    });
+
     final mobileNumber = '+91${_mobileNumberController.text}';
     loginUser(mobileNumber, LoginUserCallbacks(
       codeSent: (String verificationId, FirebaseAuth auth) {
@@ -82,6 +86,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _submitOTP() async {
     if (_verificationId != null) {
+      setState(() {
+        _isSubmitButtonEnabled = false;
+        Toaster().info("Logging in");
+      });
+
       final code = _otpController.text.trim();
       AuthCredential credential = PhoneAuthProvider.credential(
           verificationId: _verificationId!, smsCode: code);

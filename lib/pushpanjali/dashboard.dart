@@ -37,8 +37,6 @@ class _DashboardState extends State<Dashboard> {
     'Card': 0,
   };
 
-  DateTime? _lastRefresh;
-
   @override
   void initState() {
     super.initState();
@@ -63,7 +61,8 @@ class _DashboardState extends State<Dashboard> {
         'Card': 0,
       };
       grandTotal = [0, 0];
-      List<SevaSlot> slots = await FB().readSevaSlotsByDate(selectedDate);
+      List<PushpanjaliSlot> slots =
+          await FB().readPushpanjaliSlotsByDate(selectedDate);
       if (slots.isEmpty) {
         return;
       } else {
@@ -77,7 +76,7 @@ class _DashboardState extends State<Dashboard> {
       // count all tickets for the selected date
       amountTableTicketRow = [];
       Map<String, List<SevaTicket>> tickets =
-          await FB().readSevaTicketsByDate(selectedDate);
+          await FB().readPushpanjaliTicketsByDate(selectedDate);
       List<int?> pushpanjaliTickets =
           Const().pushpanjaliTickets.map((e) => e['amount']).toList();
       for (var amount in pushpanjaliTickets) {
@@ -171,14 +170,8 @@ class _DashboardState extends State<Dashboard> {
   }
 
   void _onSlotChange(String changeType, dynamic data) {
-    if (_lastRefresh != null &&
-        DateTime.now().difference(_lastRefresh!) < const Duration(seconds: 2)) {
-      return;
-    }
-    _lastRefresh = DateTime.now();
-
     Map<String, dynamic> dataMap = (data as Map).cast<String, dynamic>();
-    SevaSlot slot = SevaSlot.fromJson(dataMap);
+    PushpanjaliSlot slot = PushpanjaliSlot.fromJson(dataMap);
 
     DateTime slotDate = DateTime(slot.timestampSlot.year,
         slot.timestampSlot.month, slot.timestampSlot.day);
@@ -193,12 +186,6 @@ class _DashboardState extends State<Dashboard> {
   }
 
   void _onTicketChange(String changeType, dynamic data) {
-    if (_lastRefresh != null &&
-        DateTime.now().difference(_lastRefresh!) < const Duration(seconds: 2)) {
-      return;
-    }
-    _lastRefresh = DateTime.now();
-
     var dataMap = data as Map;
     for (var entry in dataMap.entries) {
       var json = (entry.value as Map).cast<String, dynamic>();

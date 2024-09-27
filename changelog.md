@@ -1,3 +1,24 @@
+# 2.3.4
+- fix login: disable button on pressing once
+- feature laddu: auto return
+- Fix button label in laddu_seva/main.dart
+- Merge branch 'v2.3.3' into v2.3.4
+- dart fix
+
+# 2.3.3
+- fix laddu: rename serve button to issue
+
+# 2.3.0
+- feature laddu: bar chart instead of pie chart
+- fix laddu: last refresh check disabled
+- fix laddu: incorrect number of tickets displayed
+- feature laddu: available packs displayed in serve log
+- feature laddu: collected slips displayed on serve log
+- feature laddu: ticket count displayed in serve log
+
+# 2.2.3
+- fix pushpanjali: auto refresh enabled
+
 # 2.2.2
 - fix [laddu]: increase space between pie and label
 

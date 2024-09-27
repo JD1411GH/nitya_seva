@@ -32,6 +32,15 @@ def main():
         file.write('\n')  
         file.write(existing_contents)
 
+    print("commit all changes and push to git")
+    if repo.is_dirty(untracked_files=True):
+        repo.git.add(A=True)
+        repo.index.commit(f'release {version_number}')
+        origin = repo.remote(name='origin')
+        origin.push()
+    else:
+        print("No changes to commit")
+
     print("run the commands to build the release APK and AAB")
     commands = [
         "flutter clean",
@@ -45,15 +54,6 @@ def main():
     except subprocess.CalledProcessError as e:
         print(f"An error occurred while executing: {e.cmd}")
         sys.exit(1)
-
-    print("commit all changes and push to git")
-    if repo.is_dirty(untracked_files=True):
-        repo.git.add(A=True)
-        repo.index.commit(f'release {version_number}')
-        origin = repo.remote(name='origin')
-        origin.push()
-    else:
-        print("No changes to commit")
 
 if __name__ == '__main__':
     main()

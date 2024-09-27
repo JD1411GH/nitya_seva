@@ -73,29 +73,34 @@ def main():
     revision = version.split('+')[-1]
     revision = str(int(revision) + 1)
 
-    # Check if --dry_run option is set
-    if "--dry_run" not in sys.argv:
-        # Checkout a new branch based on the latest branch
-        try:
-            create_or_switch_branch(new_branch)
+    # Checkout a new branch based on the latest branch
+    try:
+        create_or_switch_branch(new_branch)
 
-            # Update the version in pubspec.yaml
-            with open('pubspec.yaml', 'w') as file:
-                for line in lines:
-                    if line.startswith('version:'):
-                        file.write(f'version: {new_branch[1:]}+{revision}\n')  # Remove the 'v' prefix
-                    else:
-                        file.write(line)
+        # Update the version in pubspec.yaml
+        with open('pubspec.yaml', 'w') as file:
+            for line in lines:
+                if line.startswith('version:'):
+                    file.write(f'version: {new_branch[1:]}+{revision}\n')  # Remove the 'v' prefix
+                else:
+                    file.write(line)
 
-        except subprocess.CalledProcessError:
-            print("Failed to create new branch")
-    
-        # Set the remote for the new branch
-        try:
-            subprocess.check_output(["git", "push", "-u", "origin", new_branch])
-            print("Remote set for new branch")
-        except subprocess.CalledProcessError:
-            print("Failed to set remote for new branch")
+    except subprocess.CalledProcessError:
+        print("Failed to create new branch")
+
+    # Set the remote for the new branch
+    try:
+        subprocess.check_output(["git", "push", "-u", "origin", new_branch])
+        print("Remote set for new branch")
+    except subprocess.CalledProcessError:
+        print("Failed to set remote for new branch")
+
+    # dart fix
+    try:
+        subprocess.check_output(["dart", "fix", "--apply", "auto"])
+        print("Dart fix completed")
+    except subprocess.CalledProcessError:
+        print("Failed to run dart fix")
 
 if __name__ == "__main__":
     main()

@@ -1,3 +1,4 @@
+
 class LadduStock {
   final DateTime timestamp;
   final String user;
@@ -39,7 +40,9 @@ class LadduServe {
   final List<Map<String, int>> packsMisc;
   final String note;
   final String title;
-  final int balance; // New member
+  final int? available;
+  final int balance;
+  final DateTime? pushpanjaliSlot;
 
   LadduServe({
     required this.timestamp,
@@ -49,7 +52,9 @@ class LadduServe {
     required this.packsOtherSeva,
     required this.note,
     required this.title,
-    required this.balance, // Updated constructor
+    this.available,
+    required this.balance,
+    this.pushpanjaliSlot,
   });
 
   factory LadduServe.fromJson(Map<String, dynamic> json) {
@@ -67,7 +72,11 @@ class LadduServe {
           .toList(),
       note: json['note'],
       title: json['title'],
-      balance: json['balance'], // Updated fromJson
+      balance: json['balance'],
+      pushpanjaliSlot: json['pushpanjaliSlot'] != null
+          ? DateTime.parse(json['pushpanjaliSlot'])
+          : null,
+      available: json['available'] != null ? json['available'] : null,
     );
   }
 
@@ -86,7 +95,10 @@ class LadduServe {
           .toList(),
       'note': note,
       'title': title,
-      'balance': balance, // Updated toJson
+      'balance': balance,
+      'pushpanjaliSlot':
+          pushpanjaliSlot?.toIso8601String(), // Handle nullable pushpanjaliSlot
+      'available': available, // Handle nullable available
     };
   }
 }
