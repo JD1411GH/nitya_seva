@@ -109,7 +109,11 @@ class _HMIState extends State<HMI> {
       scrollController: _cupertinoController,
       itemExtent: 32.0,
       onSelectedItemChanged: (int index) {
-        // Handle the selected item change
+        if (_selectedMode == "") {
+          setState(() {
+            _selectedMode = "Cash";
+          });
+        }
       },
       children: List<Widget>.generate(100, (int index) {
         return Center(
