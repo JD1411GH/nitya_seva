@@ -48,7 +48,10 @@ class _HMIState extends State<HMI> {
         setState(() {
           _selectedAmount = num;
           _selectedMode = mode;
-          _cupertinoController.jumpToItem(num);
+
+          // change cupertino
+          int currentValue = _cupertinoController.selectedItem;
+          _cupertinoController.jumpToItem(currentValue + num);
         });
       },
       child: Container(
