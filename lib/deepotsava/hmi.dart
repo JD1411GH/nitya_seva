@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:synchronized/synchronized.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:garuda/theme.dart';
 
 class HMI extends StatefulWidget {
-  const HMI({super.key});
+  final String stall;
+  const HMI({super.key, required this.stall});
 
   @override
   State<HMI> createState() => _HMIState();
@@ -13,27 +14,47 @@ class HMI extends StatefulWidget {
 final GlobalKey<_HMIState> templateKey = GlobalKey<_HMIState>();
 
 class _HMIState extends State<HMI> {
-  final _lockInit = Lock();
+  int _selectedAmount = 0;
+  String _selectedMode = "UPI";
 
-  Future<void> _futureInit() async {
-    await _lockInit.synchronized(() async {
-      await Future.delayed(const Duration(seconds: 2));
-    });
-  }
+  Widget _createAmountButton(int num, String mode) {
+    Color themeColor;
+    Color textColor;
+    if (widget.stall == 'RRG') {
+      themeColor = primaryColorRRG;
+      textColor = textColorRRG ?? Colors.black;
+    } else if (widget.stall == 'RKC') {
+      themeColor = primaryColorRKC;
+      textColor = textColorRKC;
+    } else {
+      themeColor = Colors.transparent;
+      textColor = Colors.black;
+    }
 
-  Future<void> refresh() async {
-    await _futureInit();
-    setState(() {});
-  }
-
-  Widget _createNumberButton(int num) {
-    return Container(
-      padding: EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.black),
-        borderRadius: BorderRadius.circular(10.0),
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedAmount = num;
+          _selectedMode = mode;
+        });
+      },
+      child: Container(
+        padding: EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: _selectedAmount == num && _selectedMode == mode
+              ? themeColor
+              : Colors.transparent,
+          border: Border.all(color: Colors.black),
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: Text(
+          '$num',
+          style: TextStyle(
+              color: _selectedAmount == num && _selectedMode == mode
+                  ? Colors.white
+                  : textColor), // Change 'Colors.red' to your desired color
+        ),
       ),
-      child: Text('$num'),
     );
   }
 
@@ -51,15 +72,15 @@ class _HMIState extends State<HMI> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: _createNumberButton(1),
+                    child: _createAmountButton(1, "UPI"),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: _createNumberButton(2),
+                    child: _createAmountButton(2, "UPI"),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: _createNumberButton(5),
+                    child: _createAmountButton(5, "UPI"),
                   ),
                 ],
               ),
@@ -77,15 +98,15 @@ class _HMIState extends State<HMI> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: _createNumberButton(1),
+                    child: _createAmountButton(1, "Cash"),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: _createNumberButton(2),
+                    child: _createAmountButton(2, "Cash"),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: _createNumberButton(5),
+                    child: _createAmountButton(5, "Cash"),
                   ),
                 ],
               ),
@@ -105,15 +126,15 @@ class _HMIState extends State<HMI> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: _createNumberButton(1),
+                    child: _createAmountButton(1, "Card"),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: _createNumberButton(2),
+                    child: _createAmountButton(2, "Card"),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: _createNumberButton(5),
+                    child: _createAmountButton(5, "Card"),
                   ),
                 ],
               ),
@@ -131,15 +152,15 @@ class _HMIState extends State<HMI> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: _createNumberButton(1),
+                    child: _createAmountButton(1, "Gratis"),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: _createNumberButton(2),
+                    child: _createAmountButton(2, "Gratis"),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: _createNumberButton(5),
+                    child: _createAmountButton(5, "Gratis"),
                   ),
                 ],
               ),
@@ -199,23 +220,11 @@ class _HMIState extends State<HMI> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<void>(
-      future: _futureInit(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          return Card(
-              child: SizedBox(
-            height: 180.0,
-            child: _createMainWidget(),
-          ));
-        }
-      },
+    return Card(
+      child: SizedBox(
+        height: 180.0,
+        child: _createMainWidget(),
+      ),
     );
   }
 }

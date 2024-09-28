@@ -67,7 +67,7 @@ class _SalesState extends State<Sales> {
             children: [
               DateHeader(),
               _createCardPage(),
-              HMI(),
+              HMI(stall: widget.stall),
             ],
           ),
         ),
