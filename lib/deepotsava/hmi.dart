@@ -58,6 +58,31 @@ class _HMIState extends State<HMI> {
     );
   }
 
+  Widget _createPaymentWidget(String mode, String titlePosition) {
+    return Column(
+      children: [
+        if (titlePosition == "top") Text(mode),
+        Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _createAmountButton(1, mode),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _createAmountButton(2, mode),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _createAmountButton(5, mode),
+            ),
+          ],
+        ),
+        if (titlePosition == "bottom") Text(mode),
+      ],
+    );
+  }
+
   Widget _createMainWidget() {
     return Stack(
       children: [
@@ -65,108 +90,28 @@ class _HMIState extends State<HMI> {
         Positioned(
           top: 10,
           left: 10,
-          child: Column(
-            children: [
-              Text('UPI'),
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: _createAmountButton(1, "UPI"),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: _createAmountButton(2, "UPI"),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: _createAmountButton(5, "UPI"),
-                  ),
-                ],
-              ),
-            ],
-          ),
+          child: _createPaymentWidget("UPI", "top"),
         ),
 
         // Cash corner
         Positioned(
           bottom: 10,
           left: 10,
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: _createAmountButton(1, "Cash"),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: _createAmountButton(2, "Cash"),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: _createAmountButton(5, "Cash"),
-                  ),
-                ],
-              ),
-              Text('Cash'),
-            ],
-          ),
+          child: _createPaymentWidget("Cash", "bottom"),
         ),
 
         // Card corner
         Positioned(
           top: 10,
           right: 10,
-          child: Column(
-            children: [
-              Text('Card'),
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: _createAmountButton(1, "Card"),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: _createAmountButton(2, "Card"),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: _createAmountButton(5, "Card"),
-                  ),
-                ],
-              ),
-            ],
-          ),
+          child: _createPaymentWidget("Card", "top"),
         ),
 
         // Gratis corner
         Positioned(
           bottom: 10,
           right: 10,
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: _createAmountButton(1, "Gratis"),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: _createAmountButton(2, "Gratis"),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: _createAmountButton(5, "Gratis"),
-                  ),
-                ],
-              ),
-              Text('Gratis'),
-            ],
-          ),
+          child: _createPaymentWidget("Gratis", "bottom"),
         ),
 
         // Text field
