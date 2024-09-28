@@ -81,7 +81,15 @@ class _HMIState extends State<HMI> {
           : Colors.transparent, // Set your desired background color here
       child: Column(
         children: [
-          if (titlePosition == "top") Text(mode),
+          if (titlePosition == "top")
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _selectedMode = mode;
+                });
+              },
+              child: Text(mode),
+            ),
           Row(
             children: [
               Padding(
@@ -98,7 +106,15 @@ class _HMIState extends State<HMI> {
               ),
             ],
           ),
-          if (titlePosition == "bottom") Text(mode),
+          if (titlePosition == "bottom")
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _selectedMode = mode;
+                });
+              },
+              child: Text(mode),
+            ),
         ],
       ),
     );
