@@ -20,6 +20,9 @@ class _HMIState extends State<HMI> {
   Color? _textColor;
   Color? _bgColor;
 
+  FixedExtentScrollController _cupertinoController =
+      FixedExtentScrollController(initialItem: 0);
+
   @override
   initState() {
     super.initState();
@@ -45,6 +48,7 @@ class _HMIState extends State<HMI> {
         setState(() {
           _selectedAmount = num;
           _selectedMode = mode;
+          _cupertinoController.jumpToItem(num);
         });
       },
       child: Container(
@@ -97,6 +101,25 @@ class _HMIState extends State<HMI> {
     );
   }
 
+  Widget _createCupertino() {
+    return CupertinoPicker(
+      scrollController: _cupertinoController,
+      itemExtent: 32.0,
+      onSelectedItemChanged: (int index) {
+        // Handle the selected item change
+      },
+      children: List<Widget>.generate(100, (int index) {
+        return Center(
+          child: Text(
+            index.toString(),
+            style:
+                TextStyle(fontSize: 32.0), // Increase the font size of the text
+          ),
+        );
+      }),
+    );
+  }
+
   Widget _createMainWidget() {
     return Stack(
       children: [
@@ -136,24 +159,9 @@ class _HMIState extends State<HMI> {
             children: [
               // text field
               SizedBox(
-                width: 80, // Adjust the width to match the button
-                height: 60, // Adjust the height to match the button
-                child: CupertinoPicker(
-                  itemExtent: 32.0, // Height of each item
-                  onSelectedItemChanged: (int index) {
-                    // Handle the selected item change
-                  },
-                  children: List<Widget>.generate(100, (int index) {
-                    return Center(
-                      child: Text(
-                        index.toString(),
-                        style: TextStyle(
-                            fontSize:
-                                32.0), // Increase the font size of the text
-                      ),
-                    );
-                  }),
-                ),
+                width: 80,
+                height: 60,
+                child: _createCupertino(),
               ),
 
               // Add padding between the picker and the button
