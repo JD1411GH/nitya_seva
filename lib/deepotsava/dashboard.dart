@@ -17,14 +17,12 @@ class _DashboardState extends State<Dashboard> {
   final _lockInit = Lock();
   int _lampsIssued = 0;
 
-  Future<void> _futureInit() async {
-    await _lockInit.synchronized(() async {
-      await Future.delayed(const Duration(seconds: 1));
-    });
+  @override
+  void initState() {
+    super.initState();
   }
 
   Future<void> refresh() async {
-    await _futureInit();
     setState(() {});
   }
 
@@ -55,23 +53,11 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     double height = 100;
 
-    return FutureBuilder<void>(
-      future: _futureInit(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          return SizedBox(
-              height: height,
-              child: Card(
-                child: _createLampCount(height),
-              ));
-        }
-      },
+    return SizedBox(
+      height: height,
+      child: Card(
+        child: _createLampCount(height),
+      ),
     );
   }
 }
