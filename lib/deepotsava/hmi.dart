@@ -15,22 +15,31 @@ final GlobalKey<_HMIState> templateKey = GlobalKey<_HMIState>();
 
 class _HMIState extends State<HMI> {
   int _selectedAmount = 0;
-  String _selectedMode = "UPI";
+  String _selectedMode = "";
+  Color? _themeColor;
+  Color? _textColor;
+  Color? _bgColor;
+
+  @override
+  initState() {
+    super.initState();
+
+    if (widget.stall == 'RRG') {
+      _themeColor = primaryColorRRG;
+      _textColor = textColorRRG ?? Colors.black;
+      _bgColor = variantColorRRG;
+    } else if (widget.stall == 'RKC') {
+      _themeColor = primaryColorRKC;
+      _textColor = textColorRKC;
+      _bgColor = variantColorRKC;
+    } else {
+      _themeColor = primaryColor;
+      _textColor = Colors.black;
+      _bgColor = Colors.grey;
+    }
+  }
 
   Widget _createAmountButton(int num, String mode) {
-    Color themeColor;
-    Color textColor;
-    if (widget.stall == 'RRG') {
-      themeColor = primaryColorRRG;
-      textColor = textColorRRG ?? Colors.black;
-    } else if (widget.stall == 'RKC') {
-      themeColor = primaryColorRKC;
-      textColor = textColorRKC;
-    } else {
-      themeColor = Colors.transparent;
-      textColor = Colors.black;
-    }
-
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -42,7 +51,7 @@ class _HMIState extends State<HMI> {
         padding: EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           color: _selectedAmount == num && _selectedMode == mode
-              ? themeColor
+              ? _themeColor
               : Colors.transparent,
           border: Border.all(color: Colors.black),
           borderRadius: BorderRadius.circular(10.0),
@@ -52,34 +61,39 @@ class _HMIState extends State<HMI> {
           style: TextStyle(
               color: _selectedAmount == num && _selectedMode == mode
                   ? Colors.white
-                  : textColor), // Change 'Colors.red' to your desired color
+                  : _textColor), // Change 'Colors.red' to your desired color
         ),
       ),
     );
   }
 
   Widget _createPaymentWidget(String mode, String titlePosition) {
-    return Column(
-      children: [
-        if (titlePosition == "top") Text(mode),
-        Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: _createAmountButton(1, mode),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: _createAmountButton(2, mode),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: _createAmountButton(5, mode),
-            ),
-          ],
-        ),
-        if (titlePosition == "bottom") Text(mode),
-      ],
+    return Container(
+      color: _selectedMode == mode
+          ? _bgColor
+          : Colors.transparent, // Set your desired background color here
+      child: Column(
+        children: [
+          if (titlePosition == "top") Text(mode),
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: _createAmountButton(1, mode),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: _createAmountButton(2, mode),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: _createAmountButton(5, mode),
+              ),
+            ],
+          ),
+          if (titlePosition == "bottom") Text(mode),
+        ],
+      ),
     );
   }
 
