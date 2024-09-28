@@ -131,10 +131,6 @@ class _HMIState extends State<HMI> {
             _selectedMode = "Cash";
           });
         }
-
-        setState(() {
-          _selectedAmount = index;
-        });
       },
       children: List<Widget>.generate(100, (int index) {
         return Center(
@@ -198,7 +194,7 @@ class _HMIState extends State<HMI> {
               // serve button
               ElevatedButton(
                 onPressed: () {
-                  widget.callbacks.add(_selectedAmount);
+                  widget.callbacks.add(_cupertinoController.selectedItem);
                 },
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.zero,
