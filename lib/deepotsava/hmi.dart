@@ -130,6 +130,10 @@ class _HMIState extends State<HMI> {
             _selectedMode = "Cash";
           });
         }
+
+        setState(() {
+          _selectedAmount = index;
+        });
       },
       children: List<Widget>.generate(100, (int index) {
         return Center(
