@@ -4,7 +4,8 @@ import 'package:garuda/theme.dart';
 
 class HMI extends StatefulWidget {
   final String stall;
-  const HMI({super.key, required this.stall});
+  final HMICallbacks callbacks;
+  const HMI({super.key, required this.stall, required this.callbacks});
 
   @override
   State<HMI> createState() => _HMIState();
@@ -197,7 +198,7 @@ class _HMIState extends State<HMI> {
               // serve button
               ElevatedButton(
                 onPressed: () {
-                  // Handle button press
+                  widget.callbacks.add(_selectedAmount);
                 },
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.zero,
@@ -221,4 +222,14 @@ class _HMIState extends State<HMI> {
       ),
     );
   }
+}
+
+class HMICallbacks {
+  void Function(int count) add;
+  // void Function(DeepamStock data) edit;
+  // void Function(DeepamStock data) delete;
+
+  HMICallbacks({
+    required this.add,
+  });
 }

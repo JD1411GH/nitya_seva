@@ -3,6 +3,7 @@ import 'package:garuda/deepotsava/date_header.dart';
 import 'package:garuda/deepotsava/stats.dart';
 import 'package:garuda/deepotsava/stock.dart';
 import 'package:garuda/deepotsava/hmi.dart';
+import 'package:garuda/deepotsava/dashboard.dart';
 import 'package:garuda/theme.dart';
 
 class Sales extends StatefulWidget {
@@ -40,6 +41,12 @@ class _SalesState extends State<Sales> {
     );
   }
 
+  Future<void> serveLamps(int count) async {
+    if (mounted) {
+      dashboardKey.currentState!.addLampsServed(count);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Select theme based on the value of stall
@@ -67,7 +74,10 @@ class _SalesState extends State<Sales> {
             children: [
               DateHeader(),
               _createCardPage(),
-              HMI(stall: widget.stall),
+              Dashboard(key: dashboardKey, stall: widget.stall),
+              HMI(
+                  stall: widget.stall,
+                  callbacks: HMICallbacks(add: serveLamps)),
             ],
           ),
         ),
