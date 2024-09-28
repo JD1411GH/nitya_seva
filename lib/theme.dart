@@ -40,6 +40,12 @@ ThemeData themeDefault = ThemeData(
     ),
   ),
 
+  // icon button theme
+  iconTheme: IconThemeData(
+    color: Colors.blueGrey,
+    size: 24.0,
+  ),
+
   // dialog theme
   dialogTheme: DialogTheme(
     backgroundColor: Colors.grey[300],

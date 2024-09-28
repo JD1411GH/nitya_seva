@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/date_header.dart';
 import 'package:garuda/deepotsava/stats.dart';
 import 'package:garuda/deepotsava/stock.dart';
+import 'package:garuda/deepotsava/hmi.dart';
 import 'package:garuda/theme.dart';
 
 class Sales extends StatefulWidget {
@@ -66,6 +67,7 @@ class _SalesState extends State<Sales> {
             children: [
               DateHeader(),
               _createCardPage(),
+              HMI(),
             ],
           ),
         ),
