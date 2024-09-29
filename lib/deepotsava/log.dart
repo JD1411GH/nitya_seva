@@ -42,7 +42,7 @@ class _LogState extends State<Log> {
         return Colors.green[50] ?? Colors.green;
       case 'Card':
         return Colors.blue[50] ?? Colors.blue;
-      case 'Gratis':
+      case 'Gift':
         return Colors.grey[50] ?? Colors.grey;
       default:
         return Colors.white;

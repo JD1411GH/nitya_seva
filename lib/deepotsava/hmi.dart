@@ -203,11 +203,11 @@ class _HMIState extends State<HMI> {
           child: _createPaymentWidget("Card", "top"),
         ),
 
-        // Gratis corner
+        // Gift corner
         Positioned(
           bottom: 10,
           right: 10,
-          child: _createPaymentWidget("Gratis", "bottom"),
+          child: _createPaymentWidget("Gift", "bottom"),
         ),
 
         // Text field
