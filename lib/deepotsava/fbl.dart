@@ -64,9 +64,22 @@ class FBL {
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/deepotsava/stocks/$stall');
 
+    DateTime now = DateTime.now();
+    DateTime startOfDay = DateTime(now.year, now.month, now.day);
+    DateTime endOfDay = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
+
+    final Query query = dbRef
+        .orderByKey()
+        .startAt(startOfDay.toIso8601String().replaceAll(".", "^"))
+        .endAt(endOfDay.toIso8601String().replaceAll(".", "^"));
+
     List<DeepamStock> stocks = [];
     try {
-      DataSnapshot snapshot = await dbRef.get();
+      DataSnapshot snapshot = await query.get();
+      if (snapshot.value == null) {
+        return stocks;
+      }
+
       Map<dynamic, dynamic> values = snapshot.value as Map;
       values.forEach((key, value) {
         Map<String, dynamic> v = Map<String, dynamic>.from(value as Map);
