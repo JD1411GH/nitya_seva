@@ -157,19 +157,19 @@ class _HMIState extends State<HMI> {
   }
 
   void _addSale(int count) {
-    widget.callbacks.add(count);
+    DeepamSale sale = DeepamSale(
+      timestamp: DateTime.now(),
+      stall: widget.stall,
+      count: count,
+      rate: 0, // TODO: get rate from somewhere
+      paymentMode: _selectedMode,
+      user: _user,
+    );
+
+    widget.callbacks.add(sale);
 
     // update FB asynchronously
-    FBL().addSale(
-        widget.stall,
-        DeepamSale(
-          timestamp: DateTime.now(),
-          stall: widget.stall,
-          count: count,
-          rate: 0, // TODO: get rate from somewhere
-          paymentMode: _selectedMode,
-          user: _user,
-        ));
+    FBL().addSale(widget.stall, sale);
 
     // reset all selections
     _cupertinoController.jumpToItem(0);
@@ -256,7 +256,7 @@ class _HMIState extends State<HMI> {
 }
 
 class HMICallbacks {
-  void Function(int count) add;
+  void Function(DeepamSale) add;
   // void Function(DeepamStock data) edit;
   // void Function(DeepamStock data) delete;
 

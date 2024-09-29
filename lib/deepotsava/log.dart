@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
+import 'package:garuda/deepotsava/fbl.dart';
 
 class Log extends StatefulWidget {
   final String stall;
@@ -15,6 +16,13 @@ final GlobalKey<_LogState> LogKey = GlobalKey<_LogState>();
 class _LogState extends State<Log> {
   List<DeepamSale> cardValues = [];
 
+  @override
+  void initState() {
+    super.initState();
+
+    refresh();
+  }
+
   void addLog(DeepamSale sale) {
     setState(() {
       cardValues.add(sale);
@@ -22,6 +30,7 @@ class _LogState extends State<Log> {
   }
 
   Future<void> refresh() async {
+    cardValues = await FBL().getSales(widget.stall);
     setState(() {});
   }
 
@@ -31,18 +40,46 @@ class _LogState extends State<Log> {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: cardValues.map((value) {
-          return Container(
-            width: 100.0, // Fixed width to make it square
-            height: 100.0, // Fixed height to make it square
+          return Card(
             margin: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              color: Colors.blue,
+            shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),
             ),
-            child: Center(
-              child: Text(
-                "value",
-                style: TextStyle(color: Colors.white),
+            child: SizedBox(
+              width: 100.0,
+              height: 100.0,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "${value.timestamp.hour}:${value.timestamp.minute.toString().padLeft(2, '0')}",
+                      style: TextStyle(fontSize: 12),
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.black),
+                      ),
+                      child: Text(
+                        "${value.count}",
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ),
+                    Text(
+                      "${value.paymentMode}",
+                      style: TextStyle(fontSize: 12),
+                    ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Text(
+                        "${value.user}",
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           );

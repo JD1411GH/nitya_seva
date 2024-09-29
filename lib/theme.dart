@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 
 final primaryColor = Colors.blueGrey;
+final variantColor = Colors.grey[300];
+final textColor = Colors.black;
 ThemeData themeDefault = ThemeData(
   brightness: Brightness.light,
 

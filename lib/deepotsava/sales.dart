@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/deepotsava/date_header.dart';
 import 'package:garuda/deepotsava/log.dart';
 import 'package:garuda/deepotsava/stats.dart';
@@ -42,9 +43,9 @@ class _SalesState extends State<Sales> {
     );
   }
 
-  Future<void> serveLamps(int count) async {
+  Future<void> serveLamps(DeepamSale sale) async {
     if (mounted) {
-      dashboardKey.currentState!.addLampsServed(count);
+      dashboardKey.currentState!.addLampsServed(sale.count);
     }
   }
 

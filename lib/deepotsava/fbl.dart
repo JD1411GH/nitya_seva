@@ -105,6 +105,38 @@ class FBL {
     }
     return stocks;
   }
+
+  Future<List<DeepamSale>> getSales(String stall) async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/deepotsava/$stall/sales/');
+
+    DateTime now = DateTime.now();
+    DateTime startOfDay = DateTime(now.year, now.month, now.day);
+    DateTime endOfDay = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
+
+    final Query query = dbRef
+        .orderByKey()
+        .startAt(startOfDay.toIso8601String().replaceAll(".", "^"))
+        .endAt(endOfDay.toIso8601String().replaceAll(".", "^"));
+
+    List<DeepamSale> sales = [];
+    try {
+      DataSnapshot snapshot = await query.get();
+      if (snapshot.value == null) {
+        return sales;
+      }
+
+      Map<dynamic, dynamic> values = snapshot.value as Map;
+      values.forEach((key, value) {
+        Map<String, dynamic> v = Map<String, dynamic>.from(value as Map);
+        DeepamSale sale = DeepamSale.fromJson(v);
+        sales.add(sale);
+      });
+    } catch (e) {
+      Toaster().error("failed to get sales: $e");
+    }
+    return sales;
+  }
 }
 
 class FBLCallbacks {
