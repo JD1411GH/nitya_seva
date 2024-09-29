@@ -49,6 +49,19 @@ class _LogState extends State<Log> {
     }
   }
 
+  String _getPaymentIcon(String paymentMode) {
+    switch (paymentMode) {
+      case 'UPI':
+        return 'assets/images/icon_upi.png';
+      case 'Cash':
+        return 'assets/images/icon_cash.png';
+      case 'Card':
+        return 'assets/images/icon_card.png';
+      default:
+        return 'assets/images/icon_gratis.png';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -68,9 +81,26 @@ class _LogState extends State<Log> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      "${value.timestamp.hour}:${value.timestamp.minute.toString().padLeft(2, '0')}",
-                      style: TextStyle(fontSize: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Flexible(
+                          child: Image.asset(
+                            _getPaymentIcon(value
+                                .paymentMode), // Replace with your image path
+                            height:
+                                12, // Adjust the height to match the text size
+                          ),
+                        ),
+                        SizedBox(
+                          width:
+                              4, // Add some spacing between the image and the text
+                        ),
+                        Text(
+                          "${value.timestamp.hour}:${value.timestamp.minute.toString().padLeft(2, '0')}",
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      ],
                     ),
                     Container(
                       padding: EdgeInsets.all(8.0),
@@ -83,10 +113,6 @@ class _LogState extends State<Log> {
                         style: TextStyle(fontSize: 18),
                       ),
                     ),
-                    // Text(
-                    //   "${value.paymentMode}",
-                    //   style: TextStyle(fontSize: 12),
-                    // ),
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Text(

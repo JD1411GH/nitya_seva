@@ -81,6 +81,7 @@ flutter:
     - assets/images/icon_upi.png
     - assets/images/icon_cash.png
     - assets/images/icon_card.png
+    - assets/images/icon_gratis.png
     - assets/images/admin.jpg
     - assets/images/deepotsava.jpg
     - assets/images/laddu.jpg
