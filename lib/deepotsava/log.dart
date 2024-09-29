@@ -11,7 +11,7 @@ class Log extends StatefulWidget {
   State<Log> createState() => _LogState();
 }
 
-final GlobalKey<_LogState> LogKey = GlobalKey<_LogState>();
+final GlobalKey<_LogState> logKey = GlobalKey<_LogState>();
 
 class _LogState extends State<Log> {
   List<DeepamSale> cardValues = [];

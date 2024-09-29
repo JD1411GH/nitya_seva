@@ -46,6 +46,7 @@ class _SalesState extends State<Sales> {
   Future<void> serveLamps(DeepamSale sale) async {
     if (mounted) {
       dashboardKey.currentState!.addLampsServed(sale.count);
+      logKey.currentState!.addLog(sale);
     }
   }
 
@@ -80,7 +81,7 @@ class _SalesState extends State<Sales> {
               HMI(
                   stall: widget.stall,
                   callbacks: HMICallbacks(add: serveLamps)),
-              Log(key: LogKey, stall: widget.stall),
+              Log(key: logKey, stall: widget.stall),
             ],
           ),
         ),
