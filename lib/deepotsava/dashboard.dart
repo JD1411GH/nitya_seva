@@ -27,7 +27,6 @@ class _DashboardState extends State<Dashboard> {
   }
 
   void addLampsServed(int lamps) {
-    print("Adding $lamps lamps");
     setState(() {
       _lampsIssued += lamps;
     });

@@ -54,6 +54,16 @@ class _HMIState extends State<HMI> {
 
   Widget _createAmountButton(int num, String mode) {
     return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedAmount = num;
+          _selectedMode = mode;
+
+          // change cupertino
+          int currentValue = _cupertinoController.selectedItem;
+          _cupertinoController.jumpToItem(currentValue + num);
+        });
+      },
       child: Container(
         padding: EdgeInsets.all(8.0),
         decoration: BoxDecoration(
@@ -71,19 +81,6 @@ class _HMIState extends State<HMI> {
                   : _textColor), // Change 'Colors.red' to your desired color
         ),
       ),
-      onTap: () {
-        setState(() {
-          _selectedAmount = num;
-          _selectedMode = mode;
-
-          // change cupertino
-          int currentValue = _cupertinoController.selectedItem;
-          _cupertinoController.jumpToItem(currentValue + num);
-        });
-      },
-      onLongPress: () {
-        _addSale(num);
-      },
     );
   }
 
@@ -156,29 +153,6 @@ class _HMIState extends State<HMI> {
     );
   }
 
-  void _addSale(int count) {
-    widget.callbacks.add(count);
-
-    // update FB asynchronously
-    FBL().addSale(
-        widget.stall,
-        DeepamSale(
-          timestamp: DateTime.now(),
-          stall: widget.stall,
-          count: count,
-          rate: 0, // TODO: get rate from somewhere
-          paymentMode: _selectedMode,
-          user: _user,
-        ));
-
-    // reset all selections
-    _cupertinoController.jumpToItem(0);
-    setState(() {
-      _selectedAmount = 0;
-      _selectedMode = "";
-    });
-  }
-
   Widget _createMainWidget() {
     return Stack(
       children: [
@@ -234,7 +208,26 @@ class _HMIState extends State<HMI> {
                   minimumSize: Size(40, 40), // Small size
                 ),
                 onPressed: () {
-                  _addSale(_cupertinoController.selectedItem);
+                  widget.callbacks.add(_cupertinoController.selectedItem);
+
+                  // update FB asynchronously
+                  FBL().addSale(
+                      widget.stall,
+                      DeepamSale(
+                        timestamp: DateTime.now(),
+                        stall: widget.stall,
+                        count: _cupertinoController.selectedItem,
+                        rate: 0, // TODO: get rate from somewhere
+                        paymentMode: _selectedMode,
+                        user: _user,
+                      ));
+
+                  // reset all selections
+                  _cupertinoController.jumpToItem(0);
+                  setState(() {
+                    _selectedAmount = 0;
+                    _selectedMode = "";
+                  });
                 },
               )
             ],
