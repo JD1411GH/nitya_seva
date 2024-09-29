@@ -1,4 +1,3 @@
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:garuda/const.dart';
@@ -110,51 +109,6 @@ class _SummaryState extends State<Summary> {
       barLabels = labels;
       barValues = values;
       _sortBarLabelsAndValues(barLabels, barValues);
-
-      List<String> sevaNames = Const().otherSevaTickets.map((e) {
-        String name = e['name'];
-        return name;
-      }).toList();
-
-      // add the pie sections and legends
-      for (int i = 0; i < labels.length; i++) {
-        Color pieColor = Colors.grey;
-        Color textColor = Colors.white;
-        if (labels[i].startsWith("Seva")) {
-          String amount = labels[i].split(' ')[1];
-          pieColor = Const().ticketColors[amount]!;
-          textColor =
-              amount == "500" ? Theme.of(context).primaryColor : Colors.white;
-        } else if (sevaNames.contains(labels[i])) {
-          int index = sevaNames.indexOf(labels[i]);
-          pieColor = Const().otherSevaTickets[index]['color'];
-        } else {
-          if (labels[i] == "Miscellaneous") {
-            pieColor = Colors.grey;
-          } else {
-            pieColor = Const().getRandomDarkColor();
-          }
-        }
-
-        double value = values[i].toDouble();
-        double percentage = (value / values.reduce((a, b) => a + b)) * 100;
-        double titlePositionPercentageOffset = percentage < 10 ? 1.2 : 0.5;
-        if (percentage < 10) {
-          textColor = Theme.of(context).primaryColor;
-        }
-
-        pieSections.add(PieChartSectionData(
-          color: pieColor,
-          value: value,
-          title: values[i].toString(),
-          radius: 50,
-          titleStyle: TextStyle(
-              fontSize: 16, fontWeight: FontWeight.bold, color: textColor),
-          titlePositionPercentageOffset: titlePositionPercentageOffset,
-        ));
-
-        pieLegends.add(_buildLegendItem(pieColor, labels[i]));
-      }
 
       // move the seva elements first
       pieLegends.sort((a, b) {
@@ -347,20 +301,6 @@ class _SummaryState extends State<Summary> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildLegendItem(Color color, String text) {
-    return Row(
-      children: [
-        Container(
-          width: 16,
-          height: 16,
-          color: color,
-        ),
-        SizedBox(width: 8),
-        Text(text),
-      ],
     );
   }
 
