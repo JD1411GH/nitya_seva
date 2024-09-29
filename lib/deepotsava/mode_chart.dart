@@ -10,9 +10,24 @@ class ModeChart extends StatefulWidget {
 class _ModeChartState extends State<ModeChart> {
   List<double> data = [0, 0, 0, 0];
 
-  void updateData(List<double> newData) {
+  void updateData(String mode, int count) {
     setState(() {
-      data = newData;
+      switch (mode) {
+        case 'UPI':
+          data[0] = count.toDouble();
+          break;
+        case 'Cash':
+          data[1] = count.toDouble();
+          break;
+        case 'Card':
+          data[2] = count.toDouble();
+          break;
+        case 'Gift':
+          data[3] = count.toDouble();
+          break;
+        default:
+          throw ArgumentError('Invalid mode: $mode');
+      }
     });
   }
 
@@ -20,10 +35,10 @@ class _ModeChartState extends State<ModeChart> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _buildBar('UPI', data[0], Colors.blue),
+        _buildBar('UPI', data[0], Colors.orange),
         _buildBar('Cash', data[1], Colors.green),
-        _buildBar('Card', data[2], Colors.red),
-        _buildBar('Gift', data[3], Colors.yellow),
+        _buildBar('Card', data[2], Colors.blue),
+        _buildBar('Gift', data[3], Colors.grey),
       ],
     );
   }
@@ -43,7 +58,7 @@ class _ModeChartState extends State<ModeChart> {
               ),
             ),
             SizedBox(width: 10),
-            FittedBox(child: Text(value.toString())),
+            FittedBox(child: Text(value.toInt().toString())),
           ],
         ),
       ),

@@ -54,37 +54,41 @@ class _DashboardState extends State<Dashboard> {
     return SizedBox(
       height: height,
       child: Card(
-        child: Row(
-          children: [
-            // left side widget
-            Container(
-              height: height,
-              width: height,
-              color: Colors.grey[300], // Placeholder widget on the left
-              child: Center(
-                child: Text(
-                  'Placeholder',
-                  style: TextStyle(fontSize: 16.0),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+              horizontal: 16.0), // Add horizontal padding
+          child: Row(
+            children: [
+              // left side widget
+              Container(
+                height: height,
+                width: height,
+                color: Colors.grey[300], // Placeholder widget on the left
+                child: Center(
+                  child: Text(
+                    'Placeholder',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
                 ),
               ),
-            ),
 
-            Spacer(),
+              Spacer(),
 
-            // center widget
-            Center(
-              child: _createLampCount(height),
-            ),
+              // center widget
+              Center(
+                child: _createLampCount(height),
+              ),
 
-            Spacer(),
+              Spacer(),
 
-            // right side widget
-            SizedBox(
-              height: height,
-              width: height,
-              child: ModeChart(),
-            ),
-          ],
+              // right side widget
+              SizedBox(
+                height: height,
+                width: height,
+                child: ModeChart(),
+              ),
+            ],
+          ),
         ),
       ),
     );
