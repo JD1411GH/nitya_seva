@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/date_header.dart';
+import 'package:garuda/deepotsava/log.dart';
 import 'package:garuda/deepotsava/stats.dart';
 import 'package:garuda/deepotsava/stock.dart';
 import 'package:garuda/deepotsava/hmi.dart';
@@ -78,6 +79,7 @@ class _SalesState extends State<Sales> {
               HMI(
                   stall: widget.stall,
                   callbacks: HMICallbacks(add: serveLamps)),
+              Log(key: LogKey, stall: widget.stall),
             ],
           ),
         ),
