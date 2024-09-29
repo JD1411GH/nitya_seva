@@ -34,6 +34,21 @@ class _LogState extends State<Log> {
     setState(() {});
   }
 
+  Color _getBackgroundColor(String paymentMode) {
+    switch (paymentMode) {
+      case 'UPI':
+        return Colors.orange[100] ?? Colors.orange;
+      case 'Cash':
+        return Colors.green[50] ?? Colors.green;
+      case 'Card':
+        return Colors.blue[50] ?? Colors.blue;
+      case 'Gratis':
+        return Colors.grey[50] ?? Colors.grey;
+      default:
+        return Colors.white;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -41,6 +56,7 @@ class _LogState extends State<Log> {
       child: Row(
         children: cardValues.map((value) {
           return Card(
+            color: _getBackgroundColor(value.paymentMode),
             margin: const EdgeInsets.all(8.0),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),
@@ -67,10 +83,10 @@ class _LogState extends State<Log> {
                         style: TextStyle(fontSize: 18),
                       ),
                     ),
-                    Text(
-                      "${value.paymentMode}",
-                      style: TextStyle(fontSize: 12),
-                    ),
+                    // Text(
+                    //   "${value.paymentMode}",
+                    //   style: TextStyle(fontSize: 12),
+                    // ),
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Text(
