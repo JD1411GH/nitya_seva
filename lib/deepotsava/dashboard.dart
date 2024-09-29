@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/mode_chart.dart';
+import 'package:garuda/deepotsava/summary.dart';
 import 'package:synchronized/synchronized.dart';
 
 class Dashboard extends StatefulWidget {
@@ -63,12 +64,8 @@ class _DashboardState extends State<Dashboard> {
               Container(
                 height: height,
                 width: height,
-                color: Colors.grey[300], // Placeholder widget on the left
                 child: Center(
-                  child: Text(
-                    'Placeholder',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
+                  child: Summary(),
                 ),
               ),
 
