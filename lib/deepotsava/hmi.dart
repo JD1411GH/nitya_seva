@@ -195,6 +195,12 @@ class _HMIState extends State<HMI> {
               ElevatedButton(
                 onPressed: () {
                   widget.callbacks.add(_cupertinoController.selectedItem);
+                  _cupertinoController.jumpToItem(0);
+
+                  setState(() {
+                    _selectedAmount = 0;
+                    _selectedMode = "";
+                  });
                 },
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.zero,
