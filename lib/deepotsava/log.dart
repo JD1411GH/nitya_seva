@@ -58,7 +58,7 @@ class _LogState extends State<Log> {
       case 'Card':
         return 'assets/images/icon_card.png';
       default:
-        return 'assets/images/icon_gratis.png';
+        return 'assets/images/icon_gratis.png'; // gift
     }
   }
 
