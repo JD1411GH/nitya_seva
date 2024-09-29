@@ -33,3 +33,43 @@ class DeepamStock {
     };
   }
 }
+
+class DeepamSale {
+  final DateTime timestamp;
+  final String stall; // this will perhaps help during debugging
+  final String user;
+  final int rate;
+  final int count;
+  final String paymentMode;
+
+  DeepamSale({
+    required this.timestamp,
+    required this.stall,
+    required this.user,
+    required this.rate,
+    required this.count,
+    required this.paymentMode,
+  });
+
+  factory DeepamSale.fromJson(Map<String, dynamic> json) {
+    return DeepamSale(
+      timestamp: DateTime.parse(json['timestamp'] as String),
+      stall: json['stall'] as String,
+      user: json['user'] as String,
+      rate: json['rate'] as int,
+      count: json['count'] as int,
+      paymentMode: json['paymentMode'] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'timestamp': timestamp.toIso8601String(),
+      'stall': stall,
+      'user': user,
+      'rate': rate,
+      'count': count,
+      'paymentMode': paymentMode,
+    };
+  }
+}

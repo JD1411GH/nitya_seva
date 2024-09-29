@@ -48,7 +48,7 @@ class FBL {
 
   Future<void> addStock(String stall, DeepamStock stock) async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
-        .ref('record_db${Const().dbVersion}/deepotsava/stocks/$stall');
+        .ref('record_db${Const().dbVersion}/deepotsava/$stall/stocks');
 
     DateTime timestamp = DateTime.now();
     DatabaseReference ref =
@@ -60,9 +60,23 @@ class FBL {
     }
   }
 
+  Future<void> addSale(String stall, DeepamSale sale) async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/deepotsava/$stall/sales/');
+
+    DateTime timestamp = DateTime.now();
+    DatabaseReference ref =
+        dbRef.child(timestamp.toIso8601String().replaceAll(".", "^"));
+    try {
+      await ref.set(sale.toJson());
+    } catch (e) {
+      Toaster().error("failed to add sale: $e");
+    }
+  }
+
   Future<List<DeepamStock>> getStocks(String stall) async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
-        .ref('record_db${Const().dbVersion}/deepotsava/stocks/$stall');
+        .ref('record_db${Const().dbVersion}/deepotsava/$stall/stocks/');
 
     DateTime now = DateTime.now();
     DateTime startOfDay = DateTime(now.year, now.month, now.day);

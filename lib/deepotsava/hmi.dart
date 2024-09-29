@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:garuda/const.dart';
+import 'package:garuda/deepotsava/datatypes.dart';
+import 'package:garuda/deepotsava/fbl.dart';
 import 'package:garuda/theme.dart';
 
 class HMI extends StatefulWidget {
@@ -17,6 +20,8 @@ final GlobalKey<_HMIState> templateKey = GlobalKey<_HMIState>();
 class _HMIState extends State<HMI> {
   int _selectedAmount = 0;
   String _selectedMode = "";
+  String _user = "Unknown";
+
   Color? _themeColor;
   Color? _textColor;
   Color? _bgColor;
@@ -41,6 +46,10 @@ class _HMIState extends State<HMI> {
       _textColor = Colors.black;
       _bgColor = Colors.grey;
     }
+
+    Const().getUserName().then((value) {
+      _user = value;
+    });
   }
 
   Widget _createAmountButton(int num, String mode) {
@@ -193,20 +202,33 @@ class _HMIState extends State<HMI> {
 
               // serve button
               ElevatedButton(
+                child: Text('+'),
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  minimumSize: Size(40, 40), // Small size
+                ),
                 onPressed: () {
                   widget.callbacks.add(_cupertinoController.selectedItem);
-                  _cupertinoController.jumpToItem(0);
 
+                  // update FB asynchronously
+                  FBL().addSale(
+                      widget.stall,
+                      DeepamSale(
+                        timestamp: DateTime.now(),
+                        stall: widget.stall,
+                        count: _cupertinoController.selectedItem,
+                        rate: 0, // TODO: get rate from somewhere
+                        paymentMode: _selectedMode,
+                        user: _user,
+                      ));
+
+                  // reset all selections
+                  _cupertinoController.jumpToItem(0);
                   setState(() {
                     _selectedAmount = 0;
                     _selectedMode = "";
                   });
                 },
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.zero,
-                  minimumSize: Size(40, 40), // Small size
-                ),
-                child: Text('+'),
               )
             ],
           ),
