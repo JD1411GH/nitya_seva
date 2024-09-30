@@ -1,4 +1,8 @@
 # 2.3.5
+- release 2.3.5
+fix laddu: check stock availability while serve
+
+# 2.3.5
 - fix laddu: check stock availability while serve
 
 # 2.3.4
