@@ -8,7 +8,7 @@ class ModeChart extends StatefulWidget {
 }
 
 class _ModeChartState extends State<ModeChart> {
-  List<double> data = [0, 0, 0, 0];
+  List<double> data = [200, 100, 50, 100];
 
   void updateData(String mode, int count) {
     setState(() {
@@ -46,7 +46,7 @@ class _ModeChartState extends State<ModeChart> {
   Widget _buildBar(String label, double value, Color color) {
     return Flexible(
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        padding: const EdgeInsets.symmetric(vertical: 2.0),
         child: Row(
           children: [
             SizedBox(width: 50, child: FittedBox(child: Text(label))),

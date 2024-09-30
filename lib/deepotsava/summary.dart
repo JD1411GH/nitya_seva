@@ -16,15 +16,15 @@ class _SummaryState extends State<Summary> {
         children: [
           FittedBox(
             fit: BoxFit.scaleDown,
-            child: Text("Lamps issued: 0"),
+            child: Text("Lamps: 0"),
           ),
           FittedBox(
             fit: BoxFit.scaleDown,
-            child: Text("Plates issued: 0"),
+            child: Text("Plates: 0"),
           ),
           FittedBox(
             fit: BoxFit.scaleDown,
-            child: Text("Total amount: 0"),
+            child: Text("Amount: Rs. 0"),
           ),
         ],
       ),
