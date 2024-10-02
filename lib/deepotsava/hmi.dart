@@ -21,6 +21,7 @@ class _HMIState extends State<HMI> {
   int _selectedAmount = 0;
   String _selectedMode = "";
   String _user = "Unknown";
+  bool _plateEnabled = false;
 
   Color? _themeColor;
   Color? _textColor;
@@ -216,6 +217,33 @@ class _HMIState extends State<HMI> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // Plate toggle
+              GestureDetector(
+                onTap: () {
+                  // Add your onTap functionality here
+                },
+                child: Container(
+                  padding: EdgeInsets.all(4.0),
+                  decoration: BoxDecoration(
+                    color: _plateEnabled
+                        ? (widget.stall == "RRG"
+                            ? primaryColorRRG
+                            : primaryColorRKC)
+                        : Colors.transparent,
+                    border: Border.all(color: Colors.black),
+                    borderRadius: BorderRadius.circular(8.0), // Rounded border
+                  ),
+                  child: Text(
+                    'Plate',
+                    style: TextStyle(
+                      color: _plateEnabled
+                          ? Colors.white
+                          : Theme.of(context).textTheme.bodySmall!.color,
+                    ),
+                  ),
+                ),
+              ),
+
               // text field
               SizedBox(
                 width: 80,
@@ -248,7 +276,7 @@ class _HMIState extends State<HMI> {
   Widget build(BuildContext context) {
     return Card(
       child: SizedBox(
-        height: 180.0,
+        height: 200.0,
         child: _createMainWidget(),
       ),
     );
