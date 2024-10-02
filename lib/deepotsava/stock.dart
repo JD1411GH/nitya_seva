@@ -87,6 +87,7 @@ class _StockPageState extends State<StockPage> {
       _oilCans += stock.oilCans;
     });
 
+    // prevent double refresh from FB
     if (localUpdate) {
       _localUpdateTime = DateTime.now();
     }
