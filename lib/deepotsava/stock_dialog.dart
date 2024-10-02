@@ -22,6 +22,9 @@ class _StockAddDialogState extends State<StockAddDialog> {
   final TextEditingController _gheePacketsController = TextEditingController();
   final TextEditingController _oilCansController = TextEditingController();
 
+  bool _isExpanded =
+      false; // State variable to track whether fields are expanded
+
   @override
   Widget build(BuildContext context) {
     ThemeData selectedTheme;
@@ -40,8 +43,7 @@ class _StockAddDialogState extends State<StockAddDialog> {
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(
-                16.0), // padding around the entire text field set
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -65,32 +67,67 @@ class _StockAddDialogState extends State<StockAddDialog> {
                     keyboardType: TextInputType.number,
                   ),
                 ),
+
+                // Expand/Collapse Button
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 0),
-                  child: TextField(
-                    decoration: InputDecoration(labelText: 'Wicks'),
-                    controller: _wicksController,
-                    keyboardType: TextInputType.number,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 0),
-                  child: TextField(
-                    decoration: InputDecoration(labelText: 'Ghee packets'),
-                    controller: _gheePacketsController,
-                    keyboardType: TextInputType.number,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 0),
-                  child: TextField(
-                    decoration: InputDecoration(labelText: 'Oil cans'),
-                    controller: _oilCansController,
-                    keyboardType: TextInputType.number,
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Show more',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                      IconButton(
+                        icon: Icon(_isExpanded
+                            ? Icons.expand_less
+                            : Icons.expand_more),
+                        onPressed: () {
+                          setState(() {
+                            _isExpanded =
+                                !_isExpanded; // Toggle expansion state
+                          });
+                        },
+                      ),
+                    ],
                   ),
                 ),
 
-                // button row
+                // Collapsible fields
+                Visibility(
+                  visible: _isExpanded, // Show only if expanded
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 0),
+                        child: TextField(
+                          decoration: InputDecoration(labelText: 'Wicks'),
+                          controller: _wicksController,
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 0),
+                        child: TextField(
+                          decoration:
+                              InputDecoration(labelText: 'Ghee packets'),
+                          controller: _gheePacketsController,
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 0),
+                        child: TextField(
+                          decoration: InputDecoration(labelText: 'Oil cans'),
+                          controller: _oilCansController,
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Button row
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
