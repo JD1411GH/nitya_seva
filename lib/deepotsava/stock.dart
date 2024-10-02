@@ -89,44 +89,57 @@ class _StockPageState extends State<StockPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Prepared lamps: $_preparedLamps'),
-          Text('Unprepared lamps: $_unpreparedLamps'),
-
-          // Expand/Collapse Button
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 0.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  'Show more',
-                  style: TextStyle(color: Colors.grey),
-                ),
-                IconButton(
-                  icon:
-                      Icon(_isExpanded ? Icons.expand_less : Icons.expand_more),
-                  onPressed: () {
-                    setState(() {
-                      _isExpanded = !_isExpanded; // Toggle expansion state
-                    });
-                  },
-                ),
-              ],
-            ),
-          ),
-
-          Visibility(
-              visible: _isExpanded,
+          // Text widgets inside a scrollable area
+          Expanded(
+            child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Wicks: $_wicks'),
-                  Text('Ghee packets: $_gheePackets'),
-                  Text('Oil cans: $_oilCans'),
-                ],
-              )),
+                  Text('Prepared lamps: $_preparedLamps'),
+                  Text('Unprepared lamps: $_unpreparedLamps'),
 
-          // button row
+                  // Expand/Collapse Button
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 0.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Show more',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                        IconButton(
+                          icon: Icon(_isExpanded
+                              ? Icons.expand_less
+                              : Icons.expand_more),
+                          onPressed: () {
+                            setState(() {
+                              _isExpanded =
+                                  !_isExpanded; // Toggle expansion state
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Collapsed texts
+                  Visibility(
+                      visible: _isExpanded,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Wicks: $_wicks'),
+                          Text('Ghee packets: $_gheePackets'),
+                          Text('Oil cans: $_oilCans'),
+                        ],
+                      )),
+                ],
+              ),
+            ),
+          ),
+
+          // Button row outside the scrollable area
           Center(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
