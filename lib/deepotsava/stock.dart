@@ -22,11 +22,10 @@ class _StockPageState extends State<StockPage> {
 
   int _preparedLamps = 0;
   int _unpreparedLamps = 0;
+  int _plates = 0;
   int _wicks = 0;
   int _gheePackets = 0;
   int _oilCans = 0;
-
-  bool _isExpanded = false;
 
   @override
   void initState() {
@@ -85,7 +84,7 @@ class _StockPageState extends State<StockPage> {
 
   Widget _createStock() {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -97,43 +96,10 @@ class _StockPageState extends State<StockPage> {
                 children: [
                   Text('Prepared lamps: $_preparedLamps'),
                   Text('Unprepared lamps: $_unpreparedLamps'),
-
-                  // Expand/Collapse Button
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 0.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Show more',
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                        IconButton(
-                          icon: Icon(_isExpanded
-                              ? Icons.expand_less
-                              : Icons.expand_more),
-                          onPressed: () {
-                            setState(() {
-                              _isExpanded =
-                                  !_isExpanded; // Toggle expansion state
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Collapsed texts
-                  Visibility(
-                      visible: _isExpanded,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Wicks: $_wicks'),
-                          Text('Ghee packets: $_gheePackets'),
-                          Text('Oil cans: $_oilCans'),
-                        ],
-                      )),
+                  Text('Plates: $_plates'),
+                  Text('Wicks: $_wicks'),
+                  Text('Ghee packets: $_gheePackets'),
+                  Text('Oil cans: $_oilCans'),
                 ],
               ),
             ),

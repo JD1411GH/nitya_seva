@@ -32,7 +32,7 @@ class _SalesState extends State<Sales> {
   Widget _createCardPage() {
     return Card(
       child: SizedBox(
-        height: 180.0,
+        height: 150.0,
         child: PageView(
           children: [
             StockPage(stall: widget.stall),
