@@ -27,12 +27,19 @@ class _StockPageState extends State<StockPage> {
   int _gheePackets = 0;
   int _oilCans = 0;
 
+  DateTime _localUpdateTime = DateTime.now();
+
   @override
   void initState() {
     super.initState();
 
     FBL().listenForChange("deepotsava/${widget.stall}/stocks",
         FBLCallbacks(add: (dynamic data) async {
+      // skip refresh if already updated locally
+      if (DateTime.now().difference(_localUpdateTime).inSeconds < 2) {
+        return;
+      }
+
       Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
       DeepamStock stock = DeepamStock.fromJson(map);
       callbackAdd(stock);
@@ -70,7 +77,7 @@ class _StockPageState extends State<StockPage> {
     setState(() {});
   }
 
-  void callbackAdd(DeepamStock stock) {
+  void callbackAdd(DeepamStock stock, {bool localUpdate = false}) {
     setState(() {
       _preparedLamps += stock.preparedLamps;
       _unpreparedLamps += stock.unpreparedLamps;
@@ -79,6 +86,10 @@ class _StockPageState extends State<StockPage> {
       _gheePackets += stock.gheePackets;
       _oilCans += stock.oilCans;
     });
+
+    if (localUpdate) {
+      _localUpdateTime = DateTime.now();
+    }
   }
 
   void _createAddStockPage(BuildContext context) {

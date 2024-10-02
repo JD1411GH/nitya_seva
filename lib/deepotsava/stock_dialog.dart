@@ -195,7 +195,7 @@ class _StockAddDialogState extends State<StockAddDialog> {
                             ),
                           );
 
-                          widget.callbacks.add(stock);
+                          widget.callbacks.add(stock, localUpdate: true);
                           FBL().addStock(widget.stall, stock);
 
                           Navigator.of(context).pop();
@@ -226,7 +226,7 @@ void showStockAddDialog(
 }
 
 class StockCallbacks {
-  void Function(DeepamStock data) add;
+  void Function(DeepamStock data, {bool localUpdate}) add;
 
   StockCallbacks({
     required this.add,
