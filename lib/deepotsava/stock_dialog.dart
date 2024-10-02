@@ -23,8 +23,7 @@ class _StockAddDialogState extends State<StockAddDialog> {
   final TextEditingController _gheePacketsController = TextEditingController();
   final TextEditingController _oilCansController = TextEditingController();
 
-  bool _isExpanded =
-      false; // State variable to track whether fields are expanded
+  bool _isExpanded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +85,7 @@ class _StockAddDialogState extends State<StockAddDialog> {
 
                 // Expand/Collapse Button
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  padding: const EdgeInsets.symmetric(vertical: 0.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
