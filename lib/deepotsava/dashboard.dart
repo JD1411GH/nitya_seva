@@ -17,6 +17,7 @@ final GlobalKey<_DashboardState> dashboardKey = GlobalKey<_DashboardState>();
 class _DashboardState extends State<Dashboard> {
   final _lockInit = Lock();
   int _lampsIssued = 0;
+  int _platesIssued = 0;
   Map<String, int> _modeCount = {};
 
   @override
@@ -31,6 +32,7 @@ class _DashboardState extends State<Dashboard> {
   void addLampsServed(DeepamSale sale) {
     setState(() {
       _lampsIssued += sale.count;
+      sale.plate ? _platesIssued++ : null;
 
       if (_modeCount.containsKey(sale.paymentMode)) {
         _modeCount[sale.paymentMode] = _modeCount[sale.paymentMode]! + 1;
@@ -76,11 +78,11 @@ class _DashboardState extends State<Dashboard> {
                     children: [
                       FittedBox(
                         fit: BoxFit.scaleDown,
-                        child: Text("Lamps: 0"),
+                        child: Text("Lamps: $_lampsIssued"),
                       ),
                       FittedBox(
                         fit: BoxFit.scaleDown,
-                        child: Text("Plates: 0"),
+                        child: Text("Plates: $_platesIssued"),
                       ),
                       FittedBox(
                         fit: BoxFit.scaleDown,
