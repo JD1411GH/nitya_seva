@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:garuda/deepotsava/mode_chart.dart';
-import 'package:garuda/deepotsava/summary.dart';
+import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:synchronized/synchronized.dart';
 
 class Dashboard extends StatefulWidget {
@@ -18,6 +17,7 @@ final GlobalKey<_DashboardState> dashboardKey = GlobalKey<_DashboardState>();
 class _DashboardState extends State<Dashboard> {
   final _lockInit = Lock();
   int _lampsIssued = 0;
+  Map<String, int> _modeCount = {};
 
   @override
   void initState() {
@@ -28,9 +28,15 @@ class _DashboardState extends State<Dashboard> {
     setState(() {});
   }
 
-  void addLampsServed(int lamps) {
+  void addLampsServed(DeepamSale sale) {
     setState(() {
-      _lampsIssued += lamps;
+      _lampsIssued += sale.count;
+
+      if (_modeCount.containsKey(sale.paymentMode)) {
+        _modeCount[sale.paymentMode] = _modeCount[sale.paymentMode]! + 1;
+      } else {
+        _modeCount[sale.paymentMode] = 1;
+      }
     });
   }
 
@@ -65,7 +71,23 @@ class _DashboardState extends State<Dashboard> {
                 height: height,
                 width: height,
                 child: Center(
-                  child: Summary(),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text("Lamps: 0"),
+                      ),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text("Plates: 0"),
+                      ),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text("Amount: Rs. 0"),
+                      ),
+                    ],
+                  ),
                 ),
               ),
 
@@ -79,10 +101,19 @@ class _DashboardState extends State<Dashboard> {
               Spacer(),
 
               // right side widget
-              SizedBox(
+              Container(
                 height: height,
                 width: height,
-                child: ModeChart(),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: _modeCount.entries.map((entry) {
+                      return Flexible(
+                        child: Text("${entry.key}: ${entry.value}"),
+                      );
+                    }).toList(),
+                  ),
+                ),
               ),
             ],
           ),
