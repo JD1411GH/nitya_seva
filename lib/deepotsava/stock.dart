@@ -49,6 +49,7 @@ class _StockPageState extends State<StockPage> {
       List<DeepamStock> stocks = await FBL().getStocks(widget.stall);
       _preparedLamps = 0;
       _unpreparedLamps = 0;
+      _plates = 0;
       _wicks = 0;
       _gheePackets = 0;
       _oilCans = 0;
@@ -56,6 +57,7 @@ class _StockPageState extends State<StockPage> {
       stocks.forEach((stock) {
         _preparedLamps += stock.preparedLamps;
         _unpreparedLamps += stock.unpreparedLamps;
+        _plates += stock.plates;
         _wicks += stock.wicks;
         _gheePackets += stock.gheePackets;
         _oilCans += stock.oilCans;
@@ -72,6 +74,7 @@ class _StockPageState extends State<StockPage> {
     setState(() {
       _preparedLamps += stock.preparedLamps;
       _unpreparedLamps += stock.unpreparedLamps;
+      _plates += stock.plates;
       _wicks += stock.wicks;
       _gheePackets += stock.gheePackets;
       _oilCans += stock.oilCans;
