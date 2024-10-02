@@ -18,6 +18,7 @@ class _StockAddDialogState extends State<StockAddDialog> {
       TextEditingController();
   final TextEditingController _unpreparedLampsController =
       TextEditingController();
+  final TextEditingController _platesController = TextEditingController();
   final TextEditingController _wicksController = TextEditingController();
   final TextEditingController _gheePacketsController = TextEditingController();
   final TextEditingController _oilCansController = TextEditingController();
@@ -47,10 +48,13 @@ class _StockAddDialogState extends State<StockAddDialog> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                // title
                 Text(
                   'Add Deepam Stock',
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
+
+                // prepared lamps
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 0),
                   child: TextField(
@@ -59,11 +63,23 @@ class _StockAddDialogState extends State<StockAddDialog> {
                     keyboardType: TextInputType.number,
                   ),
                 ),
+
+                // unprepared lamps
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 0),
                   child: TextField(
                     decoration: InputDecoration(labelText: 'Unprepared lamps'),
                     controller: _unpreparedLampsController,
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+
+                // plates
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 0),
+                  child: TextField(
+                    decoration: InputDecoration(labelText: 'Plates'),
+                    controller: _platesController,
                     keyboardType: TextInputType.number,
                   ),
                 ),
@@ -157,6 +173,11 @@ class _StockAddDialogState extends State<StockAddDialog> {
                               _unpreparedLampsController.text.isEmpty
                                   ? '0'
                                   : _unpreparedLampsController.text,
+                            ),
+                            plates: int.parse(
+                              _platesController.text.isEmpty
+                                  ? '0'
+                                  : _platesController.text,
                             ),
                             wicks: int.parse(
                               _wicksController.text.isEmpty

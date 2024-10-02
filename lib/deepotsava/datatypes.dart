@@ -1,6 +1,7 @@
 class DeepamStock {
   final int preparedLamps;
   final int unpreparedLamps;
+  final int plates;
   final int wicks;
   final int gheePackets;
   final int oilCans;
@@ -8,6 +9,7 @@ class DeepamStock {
   DeepamStock({
     required this.preparedLamps,
     required this.unpreparedLamps,
+    required this.plates,
     required this.wicks,
     required this.gheePackets,
     required this.oilCans,
@@ -17,6 +19,7 @@ class DeepamStock {
     return DeepamStock(
       preparedLamps: json['preparedLamps'] as int,
       unpreparedLamps: json['unpreparedLamps'] as int,
+      plates: json['plates'] as int,
       wicks: json['wicks'] as int,
       gheePackets: json['gheePackets'] as int,
       oilCans: json['oilCans'] as int,
@@ -27,6 +30,7 @@ class DeepamStock {
     return {
       'preparedLamps': preparedLamps,
       'unpreparedLamps': unpreparedLamps,
+      'plates': plates,
       'wicks': wicks,
       'gheePackets': gheePackets,
       'oilCans': oilCans,
