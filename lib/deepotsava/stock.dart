@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/deepotsava/fbl.dart';
-import 'package:garuda/deepotsava/stock_add.dart';
+import 'package:garuda/deepotsava/stock_dialog.dart';
 import 'package:garuda/fb.dart';
 import 'package:synchronized/synchronized.dart';
 
@@ -30,7 +30,7 @@ class _StockPageState extends State<StockPage> {
   void initState() {
     super.initState();
 
-    FBL().listenForChange("deepotsava/stocks/${widget.stall}",
+    FBL().listenForChange("deepotsava/${widget.stall}/stocks",
         FBLCallbacks(add: (dynamic data) async {
       Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
       DeepamStock stock = DeepamStock.fromJson(map);
@@ -78,12 +78,14 @@ class _StockPageState extends State<StockPage> {
   }
 
   void _createAddStockPage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => StockAdd(
-            stall: widget.stall, callbacks: StockCallbacks(add: callbackAdd)),
-      ),
-    );
+    // Navigator.of(context).push(
+    //   MaterialPageRoute(
+    //     builder: (context) => StockAdd(
+    //         stall: widget.stall, callbacks: StockCallbacks(add: callbackAdd)),
+    //   ),
+    // );
+
+    showStockAddDialog(context, widget.stall, StockCallbacks(add: callbackAdd));
   }
 
   Widget _createStock() {

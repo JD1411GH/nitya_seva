@@ -263,19 +263,25 @@ class FB {
   }
 
   Future<void> listenForChange(String path, FBCallbacks callbacks) async {
+    bool initialLoad = true;
+
     final dbRef =
         FirebaseDatabase.instance.ref('record_db${Const().dbVersion}/$path');
 
     _sevaTicketAddedSubscription = dbRef.onChildAdded.listen((event) {
-      callbacks.onChange("ADD", event.snapshot.value);
+      if (!initialLoad) callbacks.onChange("ADD", event.snapshot.value);
     });
 
     _sevaTicketChangedSubscription = dbRef.onChildChanged.listen((event) {
-      callbacks.onChange("UPDATE", event.snapshot.value);
+      if (!initialLoad) callbacks.onChange("UPDATE", event.snapshot.value);
     });
 
     _sevaTicketRemovedSubscription = dbRef.onChildRemoved.listen((event) {
-      callbacks.onChange("REMOVE", event.snapshot.value);
+      if (!initialLoad) callbacks.onChange("REMOVE", event.snapshot.value);
+    });
+
+    dbRef.once().then((_) {
+      initialLoad = false;
     });
   }
 
