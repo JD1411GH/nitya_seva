@@ -165,6 +165,7 @@ class _HMIState extends State<HMI> {
       rate: 0, // TODO: get rate from somewhere
       paymentMode: _selectedMode,
       user: _user,
+      plate: _plateEnabled,
     );
 
     widget.callbacks.add(sale);
@@ -220,7 +221,9 @@ class _HMIState extends State<HMI> {
               // Plate toggle
               GestureDetector(
                 onTap: () {
-                  // Add your onTap functionality here
+                  setState(() {
+                    _plateEnabled = !_plateEnabled;
+                  });
                 },
                 child: Container(
                   padding: EdgeInsets.all(4.0),

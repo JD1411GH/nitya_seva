@@ -41,6 +41,7 @@ class DeepamSale {
   final int rate;
   final int count;
   final String paymentMode;
+  final bool plate; // new parameter
 
   DeepamSale({
     required this.timestamp,
@@ -49,6 +50,7 @@ class DeepamSale {
     required this.rate,
     required this.count,
     required this.paymentMode,
+    required this.plate, // new parameter
   });
 
   factory DeepamSale.fromJson(Map<String, dynamic> json) {
@@ -59,6 +61,7 @@ class DeepamSale {
       rate: json['rate'] as int,
       count: json['count'] as int,
       paymentMode: json['paymentMode'] as String,
+      plate: json['plate'] as bool, // new parameter
     );
   }
 
@@ -70,6 +73,7 @@ class DeepamSale {
       'rate': rate,
       'count': count,
       'paymentMode': paymentMode,
+      'plate': plate, // new parameter
     };
   }
 }
