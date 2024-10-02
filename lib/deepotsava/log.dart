@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/deepotsava/fbl.dart';
+import 'package:garuda/theme.dart';
 
 class Log extends StatefulWidget {
   final String stall;
@@ -34,21 +35,6 @@ class _LogState extends State<Log> {
     setState(() {});
   }
 
-  Color _getBackgroundColor(String paymentMode) {
-    switch (paymentMode) {
-      case 'UPI':
-        return Colors.orange[100] ?? Colors.orange;
-      case 'Cash':
-        return Colors.green[50] ?? Colors.green;
-      case 'Card':
-        return Colors.blue[50] ?? Colors.blue;
-      case 'Gift':
-        return Colors.grey[50] ?? Colors.grey;
-      default:
-        return Colors.white;
-    }
-  }
-
   String _getPaymentIcon(String paymentMode) {
     switch (paymentMode) {
       case 'UPI':
@@ -64,12 +50,21 @@ class _LogState extends State<Log> {
 
   @override
   Widget build(BuildContext context) {
+    Color bgColorPlate;
+    if (widget.stall == 'RRG') {
+      bgColorPlate = Colors.green[100] ?? Colors.grey;
+    } else if (widget.stall == 'RKC') {
+      bgColorPlate = Colors.orange[100] ?? Colors.grey;
+    } else {
+      bgColorPlate = Colors.grey;
+    }
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
         children: cardValues.map((value) {
           return Card(
-            color: _getBackgroundColor(value.paymentMode),
+            color: value.plate ? bgColorPlate : Colors.white,
             margin: const EdgeInsets.all(8.0),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),
@@ -86,10 +81,8 @@ class _LogState extends State<Log> {
                       children: [
                         Flexible(
                           child: Image.asset(
-                            _getPaymentIcon(value
-                                .paymentMode), // Replace with your image path
-                            height:
-                                12, // Adjust the height to match the text size
+                            _getPaymentIcon(value.paymentMode),
+                            height: 12,
                           ),
                         ),
                         SizedBox(
