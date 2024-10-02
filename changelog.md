@@ -1,3 +1,46 @@
+# 3.0.0
+- platecount
+- mode dash is populated
+- reset plate selection upon add
+- different color for log tile with plate
+- toggle for plate
+- create placeholder for summary
+- placeholder for mode chart
+- feature: bar chart for payment mode
+- feature: log tiles
+- hmi add sale log update
+- log tile populate
+- Update Log class to display sales data
+- Update Sales class to serve lamps
+- Update theme to include variant and text colors
+- log widget
+- long press to add sale
+- add sales to FB
+- stock data display only for today
+- hmi: reset selection upon add
+- disable amount deselection on cupertino change
+- hmi add button increment dash
+- if cupertino is changed, reset selected amount
+- upon changing cupertino, select the default payment mode
+- hmi selecting amount will add to cupertino
+- pressing amount will change cupertino
+- selecting amount changes background color
+- button selection working
+- feature deepotsava: cuppernico button for hmi
+- feature deepotsava: autorefresh upon add stock
+- FB initial trigger is avoided
+- init
+- fbl works
+- database write success
+- fix deep: textfield border color
+- Merge branch 'v2.3.4' into v3.0.0
+- release 2.3.4
+fix login: disable button on pressing once
+- feature laddu: auto return
+- Fix button label in laddu_seva/main.dart
+- Merge branch 'v2.3.3' into v2.3.4
+- dart fix
+
 # 2.3.4
 - fix login: disable button on pressing once
 - feature laddu: auto return
