@@ -178,6 +178,7 @@ class _HMIState extends State<HMI> {
     setState(() {
       _selectedAmount = 0;
       _selectedMode = "";
+      _plateEnabled = false;
     });
   }
 
