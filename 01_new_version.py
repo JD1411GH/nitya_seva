@@ -95,5 +95,12 @@ def main():
     except subprocess.CalledProcessError:
         print("Failed to set remote for new branch")
 
+    # dart fix
+    try:
+        subprocess.check_output(["dart", "fix", "--apply"])
+        print("Dart fix completed")
+    except subprocess.CalledProcessError:
+        print("Failed to run dart fix")
+
 if __name__ == "__main__":
     main()

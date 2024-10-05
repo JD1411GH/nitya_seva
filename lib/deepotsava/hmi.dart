@@ -162,7 +162,8 @@ class _HMIState extends State<HMI> {
       timestamp: DateTime.now(),
       stall: widget.stall,
       count: count,
-      rate: 0, // TODO: get rate from somewhere
+      costLamp: Const().deepotsava['lamp']['cost'] as int,
+      costPlate: Const().deepotsava['plate']['cost'] as int,
       paymentMode: mode,
       user: _user,
       plate: _plateEnabled,
@@ -213,7 +214,6 @@ class _HMIState extends State<HMI> {
           child: _createPaymentWidget("Gift", "bottom"),
         ),
 
-        // Text field
         Align(
           alignment: Alignment.center,
           child: Column(
@@ -248,7 +248,7 @@ class _HMIState extends State<HMI> {
                 ),
               ),
 
-              // text field
+              // count field
               SizedBox(
                 width: 80,
                 height: 60,
