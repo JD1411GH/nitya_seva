@@ -72,6 +72,8 @@ class _DashboardState extends State<Dashboard> {
   }
 
   void addLampsServed(DeepamSale sale) {
+    _localUpdateTime = DateTime.now();
+
     setState(() {
       _lampsIssued += sale.count;
       sale.plate ? _platesIssued++ : null;
