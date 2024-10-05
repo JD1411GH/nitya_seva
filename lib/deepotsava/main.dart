@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/sales.dart';
-import 'package:garuda/font.dart';
 import 'package:garuda/toaster.dart';
 
 class Deepotsava extends StatefulWidget {

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/deepotsava/fbl.dart';
-import 'package:garuda/theme.dart';
 
 class Log extends StatefulWidget {
   final String stall;

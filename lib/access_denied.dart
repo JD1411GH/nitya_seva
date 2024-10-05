@@ -8,7 +8,7 @@ class AccessDenied extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Access Denied'),
+        title: const Text('Approval Pending'),
       ),
       body: Center(
         child: Column(
@@ -22,7 +22,7 @@ class AccessDenied extends StatelessWidget {
             SizedBox(
                 height: 20), // Add some space between the icon and the text
             Text(
-              'Access Denied',
+              'Approval Pending',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20),

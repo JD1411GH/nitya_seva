@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/deepotsava/fbl.dart';
 import 'package:garuda/deepotsava/stock_dialog.dart';
-import 'package:garuda/fb.dart';
 import 'package:synchronized/synchronized.dart';
 
 class StockPage extends StatefulWidget {
@@ -97,7 +96,11 @@ class _StockPageState extends State<StockPage> {
     showStockAddDialog(context, widget.stall, StockCallbacks(add: callbackAdd));
   }
 
-  Widget _createStock() {
+  Widget _createAvlBar() {
+    return Placeholder();
+  }
+
+  Widget _createMainWidget() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -105,18 +108,36 @@ class _StockPageState extends State<StockPage> {
         children: [
           // Text widgets inside a scrollable area
           Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Prepared lamps: $_preparedLamps'),
-                  Text('Unprepared lamps: $_unpreparedLamps'),
-                  Text('Plates: $_plates'),
-                  Text('Wicks: $_wicks'),
-                  Text('Ghee packets: $_gheePackets'),
-                  Text('Oil cans: $_oilCans'),
-                ],
-              ),
+            child: Row(
+              children: [
+                // text labels
+                SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Prepared lamps: $_preparedLamps'),
+                      Text('Unprepared lamps: $_unpreparedLamps'),
+                      Text('Plates: $_plates'),
+                      Text('Wicks: $_wicks'),
+                      Text('Ghee packets: $_gheePackets'),
+                      Text('Oil cans: $_oilCans'),
+                    ],
+                  ),
+                ),
+
+                Spacer(),
+
+                // availability bar
+                Column(
+                  children: [
+                    Expanded(
+                        child: SizedBox(width: 50, child: _createAvlBar())),
+                    SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Text("Availability")),
+                  ],
+                ),
+              ],
             ),
           ),
 
@@ -159,7 +180,7 @@ class _StockPageState extends State<StockPage> {
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
-          return _createStock();
+          return _createMainWidget();
         }
       },
     );

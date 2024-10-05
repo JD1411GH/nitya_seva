@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:garuda/const.dart';
-import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/toaster.dart';
 import 'package:garuda/pushpanjali/sevaslot.dart';
