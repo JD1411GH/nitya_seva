@@ -13,15 +13,13 @@ class Availability extends StatefulWidget {
 GlobalKey<_AvailabilityState> availabilityKey = GlobalKey<_AvailabilityState>();
 
 class _AvailabilityState extends State<Availability> {
-  late double _currentStock;
-  late double _fullStock;
+  double _currentStock = 0;
+  double _fullStock = 0;
   double _barValue = 0;
 
   @override
   void initState() {
     super.initState();
-    _fullStock = 0;
-    _currentStock = 0;
   }
 
   void addStock(int stock) {
