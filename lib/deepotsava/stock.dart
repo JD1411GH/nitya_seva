@@ -36,6 +36,8 @@ class _StockPageState extends State<StockPage> {
   void initState() {
     super.initState();
 
+    refresh();
+
     // subscribe for updates on stocks
     FBL().listenForChange(
         "deepotsava/${widget.stall}/stocks",
@@ -59,7 +61,7 @@ class _StockPageState extends State<StockPage> {
               return;
             }
 
-            await _futureInit();
+            await refresh();
             setState(() {});
           },
         ));
@@ -87,7 +89,7 @@ class _StockPageState extends State<StockPage> {
               return;
             }
 
-            await _futureInit();
+            await refresh();
             setState(() {});
           },
         ));
@@ -98,11 +100,11 @@ class _StockPageState extends State<StockPage> {
     super.dispose();
   }
 
-  Future<void> _futureInit() async {
-    await _lockInit.synchronized(() async {
-      List<DeepamStock> stocks = await FBL().getStocks(widget.stall);
-      List<DeepamSale> sales = await FBL().getSales(widget.stall);
+  Future<void> refresh() async {
+    List<DeepamStock> stocks = await FBL().getStocks(widget.stall);
+    List<DeepamSale> sales = await FBL().getSales(widget.stall);
 
+    setState(() {
       // reset the label variables
       _preparedLamps = 0;
       _unpreparedLamps = 0;
@@ -132,11 +134,6 @@ class _StockPageState extends State<StockPage> {
         _currentStock -= sale.count;
       });
     });
-  }
-
-  Future<void> refresh() async {
-    await _futureInit();
-    setState(() {});
   }
 
   void serveLamps(DeepamSale sale) {
@@ -170,7 +167,8 @@ class _StockPageState extends State<StockPage> {
     showStockAddDialog(context, widget.stall, StockCallbacks(add: callbackAdd));
   }
 
-  Widget _createMainWidget() {
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -242,23 +240,6 @@ class _StockPageState extends State<StockPage> {
         ],
       ),
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<void>(
-      future: _futureInit(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          return _createMainWidget();
-        }
-      },
-    );
+    ;
   }
 }

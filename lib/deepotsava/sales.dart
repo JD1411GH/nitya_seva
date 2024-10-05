@@ -21,11 +21,15 @@ class _SalesState extends State<Sales> {
   @override
   initState() {
     super.initState();
-
-    _refresh();
   }
 
   Future<void> _refresh() async {
+    if (mounted) {
+      await dashboardKey.currentState!.refresh();
+      await logKey.currentState!.refresh();
+      await stockPageKey.currentState!.refresh();
+    }
+
     setState(() {});
   }
 

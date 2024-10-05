@@ -70,62 +70,64 @@ class _DeepotsavaState extends State<Deepotsava>
         title: Text('Deepotsava'),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            SlideTransition(
-              position: _animationRKC,
-              child: GestureDetector(
-                onTap: _onRKCDeepamSalesTap,
-                child: CardWidget(
-                  image: 'assets/images/RKC.png',
-                  text: 'RKC Deepam Sales',
-                  isImageLeft: true,
-                  color: Colors.deepOrange, // Set desired card color
-                  textColor: Colors.white, // Set desired text color
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              SlideTransition(
+                position: _animationRKC,
+                child: GestureDetector(
+                  onTap: _onRKCDeepamSalesTap,
+                  child: CardWidget(
+                    image: 'assets/images/RKC.png',
+                    text: 'RKC Deepam Sales',
+                    isImageLeft: true,
+                    color: Colors.deepOrange, // Set desired card color
+                    textColor: Colors.white, // Set desired text color
+                  ),
                 ),
               ),
-            ),
-            SlideTransition(
-              position: _animationRRG,
-              child: GestureDetector(
-                onTap: _onRRGDeepamSalesTap,
-                child: CardWidget(
-                  image: 'assets/images/RRG.png',
-                  text: 'RRG Deepam Sales',
-                  isImageLeft: false,
-                  color: Colors.green, // Set desired card color
-                  textColor: Colors.black, // Set desired text color
+              SlideTransition(
+                position: _animationRRG,
+                child: GestureDetector(
+                  onTap: _onRRGDeepamSalesTap,
+                  child: CardWidget(
+                    image: 'assets/images/RRG.png',
+                    text: 'RRG Deepam Sales',
+                    isImageLeft: false,
+                    color: Colors.green, // Set desired card color
+                    textColor: Colors.black, // Set desired text color
+                  ),
                 ),
               ),
-            ),
-            SlideTransition(
-              position: _animationMaking,
-              child: GestureDetector(
-                onTap: _onDeepamMakingTap,
-                child: CardWidget(
-                  image: 'assets/images/deepotsava.jpg',
-                  text: 'Deepam Making',
-                  isImageLeft: true,
-                  color: Colors.blue, // Set desired card color
-                  textColor: Colors.yellow, // Set desired text color
+              SlideTransition(
+                position: _animationMaking,
+                child: GestureDetector(
+                  onTap: _onDeepamMakingTap,
+                  child: CardWidget(
+                    image: 'assets/images/deepotsava.jpg',
+                    text: 'Deepam Making',
+                    isImageLeft: true,
+                    color: Colors.blue, // Set desired card color
+                    textColor: Colors.yellow, // Set desired text color
+                  ),
                 ),
               ),
-            ),
-            SlideTransition(
-              position: _animationAccounting,
-              child: GestureDetector(
-                onTap: _onAccountingTap,
-                child: CardWidget(
-                  image: 'assets/images/icon_cash.png',
-                  text: 'Accounting',
-                  isImageLeft: false,
-                  color: Colors.yellow, // Set desired card color
-                  textColor: Colors.red, // Set desired text color
+              SlideTransition(
+                position: _animationAccounting,
+                child: GestureDetector(
+                  onTap: _onAccountingTap,
+                  child: CardWidget(
+                    image: 'assets/images/icon_cash.png',
+                    text: 'Accounting',
+                    isImageLeft: false,
+                    color: Colors.yellow, // Set desired card color
+                    textColor: Colors.red, // Set desired text color
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

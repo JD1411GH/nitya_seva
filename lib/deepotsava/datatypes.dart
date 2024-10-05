@@ -42,7 +42,8 @@ class DeepamSale {
   final DateTime timestamp;
   final String stall; // this will perhaps help during debugging
   final String user;
-  final int rate;
+  final int costLamp;
+  final int costPlate;
   final int count;
   final String paymentMode;
   final bool plate; // new parameter
@@ -51,7 +52,8 @@ class DeepamSale {
     required this.timestamp,
     required this.stall,
     required this.user,
-    required this.rate,
+    required this.costLamp,
+    required this.costPlate,
     required this.count,
     required this.paymentMode,
     required this.plate, // new parameter
@@ -62,7 +64,8 @@ class DeepamSale {
       timestamp: DateTime.parse(json['timestamp'] as String),
       stall: json['stall'] as String,
       user: json['user'] as String,
-      rate: json['rate'] as int,
+      costLamp: json['costLamp'] as int,
+      costPlate: json['costPlate'] as int,
       count: json['count'] as int,
       paymentMode: json['paymentMode'] as String,
       plate: json['plate'] as bool, // new parameter
@@ -74,7 +77,8 @@ class DeepamSale {
       'timestamp': timestamp.toIso8601String(),
       'stall': stall,
       'user': user,
-      'rate': rate,
+      'costLamp': costLamp,
+      'costPlate': costPlate,
       'count': count,
       'paymentMode': paymentMode,
       'plate': plate, // new parameter

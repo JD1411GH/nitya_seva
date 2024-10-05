@@ -22,6 +22,14 @@ class FBL {
 
     bool initialLoad = true;
 
+    // Check if the path exists
+    try {
+      await dbRef.get();
+    } catch (e) {
+      Toaster().error("Database path doesn't exist or no access");
+      return;
+    }
+
     dbRef.onChildAdded.listen((event) {
       if (!initialLoad) {
         callbacks.add(event.snapshot.value);

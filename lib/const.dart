@@ -47,6 +47,15 @@ class Const {
     },
   ];
 
+  Map<String, dynamic> deepotsava = {
+    'lamp': {
+      'cost': 5,
+    },
+    'plate': {
+      'cost': 10,
+    },
+  };
+
   // theme ticketColors
   final Color colorPrimary =
       ColorScheme.fromSeed(seedColor: const Color(0xFF3B4043)).primary;
