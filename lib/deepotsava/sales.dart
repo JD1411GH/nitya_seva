@@ -35,7 +35,7 @@ class _SalesState extends State<Sales> {
         height: 150.0,
         child: PageView(
           children: [
-            StockPage(stall: widget.stall),
+            StockPage(key: stockPageKey, stall: widget.stall),
             StatsPage(stall: widget.stall),
           ],
         ),
@@ -47,6 +47,7 @@ class _SalesState extends State<Sales> {
     if (mounted) {
       dashboardKey.currentState!.addLampsServed(sale);
       logKey.currentState!.addLog(sale);
+      stockPageKey.currentState!.serveLamps(sale);
     }
   }
 

@@ -14,6 +14,8 @@ class StockPage extends StatefulWidget {
   State<StockPage> createState() => _StockPageState();
 }
 
+GlobalKey<_StockPageState> stockPageKey = GlobalKey<_StockPageState>();
+
 class _StockPageState extends State<StockPage> {
   final _lockInit = Lock();
 
@@ -76,6 +78,12 @@ class _StockPageState extends State<StockPage> {
   Future<void> refresh() async {
     await _futureInit();
     setState(() {});
+  }
+
+  void serveLamps(DeepamSale sale) {
+    setState(() {
+      _currentStock -= sale.count;
+    });
   }
 
   void callbackAdd(DeepamStock stock, {bool localUpdate = false}) {
