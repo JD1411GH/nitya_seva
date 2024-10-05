@@ -391,6 +391,15 @@ class _ServeState extends State<Serve> {
       });
     }
 
+    // return if low stock
+    if (available < _totalLadduPacks) {
+      Toaster().error('Not enough stock');
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
     List<Map<String, int>> packsPushpanjali = [];
     List<Map<String, int>> packsOtherSeva = [];
     List<Map<String, int>> packsMisc = [];
