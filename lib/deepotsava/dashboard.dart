@@ -31,9 +31,8 @@ class _DashboardState extends State<Dashboard> {
 
     // subscribe for updates
     FBL().listenForChange(
-        "sales",
+        "deepotsava/${widget.stall}/sales",
         FBLCallbacks(
-
             // add
             add: (data) async {
           if (DateTime.now().difference(_localUpdateTime).inSeconds < 1) return;
@@ -54,22 +53,22 @@ class _DashboardState extends State<Dashboard> {
   Future<void> refresh() async {
     List<DeepamSale> sales = await FBL().getSales(widget.stall);
 
-    _lampsIssued = 0;
-    _platesIssued = 0;
-    _amountCollected = 0;
-    sales.forEach((sale) {
-      if (sale.count > 0) {
-        _lampsIssued += sale.count;
-        _amountCollected += (sale.count * sale.costLamp);
-      }
+    setState(() {
+      _lampsIssued = 0;
+      _platesIssued = 0;
+      _amountCollected = 0;
+      sales.forEach((sale) {
+        if (sale.count > 0) {
+          _lampsIssued += sale.count;
+          _amountCollected += (sale.count * sale.costLamp);
+        }
 
-      if (sale.plate) {
-        _platesIssued++;
-        _amountCollected += sale.costPlate;
-      }
+        if (sale.plate) {
+          _platesIssued++;
+          _amountCollected += sale.costPlate;
+        }
+      });
     });
-
-    setState(() {});
   }
 
   void addLampsServed(DeepamSale sale) {
