@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/deepotsava/availability.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/deepotsava/fbl.dart';
 import 'package:garuda/deepotsava/stock_dialog.dart';
@@ -97,7 +98,9 @@ class _StockPageState extends State<StockPage> {
   }
 
   Widget _createAvlBar() {
-    return Placeholder();
+    return Availability(
+      stall: widget.stall,
+    );
   }
 
   Widget _createMainWidget() {

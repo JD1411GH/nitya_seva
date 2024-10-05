@@ -134,7 +134,7 @@ class _AvailabilityBarState extends State<AvailabilityBar> {
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
               child: LinearProgressIndicator(
                 value: 100 / 100,
-                minHeight: 30, // Increased the height to 30
+                minHeight: 30,
                 color: Colors.grey,
               ),
             ),
@@ -142,8 +142,8 @@ class _AvailabilityBarState extends State<AvailabilityBar> {
               'Loading...',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 18.0, // Increase the font size as needed
-                fontWeight: FontWeight.bold, // Make the text bold
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ],
