@@ -14,9 +14,6 @@ class StockPage extends StatefulWidget {
   State<StockPage> createState() => _StockPageState();
 }
 
-// hint: templateKey.currentState!.refresh();
-final GlobalKey<_StockPageState> templateKey = GlobalKey<_StockPageState>();
-
 class _StockPageState extends State<StockPage> {
   final _lockInit = Lock();
 
@@ -85,9 +82,6 @@ class _StockPageState extends State<StockPage> {
       _wicks += stock.wicks;
       _gheePackets += stock.gheePackets;
       _oilCans += stock.oilCans;
-
-      availabilityKey.currentState!
-          .addStock(stock.preparedLamps + stock.unpreparedLamps);
     });
 
     // prevent double refresh from FB
@@ -134,7 +128,11 @@ class _StockPageState extends State<StockPage> {
                         child: SizedBox(
                             width: 50,
                             child: Availability(
-                                key: availabilityKey, stall: widget.stall))),
+                              stall: widget.stall,
+                              currentStock: 0,
+                              fullStock: _preparedLamps.toDouble() +
+                                  _unpreparedLamps.toDouble(),
+                            ))),
                     SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Text("Availability")),

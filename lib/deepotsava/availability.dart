@@ -3,38 +3,23 @@ import 'package:garuda/theme.dart';
 
 class Availability extends StatefulWidget {
   final String stall;
+  final double currentStock;
+  final double fullStock;
 
-  const Availability({super.key, required this.stall});
+  const Availability(
+      {super.key,
+      required this.stall,
+      required this.currentStock,
+      required this.fullStock});
 
   @override
   State<Availability> createState() => _AvailabilityState();
 }
 
-GlobalKey<_AvailabilityState> availabilityKey = GlobalKey<_AvailabilityState>();
-
 class _AvailabilityState extends State<Availability> {
-  double _currentStock = 0;
-  double _fullStock = 0;
-  double _barValue = 0;
-
   @override
   void initState() {
     super.initState();
-  }
-
-  void addStock(int stock) {
-    setState(() {
-      _fullStock += stock;
-      _currentStock += stock;
-
-      _barValue = 0.5;
-    });
-  }
-
-  void removeStock(int stock) {
-    setState(() {
-      _currentStock -= stock;
-    });
   }
 
   @override
@@ -61,16 +46,18 @@ class _AvailabilityState extends State<Availability> {
             child: RotatedBox(
               quarterTurns: -1,
               child: LinearProgressIndicator(
-                value: _barValue,
+                value: widget.currentStock / widget.fullStock,
                 backgroundColor: Colors.grey[200],
                 valueColor: AlwaysStoppedAnimation<Color>(themeColor),
               ),
             ),
           ),
           Text(
-            '${_currentStock.toInt()}',
+            '${widget.currentStock.toInt()}',
             style: TextStyle(
-              color: _barValue > 0.6 ? Colors.white : Colors.black,
+              color: (widget.currentStock / widget.fullStock) > 0.6
+                  ? Colors.white
+                  : Colors.black,
               fontWeight: FontWeight.bold,
               fontSize: 20.0,
             ),
