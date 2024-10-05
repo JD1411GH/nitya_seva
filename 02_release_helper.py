@@ -6,21 +6,19 @@ def main():
     repo = git.Repo('.')
     logs = repo.git.log('--pretty=%B')
 
+    print("get the version number")
+    branch_name = repo.active_branch.name
+    version_number = branch_name.lstrip('v')
+
     print("generate the changelog from git log")
     log_messages = logs.split('\n\n')
     filtered_log_messages = []
     for i, log_message in enumerate(log_messages):
         first_line = log_message.split('\n')[0]
         word_count = len(first_line.split())
-        if first_line.startswith("Merge pull request"):
-            break
-        if word_count <= 8 and not first_line.startswith("Refactor"):
+        if first_line.startswith("feature") or first_line.startswith("fix"):
             filtered_log_messages.append(log_message)
     log_messages = filtered_log_messages
-
-    print("get the version number")
-    branch_name = repo.active_branch.name
-    version_number = branch_name.lstrip('v')
 
     print("write changelog")
     with open('changelog.md', 'r') as file:
