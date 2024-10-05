@@ -105,15 +105,14 @@ class _StockPageState extends State<StockPage> {
   Widget _createMainWidget() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          // Text widgets inside a scrollable area
-          Expanded(
-            child: Row(
-              children: [
-                // text labels
-                SingleChildScrollView(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Text widgets inside a scrollable area
+              Expanded(
+                child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -126,51 +125,51 @@ class _StockPageState extends State<StockPage> {
                     ],
                   ),
                 ),
+              ),
 
-                Spacer(),
-
-                // availability bar
-                Column(
+              // Button row outside the scrollable area
+              Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(
-                        child: SizedBox(
-                            width: 50,
-                            child: Availability(
-                              stall: widget.stall,
-                              currentStock: _currentStock,
-                              fullStock: _preparedLamps.toDouble() +
-                                  _unpreparedLamps.toDouble(),
-                            ))),
-                    SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Text("Availability")),
+                    IconButton(
+                      icon: Icon(Icons.add),
+                      onPressed: () {
+                        _createAddStockPage(context);
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.edit),
+                      onPressed: null,
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.undo),
+                      onPressed: null,
+                    ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
 
-          // Button row outside the scrollable area
-          Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () {
-                    _createAddStockPage(context);
-                  },
-                ),
-                IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: null,
-                ),
-                IconButton(
-                  icon: Icon(Icons.undo),
-                  onPressed: null,
-                ),
-              ],
-            ),
+          Spacer(),
+
+          // availability bar
+          Column(
+            children: [
+              Expanded(
+                  child: SizedBox(
+                      width: 50,
+                      child: Availability(
+                        stall: widget.stall,
+                        currentStock: _currentStock,
+                        fullStock: _preparedLamps.toDouble() +
+                            _unpreparedLamps.toDouble(),
+                      ))),
+              SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Text("Availability")),
+            ],
           ),
         ],
       ),
