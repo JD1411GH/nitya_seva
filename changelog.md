@@ -1,5 +1,42 @@
 # 3.0.0
 - feature: stock availability bar
+- feature: stock availability bar
+- feature: add plate count
+- feature: in stock tile the info is made scrollable
+- feature: stock of plate count
+- feature: bar chart for payment mode
+- feature: log tiles
+- feature deepotsava: cuppernico button for hmi
+- feature deepotsava: autorefresh upon add stock
+- feature deepotsava: stock page add is now a page
+- fix deep: textfield border color
+- feature laddu: auto return
+- fix laddu: rename serve button to issue
+- fix laddu: serve dialog crash
+fix laddu: serve dialog crash
+- fix laddu: bar bottom alignment
+fix laddu: bar bottom alignment
+- feature laddu: bar chart instead of pie chart
+- fix laddu: last refresh check disabled
+- fix pushpanjali: delete slot name is displayed during confirm
+- fix laddu: incorrect number of tickets displayed
+- feature laddu: available packs displayed in serve log
+- feature laddu: collected slips displayed on serve log
+- feature laddu: ticket count displayed in serve log
+- feature: pressing serve will show the list of pushpanjali slots
+- feature: date header
+- feature: Deepotsava main page
+- fix: availability bar crash
+- fix: order of laddu distribution
+- fix: order of laddu distribution
+- fix: removed bar on multiple refresh
+- fix: discontinuous ticket numbers
+- fixes
+- fix delete dist
+- fix grand total persistence
+
+# 3.0.0
+- feature: stock availability bar
 - feature: stock of plate count
 - feature: log tiles
 - feature deepotsava: cupertino button for hmi
