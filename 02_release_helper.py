@@ -4,13 +4,14 @@ import sys
 
 def main():
     repo = git.Repo('.')
-    logs = repo.git.log('--pretty=%B')
+    
 
     print("get the version number")
     branch_name = repo.active_branch.name
     version_number = branch_name.lstrip('v')
 
     print("generate the changelog from git log")
+    logs = repo.git.log('--pretty=%B', f'{branch_name}..HEAD')
     log_messages = logs.split('\n\n')
     filtered_log_messages = []
     for i, log_message in enumerate(log_messages):

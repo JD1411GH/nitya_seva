@@ -1,4 +1,6 @@
 # 3.1.0
+
+# 3.1.0
 - fix deepotsava: main page made scrolable
 - fix deepotsava: payment mode refresh issue
 - fix deepotsava: plate selection without lamp auto selects cash as mode
