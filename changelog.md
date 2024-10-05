@@ -1,5 +1,6 @@
 # 3.1.0
 
+
 # 3.0.0
 - feature: stock availability bar
 - feature: stock of plate count
