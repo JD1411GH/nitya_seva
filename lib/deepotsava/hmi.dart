@@ -224,6 +224,10 @@ class _HMIState extends State<HMI> {
                 onTap: () {
                   setState(() {
                     _plateEnabled = !_plateEnabled;
+
+                    if (_plateEnabled && _selectedMode == "") {
+                      _selectedMode = "Cash";
+                    }
                   });
                 },
                 child: Container(
