@@ -85,6 +85,9 @@ class _StockPageState extends State<StockPage> {
       _wicks += stock.wicks;
       _gheePackets += stock.gheePackets;
       _oilCans += stock.oilCans;
+
+      availabilityKey.currentState!
+          .addStock(stock.preparedLamps + stock.unpreparedLamps);
     });
 
     // prevent double refresh from FB
@@ -95,12 +98,6 @@ class _StockPageState extends State<StockPage> {
 
   void _createAddStockPage(BuildContext context) {
     showStockAddDialog(context, widget.stall, StockCallbacks(add: callbackAdd));
-  }
-
-  Widget _createAvlBar() {
-    return Availability(
-      stall: widget.stall,
-    );
   }
 
   Widget _createMainWidget() {
@@ -134,7 +131,10 @@ class _StockPageState extends State<StockPage> {
                 Column(
                   children: [
                     Expanded(
-                        child: SizedBox(width: 50, child: _createAvlBar())),
+                        child: SizedBox(
+                            width: 50,
+                            child: Availability(
+                                key: availabilityKey, stall: widget.stall))),
                     SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Text("Availability")),

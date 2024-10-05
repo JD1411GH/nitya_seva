@@ -10,9 +10,12 @@ class Availability extends StatefulWidget {
   State<Availability> createState() => _AvailabilityState();
 }
 
+GlobalKey<_AvailabilityState> availabilityKey = GlobalKey<_AvailabilityState>();
+
 class _AvailabilityState extends State<Availability> {
   late double _currentStock;
   late double _fullStock;
+  double _barValue = 0;
 
   @override
   void initState() {
@@ -25,6 +28,8 @@ class _AvailabilityState extends State<Availability> {
     setState(() {
       _fullStock += stock;
       _currentStock += stock;
+
+      _barValue = 0.5;
     });
   }
 
@@ -32,22 +37,6 @@ class _AvailabilityState extends State<Availability> {
     setState(() {
       _currentStock -= stock;
     });
-  }
-
-  double _getValue() {
-    if (_fullStock == 0) {
-      return 0;
-    }
-
-    if (_currentStock < 0) {
-      return 0;
-    }
-
-    if (_currentStock > _fullStock) {
-      return 1;
-    }
-
-    return _currentStock / _fullStock;
   }
 
   @override
@@ -74,7 +63,7 @@ class _AvailabilityState extends State<Availability> {
             child: RotatedBox(
               quarterTurns: -1,
               child: LinearProgressIndicator(
-                value: _getValue(),
+                value: _barValue,
                 backgroundColor: Colors.grey[200],
                 valueColor: AlwaysStoppedAnimation<Color>(themeColor),
               ),
@@ -83,7 +72,7 @@ class _AvailabilityState extends State<Availability> {
           Text(
             '${_currentStock.toInt()}',
             style: TextStyle(
-              color: _getValue() > 0.6 ? Colors.white : Colors.black,
+              color: _barValue > 0.6 ? Colors.white : Colors.black,
               fontWeight: FontWeight.bold,
               fontSize: 20.0,
             ),
