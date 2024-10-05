@@ -57,6 +57,9 @@ class _StockPageState extends State<StockPage> {
   Future<void> _futureInit() async {
     await _lockInit.synchronized(() async {
       List<DeepamStock> stocks = await FBL().getStocks(widget.stall);
+      List<DeepamSale> sales = await FBL().getSales(widget.stall);
+
+      // reset the label variables
       _preparedLamps = 0;
       _unpreparedLamps = 0;
       _plates = 0;
@@ -64,13 +67,25 @@ class _StockPageState extends State<StockPage> {
       _gheePackets = 0;
       _oilCans = 0;
 
+      // reset the availability bar variables
+      _currentStock = 0;
+
       stocks.forEach((stock) {
+        // update the label variables
         _preparedLamps += stock.preparedLamps;
         _unpreparedLamps += stock.unpreparedLamps;
         _plates += stock.plates;
         _wicks += stock.wicks;
         _gheePackets += stock.gheePackets;
         _oilCans += stock.oilCans;
+
+        // update the availability bar variables
+        _currentStock += stock.preparedLamps + stock.unpreparedLamps;
+      });
+
+      // update the availability bar variables for sales
+      sales.forEach((sale) {
+        _currentStock -= sale.count;
       });
     });
   }
