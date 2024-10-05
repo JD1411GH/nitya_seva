@@ -28,11 +28,11 @@ class FBL {
       }
     });
 
-    // dbRef.onChildChanged.listen((event) {
-    //   if (!initialLoad) {
-    //     callbacks.onChange("UPDATE", event.snapshot.value);
-    //   }
-    // });
+    dbRef.onChildChanged.listen((event) {
+      if (!initialLoad) {
+        callbacks.edit();
+      }
+    });
 
     // dbRef.onChildRemoved.listen((event) {
     //   if (!initialLoad) {
@@ -141,10 +141,11 @@ class FBL {
 
 class FBLCallbacks {
   void Function(dynamic data) add;
-  // void Function(dynamic data) edit;
+  void Function() edit; // full refresh required on edit
   // void Function(dynamic data) delete;
 
   FBLCallbacks({
     required this.add,
+    required this.edit,
   });
 }

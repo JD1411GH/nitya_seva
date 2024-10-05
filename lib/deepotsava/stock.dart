@@ -36,17 +36,61 @@ class _StockPageState extends State<StockPage> {
   void initState() {
     super.initState();
 
-    FBL().listenForChange("deepotsava/${widget.stall}/stocks",
-        FBLCallbacks(add: (dynamic data) async {
-      // skip refresh if already updated locally
-      if (DateTime.now().difference(_localUpdateTime).inSeconds < 2) {
-        return;
-      }
+    // subscribe for updates on stocks
+    FBL().listenForChange(
+        "deepotsava/${widget.stall}/stocks",
+        FBLCallbacks(
+          // callback for adding a new stock
+          add: (dynamic data) async {
+            // skip refresh if already updated locally
+            if (DateTime.now().difference(_localUpdateTime).inSeconds < 1) {
+              return;
+            }
 
-      Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
-      DeepamStock stock = DeepamStock.fromJson(map);
-      callbackAdd(stock);
-    }));
+            Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
+            DeepamStock stock = DeepamStock.fromJson(map);
+            callbackAdd(stock);
+          },
+
+          // callback for editing a stock
+          edit: () async {
+            // skip refresh if already updated locally
+            if (DateTime.now().difference(_localUpdateTime).inSeconds < 1) {
+              return;
+            }
+
+            await _futureInit();
+            setState(() {});
+          },
+        ));
+
+    // subscribe for updates on sales
+    FBL().listenForChange(
+        "deepotsava/${widget.stall}/sales",
+        FBLCallbacks(
+          // callback for adding a new sale
+          add: (dynamic data) async {
+            // skip refresh if already updated locally
+            if (DateTime.now().difference(_localUpdateTime).inSeconds < 1) {
+              return;
+            }
+
+            Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
+            DeepamSale sale = DeepamSale.fromJson(map);
+            serveLamps(sale);
+          },
+
+          // callback for editing a sale
+          edit: () async {
+            // skip refresh if already updated locally
+            if (DateTime.now().difference(_localUpdateTime).inSeconds < 1) {
+              return;
+            }
+
+            await _futureInit();
+            setState(() {});
+          },
+        ));
   }
 
   @override
@@ -96,6 +140,7 @@ class _StockPageState extends State<StockPage> {
   }
 
   void serveLamps(DeepamSale sale) {
+    _localUpdateTime = DateTime.now();
     setState(() {
       _currentStock -= sale.count;
     });
