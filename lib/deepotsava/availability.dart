@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/theme.dart';
 
-class Availability extends StatefulWidget {
+class Availability extends StatelessWidget {
   final String stall;
   final double currentStock;
   final double fullStock;
@@ -13,24 +13,23 @@ class Availability extends StatefulWidget {
       required this.fullStock});
 
   @override
-  State<Availability> createState() => _AvailabilityState();
-}
-
-class _AvailabilityState extends State<Availability> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     Color themeColor;
-    if (widget.stall == 'RRG') {
+    if (stall == 'RRG') {
       themeColor = primaryColorRRG;
-    } else if (widget.stall == 'RKC') {
+    } else if (stall == 'RKC') {
       themeColor = primaryColorRKC;
     } else {
       themeColor = Colors.transparent;
+    }
+
+    double barValue = 0;
+    if (fullStock == 0 || currentStock < 0) {
+      barValue = 0;
+    } else if (currentStock > fullStock) {
+      barValue = 1;
+    } else {
+      barValue = currentStock / fullStock;
     }
 
     return Center(
@@ -46,18 +45,16 @@ class _AvailabilityState extends State<Availability> {
             child: RotatedBox(
               quarterTurns: -1,
               child: LinearProgressIndicator(
-                value: widget.currentStock / widget.fullStock,
+                value: barValue,
                 backgroundColor: Colors.grey[200],
                 valueColor: AlwaysStoppedAnimation<Color>(themeColor),
               ),
             ),
           ),
           Text(
-            '${widget.currentStock.toInt()}',
+            '${currentStock.toInt()}',
             style: TextStyle(
-              color: (widget.currentStock / widget.fullStock) > 0.6
-                  ? Colors.white
-                  : Colors.black,
+              color: (barValue) > 0.6 ? Colors.white : Colors.black,
               fontWeight: FontWeight.bold,
               fontSize: 20.0,
             ),

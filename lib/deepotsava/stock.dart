@@ -17,12 +17,16 @@ class StockPage extends StatefulWidget {
 class _StockPageState extends State<StockPage> {
   final _lockInit = Lock();
 
+  // initializing the label variables
   int _preparedLamps = 0;
   int _unpreparedLamps = 0;
   int _plates = 0;
   int _wicks = 0;
   int _gheePackets = 0;
   int _oilCans = 0;
+
+  // initializing the availability bar variables
+  double _currentStock = 0;
 
   DateTime _localUpdateTime = DateTime.now();
 
@@ -76,12 +80,16 @@ class _StockPageState extends State<StockPage> {
 
   void callbackAdd(DeepamStock stock, {bool localUpdate = false}) {
     setState(() {
+      // update the label variables
       _preparedLamps += stock.preparedLamps;
       _unpreparedLamps += stock.unpreparedLamps;
       _plates += stock.plates;
       _wicks += stock.wicks;
       _gheePackets += stock.gheePackets;
       _oilCans += stock.oilCans;
+
+      // update the availability bar variables
+      _currentStock += stock.preparedLamps + stock.unpreparedLamps;
     });
 
     // prevent double refresh from FB
@@ -129,7 +137,7 @@ class _StockPageState extends State<StockPage> {
                             width: 50,
                             child: Availability(
                               stall: widget.stall,
-                              currentStock: 0,
+                              currentStock: _currentStock,
                               fullStock: _preparedLamps.toDouble() +
                                   _unpreparedLamps.toDouble(),
                             ))),
