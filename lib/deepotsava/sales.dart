@@ -26,6 +26,12 @@ class _SalesState extends State<Sales> {
   }
 
   Future<void> _refresh() async {
+    if (mounted) {
+      await dashboardKey.currentState?.refresh();
+      await logKey.currentState?.refresh();
+      await stockPageKey.currentState?.refresh();
+    }
+
     setState(() {});
   }
 

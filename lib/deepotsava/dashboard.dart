@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
+import 'package:garuda/deepotsava/fbl.dart';
 import 'package:synchronized/synchronized.dart';
 
 class Dashboard extends StatefulWidget {
@@ -15,18 +16,59 @@ class Dashboard extends StatefulWidget {
 final GlobalKey<_DashboardState> dashboardKey = GlobalKey<_DashboardState>();
 
 class _DashboardState extends State<Dashboard> {
-  final _lockInit = Lock();
   int _lampsIssued = 0;
   int _platesIssued = 0;
   int _amountCollected = 0;
   Map<String, int> _modeCount = {};
 
+  DateTime _localUpdateTime = DateTime.now();
+
   @override
   void initState() {
     super.initState();
+
+    refresh();
+
+    // subscribe for updates
+    FBL().listenForChange(
+        "sales",
+        FBLCallbacks(
+
+            // add
+            add: (data) async {
+          if (DateTime.now().difference(_localUpdateTime).inSeconds < 1) return;
+
+          Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
+          DeepamSale sale = DeepamSale.fromJson(map);
+          addLampsServed(sale);
+        },
+
+            // edit
+            edit: () async {
+          if (DateTime.now().difference(_localUpdateTime).inSeconds < 1) return;
+
+          refresh();
+        }));
   }
 
   Future<void> refresh() async {
+    List<DeepamSale> sales = await FBL().getSales(widget.stall);
+
+    _lampsIssued = 0;
+    _platesIssued = 0;
+    _amountCollected = 0;
+    sales.forEach((sale) {
+      if (sale.count > 0) {
+        _lampsIssued += sale.count;
+        _amountCollected += (sale.count * sale.costLamp);
+      }
+
+      if (sale.plate) {
+        _platesIssued++;
+        _amountCollected += sale.costPlate;
+      }
+    });
+
     setState(() {});
   }
 
@@ -48,6 +90,8 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Widget _createLampCount(double height) {
+    _localUpdateTime = DateTime.now();
+
     return Container(
       height: height,
       width: height,
