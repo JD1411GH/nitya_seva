@@ -129,8 +129,9 @@ class _LadduSevaState extends State<LadduMain> {
       List<LadduServe> serves = await FB().readLadduServes(session);
 
       // check if last serve is more than 2 days old
-      if (serves.last.timestamp
-          .isBefore(DateTime.now().subtract(Duration(days: 2)))) {
+      if (serves.isNotEmpty &&
+          serves.last.timestamp
+              .isBefore(DateTime.now().subtract(Duration(days: 2)))) {
         // totatl stock
         List<LadduStock> stocks = await FB().readLadduStocks(session);
         stocks.sort((a, b) => a.timestamp.compareTo(b.timestamp));

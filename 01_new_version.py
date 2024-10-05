@@ -97,7 +97,7 @@ def main():
 
     # dart fix
     try:
-        subprocess.check_output(["dart", "fix", "--apply", "auto"])
+        subprocess.check_output(["dart", "fix", "--apply"])
         print("Dart fix completed")
     except subprocess.CalledProcessError:
         print("Failed to run dart fix")

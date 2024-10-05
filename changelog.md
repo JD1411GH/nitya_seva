@@ -1,3 +1,23 @@
+# 3.0.0
+- feature: stock availability bar
+- feature: stock of plate count
+- feature: log tiles
+- feature deepotsava: cupertino button for hmi
+- feature deepotsava: autorefresh upon add stock
+- feature laddu: auto return
+- fix laddu: rename serve button to issue
+- fix laddu: serve dialog crash
+- fix laddu: bar bottom alignment
+- feature laddu: bar chart instead of pie chart
+- fix laddu: last refresh check disabled
+- fix pushpanjali: delete slot name is displayed during confirm
+- fix laddu: incorrect number of tickets displayed
+- feature: pressing serve will show the list of pushpanjali slots
+- feature: date header
+- fix: availability bar crash
+- fix: order of laddu distribution
+- fix: discontinuous ticket numbers
+
 # 2.3.5
 - fix laddu: check stock availability while serve
 

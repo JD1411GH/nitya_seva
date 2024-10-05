@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:synchronized/synchronized.dart';
 
-class Pushpanjali extends StatefulWidget {
-  const Pushpanjali({super.key});
+class StatsPage extends StatefulWidget {
+  final String stall;
+  const StatsPage({super.key, required this.stall});
 
   @override
-  State<Pushpanjali> createState() => _PushpanjaliState();
+  State<StatsPage> createState() => _StatsPageState();
 }
 
 // hint: templateKey.currentState!.refresh();
-final GlobalKey<_PushpanjaliState> templateKey = GlobalKey<_PushpanjaliState>();
+final GlobalKey<_StatsPageState> templateKey = GlobalKey<_StatsPageState>();
 
-class _PushpanjaliState extends State<Pushpanjali> {
+class _StatsPageState extends State<StatsPage> {
   final _lockInit = Lock();
 
   Future<void> _futureInit() async {
