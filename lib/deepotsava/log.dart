@@ -25,12 +25,13 @@ class _LogState extends State<Log> {
 
   void addLog(DeepamSale sale) {
     setState(() {
-      cardValues.add(sale);
+      cardValues.insert(0, sale);
     });
   }
 
   Future<void> refresh() async {
     cardValues = await FBL().getSales(widget.stall);
+    cardValues.sort((a, b) => b.timestamp.compareTo(a.timestamp));
     setState(() {});
   }
 

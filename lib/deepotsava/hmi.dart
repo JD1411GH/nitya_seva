@@ -83,7 +83,7 @@ class _HMIState extends State<HMI> {
         });
       },
       onLongPress: () {
-        _addSale(num);
+        _addSale(num, mode);
       },
     );
   }
@@ -157,13 +157,13 @@ class _HMIState extends State<HMI> {
     );
   }
 
-  void _addSale(int count) {
+  void _addSale(int count, mode) {
     DeepamSale sale = DeepamSale(
       timestamp: DateTime.now(),
       stall: widget.stall,
       count: count,
       rate: 0, // TODO: get rate from somewhere
-      paymentMode: _selectedMode,
+      paymentMode: mode,
       user: _user,
       plate: _plateEnabled,
     );
@@ -266,7 +266,7 @@ class _HMIState extends State<HMI> {
                   minimumSize: Size(40, 40), // Small size
                 ),
                 onPressed: () {
-                  _addSale(_cupertinoController.selectedItem);
+                  _addSale(_cupertinoController.selectedItem, _selectedMode);
                 },
               )
             ],
