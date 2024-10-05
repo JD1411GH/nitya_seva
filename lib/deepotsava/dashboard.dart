@@ -57,6 +57,7 @@ class _DashboardState extends State<Dashboard> {
       _lampsIssued = 0;
       _platesIssued = 0;
       _amountCollected = 0;
+      _modeCount = {};
       sales.forEach((sale) {
         if (sale.count > 0) {
           _lampsIssued += sale.count;
@@ -66,6 +67,12 @@ class _DashboardState extends State<Dashboard> {
         if (sale.plate) {
           _platesIssued++;
           _amountCollected += sale.costPlate;
+        }
+
+        if (_modeCount.containsKey(sale.paymentMode)) {
+          _modeCount[sale.paymentMode] = _modeCount[sale.paymentMode]! + 1;
+        } else {
+          _modeCount[sale.paymentMode] = 1;
         }
       });
     });
