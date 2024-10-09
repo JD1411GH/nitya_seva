@@ -37,24 +37,20 @@ class Availability extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           Container(
-            width: 50,
-            height: 200,
+            // width: 50,
+            height: 50,
             decoration: BoxDecoration(
               border: Border.all(color: Colors.black),
             ),
-            child: RotatedBox(
-              quarterTurns: -1,
-              child: LinearProgressIndicator(
-                value: barValue,
-                backgroundColor: Colors.grey[200],
-                valueColor: AlwaysStoppedAnimation<Color>(themeColor),
-              ),
+            child: LinearProgressIndicator(
+              value: barValue,
+              backgroundColor: Colors.grey[200],
+              valueColor: AlwaysStoppedAnimation<Color>(themeColor),
             ),
           ),
           Text(
-            '${currentStock.toInt()}',
+            'Available: ${currentStock.toInt()}',
             style: TextStyle(
-              color: (barValue) > 0.6 ? Colors.white : Colors.black,
               fontWeight: FontWeight.bold,
               fontSize: 20.0,
             ),

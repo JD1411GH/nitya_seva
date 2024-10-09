@@ -5,18 +5,16 @@ import 'package:garuda/deepotsava/fbl.dart';
 import 'package:garuda/deepotsava/stock_dialog.dart';
 import 'package:synchronized/synchronized.dart';
 
-class StockPage extends StatefulWidget {
+class StockBar extends StatefulWidget {
   final String stall;
 
-  const StockPage({super.key, required this.stall});
+  const StockBar({super.key, required this.stall});
 
   @override
-  State<StockPage> createState() => _StockPageState();
+  State<StockBar> createState() => _StockPageState();
 }
 
-GlobalKey<_StockPageState> stockPageKey = GlobalKey<_StockPageState>();
-
-class _StockPageState extends State<StockPage> {
+class _StockPageState extends State<StockBar> {
   final _lockInit = Lock();
 
   // initializing the label variables
@@ -163,83 +161,27 @@ class _StockPageState extends State<StockPage> {
     }
   }
 
-  void _createAddStockPage(BuildContext context) {
-    showStockAddDialog(context, widget.stall, StockCallbacks(add: callbackAdd));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Text widgets inside a scrollable area
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Prepared lamps: $_preparedLamps'),
-                      Text('Unprepared lamps: $_unpreparedLamps'),
-                      Text('Plates: $_plates'),
-                      Text('Wicks: $_wicks'),
-                      Text('Ghee packets: $_gheePackets'),
-                      Text('Oil cans: $_oilCans'),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Button row outside the scrollable area
-              Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.add),
-                      onPressed: () {
-                        _createAddStockPage(context);
-                      },
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.edit),
-                      onPressed: null,
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.undo),
-                      onPressed: null,
-                    ),
-                  ],
-                ),
-              ),
-            ],
+          Expanded(
+              child: Availability(
+                  stall: widget.stall, currentStock: 60, fullStock: 100)),
+          ElevatedButton(
+            onPressed: () {
+              // Add your onPressed code here!
+            },
+            style: ElevatedButton.styleFrom(
+              shape: CircleBorder(),
+              padding: EdgeInsets.all(10),
+            ),
+            child: Icon(Icons.add),
           ),
-
-          Spacer(),
-
-          // availability bar
-          // Column(
-          //   children: [
-          //     Expanded(
-          //         child: SizedBox(
-          //             width: 50,
-          //             child: Availability(
-          //               stall: widget.stall,
-          //               currentStock: _currentStock,
-          //               fullStock: _preparedLamps.toDouble() +
-          //                   _unpreparedLamps.toDouble(),
-          //             ))),
-          //     SingleChildScrollView(
-          //         scrollDirection: Axis.horizontal,
-          //         child: Text("Availability")),
-          //   ],
-          // ),
         ],
       ),
     );
-    ;
   }
 }

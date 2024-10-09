@@ -6,6 +6,7 @@ import 'package:garuda/deepotsava/stats.dart';
 import 'package:garuda/deepotsava/stock.dart';
 import 'package:garuda/deepotsava/hmi.dart';
 import 'package:garuda/deepotsava/dashboard.dart';
+import 'package:garuda/deepotsava/stock_bar.dart';
 import 'package:garuda/theme.dart';
 
 class Sales extends StatefulWidget {
@@ -81,6 +82,7 @@ class _SalesState extends State<Sales> {
           child: ListView(
             children: [
               DateHeader(),
+              StockBar(stall: widget.stall),
               _createCardPage(),
               Dashboard(key: dashboardKey, stall: widget.stall),
               HMI(
