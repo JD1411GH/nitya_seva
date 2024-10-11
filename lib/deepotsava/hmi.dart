@@ -183,12 +183,74 @@ class _HMIState extends State<HMI> {
     return Card(
       child: Container(
         constraints:
-            BoxConstraints(minHeight: 350), // Define minimum height here
+            BoxConstraints(minHeight: 320), // Define minimum height here
         child: Stack(
           children: [
+            Align(
+              alignment: Alignment.center,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Plate toggle
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _plateEnabled = !_plateEnabled;
+
+                        if (_plateEnabled && _selectedMode == "") {
+                          _selectedMode = "Cash";
+                        }
+                      });
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(4.0),
+                      decoration: BoxDecoration(
+                        color: _plateEnabled
+                            ? (widget.stall == "RRG"
+                                ? primaryColorRRG
+                                : primaryColorRKC)
+                            : Colors.transparent,
+                        border: Border.all(color: Colors.black),
+                        borderRadius:
+                            BorderRadius.circular(8.0), // Rounded border
+                      ),
+                      child: Text(
+                        'Plate',
+                        style: TextStyle(
+                          color: _plateEnabled
+                              ? Colors.white
+                              : Theme.of(context).textTheme.bodySmall!.color,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // count field
+                  SizedBox(
+                    width: 80,
+                    height: 60,
+                    child: _createCupertino(),
+                  ),
+
+                  // Add padding between the picker and the button
+                  SizedBox(height: 16), // Adjust the height as needed
+
+                  // serve button
+                  IconButton(
+                    icon: Icon(Icons.send),
+                    iconSize: 24.0, // Adjust the size as needed
+                    onPressed: () {
+                      _addSale(
+                          _cupertinoController.selectedItem, _selectedMode);
+                    },
+                  )
+                ],
+              ),
+            ),
+
             // UPI corner
             Positioned(
-              top: 100,
+              top: 70,
               left: 10,
               child: _createPaymentWidget("UPI"),
             ),
@@ -202,7 +264,7 @@ class _HMIState extends State<HMI> {
 
             // Card corner
             Positioned(
-              top: 100,
+              top: 70,
               right: 10,
               child: _createPaymentWidget("Card"),
             ),
