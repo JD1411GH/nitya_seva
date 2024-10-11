@@ -48,7 +48,9 @@ class Availability extends StatelessWidget {
             child: LinearProgressIndicator(
               value: barValue,
               backgroundColor: Colors.grey[200],
-              valueColor: AlwaysStoppedAnimation<Color>(themeColor),
+              valueColor: AlwaysStoppedAnimation<Color>(barValue > 0.5
+                  ? Colors.lightGreen
+                  : (barValue > 0.25 ? Colors.orange : Colors.red)),
             ),
           ),
           Text(

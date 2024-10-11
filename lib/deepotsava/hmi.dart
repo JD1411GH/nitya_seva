@@ -169,6 +169,7 @@ class _HMIState extends State<HMI> {
       plate: _plateEnabled,
     );
 
+    // update all dependent widgets
     widget.callbacks.add(sale);
 
     // update FB asynchronously

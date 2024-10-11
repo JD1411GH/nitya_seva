@@ -13,7 +13,7 @@ class StockPageOld extends StatefulWidget {
   State<StockPageOld> createState() => _StockPageState();
 }
 
-GlobalKey<_StockPageState> stockPageKey = GlobalKey<_StockPageState>();
+GlobalKey<_StockPageState> stockPageOldKey = GlobalKey<_StockPageState>();
 
 class _StockPageState extends State<StockPageOld> {
   final _lockInit = Lock();

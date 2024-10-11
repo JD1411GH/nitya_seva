@@ -3,7 +3,6 @@ import 'package:garuda/deepotsava/availability.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/deepotsava/fbl.dart';
 import 'package:garuda/deepotsava/stock_page.dart';
-import 'package:synchronized/synchronized.dart';
 
 class StockBar extends StatefulWidget {
   final String stall;
@@ -11,12 +10,12 @@ class StockBar extends StatefulWidget {
   const StockBar({super.key, required this.stall});
 
   @override
-  State<StockBar> createState() => _StockPageState();
+  State<StockBar> createState() => _StockBarState();
 }
 
-class _StockPageState extends State<StockBar> {
-  final _lockInit = Lock();
+GlobalKey<_StockBarState> stockBarKey = GlobalKey<_StockBarState>();
 
+class _StockBarState extends State<StockBar> {
   // initializing the label variables
   int _preparedLamps = 0;
   int _unpreparedLamps = 0;
@@ -45,7 +44,7 @@ class _StockPageState extends State<StockBar> {
 
             Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
             DeepamStock stock = DeepamStock.fromJson(map);
-            callbackAdd(stock);
+            callbackAdd(stock, localUpdate: false);
           },
 
           // callback for editing a stock
@@ -73,7 +72,7 @@ class _StockPageState extends State<StockBar> {
 
             Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
             DeepamSale sale = DeepamSale.fromJson(map);
-            serveLamps(sale);
+            serveLamps(sale, localUpdate: false);
           },
 
           // callback for editing a sale
@@ -122,11 +121,14 @@ class _StockPageState extends State<StockBar> {
     });
   }
 
-  void serveLamps(DeepamSale sale) {
-    _localUpdateTime = DateTime.now();
+  void serveLamps(DeepamSale sale, {bool localUpdate = false}) {
     setState(() {
       _currentStock -= sale.count;
     });
+
+    if (localUpdate) {
+      _localUpdateTime = DateTime.now();
+    }
   }
 
   void callbackAdd(DeepamStock stock, {bool localUpdate = false}) {

@@ -28,7 +28,7 @@ class _SalesState extends State<Sales> {
     if (mounted) {
       await dashboardKey.currentState!.refresh();
       await logKey.currentState!.refresh();
-      await stockPageKey.currentState!.refresh();
+      await stockPageOldKey.currentState!.refresh();
     }
 
     setState(() {});
@@ -40,7 +40,7 @@ class _SalesState extends State<Sales> {
         height: 150.0,
         child: PageView(
           children: [
-            StockPageOld(key: stockPageKey, stall: widget.stall),
+            StockPageOld(key: stockPageOldKey, stall: widget.stall),
             StatsPage(stall: widget.stall),
           ],
         ),
@@ -52,7 +52,7 @@ class _SalesState extends State<Sales> {
     if (mounted) {
       dashboardKey.currentState!.addLampsServed(sale);
       logKey.currentState!.addLog(sale);
-      stockPageKey.currentState!.serveLamps(sale);
+      stockBarKey.currentState!.serveLamps(sale, localUpdate: true);
     }
   }
 
@@ -82,7 +82,7 @@ class _SalesState extends State<Sales> {
           child: ListView(
             children: [
               DateHeader(),
-              StockBar(stall: widget.stall),
+              StockBar(key: stockBarKey, stall: widget.stall),
               _createCardPage(),
               Dashboard(key: dashboardKey, stall: widget.stall),
               HMI(
