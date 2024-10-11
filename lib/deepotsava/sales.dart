@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/deepotsava/date_header.dart';
 import 'package:garuda/deepotsava/log.dart';
-import 'package:garuda/deepotsava/stock.dart';
 import 'package:garuda/deepotsava/hmi.dart';
 import 'package:garuda/deepotsava/dashboard.dart';
 import 'package:garuda/deepotsava/stock_bar.dart';
@@ -27,7 +26,7 @@ class _SalesState extends State<Sales> {
     if (mounted) {
       await dashboardKey.currentState!.refresh();
       await logKey.currentState!.refresh();
-      await stockPageOldKey.currentState!.refresh();
+      await stockBarKey.currentState!.refresh();
     }
 
     setState(() {});
