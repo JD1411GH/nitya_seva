@@ -110,11 +110,7 @@ class _HMIState extends State<HMI> {
                     _selectedMode = mode;
                   });
                 },
-                child: Container(
-                  width: 60, // Set the fixed width here
-                  alignment: Alignment.center,
-                  child: Text(mode),
-                ),
+                child: Container(width: 50, child: Center(child: Text(mode))),
               ),
               _createAmountButton(1, mode),
               _createAmountButton(2, mode),
