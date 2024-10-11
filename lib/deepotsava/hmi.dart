@@ -54,24 +54,42 @@ class _HMIState extends State<HMI> {
   }
 
   Widget _createAmountButton(int num, String mode) {
-    return GestureDetector(
-      child: Text(
-        '$num',
-      ),
-      onTap: () {
-        setState(() {
-          _selectedAmount = num;
-          _selectedMode = mode;
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: GestureDetector(
+        child: Container(
+          decoration: BoxDecoration(
+              border: Border.all(color: Colors.black), // Add border here
+              borderRadius:
+                  BorderRadius.circular(8.0), // Make the border rounded
+              color: _selectedAmount == num && _selectedMode == mode
+                  ? _themeColor
+                  : Colors.transparent),
+          padding: EdgeInsets.all(8.0), // Add padding inside the border
+          child: Text(
+            '$num',
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: _selectedAmount == num && _selectedMode == mode
+                    ? Colors.white
+                    : _textColor),
+          ),
+        ),
+        onTap: () {
+          setState(() {
+            _selectedAmount = num;
+            _selectedMode = mode;
 
-          // change cupertino
-          // TODO: enable the code below
-          // int currentValue = _cupertinoController.selectedItem;
-          // _cupertinoController.jumpToItem(currentValue + num);
-        });
-      },
-      onLongPress: () {
-        _addSale(num, mode);
-      },
+            // change cupertino
+            // TODO: enable the code below
+            // int currentValue = _cupertinoController.selectedItem;
+            // _cupertinoController.jumpToItem(currentValue + num);
+          });
+        },
+        onLongPress: () {
+          _addSale(num, mode);
+        },
+      ),
     );
   }
 
