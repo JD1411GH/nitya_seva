@@ -122,9 +122,11 @@ class _StockBarState extends State<StockBar> {
   }
 
   void serveLamps(DeepamSale sale, {bool localUpdate = false}) {
-    setState(() {
-      _currentStock -= sale.count;
-    });
+    if (mounted) {
+      setState(() {
+        _currentStock -= sale.count;
+      });
+    }
 
     if (localUpdate) {
       _localUpdateTime = DateTime.now();
