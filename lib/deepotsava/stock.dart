@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:garuda/deepotsava/availability.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/deepotsava/fbl.dart';
 import 'package:garuda/deepotsava/stock_dialog.dart';
 import 'package:synchronized/synchronized.dart';
 
-class StockPage extends StatefulWidget {
+class StockPageOld extends StatefulWidget {
   final String stall;
 
-  const StockPage({super.key, required this.stall});
+  const StockPageOld({super.key, required this.stall});
 
   @override
-  State<StockPage> createState() => _StockPageState();
+  State<StockPageOld> createState() => _StockPageState();
 }
 
 GlobalKey<_StockPageState> stockPageKey = GlobalKey<_StockPageState>();
 
-class _StockPageState extends State<StockPage> {
+class _StockPageState extends State<StockPageOld> {
   final _lockInit = Lock();
 
   // initializing the label variables

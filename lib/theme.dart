@@ -12,12 +12,15 @@ ThemeData themeDefault = ThemeData(
   textTheme: TextTheme(
     bodySmall: TextStyle(
       color: Colors.black,
+      fontSize: 12.0,
     ),
     bodyMedium: TextStyle(
       color: Colors.black,
+      fontSize: 16.0,
     ),
     bodyLarge: TextStyle(
       color: Colors.black,
+      fontSize: 20.0,
     ),
     headlineMedium: TextStyle(
       fontSize: 24.0,
@@ -37,7 +40,7 @@ ThemeData themeDefault = ThemeData(
   appBarTheme: AppBarTheme(
     foregroundColor: Colors.white,
     titleTextStyle: TextStyle(
-      fontSize: 24.0,
+      fontSize: 30.0,
       color: Colors.white,
       fontFamily: 'HowdyLemon',
     ),

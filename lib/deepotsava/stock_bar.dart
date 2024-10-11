@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/availability.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/deepotsava/fbl.dart';
-import 'package:garuda/deepotsava/stock_dialog.dart';
+import 'package:garuda/deepotsava/stock_page.dart';
 import 'package:synchronized/synchronized.dart';
 
 class StockBar extends StatefulWidget {
@@ -172,13 +172,18 @@ class _StockPageState extends State<StockBar> {
                   stall: widget.stall, currentStock: 60, fullStock: 100)),
           ElevatedButton(
             onPressed: () {
-              // Add your onPressed code here!
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => StockPage(
+                            stall: widget.stall,
+                          )));
             },
             style: ElevatedButton.styleFrom(
               shape: CircleBorder(),
               padding: EdgeInsets.all(10),
             ),
-            child: Icon(Icons.add),
+            child: Icon(Icons.app_registration),
           ),
         ],
       ),
