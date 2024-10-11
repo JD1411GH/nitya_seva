@@ -20,10 +20,6 @@ class _StockPageState extends State<StockBar> {
   // initializing the label variables
   int _preparedLamps = 0;
   int _unpreparedLamps = 0;
-  int _plates = 0;
-  int _wicks = 0;
-  int _gheePackets = 0;
-  int _oilCans = 0;
 
   // initializing the availability bar variables
   double _currentStock = 0;
@@ -106,10 +102,6 @@ class _StockPageState extends State<StockBar> {
       // reset the label variables
       _preparedLamps = 0;
       _unpreparedLamps = 0;
-      _plates = 0;
-      _wicks = 0;
-      _gheePackets = 0;
-      _oilCans = 0;
 
       // reset the availability bar variables
       _currentStock = 0;
@@ -118,10 +110,6 @@ class _StockPageState extends State<StockBar> {
         // update the label variables
         _preparedLamps += stock.preparedLamps;
         _unpreparedLamps += stock.unpreparedLamps;
-        _plates += stock.plates;
-        _wicks += stock.wicks;
-        _gheePackets += stock.gheePackets;
-        _oilCans += stock.oilCans;
 
         // update the availability bar variables
         _currentStock += stock.preparedLamps + stock.unpreparedLamps;
@@ -146,13 +134,9 @@ class _StockPageState extends State<StockBar> {
       // update the label variables
       _preparedLamps += stock.preparedLamps;
       _unpreparedLamps += stock.unpreparedLamps;
-      _plates += stock.plates;
-      _wicks += stock.wicks;
-      _gheePackets += stock.gheePackets;
-      _oilCans += stock.oilCans;
 
       // update the availability bar variables
-      _currentStock += stock.preparedLamps + stock.unpreparedLamps;
+      _currentStock += (stock.preparedLamps + stock.unpreparedLamps);
     });
 
     // prevent double refresh from FB
@@ -168,23 +152,35 @@ class _StockPageState extends State<StockBar> {
       child: Row(
         children: [
           Expanded(
-              child: Availability(
-                  stall: widget.stall, currentStock: 60, fullStock: 100)),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => StockPage(
-                            stall: widget.stall,
-                          )));
-            },
-            style: ElevatedButton.styleFrom(
-              shape: CircleBorder(),
-              padding: EdgeInsets.all(10),
-            ),
-            child: Icon(Icons.app_registration),
-          ),
+              child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => StockPage(
+                                  stall: widget.stall,
+                                )));
+                  },
+                  child: Availability(
+                      stall: widget.stall,
+                      currentStock: _currentStock,
+                      fullStock:
+                          (_preparedLamps + _unpreparedLamps).toDouble()))),
+          // ElevatedButton(
+          //   onPressed: () {
+          //     Navigator.push(
+          //         context,
+          //         MaterialPageRoute(
+          //             builder: (context) => StockPage(
+          //                   stall: widget.stall,
+          //                 )));
+          //   },
+          //   style: ElevatedButton.styleFrom(
+          //     shape: CircleBorder(),
+          //     padding: EdgeInsets.all(10),
+          //   ),
+          //   child: Icon(Icons.app_registration),
+          // ),
         ],
       ),
     );
