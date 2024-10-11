@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/deepotsava/date_header.dart';
 import 'package:garuda/deepotsava/log.dart';
-import 'package:garuda/deepotsava/stats.dart';
 import 'package:garuda/deepotsava/stock.dart';
 import 'package:garuda/deepotsava/hmi.dart';
 import 'package:garuda/deepotsava/dashboard.dart';
@@ -32,20 +31,6 @@ class _SalesState extends State<Sales> {
     }
 
     setState(() {});
-  }
-
-  Widget _createCardPage() {
-    return Card(
-      child: SizedBox(
-        height: 150.0,
-        child: PageView(
-          children: [
-            StockPageOld(key: stockPageOldKey, stall: widget.stall),
-            StatsPage(stall: widget.stall),
-          ],
-        ),
-      ),
-    );
   }
 
   Future<void> serveLamps(DeepamSale sale) async {
@@ -83,7 +68,6 @@ class _SalesState extends State<Sales> {
             children: [
               DateHeader(),
               StockBar(key: stockBarKey, stall: widget.stall),
-              _createCardPage(),
               Dashboard(key: dashboardKey, stall: widget.stall),
               HMI(
                   stall: widget.stall,
