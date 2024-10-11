@@ -54,103 +54,62 @@ class _HMIState extends State<HMI> {
   }
 
   Widget _createAmountButton(int num, String mode) {
-    return Padding(
-      padding: const EdgeInsets.all(2.0),
-      child: GestureDetector(
-        child: Container(
-          padding: EdgeInsets.all(16.0),
-          decoration: BoxDecoration(
-            color: _selectedAmount == num && _selectedMode == mode
-                ? _themeColor
-                : Colors.transparent,
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.black),
-          ),
-          child: Center(
-            child: Text(
-              '$num',
-              style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: _selectedAmount == num && _selectedMode == mode
-                      ? Colors.white
-                      : _textColor),
-            ),
-          ),
-        ),
-        onTap: () {
-          setState(() {
-            _selectedAmount = num;
-            _selectedMode = mode;
-
-            // change cupertino
-            // TODO: enable the code below
-            // int currentValue = _cupertinoController.selectedItem;
-            // _cupertinoController.jumpToItem(currentValue + num);
-          });
-        },
-        onLongPress: () {
-          _addSale(num, mode);
-        },
+    return GestureDetector(
+      child: Text(
+        '$num',
       ),
+      onTap: () {
+        setState(() {
+          _selectedAmount = num;
+          _selectedMode = mode;
+
+          // change cupertino
+          // TODO: enable the code below
+          // int currentValue = _cupertinoController.selectedItem;
+          // _cupertinoController.jumpToItem(currentValue + num);
+        });
+      },
+      onLongPress: () {
+        _addSale(num, mode);
+      },
     );
   }
 
   Widget _createPaymentWidget(String mode) {
-// Select theme based on the value of stall
-    ThemeData selectedTheme;
-    if (widget.stall == 'RRG') {
-      selectedTheme = themeRRG;
-    } else if (widget.stall == 'RKC') {
-      selectedTheme = themeRKC;
-    } else {
-      selectedTheme = themeDefault;
-    }
-
     return Container(
       decoration: BoxDecoration(
         color: _selectedMode == mode ? _bgColor : Colors.transparent,
         border: Border.all(color: Colors.black), // Add border here
         borderRadius: BorderRadius.circular(8.0), // Make the border rounded
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  _selectedMode = mode;
-                });
-              },
-              child: Container(
-                width: 40, // Set the fixed width here
-                alignment: Alignment.center,
-                child: Transform.rotate(
-                  angle:
-                      -90 * 3.1415926535897932 / 180, // Rotate by -90 degrees
+      child: Column(
+        children: [
+          Row(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _selectedMode = mode;
+                  });
+                },
+                child: Container(
+                  width: 60, // Set the fixed width here
+                  alignment: Alignment.center,
                   child: Text(mode),
                 ),
               ),
-            ),
-            Column(
-              children: [
-                Row(
-                  children: [
-                    _createAmountButton(1, mode),
-                    _createAmountButton(2, mode),
-                  ],
-                ),
-                Row(
-                  children: [
-                    _createAmountButton(4, mode),
-                    _createAmountButton(5, mode),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
+              _createAmountButton(1, mode),
+              _createAmountButton(2, mode),
+            ],
+          ),
+          Row(
+            children: [
+              _createAmountButton(3, mode),
+              _createAmountButton(4, mode),
+              _createAmountButton(5, mode),
+            ],
+          ),
+        ],
       ),
     );
   }
