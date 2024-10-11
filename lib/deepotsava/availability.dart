@@ -50,7 +50,7 @@ class Availability extends StatelessWidget {
               backgroundColor: Colors.grey[200],
               valueColor: AlwaysStoppedAnimation<Color>(barValue > 0.5
                   ? Colors.lightGreen
-                  : (barValue > 0.25 ? Colors.orange : Colors.red)),
+                  : (barValue > 0.25 ? Colors.orangeAccent : Colors.red)),
             ),
           ),
           Text(
