@@ -183,101 +183,39 @@ class _HMIState extends State<HMI> {
     return Card(
       child: Container(
         constraints:
-            BoxConstraints(minHeight: 300), // Define minimum height here
+            BoxConstraints(minHeight: 350), // Define minimum height here
         child: Stack(
           children: [
             // UPI corner
             Positioned(
-              top: 10,
+              top: 100,
               left: 10,
               child: _createPaymentWidget("UPI"),
             ),
 
             // Cash corner
-            // Positioned(
-            //   bottom: 10,
-            //   left: 10,
-            //   child: _createPaymentWidget("Cash"),
-            // ),
+            Positioned(
+              bottom: 10,
+              left: 10,
+              child: _createPaymentWidget("Cash"),
+            ),
 
             // Card corner
-            // Positioned(
-            //   top: 10,
-            //   right: 10,
-            //   child: _createPaymentWidget("Card"),
-            // ),
+            Positioned(
+              top: 100,
+              right: 10,
+              child: _createPaymentWidget("Card"),
+            ),
 
             // Gift corner
-            // Positioned(
-            //   bottom: 10,
-            //   right: 10,
-            //   child: _createPaymentWidget("Gift"),
-            // ),
-
-            Align(
-              alignment: Alignment.center,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text('')
-                  // Plate toggle
-                  // GestureDetector(
-                  //   onTap: () {
-                  //     setState(() {
-                  //       _plateEnabled = !_plateEnabled;
-
-                  //       if (_plateEnabled && _selectedMode == "") {
-                  //         _selectedMode = "Cash";
-                  //       }
-                  //     });
-                  //   },
-                  //   child: Container(
-                  //     padding: EdgeInsets.all(4.0),
-                  //     decoration: BoxDecoration(
-                  //       color: _plateEnabled
-                  //           ? (widget.stall == "RRG"
-                  //               ? primaryColorRRG
-                  //               : primaryColorRKC)
-                  //           : Colors.transparent,
-                  //       border: Border.all(color: Colors.black),
-                  //       borderRadius:
-                  //           BorderRadius.circular(8.0), // Rounded border
-                  //     ),
-                  //     child: Text(
-                  //       'Plate',
-                  //       style: TextStyle(
-                  //         color: _plateEnabled
-                  //             ? Colors.white
-                  //             : Theme.of(context).textTheme.bodySmall!.color,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-
-                  // count field
-                  // SizedBox(
-                  //   width: 80,
-                  //   height: 60,
-                  //   child: _createCupertino(),
-                  // ),
-
-                  // Add padding between the picker and the button
-                  // SizedBox(height: 16), // Adjust the height as needed
-
-                  // serve button
-                  // ElevatedButton(
-                  //   child: Text('+'),
-                  //   style: ElevatedButton.styleFrom(
-                  //     padding: EdgeInsets.zero,
-                  //     minimumSize: Size(40, 40), // Small size
-                  //   ),
-                  //   onPressed: () {
-                  //     _addSale(_cupertinoController.selectedItem, _selectedMode);
-                  //   },
-                  // )
-                ],
-              ),
+            Positioned(
+              bottom: 10,
+              right: 10,
+              child: _createPaymentWidget("Gift"),
             ),
+
+            // dummy text to prevent crash
+            Text('')
           ],
         ),
       ),
