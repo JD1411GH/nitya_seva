@@ -54,82 +54,103 @@ class _HMIState extends State<HMI> {
   }
 
   Widget _createAmountButton(int num, String mode) {
-    return GestureDetector(
-      child: Container(
-        padding: EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-          color: _selectedAmount == num && _selectedMode == mode
-              ? _themeColor
-              : Colors.transparent,
-          border: Border.all(color: Colors.black),
-          borderRadius: BorderRadius.circular(10.0),
+    return Padding(
+      padding: const EdgeInsets.all(2.0),
+      child: GestureDetector(
+        child: Container(
+          padding: EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+            color: _selectedAmount == num && _selectedMode == mode
+                ? _themeColor
+                : Colors.transparent,
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.black),
+          ),
+          child: Center(
+            child: Text(
+              '$num',
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: _selectedAmount == num && _selectedMode == mode
+                      ? Colors.white
+                      : _textColor),
+            ),
+          ),
         ),
-        child: Text(
-          '$num',
-          style: TextStyle(
-              color: _selectedAmount == num && _selectedMode == mode
-                  ? Colors.white
-                  : _textColor), // Change 'Colors.red' to your desired color
-        ),
-      ),
-      onTap: () {
-        setState(() {
-          _selectedAmount = num;
-          _selectedMode = mode;
+        onTap: () {
+          setState(() {
+            _selectedAmount = num;
+            _selectedMode = mode;
 
-          // change cupertino
-          int currentValue = _cupertinoController.selectedItem;
-          _cupertinoController.jumpToItem(currentValue + num);
-        });
-      },
-      onLongPress: () {
-        _addSale(num, mode);
-      },
+            // change cupertino
+            // TODO: enable the code below
+            // int currentValue = _cupertinoController.selectedItem;
+            // _cupertinoController.jumpToItem(currentValue + num);
+          });
+        },
+        onLongPress: () {
+          _addSale(num, mode);
+        },
+      ),
     );
   }
 
-  Widget _createPaymentWidget(String mode, String titlePosition) {
+  Widget _createPaymentWidget(String mode) {
+// Select theme based on the value of stall
+    ThemeData selectedTheme;
+    if (widget.stall == 'RRG') {
+      selectedTheme = themeRRG;
+    } else if (widget.stall == 'RKC') {
+      selectedTheme = themeRKC;
+    } else {
+      selectedTheme = themeDefault;
+    }
+
     return Container(
-      color: _selectedMode == mode
-          ? _bgColor
-          : Colors.transparent, // Set your desired background color here
-      child: Column(
-        children: [
-          if (titlePosition == "top")
+      decoration: BoxDecoration(
+        color: _selectedMode == mode ? _bgColor : Colors.transparent,
+        border: Border.all(color: Colors.black), // Add border here
+        borderRadius: BorderRadius.circular(8.0), // Make the border rounded
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
             GestureDetector(
               onTap: () {
                 setState(() {
                   _selectedMode = mode;
                 });
               },
-              child: Text(mode),
+              child: Container(
+                width: 40, // Set the fixed width here
+                alignment: Alignment.center,
+                child: Transform.rotate(
+                  angle:
+                      -90 * 3.1415926535897932 / 180, // Rotate by -90 degrees
+                  child: Text(mode),
+                ),
+              ),
             ),
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: _createAmountButton(1, mode),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: _createAmountButton(2, mode),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: _createAmountButton(5, mode),
-              ),
-            ],
-          ),
-          if (titlePosition == "bottom")
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  _selectedMode = mode;
-                });
-              },
-              child: Text(mode),
+            Column(
+              children: [
+                Row(
+                  children: [
+                    _createAmountButton(1, mode),
+                    _createAmountButton(2, mode),
+                  ],
+                ),
+                Row(
+                  children: [
+                    _createAmountButton(4, mode),
+                    _createAmountButton(5, mode),
+                  ],
+                ),
+              ],
             ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -184,109 +205,108 @@ class _HMIState extends State<HMI> {
     });
   }
 
-  Widget _createMainWidget() {
-    return Stack(
-      children: [
-        // UPI corner
-        Positioned(
-          top: 10,
-          left: 10,
-          child: _createPaymentWidget("UPI", "top"),
-        ),
-
-        // Cash corner
-        Positioned(
-          bottom: 10,
-          left: 10,
-          child: _createPaymentWidget("Cash", "bottom"),
-        ),
-
-        // Card corner
-        Positioned(
-          top: 10,
-          right: 10,
-          child: _createPaymentWidget("Card", "top"),
-        ),
-
-        // Gift corner
-        Positioned(
-          bottom: 10,
-          right: 10,
-          child: _createPaymentWidget("Gift", "bottom"),
-        ),
-
-        Align(
-          alignment: Alignment.center,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Plate toggle
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _plateEnabled = !_plateEnabled;
-
-                    if (_plateEnabled && _selectedMode == "") {
-                      _selectedMode = "Cash";
-                    }
-                  });
-                },
-                child: Container(
-                  padding: EdgeInsets.all(4.0),
-                  decoration: BoxDecoration(
-                    color: _plateEnabled
-                        ? (widget.stall == "RRG"
-                            ? primaryColorRRG
-                            : primaryColorRKC)
-                        : Colors.transparent,
-                    border: Border.all(color: Colors.black),
-                    borderRadius: BorderRadius.circular(8.0), // Rounded border
-                  ),
-                  child: Text(
-                    'Plate',
-                    style: TextStyle(
-                      color: _plateEnabled
-                          ? Colors.white
-                          : Theme.of(context).textTheme.bodySmall!.color,
-                    ),
-                  ),
-                ),
-              ),
-
-              // count field
-              SizedBox(
-                width: 80,
-                height: 60,
-                child: _createCupertino(),
-              ),
-
-              // Add padding between the picker and the button
-              SizedBox(height: 16), // Adjust the height as needed
-
-              // serve button
-              ElevatedButton(
-                child: Text('+'),
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.zero,
-                  minimumSize: Size(40, 40), // Small size
-                ),
-                onPressed: () {
-                  _addSale(_cupertinoController.selectedItem, _selectedMode);
-                },
-              )
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: SizedBox(
-        height: 200.0,
-        child: _createMainWidget(),
+      child: Container(
+        constraints:
+            BoxConstraints(minHeight: 300), // Define minimum height here
+        child: Stack(
+          children: [
+            // UPI corner
+            Positioned(
+              top: 10,
+              left: 10,
+              child: _createPaymentWidget("UPI"),
+            ),
+
+            // Cash corner
+            // Positioned(
+            //   bottom: 10,
+            //   left: 10,
+            //   child: _createPaymentWidget("Cash"),
+            // ),
+
+            // Card corner
+            // Positioned(
+            //   top: 10,
+            //   right: 10,
+            //   child: _createPaymentWidget("Card"),
+            // ),
+
+            // Gift corner
+            // Positioned(
+            //   bottom: 10,
+            //   right: 10,
+            //   child: _createPaymentWidget("Gift"),
+            // ),
+
+            Align(
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('')
+                  // Plate toggle
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     setState(() {
+                  //       _plateEnabled = !_plateEnabled;
+
+                  //       if (_plateEnabled && _selectedMode == "") {
+                  //         _selectedMode = "Cash";
+                  //       }
+                  //     });
+                  //   },
+                  //   child: Container(
+                  //     padding: EdgeInsets.all(4.0),
+                  //     decoration: BoxDecoration(
+                  //       color: _plateEnabled
+                  //           ? (widget.stall == "RRG"
+                  //               ? primaryColorRRG
+                  //               : primaryColorRKC)
+                  //           : Colors.transparent,
+                  //       border: Border.all(color: Colors.black),
+                  //       borderRadius:
+                  //           BorderRadius.circular(8.0), // Rounded border
+                  //     ),
+                  //     child: Text(
+                  //       'Plate',
+                  //       style: TextStyle(
+                  //         color: _plateEnabled
+                  //             ? Colors.white
+                  //             : Theme.of(context).textTheme.bodySmall!.color,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+
+                  // count field
+                  // SizedBox(
+                  //   width: 80,
+                  //   height: 60,
+                  //   child: _createCupertino(),
+                  // ),
+
+                  // Add padding between the picker and the button
+                  // SizedBox(height: 16), // Adjust the height as needed
+
+                  // serve button
+                  // ElevatedButton(
+                  //   child: Text('+'),
+                  //   style: ElevatedButton.styleFrom(
+                  //     padding: EdgeInsets.zero,
+                  //     minimumSize: Size(40, 40), // Small size
+                  //   ),
+                  //   onPressed: () {
+                  //     _addSale(_cupertinoController.selectedItem, _selectedMode);
+                  //   },
+                  // )
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
