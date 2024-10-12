@@ -10,7 +10,7 @@ class Dist extends StatefulWidget {
 final GlobalKey<_DistState> DistKey = GlobalKey<_DistState>();
 
 class _DistState extends State<Dist> {
-  final primaryColor = Utils().getRandomDarkColor();
+  final primaryColorDefault = Utils().getRandomDarkColor();
   bool isCollapsed = false;
 
   @override
@@ -23,7 +23,7 @@ class _DistState extends State<Dist> {
       child: AnimatedContainer(
         duration: Duration(milliseconds: 300),
         decoration: BoxDecoration(
-          border: Border.all(color: primaryColor),
+          border: Border.all(color: primaryColorDefault),
         ),
         child: Column(
           mainAxisSize:
@@ -37,7 +37,7 @@ class _DistState extends State<Dist> {
                 });
               },
               child: Container(
-                color: primaryColor, // Dark background for the title
+                color: primaryColorDefault, // Dark background for the title
                 width: double.infinity, // Fill the entire horizontal space
                 padding: EdgeInsets.all(8.0),
                 child: Text(

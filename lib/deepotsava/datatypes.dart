@@ -64,7 +64,7 @@ class DeepamSale {
   // actual data
   final int count;
   final String paymentMode;
-  final bool plate; // new parameter
+  final int plate; // new parameter
 
   DeepamSale({
     required this.timestamp,
@@ -86,7 +86,7 @@ class DeepamSale {
       costPlate: json['costPlate'] as int,
       count: json['count'] as int,
       paymentMode: json['paymentMode'] as String,
-      plate: json['plate'] as bool, // new parameter
+      plate: json['plate'] as int, // new parameter
     );
   }
 
@@ -121,7 +121,7 @@ class DeepamSale {
       costPlate: costPlate ?? this.costPlate,
       count: count ?? this.count,
       paymentMode: paymentMode ?? this.paymentMode,
-      plate: plate ?? this.plate,
+      plate: this.plate,
     );
   }
 }

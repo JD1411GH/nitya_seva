@@ -260,7 +260,7 @@ class _SummaryState extends State<Summary> {
       10
     ]; // Values in descending order
     const Color barColor = Colors.grey; // Set bar color to grey
-    const Color textColor = Colors.grey; // Set text color to grey
+    const Color textColorDefault = Colors.grey; // Set text color to grey
 
     return Container(
       padding: EdgeInsets.all(16.0),
@@ -279,7 +279,8 @@ class _SummaryState extends State<Summary> {
                     children: [
                       Text(
                         barValues[index].toString(),
-                        style: TextStyle(color: textColor), // Set text color
+                        style: TextStyle(
+                            color: textColorDefault), // Set text color
                       ),
                       SizedBox(height: 4),
                       Flexible(
@@ -292,7 +293,8 @@ class _SummaryState extends State<Summary> {
                       SizedBox(height: 4),
                       Text(
                         barLabels[index],
-                        style: TextStyle(color: textColor), // Set text color
+                        style: TextStyle(
+                            color: textColorDefault), // Set text color
                       ),
                     ],
                   ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/deepotsava/fbl.dart';
 import 'package:garuda/deepotsava/log_dialog.dart';
+import 'package:garuda/theme.dart';
 
 class Log extends StatefulWidget {
   final String stall;
@@ -100,13 +101,14 @@ class _LogState extends State<Log> {
 
   @override
   Widget build(BuildContext context) {
-    Color bgColorPlate;
+// Select theme based on the value of stall
+    Color bgColor;
     if (widget.stall == 'RRG') {
-      bgColorPlate = Colors.green[100] ?? Colors.grey;
+      bgColor = variantColorRRG ?? Colors.grey;
     } else if (widget.stall == 'RKC') {
-      bgColorPlate = Colors.orange[100] ?? Colors.grey;
+      bgColor = variantColorRKC ?? Colors.grey;
     } else {
-      bgColorPlate = Colors.grey;
+      bgColor = variantColorDefault ?? Colors.grey;
     }
 
     return SingleChildScrollView(
@@ -158,8 +160,9 @@ class _LogState extends State<Log> {
                 },
               );
             },
+
+            // individual log card
             child: Card(
-              color: value.plate ? bgColorPlate : Colors.white,
               margin: const EdgeInsets.all(8.0),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0),
@@ -171,7 +174,7 @@ class _LogState extends State<Log> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // top row
+                      // top row for time
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -201,6 +204,7 @@ class _LogState extends State<Log> {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(color: Colors.black),
+                          color: value.plate > 0 ? bgColor : Colors.transparent,
                         ),
                         child: Text(
                           "${value.count}",

@@ -70,8 +70,8 @@ class _DashboardState extends State<Dashboard> {
           _amountCollected += (sale.count * sale.costLamp);
         }
 
-        if (sale.plate) {
-          _platesIssued++;
+        if (sale.plate > 0) {
+          _platesIssued += sale.plate;
           _amountCollected += sale.costPlate;
         }
 
@@ -88,7 +88,7 @@ class _DashboardState extends State<Dashboard> {
     if (!mounted) return;
     setState(() {
       _lampsIssued += sale.count;
-      sale.plate ? _platesIssued++ : null;
+      sale.plate > 0 ? _platesIssued += sale.plate : null;
 
       if (_modeCount.containsKey(sale.paymentMode)) {
         _modeCount[sale.paymentMode] = _modeCount[sale.paymentMode]! + 1;
@@ -98,7 +98,7 @@ class _DashboardState extends State<Dashboard> {
 
       // update amount
       _amountCollected += (sale.count * sale.costLamp);
-      sale.plate ? _amountCollected += sale.costPlate : null;
+      sale.plate > 0 ? _amountCollected += (sale.costPlate * sale.plate) : null;
     });
 
     if (localUpdate) {
@@ -110,13 +110,13 @@ class _DashboardState extends State<Dashboard> {
     if (!mounted) return;
     setState(() {
       _lampsIssued -= sale.count;
-      sale.plate ? _platesIssued-- : null;
+      sale.plate > 0 ? _platesIssued -= sale.plate : null;
 
       _modeCount[sale.paymentMode] = _modeCount[sale.paymentMode]! - 1;
 
       // update amount
       _amountCollected -= (sale.count * sale.costLamp);
-      sale.plate ? _amountCollected -= sale.costPlate : null;
+      sale.plate > 0 ? _amountCollected -= (sale.costPlate * sale.plate) : null;
     });
 
     if (localUpdate) {

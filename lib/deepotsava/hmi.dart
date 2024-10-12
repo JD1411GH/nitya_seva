@@ -23,7 +23,7 @@ class _HMIState extends State<HMI> {
   int _selectedAmount = 0;
   String _selectedMode = "";
   String _user = "Unknown";
-  bool _plateEnabled = false;
+  int _plate = 0;
 
   Color? _themeColor;
   Color? _textColor;
@@ -47,7 +47,7 @@ class _HMIState extends State<HMI> {
       _textColor = textColorRKC;
       _bgColor = variantColorRKC;
     } else {
-      _themeColor = primaryColor;
+      _themeColor = primaryColorDefault;
       _textColor = Colors.black;
       _bgColor = Colors.grey;
     }
@@ -249,7 +249,7 @@ class _HMIState extends State<HMI> {
       costPlate: Const().deepotsava['plate']['cost'] as int,
       paymentMode: mode,
       user: _user,
-      plate: _plateEnabled,
+      plate: _plate,
     );
 
     // update stock
@@ -267,7 +267,7 @@ class _HMIState extends State<HMI> {
     setState(() {
       _selectedAmount = 0;
       _selectedMode = "";
-      _plateEnabled = false;
+      _plate = 0;
     });
   }
 
@@ -289,9 +289,9 @@ class _HMIState extends State<HMI> {
                     onTap: () {
                       if (!mounted) return;
                       setState(() {
-                        _plateEnabled = !_plateEnabled;
+                        _plate = _plate > 0 ? 0 : 1;
 
-                        if (_plateEnabled && _selectedMode == "") {
+                        if (_plate > 0 && _selectedMode == "") {
                           _selectedMode = "Cash";
                         }
                       });
@@ -299,7 +299,7 @@ class _HMIState extends State<HMI> {
                     child: Container(
                       padding: EdgeInsets.all(4.0),
                       decoration: BoxDecoration(
-                        color: _plateEnabled
+                        color: _plate > 0
                             ? (widget.stall == "RRG"
                                 ? primaryColorRRG
                                 : primaryColorRKC)
@@ -311,7 +311,7 @@ class _HMIState extends State<HMI> {
                       child: Text(
                         'Plate',
                         style: TextStyle(
-                          color: _plateEnabled
+                          color: _plate > 0
                               ? Colors.white
                               : Theme.of(context).textTheme.bodySmall!.color,
                         ),

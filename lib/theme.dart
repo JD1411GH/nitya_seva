@@ -1,9 +1,9 @@
 // Define two themes
 import 'package:flutter/material.dart';
 
-final primaryColor = Colors.blueGrey;
-final variantColor = Colors.grey[300];
-final textColor = Colors.black;
+final primaryColorDefault = Colors.blueGrey;
+final variantColorDefault = Colors.grey[300];
+final textColorDefault = Colors.black;
 ThemeData themeDefault = ThemeData(
   brightness: Brightness.light,
 
@@ -29,9 +29,9 @@ ThemeData themeDefault = ThemeData(
   ),
 
   // color scheme
-  primaryColor: primaryColor,
+  primaryColor: primaryColorDefault,
   colorScheme: ColorScheme.fromSwatch(
-    primarySwatch: primaryColor,
+    primarySwatch: primaryColorDefault,
   ),
   scaffoldBackgroundColor: const Color.fromARGB(255, 242, 251, 255),
 
@@ -47,7 +47,7 @@ ThemeData themeDefault = ThemeData(
 
   // icon button theme
   iconTheme: IconThemeData(
-    color: primaryColor,
+    color: primaryColorDefault,
     size: 24.0,
   ),
 
@@ -78,7 +78,7 @@ ThemeData themeDefault = ThemeData(
   // elevated button theme
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ButtonStyle(
-      backgroundColor: WidgetStateProperty.all<Color>(primaryColor),
+      backgroundColor: WidgetStateProperty.all<Color>(primaryColorDefault),
       foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
       textStyle: WidgetStateProperty.all<TextStyle>(
         TextStyle(
