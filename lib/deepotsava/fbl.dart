@@ -92,7 +92,21 @@ class FBL {
     try {
       await ref.set(sale.toJson());
     } catch (e) {
-      Toaster().error("failed to add sale: $e");
+      Toaster().error("failed to edit sale: $e");
+    }
+  }
+
+  Future<void> deleteSale(String stall, DeepamSale sale) async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/deepotsava/$stall/sales/');
+
+    DateTime timestamp = sale.timestamp;
+    DatabaseReference ref =
+        dbRef.child(timestamp.toIso8601String().replaceAll(".", "^"));
+    try {
+      await ref.remove();
+    } catch (e) {
+      Toaster().error("failed to delete sale: $e");
     }
   }
 

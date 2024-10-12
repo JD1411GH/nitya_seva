@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/sales.dart';
+import 'package:garuda/theme.dart';
 import 'package:garuda/toaster.dart';
 
 class Deepotsava extends StatefulWidget {
@@ -82,8 +83,9 @@ class _DeepotsavaState extends State<Deepotsava>
                     image: 'assets/images/RKC.png',
                     text: 'RKC Deepam Sales',
                     isImageLeft: true,
-                    color: Colors.deepOrange, // Set desired card color
-                    textColor: Colors.white, // Set desired text color
+                    color: primaryColorRKC, // Set desired card color
+                    textColor: variantColorRKC ??
+                        Colors.white, // Set desired text color
                   ),
                 ),
               ),
@@ -95,8 +97,9 @@ class _DeepotsavaState extends State<Deepotsava>
                     image: 'assets/images/RRG.png',
                     text: 'RRG Deepam Sales',
                     isImageLeft: false,
-                    color: Colors.green, // Set desired card color
-                    textColor: Colors.black, // Set desired text color
+                    color: primaryColorRRG, // Set desired card color
+                    textColor: variantColorRRG ??
+                        Colors.black, // Set desired text color
                   ),
                 ),
               ),

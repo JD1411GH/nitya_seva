@@ -93,7 +93,7 @@ ThemeData themeDefault = ThemeData(
   ),
 );
 
-final primaryColorRKC = Colors.deepOrange;
+final primaryColorRKC = Colors.brown;
 final variantColorRKC = Colors.orange[50];
 final textColorRKC = Colors.brown;
 ThemeData themeRKC = themeDefault.copyWith(

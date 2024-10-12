@@ -107,11 +107,7 @@ class _LogState extends State<Log> {
                   return LogDialog(
                     sale: value,
                     callbacks: LogCallbacks(
-                        edit: (DeepamSale data, {bool? localUpdate}) async {
-                      // update database synchronously
-                      // sync update required here in order to enable other UI refresh
-                      await FBL().editSale(widget.stall, data);
-
+                        edit: (DeepamSale data, {bool? localUpdate}) {
                       if (mounted) {
                         setState(() {
                           // update log
@@ -121,9 +117,11 @@ class _LogState extends State<Log> {
                           cardValues.sort(
                               (a, b) => b.timestamp.compareTo(a.timestamp));
 
-                          // update availability
+                          // update database
+                          FBL().editSale(widget.stall, data);
 
-                          // update dashboard
+                          // due to complexity, not adding any extra logic to locally update other widgets.
+                          // this will be handled by the FBL callback
                         });
                       }
                       // update database
@@ -134,7 +132,11 @@ class _LogState extends State<Log> {
                             (element) => element.timestamp == data.timestamp);
                       });
 
-                      // update database synchronously
+                      // update database
+                      FBL().deleteSale(widget.stall, data);
+
+                      // due to complexity, not adding any extra logic to locally update other widgets.
+                      // this will be handled by the FBL callback
                     }),
                   );
                 },
