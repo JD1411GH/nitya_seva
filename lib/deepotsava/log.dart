@@ -16,14 +16,44 @@ final GlobalKey<_LogState> logKey = GlobalKey<_LogState>();
 class _LogState extends State<Log> {
   List<DeepamSale> cardValues = [];
 
+  DateTime _localUpdateTime = DateTime.now();
+
   @override
   void initState() {
     super.initState();
 
     refresh();
+
+    // subscribe for updates on sales
+    FBL().listenForChange(
+        "deepotsava/${widget.stall}/sales",
+        FBLCallbacks(
+          // callback for adding a new sale
+          add: (dynamic data) async {
+            // skip refresh if already updated locally
+            if (DateTime.now().difference(_localUpdateTime).inSeconds < 1) {
+              return;
+            }
+
+            Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
+            DeepamSale sale = DeepamSale.fromJson(map);
+            addLog(sale, localUpdate: false);
+          },
+
+          // callback for editing a sale
+          edit: () async {
+            // skip refresh if already updated locally
+            if (DateTime.now().difference(_localUpdateTime).inSeconds < 1) {
+              return;
+            }
+
+            await refresh();
+            setState(() {});
+          },
+        ));
   }
 
-  void addLog(DeepamSale sale) {
+  void addLog(DeepamSale sale, {bool localUpdate = false}) {
     setState(() {
       cardValues.insert(0, sale);
     });

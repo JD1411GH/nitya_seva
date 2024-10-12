@@ -35,7 +35,7 @@ class _SalesState extends State<Sales> {
   Future<void> serveLamps(DeepamSale sale) async {
     if (mounted) {
       dashboardKey.currentState!.addLampsServed(sale);
-      logKey.currentState!.addLog(sale);
+      logKey.currentState!.addLog(sale, localUpdate: true);
       stockBarKey.currentState!.serveLamps(sale, localUpdate: true);
     }
   }
