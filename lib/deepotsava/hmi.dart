@@ -144,8 +144,10 @@ class _HMIState extends State<HMI> {
             timestamp: DateTime.now(),
             stall: widget.stall,
             count: num,
-            costLamp: Const().deepotsava['lamp']['cost'] as int,
-            costPlate: Const().deepotsava['plate']['cost'] as int,
+            costLamp:
+                mode == "Gift" ? 0 : Const().deepotsava['lamp']['cost'] as int,
+            costPlate:
+                mode == "Gift" ? 0 : Const().deepotsava['plate']['cost'] as int,
             paymentMode: mode,
             user: _user,
             plate: _plate,
@@ -338,8 +340,12 @@ class _HMIState extends State<HMI> {
                         timestamp: DateTime.now(),
                         stall: widget.stall,
                         count: _cupertinoController.selectedItem,
-                        costLamp: Const().deepotsava['lamp']['cost'] as int,
-                        costPlate: Const().deepotsava['plate']['cost'] as int,
+                        costLamp: _selectedMode == "Gift"
+                            ? 0
+                            : Const().deepotsava['lamp']['cost'] as int,
+                        costPlate: _selectedMode == "Gift"
+                            ? 0
+                            : Const().deepotsava['plate']['cost'] as int,
                         paymentMode: _selectedMode,
                         user: _user,
                         plate: _plate,
