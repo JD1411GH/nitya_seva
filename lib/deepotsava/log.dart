@@ -108,22 +108,21 @@ class _LogState extends State<Log> {
                     sale: value,
                     callbacks: LogCallbacks(
                         edit: (DeepamSale data, {bool? localUpdate}) {
-                      if (mounted) {
-                        setState(() {
-                          // update log
-                          cardValues.removeWhere(
-                              (element) => element.timestamp == data.timestamp);
-                          cardValues.insert(0, data);
-                          cardValues.sort(
-                              (a, b) => b.timestamp.compareTo(a.timestamp));
+                      setState(() {
+                        // update log
+                        cardValues.removeWhere(
+                            (element) => element.timestamp == data.timestamp);
+                        cardValues.insert(0, data);
+                        cardValues
+                            .sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
-                          // update database
-                          FBL().editSale(widget.stall, data);
+                        // update database
+                        FBL().editSale(widget.stall, data);
 
-                          // due to complexity, not adding any extra logic to locally update other widgets.
-                          // this will be handled by the FBL callback
-                        });
-                      }
+                        // due to complexity, not adding any extra logic to locally update other widgets.
+                        // this will be handled by the FBL callback
+                      });
+
                       // update database
                     }, delete: (DeepamSale data, {bool? localUpdate}) {
                       // update UI

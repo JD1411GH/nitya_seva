@@ -38,7 +38,7 @@ class _DashboardState extends State<Dashboard> {
 
           Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
           DeepamSale sale = DeepamSale.fromJson(map);
-          addLampsServed(sale);
+          addLampsServed(sale, localUpdate: false);
         },
 
             // edit
@@ -77,9 +77,7 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
-  void addLampsServed(DeepamSale sale) {
-    _localUpdateTime = DateTime.now();
-
+  void addLampsServed(DeepamSale sale, {bool localUpdate = true}) {
     setState(() {
       _lampsIssued += sale.count;
       sale.plate ? _platesIssued++ : null;
@@ -94,6 +92,10 @@ class _DashboardState extends State<Dashboard> {
       _amountCollected += (sale.count * sale.costLamp);
       sale.plate ? _amountCollected += sale.costPlate : null;
     });
+
+    if (localUpdate) {
+      _localUpdateTime = DateTime.now();
+    }
   }
 
   Widget _createLampCount(double height) {

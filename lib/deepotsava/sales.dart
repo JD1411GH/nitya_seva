@@ -23,21 +23,17 @@ class _SalesState extends State<Sales> {
   }
 
   Future<void> _refresh() async {
-    if (mounted) {
-      await dashboardKey.currentState!.refresh();
-      await logKey.currentState!.refresh();
-      await stockBarKey.currentState!.refresh();
-    }
+    await dashboardKey.currentState!.refresh();
+    await logKey.currentState!.refresh();
+    await stockBarKey.currentState!.refresh();
 
     setState(() {});
   }
 
   Future<void> serveLamps(DeepamSale sale) async {
-    if (mounted) {
-      dashboardKey.currentState!.addLampsServed(sale);
-      logKey.currentState!.addLog(sale, localUpdate: true);
-      stockBarKey.currentState!.serveLamps(sale, localUpdate: true);
-    }
+    dashboardKey.currentState!.addLampsServed(sale);
+    logKey.currentState!.addLog(sale, localUpdate: true);
+    stockBarKey.currentState!.serveLamps(sale, localUpdate: true);
   }
 
   @override

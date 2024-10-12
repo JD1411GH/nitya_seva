@@ -106,20 +106,18 @@ class _StockPageState extends State<StockPage> {
   }
 
   void callbackAdd(DeepamStock stock, {bool localUpdate = false}) {
-    if (mounted) {
-      setState(() {
-        // update the label variables
-        _preparedLamps += stock.preparedLamps;
-        _unpreparedLamps += stock.unpreparedLamps;
-        _plates += stock.plates;
-        _wicks += stock.wicks;
-        _gheePackets += stock.gheePackets;
-        _oilCans += stock.oilCans;
+    setState(() {
+      // update the label variables
+      _preparedLamps += stock.preparedLamps;
+      _unpreparedLamps += stock.unpreparedLamps;
+      _plates += stock.plates;
+      _wicks += stock.wicks;
+      _gheePackets += stock.gheePackets;
+      _oilCans += stock.oilCans;
 
-        // add a tile for the new entry
-        _addStockTile(stock);
-      });
-    }
+      // add a tile for the new entry
+      _addStockTile(stock);
+    });
 
     // prevent double refresh from FB
     if (localUpdate) {
