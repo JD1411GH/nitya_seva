@@ -4,6 +4,7 @@ import 'package:garuda/const.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/deepotsava/fbl.dart';
 import 'package:garuda/theme.dart';
+import 'package:garuda/toaster.dart';
 import 'package:garuda/utils.dart';
 
 class HMI extends StatefulWidget {
@@ -31,6 +32,8 @@ class _HMIState extends State<HMI> {
   FixedExtentScrollController _cupertinoController =
       FixedExtentScrollController(initialItem: 0);
 
+  int _stockAvailable = 0;
+
   @override
   initState() {
     super.initState();
@@ -52,6 +55,55 @@ class _HMIState extends State<HMI> {
     Utils().getUserName().then((value) {
       _user = value;
     });
+
+    // get the available lamp stock
+    _recalculateStock();
+
+    // subscribe for updates in stock
+    FBL().listenForChange(
+        "deepotsava/${widget.stall}/stocks",
+        FBLCallbacks(
+          // callback for adding a new stock
+          add: (dynamic data) async {
+            Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
+            DeepamStock stock = DeepamStock.fromJson(map);
+            _addStock(stock);
+          },
+
+          // callback for deleting a stock
+          delete: (dynamic data) async {
+            Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
+            DeepamStock stock = DeepamStock.fromJson(map);
+            _stockAvailable -= stock.preparedLamps + stock.unpreparedLamps;
+          },
+
+          // callback for editing a stock
+          edit: () async {
+            _recalculateStock();
+          },
+        ));
+  }
+
+  Future<void> _recalculateStock() async {
+    List<DeepamStock> stocks = await FBL().getStocks(widget.stall);
+    List<DeepamSale> sales = await FBL().getSales(widget.stall);
+
+    // reset the availability bar variables
+    _stockAvailable = 0;
+
+    stocks.forEach((stock) {
+      // update the availability bar variables
+      _stockAvailable += stock.preparedLamps + stock.unpreparedLamps;
+    });
+
+    // update the availability bar variables for sales
+    sales.forEach((sale) {
+      _stockAvailable -= sale.count;
+    });
+  }
+
+  void _addStock(DeepamStock stock) {
+    _stockAvailable += stock.preparedLamps + stock.unpreparedLamps;
   }
 
   Widget _createAmountButton(int num, String mode) {
@@ -180,6 +232,12 @@ class _HMIState extends State<HMI> {
       return;
     }
 
+    // return if not enough stock
+    if (_stockAvailable < count) {
+      Toaster().error("Not enough stock");
+      return;
+    }
+
     DeepamSale sale = DeepamSale(
       timestamp: DateTime.now(),
       stall: widget.stall,
@@ -190,6 +248,9 @@ class _HMIState extends State<HMI> {
       user: _user,
       plate: _plateEnabled,
     );
+
+    // update stock
+    _stockAvailable -= count;
 
     // update all dependent widgets
     widget.callbacks.add(sale);
@@ -266,7 +327,7 @@ class _HMIState extends State<HMI> {
                   // serve button
                   IconButton(
                     icon: Icon(Icons.send),
-                    iconSize: 24.0, // Adjust the size as needed
+                    iconSize: 24.0,
                     onPressed: () {
                       _addSale(
                           _cupertinoController.selectedItem, _selectedMode);
