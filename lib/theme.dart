@@ -91,6 +91,12 @@ ThemeData themeDefault = ThemeData(
       ),
     ),
   ),
+
+  // theme for dividor
+  dividerTheme: DividerThemeData(
+    color: Colors.grey[200],
+    thickness: 1.0,
+  ),
 );
 
 final primaryColorRKC = Colors.blue;
