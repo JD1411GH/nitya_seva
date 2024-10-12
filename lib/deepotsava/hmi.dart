@@ -132,6 +132,7 @@ class _HMIState extends State<HMI> {
           child: Text(
             '$num',
             style: TextStyle(
+                // fontSize: 18.0,
                 fontWeight: FontWeight.bold,
                 color: _count == num && _selectedMode == mode
                     ? Colors.white
@@ -204,7 +205,7 @@ class _HMIState extends State<HMI> {
                   });
                 },
                 child: Container(
-                  width: 50,
+                  width: 70,
                   child: Column(
                     children: [
                       Image.asset(
@@ -320,7 +321,7 @@ class _HMIState extends State<HMI> {
                     },
                   ),
 
-                  // SizedBox(width: 18),
+                  SizedBox(width: 8),
 
                   // Plate toggle
                   GestureDetector(
@@ -362,6 +363,8 @@ class _HMIState extends State<HMI> {
                     ),
                   ),
 
+                  SizedBox(width: 8),
+
                   // count field
                   SizedBox(
                     width: 80,
@@ -369,14 +372,20 @@ class _HMIState extends State<HMI> {
                     child: _createCupertino(),
                   ),
 
+                  // SizedBox(width: 8),
+
                   // Amount
                   Container(
-                    width: 50,
-                    child: Text(
-                      '₹${_amount}',
-                      style: Theme.of(context).textTheme.bodyLarge,
+                    width: 60,
+                    child: Center(
+                      child: Text(
+                        '₹${_amount}',
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
                     ),
                   ),
+
+                  // SizedBox(width: 8),
 
                   // serve button
                   IconButton(

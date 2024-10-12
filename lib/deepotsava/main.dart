@@ -81,7 +81,7 @@ class _DeepotsavaState extends State<Deepotsava>
                   onTap: _onRKCDeepamSalesTap,
                   child: CardWidget(
                     image: 'assets/images/RKC.png',
-                    text: 'RKC Deepam Sales',
+                    text: 'RKC Deepam Seva',
                     isImageLeft: true,
                     color: primaryColorRKC, // Set desired card color
                     textColorDefault: variantColorRKC ??
@@ -95,7 +95,7 @@ class _DeepotsavaState extends State<Deepotsava>
                   onTap: _onRRGDeepamSalesTap,
                   child: CardWidget(
                     image: 'assets/images/RRG.png',
-                    text: 'RRG Deepam Sales',
+                    text: 'RRG Deepam Seva',
                     isImageLeft: false,
                     color: primaryColorRRG, // Set desired card color
                     textColorDefault: variantColorRRG ??
@@ -154,6 +154,8 @@ class CardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double fontsize = 28;
+
     return Card(
       color: color, // Use the color parameter
       margin: EdgeInsets.all(10),
@@ -174,7 +176,7 @@ class CardWidget extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: 'HowdyLemon',
-                    fontSize: 32, // Increased font size
+                    fontSize: fontsize,
                     fontWeight: FontWeight.bold,
                     color:
                         textColorDefault, // Use the textColorDefault parameter
@@ -189,7 +191,7 @@ class CardWidget extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: 'HowdyLemon',
-                    fontSize: 32, // Increased font size
+                    fontSize: fontsize, // Increased font size
                     fontWeight: FontWeight.bold,
                     color:
                         textColorDefault, // Use the textColorDefault parameter
