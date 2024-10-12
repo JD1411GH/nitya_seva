@@ -93,9 +93,9 @@ ThemeData themeDefault = ThemeData(
   ),
 );
 
-final primaryColorRKC = Colors.brown;
-final variantColorRKC = Colors.orange[50];
-final textColorRKC = Colors.brown;
+final primaryColorRKC = Colors.green;
+final variantColorRKC = Colors.lightGreen[50];
+final textColorRKC = Colors.green[900];
 ThemeData themeRKC = themeDefault.copyWith(
   // text theme
   textTheme: themeDefault.textTheme.copyWith(
@@ -144,10 +144,10 @@ ThemeData themeRKC = themeDefault.copyWith(
   // input decoration theme
   inputDecorationTheme: themeDefault.inputDecorationTheme.copyWith(
     focusedBorder: themeDefault.inputDecorationTheme.focusedBorder?.copyWith(
-      borderSide: BorderSide(color: textColorRKC),
+      borderSide: BorderSide(color: textColorRKC ?? Colors.black),
     ),
     enabledBorder: themeDefault.inputDecorationTheme.enabledBorder?.copyWith(
-      borderSide: BorderSide(color: textColorRKC),
+      borderSide: BorderSide(color: textColorRKC ?? Colors.black),
     ),
   ),
 
@@ -169,9 +169,9 @@ ThemeData themeRKC = themeDefault.copyWith(
   ),
 );
 
-final primaryColorRRG = Colors.green;
-final variantColorRRG = Colors.lightGreen[50];
-final textColorRRG = Colors.green[900];
+final primaryColorRRG = Colors.brown;
+final variantColorRRG = Colors.brown[50];
+final textColorRRG = Colors.brown[900];
 ThemeData themeRRG = themeDefault.copyWith(
   // text theme
   textTheme: themeDefault.textTheme.copyWith(
