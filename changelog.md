@@ -1,3 +1,6 @@
+# 3.2.1
+- fix: hmi UI fixes
+
 # 3.2.0
 - feature deepotsava: amount in HMI
 - feature deepotsava: for gift, cost should be 0
