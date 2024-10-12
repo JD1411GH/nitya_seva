@@ -175,6 +175,10 @@ class _HMIState extends State<HMI> {
   }
 
   void _addSale(int count, mode) {
+    if (count == 0) {
+      return;
+    }
+
     DeepamSale sale = DeepamSale(
       timestamp: DateTime.now(),
       stall: widget.stall,

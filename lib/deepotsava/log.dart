@@ -57,6 +57,10 @@ class _LogState extends State<Log> {
     setState(() {
       cardValues.insert(0, sale);
     });
+
+    if (localUpdate) {
+      _localUpdateTime = DateTime.now();
+    }
   }
 
   Future<void> refresh() async {
