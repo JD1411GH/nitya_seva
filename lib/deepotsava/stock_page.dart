@@ -3,6 +3,7 @@ import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/deepotsava/fbl.dart';
 import 'package:garuda/deepotsava/stock_dialog.dart';
 import 'package:garuda/theme.dart';
+import 'package:intl/intl.dart';
 
 class StockPage extends StatefulWidget {
   final String stall;
@@ -14,6 +15,8 @@ class StockPage extends StatefulWidget {
 }
 
 class _StockPageState extends State<StockPage> {
+  late ThemeData _selectedTheme;
+
   // initializing the label variables
   int _preparedLamps = 0;
   int _unpreparedLamps = 0;
@@ -22,11 +25,24 @@ class _StockPageState extends State<StockPage> {
   int _gheePackets = 0;
   int _oilCans = 0;
 
+  // prevent double refresh
   DateTime _localUpdateTime = DateTime.now();
+
+  // list of stocks added
+  List<ListTile> _stockTiles = [];
 
   @override
   initState() {
     super.initState();
+
+    // Select theme based on the value of stall
+    if (widget.stall == 'RRG') {
+      _selectedTheme = themeRRG;
+    } else if (widget.stall == 'RKC') {
+      _selectedTheme = themeRKC;
+    } else {
+      _selectedTheme = themeDefault;
+    }
 
     refresh();
 
@@ -92,6 +108,9 @@ class _StockPageState extends State<StockPage> {
       _wicks += stock.wicks;
       _gheePackets += stock.gheePackets;
       _oilCans += stock.oilCans;
+
+      // add a tile for the new entry
+      _addStockTile(stock);
     });
 
     // prevent double refresh from FB
@@ -100,20 +119,104 @@ class _StockPageState extends State<StockPage> {
     }
   }
 
+  void _addStockTile(DeepamStock stock) {
+    String time = DateFormat('HH:mm').format(stock.timestamp);
+
+    _stockTiles.add(ListTile(
+      // title
+      title: Text(
+        '${stock.user}',
+      ),
+
+      // leading
+      leading: CircleAvatar(
+        child: Text(
+          '$time',
+        ),
+      ),
+
+      // body
+      subtitle: Column(
+        children: [
+          if (stock.plates > 0)
+            Text(
+              'Plates: ${stock.plates}',
+            ),
+          if (stock.wicks > 0)
+            Text(
+              'Wicks: ${stock.wicks}',
+            ),
+          if (stock.gheePackets > 0)
+            Text(
+              'Ghee packets: ${stock.gheePackets}',
+            ),
+          if (stock.oilCans > 0)
+            Text(
+              'Oil cans: ${stock.oilCans}',
+            ),
+        ],
+      ),
+
+      // trailing
+      trailing: Column(
+        children: [
+          CircleAvatar(
+            child: Text(
+              '${stock.preparedLamps + stock.unpreparedLamps}',
+            ),
+          ),
+          Text(
+            'Lamps',
+          ),
+        ],
+      ),
+    ));
+  }
+
+  Widget _createStockSummary(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Prepared lamps: $_preparedLamps',
+                style: _selectedTheme.textTheme.bodyMedium,
+              ),
+              Text(
+                'Unprepared lamps: $_unpreparedLamps',
+                style: _selectedTheme.textTheme.bodyMedium,
+              ),
+              Text(
+                'Plates: $_plates',
+                style: _selectedTheme.textTheme.bodyMedium,
+              ),
+              Text(
+                'Wicks: $_wicks',
+                style: _selectedTheme.textTheme.bodyMedium,
+              ),
+              Text(
+                'Ghee packets: $_gheePackets',
+                style: _selectedTheme.textTheme.bodyMedium,
+              ),
+              Text(
+                'Oil cans: $_oilCans',
+                style: _selectedTheme.textTheme.bodyMedium,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Select theme based on the value of stall
-    ThemeData selectedTheme;
-    if (widget.stall == 'RRG') {
-      selectedTheme = themeRRG;
-    } else if (widget.stall == 'RKC') {
-      selectedTheme = themeRKC;
-    } else {
-      selectedTheme = themeDefault;
-    }
-
     return Theme(
-      data: selectedTheme,
+      data: _selectedTheme,
       child: Scaffold(
         appBar: AppBar(
           title: Text('Deepam Stock'),
@@ -134,10 +237,8 @@ class _StockPageState extends State<StockPage> {
                           StockCallbacks(add: callbackAdd));
                     },
                   ),
-                  IconButton(
-                    icon: Icon(Icons.edit),
-                    onPressed: null,
-                  ),
+
+                  // return button
                   IconButton(
                     icon: Icon(Icons.undo),
                     onPressed: null,
@@ -146,43 +247,20 @@ class _StockPageState extends State<StockPage> {
               ),
 
               // Text widgets inside a scrollable area
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Prepared lamps: $_preparedLamps',
-                          style: selectedTheme.textTheme.bodyMedium,
-                        ),
-                        Text(
-                          'Unprepared lamps: $_unpreparedLamps',
-                          style: selectedTheme.textTheme.bodyMedium,
-                        ),
-                        Text(
-                          'Plates: $_plates',
-                          style: selectedTheme.textTheme.bodyMedium,
-                        ),
-                        Text(
-                          'Wicks: $_wicks',
-                          style: selectedTheme.textTheme.bodyMedium,
-                        ),
-                        Text(
-                          'Ghee packets: $_gheePackets',
-                          style: selectedTheme.textTheme.bodyMedium,
-                        ),
-                        Text(
-                          'Oil cans: $_oilCans',
-                          style: selectedTheme.textTheme.bodyMedium,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              )
+              Text("Stock Summary",
+                  style: _selectedTheme.textTheme.bodySmall,
+                  textAlign: TextAlign.center),
+              _createStockSummary(context),
+
+              // List of stock entries
+              Text(
+                "Stock entries",
+                style: _selectedTheme.textTheme.bodySmall,
+                textAlign: TextAlign.center,
+              ),
+              Column(
+                children: _stockTiles,
+              ),
             ],
           ),
         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/const.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/deepotsava/fbl.dart';
 import 'package:garuda/theme.dart';
@@ -161,8 +162,12 @@ class _StockAddDialogState extends State<StockAddDialog> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          String username = await Const().getUserName();
                           DeepamStock stock = DeepamStock(
+                            stall: widget.stall,
+                            timestamp: DateTime.now(),
+                            user: username,
                             preparedLamps: int.parse(
                               _preparedLampsController.text.isEmpty
                                   ? '0'
