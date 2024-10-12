@@ -93,9 +93,9 @@ ThemeData themeDefault = ThemeData(
   ),
 );
 
-final primaryColorRKC = Colors.green;
-final variantColorRKC = Colors.lightGreen[50];
-final textColorRKC = Colors.green[900];
+final primaryColorRKC = Colors.blue;
+final variantColorRKC = Colors.blue[50];
+final textColorRKC = Colors.blue[900];
 ThemeData themeRKC = themeDefault.copyWith(
   // text theme
   textTheme: themeDefault.textTheme.copyWith(

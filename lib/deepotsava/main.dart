@@ -111,8 +111,8 @@ class _DeepotsavaState extends State<Deepotsava>
                     image: 'assets/images/deepotsava.jpg',
                     text: 'Deepam Making',
                     isImageLeft: true,
-                    color: Colors.blue, // Set desired card color
-                    textColor: Colors.yellow, // Set desired text color
+                    color: Colors.green, // Set desired card color
+                    textColor: Colors.white, // Set desired text color
                   ),
                 ),
               ),
@@ -125,7 +125,7 @@ class _DeepotsavaState extends State<Deepotsava>
                     text: 'Accounting',
                     isImageLeft: false,
                     color: Colors.yellow, // Set desired card color
-                    textColor: Colors.red, // Set desired text color
+                    textColor: Colors.black, // Set desired text color
                   ),
                 ),
               ),

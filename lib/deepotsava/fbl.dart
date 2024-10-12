@@ -42,11 +42,11 @@ class FBL {
       }
     });
 
-    // dbRef.onChildRemoved.listen((event) {
-    //   if (!initialLoad) {
-    //     callbacks.onChange("REMOVE", event.snapshot.value);
-    //   }
-    // });
+    dbRef.onChildRemoved.listen((event) {
+      if (!initialLoad) {
+        callbacks.delete(event.snapshot.value);
+      }
+    });
 
     // Set initialLoad to false after the first set of events
     dbRef.once().then((_) {
@@ -178,10 +178,11 @@ class FBL {
 class FBLCallbacks {
   void Function(dynamic data) add;
   void Function() edit; // full refresh required on edit
-  // void Function(dynamic data) delete;
+  void Function(dynamic data) delete;
 
   FBLCallbacks({
     required this.add,
     required this.edit,
+    required this.delete,
   });
 }

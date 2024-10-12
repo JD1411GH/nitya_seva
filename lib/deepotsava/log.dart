@@ -41,6 +41,18 @@ class _LogState extends State<Log> {
             addLog(sale, localUpdate: false);
           },
 
+// callback for adding a new sale
+          delete: (dynamic data) async {
+            // skip refresh if already updated locally
+            if (DateTime.now().difference(_localUpdateTime).inSeconds < 1) {
+              return;
+            }
+
+            // Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
+            // DeepamSale sale = DeepamSale.fromJson(map);
+            // addLog(sale, localUpdate: false);
+          },
+
           // callback for editing a sale
           edit: () async {
             // skip refresh if already updated locally

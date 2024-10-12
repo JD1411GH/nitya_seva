@@ -39,6 +39,12 @@ class _DashboardState extends State<Dashboard> {
           Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
           DeepamSale sale = DeepamSale.fromJson(map);
           addLampsServed(sale, localUpdate: false);
+        }, delete: (data) async {
+          if (DateTime.now().difference(_localUpdateTime).inSeconds < 1) return;
+
+          // Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
+          // DeepamSale sale = DeepamSale.fromJson(map);
+          // addLampsServed(sale, localUpdate: false);
         },
 
             // edit

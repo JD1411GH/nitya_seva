@@ -14,16 +14,12 @@ class Availability extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color themeColor;
     ThemeData selectedTheme;
     if (stall == 'RRG') {
-      themeColor = primaryColorRRG;
       selectedTheme = themeRRG;
     } else if (stall == 'RKC') {
-      themeColor = primaryColorRKC;
       selectedTheme = themeRKC;
     } else {
-      themeColor = Colors.transparent;
       selectedTheme = themeDefault;
     }
 

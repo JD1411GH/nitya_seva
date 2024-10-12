@@ -3,6 +3,7 @@ import 'package:garuda/deepotsava/availability.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/deepotsava/fbl.dart';
 import 'package:garuda/deepotsava/stock_page.dart';
+import 'package:garuda/toaster.dart';
 
 class StockBar extends StatefulWidget {
   final String stall;
@@ -57,6 +58,15 @@ class _StockBarState extends State<StockBar> {
             await refresh();
             setState(() {});
           },
+
+          delete: (dynamic data) async {
+            // skip refresh if already updated locally
+            if (DateTime.now().difference(_localUpdateTime).inSeconds < 1) {
+              return;
+            }
+
+            Toaster().error("listender not handled");
+          },
         ));
 
     // subscribe for updates on sales
@@ -73,6 +83,19 @@ class _StockBarState extends State<StockBar> {
             Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
             DeepamSale sale = DeepamSale.fromJson(map);
             serveLamps(sale, localUpdate: false);
+          },
+
+          // callback for deleting a sale
+          delete: (dynamic data) async {
+            // skip refresh if already updated locally
+            if (DateTime.now().difference(_localUpdateTime).inSeconds < 1) {
+              return;
+            }
+
+            Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
+            DeepamSale sale = DeepamSale.fromJson(map);
+            _deleteServe(sale, localUpdate: false);
+            setState(() {});
           },
 
           // callback for editing a sale
@@ -124,6 +147,16 @@ class _StockBarState extends State<StockBar> {
   void serveLamps(DeepamSale sale, {bool localUpdate = false}) {
     setState(() {
       _currentStock -= sale.count;
+    });
+
+    if (localUpdate) {
+      _localUpdateTime = DateTime.now();
+    }
+  }
+
+  void _deleteServe(DeepamSale sale, {bool localUpdate = false}) {
+    setState(() {
+      _currentStock += sale.count;
     });
 
     if (localUpdate) {

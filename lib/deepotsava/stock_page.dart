@@ -62,6 +62,18 @@ class _StockPageState extends State<StockPage> {
             callbackAdd(stock);
           },
 
+          // callback for delete a new stock
+          delete: (dynamic data) async {
+            // skip refresh if already updated locally
+            if (DateTime.now().difference(_localUpdateTime).inSeconds < 1) {
+              return;
+            }
+
+            // Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
+            // DeepamStock stock = DeepamStock.fromJson(map);
+            // callbackAdd(stock);
+          },
+
           // callback for editing a stock
           edit: () async {
             // skip refresh if already updated locally
