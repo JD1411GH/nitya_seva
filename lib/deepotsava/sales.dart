@@ -53,7 +53,7 @@ class _SalesState extends State<Sales> {
       data: selectedTheme,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('${widget.stall} Deepam Sales'),
+          title: Text('${widget.stall} Deepam Seva'),
         ),
         body: RefreshIndicator(
           onRefresh: _refresh,
