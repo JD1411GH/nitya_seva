@@ -8,7 +8,6 @@ ThemeData themeDefault = ThemeData(
   brightness: Brightness.light,
 
   // text theme
-  fontFamily: 'ConsolaMono',
   textTheme: TextTheme(
     bodySmall: TextStyle(
       color: Colors.black,

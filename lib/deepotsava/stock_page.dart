@@ -87,6 +87,9 @@ class _StockPageState extends State<StockPage> {
       _gheePackets = 0;
       _oilCans = 0;
 
+      // reset the list of stock entries
+      _stockTiles = [];
+
       stocks.forEach((stock) {
         // update the label variables
         _preparedLamps += stock.preparedLamps;
@@ -95,23 +98,28 @@ class _StockPageState extends State<StockPage> {
         _wicks += stock.wicks;
         _gheePackets += stock.gheePackets;
         _oilCans += stock.oilCans;
+
+        // add a tile for the new entry
+        _addStockTile(stock);
       });
     });
   }
 
   void callbackAdd(DeepamStock stock, {bool localUpdate = false}) {
-    setState(() {
-      // update the label variables
-      _preparedLamps += stock.preparedLamps;
-      _unpreparedLamps += stock.unpreparedLamps;
-      _plates += stock.plates;
-      _wicks += stock.wicks;
-      _gheePackets += stock.gheePackets;
-      _oilCans += stock.oilCans;
+    if (mounted) {
+      setState(() {
+        // update the label variables
+        _preparedLamps += stock.preparedLamps;
+        _unpreparedLamps += stock.unpreparedLamps;
+        _plates += stock.plates;
+        _wicks += stock.wicks;
+        _gheePackets += stock.gheePackets;
+        _oilCans += stock.oilCans;
 
-      // add a tile for the new entry
-      _addStockTile(stock);
-    });
+        // add a tile for the new entry
+        _addStockTile(stock);
+      });
+    }
 
     // prevent double refresh from FB
     if (localUpdate) {
@@ -125,19 +133,14 @@ class _StockPageState extends State<StockPage> {
     _stockTiles.add(ListTile(
       // title
       title: Text(
-        '${stock.user}',
-      ),
-
-      // leading
-      leading: CircleAvatar(
-        child: Text(
-          '$time',
-        ),
+        '${time}',
       ),
 
       // body
       subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text("Sevakarta: ${stock.user}"),
           if (stock.plates > 0)
             Text(
               'Plates: ${stock.plates}',
@@ -171,6 +174,13 @@ class _StockPageState extends State<StockPage> {
         ],
       ),
     ));
+
+    // sort the list of stock entries by timestamp
+    _stockTiles.sort((a, b) {
+      String timeA = a.title.toString();
+      String timeB = b.title.toString();
+      return timeB.compareTo(timeA);
+    });
   }
 
   Widget _createStockSummary(BuildContext context) {
@@ -247,19 +257,18 @@ class _StockPageState extends State<StockPage> {
               ),
 
               // Text widgets inside a scrollable area
-              Text("Stock Summary",
-                  style: _selectedTheme.textTheme.bodySmall,
-                  textAlign: TextAlign.center),
               _createStockSummary(context),
 
               // List of stock entries
               Text(
-                "Stock entries",
+                "All stock entries",
                 style: _selectedTheme.textTheme.bodySmall,
                 textAlign: TextAlign.center,
               ),
+              Divider(),
               Column(
-                children: _stockTiles,
+                children:
+                    _stockTiles.expand((tile) => [tile, Divider()]).toList(),
               ),
             ],
           ),

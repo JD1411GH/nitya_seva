@@ -158,7 +158,7 @@ class _StockAddDialogState extends State<StockAddDialog> {
                       ),
                     ),
 
-                    // Save button
+                    // Add button
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextButton(
