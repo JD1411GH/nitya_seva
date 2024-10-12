@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/sales.dart';
+import 'package:garuda/theme.dart';
 import 'package:garuda/toaster.dart';
 
 class Deepotsava extends StatefulWidget {
@@ -82,8 +83,9 @@ class _DeepotsavaState extends State<Deepotsava>
                     image: 'assets/images/RKC.png',
                     text: 'RKC Deepam Sales',
                     isImageLeft: true,
-                    color: Colors.deepOrange, // Set desired card color
-                    textColor: Colors.white, // Set desired text color
+                    color: primaryColorRKC, // Set desired card color
+                    textColorDefault: variantColorRKC ??
+                        Colors.white, // Set desired text color
                   ),
                 ),
               ),
@@ -95,8 +97,9 @@ class _DeepotsavaState extends State<Deepotsava>
                     image: 'assets/images/RRG.png',
                     text: 'RRG Deepam Sales',
                     isImageLeft: false,
-                    color: Colors.green, // Set desired card color
-                    textColor: Colors.black, // Set desired text color
+                    color: primaryColorRRG, // Set desired card color
+                    textColorDefault: variantColorRRG ??
+                        Colors.black, // Set desired text color
                   ),
                 ),
               ),
@@ -108,8 +111,8 @@ class _DeepotsavaState extends State<Deepotsava>
                     image: 'assets/images/deepotsava.jpg',
                     text: 'Deepam Making',
                     isImageLeft: true,
-                    color: Colors.blue, // Set desired card color
-                    textColor: Colors.yellow, // Set desired text color
+                    color: Colors.green, // Set desired card color
+                    textColorDefault: Colors.white, // Set desired text color
                   ),
                 ),
               ),
@@ -122,7 +125,7 @@ class _DeepotsavaState extends State<Deepotsava>
                     text: 'Accounting',
                     isImageLeft: false,
                     color: Colors.yellow, // Set desired card color
-                    textColor: Colors.red, // Set desired text color
+                    textColorDefault: Colors.green, // Set desired text color
                   ),
                 ),
               ),
@@ -139,14 +142,14 @@ class CardWidget extends StatelessWidget {
   final String text;
   final bool isImageLeft;
   final Color color; // Add color parameter
-  final Color textColor; // Add textColor parameter
+  final Color textColorDefault; // Add textColorDefault parameter
 
   CardWidget({
     required this.image,
     required this.text,
     required this.isImageLeft,
     required this.color,
-    required this.textColor,
+    required this.textColorDefault,
   });
 
   @override
@@ -173,7 +176,8 @@ class CardWidget extends StatelessWidget {
                     fontFamily: 'HowdyLemon',
                     fontSize: 32, // Increased font size
                     fontWeight: FontWeight.bold,
-                    color: textColor, // Use the textColor parameter
+                    color:
+                        textColorDefault, // Use the textColorDefault parameter
                   ),
                   overflow: TextOverflow.visible, // Ensure text wraps
                 ),
@@ -187,7 +191,8 @@ class CardWidget extends StatelessWidget {
                     fontFamily: 'HowdyLemon',
                     fontSize: 32, // Increased font size
                     fontWeight: FontWeight.bold,
-                    color: textColor, // Use the textColor parameter
+                    color:
+                        textColorDefault, // Use the textColorDefault parameter
                   ),
                   overflow: TextOverflow.visible, // Ensure text wraps
                 ),

@@ -1,3 +1,16 @@
+# 3.2.0
+- feature deepotsava: amount in HMI
+- feature deepotsava: for gift, cost should be 0
+- feature deepotsava: plate alone is allowed to serve
+- feature deepotsava: serving is forbidden when stock is not available
+- feature deepotsava: edit log
+- feature deepotsava: create tile when stock is added
+- feature deepotsave: added icon for payment mode
+- fix deepotsava: sale log refresh
+- feature deepotsava: UI layout changed for HMI
+- feature deepotsava: redesign availability bar
+- feature deepotsava: add stock is a new page
+
 # 3.1.0
 
 

@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/deepotsava/date_header.dart';
 import 'package:garuda/deepotsava/log.dart';
-import 'package:garuda/deepotsava/stats.dart';
-import 'package:garuda/deepotsava/stock.dart';
 import 'package:garuda/deepotsava/hmi.dart';
 import 'package:garuda/deepotsava/dashboard.dart';
+import 'package:garuda/deepotsava/stock_bar.dart';
 import 'package:garuda/theme.dart';
 
 class Sales extends StatefulWidget {
@@ -24,35 +23,18 @@ class _SalesState extends State<Sales> {
   }
 
   Future<void> _refresh() async {
-    if (mounted) {
-      await dashboardKey.currentState!.refresh();
-      await logKey.currentState!.refresh();
-      await stockPageKey.currentState!.refresh();
-    }
+    await dashboardKey.currentState!.refresh();
+    await logKey.currentState!.refresh();
+    await stockBarKey.currentState!.refresh();
 
+    if (!mounted) return;
     setState(() {});
   }
 
-  Widget _createCardPage() {
-    return Card(
-      child: SizedBox(
-        height: 150.0,
-        child: PageView(
-          children: [
-            StockPage(key: stockPageKey, stall: widget.stall),
-            StatsPage(stall: widget.stall),
-          ],
-        ),
-      ),
-    );
-  }
-
   Future<void> serveLamps(DeepamSale sale) async {
-    if (mounted) {
-      dashboardKey.currentState!.addLampsServed(sale);
-      logKey.currentState!.addLog(sale);
-      stockPageKey.currentState!.serveLamps(sale);
-    }
+    dashboardKey.currentState!.addLampsServed(sale);
+    logKey.currentState!.addLog(sale, localUpdate: true);
+    stockBarKey.currentState!.serveLamps(sale, localUpdate: true);
   }
 
   @override
@@ -81,7 +63,7 @@ class _SalesState extends State<Sales> {
           child: ListView(
             children: [
               DateHeader(),
-              _createCardPage(),
+              StockBar(key: stockBarKey, stall: widget.stall),
               Dashboard(key: dashboardKey, stall: widget.stall),
               HMI(
                   stall: widget.stall,

@@ -1,22 +1,22 @@
-import git
 import subprocess
 import sys
 
-def main():
-    repo = git.Repo('.')
-    
+def run_command(command):
+    result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    return result.stdout.strip()
 
+def main():
     print("get the version number")
-    branch_name = repo.active_branch.name
+    branch_name = run_command('git rev-parse --abbrev-ref HEAD')
     version_number = branch_name.lstrip('v')
 
     print("generate the changelog from git log")
-    logs = repo.git.log('--pretty=%B', f'{branch_name}..HEAD')
+    base_branch = run_command('git merge-base origin/main HEAD')
+    logs = run_command(f'git log {base_branch}..HEAD --pretty=%B')
     log_messages = logs.split('\n\n')
     filtered_log_messages = []
-    for i, log_message in enumerate(log_messages):
+    for log_message in log_messages:
         first_line = log_message.split('\n')[0]
-        word_count = len(first_line.split())
         if first_line.startswith("feature") or first_line.startswith("fix"):
             filtered_log_messages.append(log_message)
     log_messages = filtered_log_messages
@@ -31,12 +31,12 @@ def main():
         file.write('\n')  
         file.write(existing_contents)
 
+
     print("commit all changes and push to git")
-    if repo.is_dirty(untracked_files=True):
-        repo.git.add(A=True)
-        repo.index.commit(f'release {version_number}')
-        origin = repo.remote(name='origin')
-        origin.push()
+    if run_command('git status --porcelain'):
+        run_command('git add -A')
+        run_command(f'git commit -m "release {version_number}"')
+        run_command('git push origin')
     else:
         print("No changes to commit")
 

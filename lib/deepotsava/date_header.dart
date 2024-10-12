@@ -25,6 +25,7 @@ class _DateHeaderState extends State<DateHeader> {
 
   Future<void> refresh() async {
     await _futureInit();
+    if (!mounted) return;
     setState(() {});
   }
 

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/const.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/deepotsava/fbl.dart';
 import 'package:garuda/theme.dart';
+import 'package:garuda/utils.dart';
 
 class StockAddDialog extends StatefulWidget {
   final String stall;
@@ -98,6 +100,7 @@ class _StockAddDialogState extends State<StockAddDialog> {
                             ? Icons.expand_less
                             : Icons.expand_more),
                         onPressed: () {
+                          if (!mounted) return;
                           setState(() {
                             _isExpanded =
                                 !_isExpanded; // Toggle expansion state
@@ -157,12 +160,16 @@ class _StockAddDialogState extends State<StockAddDialog> {
                       ),
                     ),
 
-                    // Save button
+                    // Add button
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          String username = await Utils().getUserName();
                           DeepamStock stock = DeepamStock(
+                            stall: widget.stall,
+                            timestamp: DateTime.now(),
+                            user: username,
                             preparedLamps: int.parse(
                               _preparedLampsController.text.isEmpty
                                   ? '0'

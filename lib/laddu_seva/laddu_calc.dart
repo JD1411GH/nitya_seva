@@ -4,6 +4,7 @@ import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/laddu_seva/utils.dart';
 import 'package:garuda/toaster.dart';
+import 'package:garuda/utils.dart';
 
 String selectedPurpose = "Others";
 bool selectedPurposeChanged = false;
@@ -170,7 +171,7 @@ class _AddEditStockDialogState extends State<AddEditStockDialog> {
                 isLoading = true;
               });
 
-              String username = await Const().getUserName();
+              String username = await Utils().getUserName();
 
               LadduStock stockNew;
               if (widget.edit) {
@@ -420,7 +421,7 @@ class _ReturnStockDialogState extends State<ReturnStockDialog> {
       return;
     }
 
-    String username = await Const().getUserName();
+    String username = await Utils().getUserName();
 
     await FB().returnLadduStock(
         widget.session,

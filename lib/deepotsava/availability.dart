@@ -14,13 +14,13 @@ class Availability extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color themeColor;
+    ThemeData selectedTheme;
     if (stall == 'RRG') {
-      themeColor = primaryColorRRG;
+      selectedTheme = themeRRG;
     } else if (stall == 'RKC') {
-      themeColor = primaryColorRKC;
+      selectedTheme = themeRKC;
     } else {
-      themeColor = Colors.transparent;
+      selectedTheme = themeDefault;
     }
 
     double barValue = 0;
@@ -37,27 +37,21 @@ class Availability extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           Container(
-            width: 50,
-            height: 200,
+            height: 50,
             decoration: BoxDecoration(
               border: Border.all(color: Colors.black),
             ),
-            child: RotatedBox(
-              quarterTurns: -1,
-              child: LinearProgressIndicator(
-                value: barValue,
-                backgroundColor: Colors.grey[200],
-                valueColor: AlwaysStoppedAnimation<Color>(themeColor),
-              ),
+            child: LinearProgressIndicator(
+              value: barValue,
+              backgroundColor: Colors.grey[200],
+              valueColor: AlwaysStoppedAnimation<Color>(barValue > 0.5
+                  ? Colors.lightGreen
+                  : (barValue > 0.25 ? Colors.orangeAccent : Colors.red)),
             ),
           ),
           Text(
-            '${currentStock.toInt()}',
-            style: TextStyle(
-              color: (barValue) > 0.6 ? Colors.white : Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: 20.0,
-            ),
+            'Available: ${currentStock.toInt()}',
+            style: selectedTheme.textTheme.headlineMedium,
           ),
         ],
       ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/deepotsava/fbl.dart';
-import 'package:synchronized/synchronized.dart';
 
 class Dashboard extends StatefulWidget {
   final String stall;
@@ -39,7 +38,13 @@ class _DashboardState extends State<Dashboard> {
 
           Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
           DeepamSale sale = DeepamSale.fromJson(map);
-          addLampsServed(sale);
+          addLampsServed(sale, localUpdate: false);
+        }, delete: (data) async {
+          if (DateTime.now().difference(_localUpdateTime).inSeconds < 1) return;
+
+          Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
+          DeepamSale sale = DeepamSale.fromJson(map);
+          deleteLampsServed(sale, localUpdate: false);
         },
 
             // edit
@@ -53,6 +58,7 @@ class _DashboardState extends State<Dashboard> {
   Future<void> refresh() async {
     List<DeepamSale> sales = await FBL().getSales(widget.stall);
 
+    if (!mounted) return;
     setState(() {
       _lampsIssued = 0;
       _platesIssued = 0;
@@ -64,8 +70,8 @@ class _DashboardState extends State<Dashboard> {
           _amountCollected += (sale.count * sale.costLamp);
         }
 
-        if (sale.plate) {
-          _platesIssued++;
+        if (sale.plate > 0) {
+          _platesIssued += sale.plate;
           _amountCollected += sale.costPlate;
         }
 
@@ -78,12 +84,11 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
-  void addLampsServed(DeepamSale sale) {
-    _localUpdateTime = DateTime.now();
-
+  void addLampsServed(DeepamSale sale, {bool localUpdate = true}) {
+    if (!mounted) return;
     setState(() {
       _lampsIssued += sale.count;
-      sale.plate ? _platesIssued++ : null;
+      sale.plate > 0 ? _platesIssued += sale.plate : null;
 
       if (_modeCount.containsKey(sale.paymentMode)) {
         _modeCount[sale.paymentMode] = _modeCount[sale.paymentMode]! + 1;
@@ -93,8 +98,30 @@ class _DashboardState extends State<Dashboard> {
 
       // update amount
       _amountCollected += (sale.count * sale.costLamp);
-      sale.plate ? _amountCollected += sale.costPlate : null;
+      sale.plate > 0 ? _amountCollected += (sale.costPlate * sale.plate) : null;
     });
+
+    if (localUpdate) {
+      _localUpdateTime = DateTime.now();
+    }
+  }
+
+  void deleteLampsServed(DeepamSale sale, {bool localUpdate = true}) {
+    if (!mounted) return;
+    setState(() {
+      _lampsIssued -= sale.count;
+      sale.plate > 0 ? _platesIssued -= sale.plate : null;
+
+      _modeCount[sale.paymentMode] = _modeCount[sale.paymentMode]! - 1;
+
+      // update amount
+      _amountCollected -= (sale.count * sale.costLamp);
+      sale.plate > 0 ? _amountCollected -= (sale.costPlate * sale.plate) : null;
+    });
+
+    if (localUpdate) {
+      _localUpdateTime = DateTime.now();
+    }
   }
 
   Widget _createLampCount(double height) {

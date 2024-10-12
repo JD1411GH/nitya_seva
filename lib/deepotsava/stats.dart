@@ -23,6 +23,7 @@ class _StatsPageState extends State<StatsPage> {
 
   Future<void> refresh() async {
     await _futureInit();
+    if (!mounted) return;
     setState(() {});
   }
 

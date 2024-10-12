@@ -1,23 +1,25 @@
 // Define two themes
 import 'package:flutter/material.dart';
 
-final primaryColor = Colors.blueGrey;
-final variantColor = Colors.grey[300];
-final textColor = Colors.black;
+final primaryColorDefault = Colors.blueGrey;
+final variantColorDefault = Colors.grey[300];
+final textColorDefault = Colors.black;
 ThemeData themeDefault = ThemeData(
   brightness: Brightness.light,
 
   // text theme
-  fontFamily: 'ConsolaMono',
   textTheme: TextTheme(
     bodySmall: TextStyle(
       color: Colors.black,
+      fontSize: 12.0,
     ),
     bodyMedium: TextStyle(
       color: Colors.black,
+      fontSize: 16.0,
     ),
     bodyLarge: TextStyle(
       color: Colors.black,
+      fontSize: 20.0,
     ),
     headlineMedium: TextStyle(
       fontSize: 24.0,
@@ -27,9 +29,9 @@ ThemeData themeDefault = ThemeData(
   ),
 
   // color scheme
-  primaryColor: primaryColor,
+  primaryColor: primaryColorDefault,
   colorScheme: ColorScheme.fromSwatch(
-    primarySwatch: primaryColor,
+    primarySwatch: primaryColorDefault,
   ),
   scaffoldBackgroundColor: const Color.fromARGB(255, 242, 251, 255),
 
@@ -37,7 +39,7 @@ ThemeData themeDefault = ThemeData(
   appBarTheme: AppBarTheme(
     foregroundColor: Colors.white,
     titleTextStyle: TextStyle(
-      fontSize: 24.0,
+      fontSize: 30.0,
       color: Colors.white,
       fontFamily: 'HowdyLemon',
     ),
@@ -45,7 +47,7 @@ ThemeData themeDefault = ThemeData(
 
   // icon button theme
   iconTheme: IconThemeData(
-    color: primaryColor,
+    color: primaryColorDefault,
     size: 24.0,
   ),
 
@@ -76,7 +78,7 @@ ThemeData themeDefault = ThemeData(
   // elevated button theme
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ButtonStyle(
-      backgroundColor: WidgetStateProperty.all<Color>(primaryColor),
+      backgroundColor: WidgetStateProperty.all<Color>(primaryColorDefault),
       foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
       textStyle: WidgetStateProperty.all<TextStyle>(
         TextStyle(
@@ -89,11 +91,17 @@ ThemeData themeDefault = ThemeData(
       ),
     ),
   ),
+
+  // theme for dividor
+  dividerTheme: DividerThemeData(
+    color: Colors.grey[400],
+    thickness: 1.0,
+  ),
 );
 
-final primaryColorRKC = Colors.deepOrange;
-final variantColorRKC = Colors.orange[50];
-final textColorRKC = Colors.brown;
+final primaryColorRKC = Colors.blue;
+final variantColorRKC = Colors.blue[50];
+final textColorRKC = Colors.blue[900];
 ThemeData themeRKC = themeDefault.copyWith(
   // text theme
   textTheme: themeDefault.textTheme.copyWith(
@@ -142,10 +150,10 @@ ThemeData themeRKC = themeDefault.copyWith(
   // input decoration theme
   inputDecorationTheme: themeDefault.inputDecorationTheme.copyWith(
     focusedBorder: themeDefault.inputDecorationTheme.focusedBorder?.copyWith(
-      borderSide: BorderSide(color: textColorRKC),
+      borderSide: BorderSide(color: textColorRKC ?? Colors.black),
     ),
     enabledBorder: themeDefault.inputDecorationTheme.enabledBorder?.copyWith(
-      borderSide: BorderSide(color: textColorRKC),
+      borderSide: BorderSide(color: textColorRKC ?? Colors.black),
     ),
   ),
 
@@ -167,9 +175,9 @@ ThemeData themeRKC = themeDefault.copyWith(
   ),
 );
 
-final primaryColorRRG = Colors.green;
-final variantColorRRG = Colors.lightGreen[50];
-final textColorRRG = Colors.green[900];
+final primaryColorRRG = Colors.brown;
+final variantColorRRG = Colors.brown[50];
+final textColorRRG = Colors.brown[900];
 ThemeData themeRRG = themeDefault.copyWith(
   // text theme
   textTheme: themeDefault.textTheme.copyWith(

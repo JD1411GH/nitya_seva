@@ -42,11 +42,11 @@ class FBL {
       }
     });
 
-    // dbRef.onChildRemoved.listen((event) {
-    //   if (!initialLoad) {
-    //     callbacks.onChange("REMOVE", event.snapshot.value);
-    //   }
-    // });
+    dbRef.onChildRemoved.listen((event) {
+      if (!initialLoad) {
+        callbacks.delete(event.snapshot.value);
+      }
+    });
 
     // Set initialLoad to false after the first set of events
     dbRef.once().then((_) {
@@ -72,13 +72,41 @@ class FBL {
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/deepotsava/$stall/sales/');
 
-    DateTime timestamp = DateTime.now();
+    DateTime timestamp = sale.timestamp;
     DatabaseReference ref =
         dbRef.child(timestamp.toIso8601String().replaceAll(".", "^"));
     try {
       await ref.set(sale.toJson());
     } catch (e) {
       Toaster().error("failed to add sale: $e");
+    }
+  }
+
+  Future<void> editSale(String stall, DeepamSale sale) async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/deepotsava/$stall/sales/');
+
+    DateTime timestamp = sale.timestamp;
+    DatabaseReference ref =
+        dbRef.child(timestamp.toIso8601String().replaceAll(".", "^"));
+    try {
+      await ref.set(sale.toJson());
+    } catch (e) {
+      Toaster().error("failed to edit sale: $e");
+    }
+  }
+
+  Future<void> deleteSale(String stall, DeepamSale sale) async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/deepotsava/$stall/sales/');
+
+    DateTime timestamp = sale.timestamp;
+    DatabaseReference ref =
+        dbRef.child(timestamp.toIso8601String().replaceAll(".", "^"));
+    try {
+      await ref.remove();
+    } catch (e) {
+      Toaster().error("failed to delete sale: $e");
     }
   }
 
@@ -150,10 +178,11 @@ class FBL {
 class FBLCallbacks {
   void Function(dynamic data) add;
   void Function() edit; // full refresh required on edit
-  // void Function(dynamic data) delete;
+  void Function(dynamic data) delete;
 
   FBLCallbacks({
     required this.add,
     required this.edit,
+    required this.delete,
   });
 }
