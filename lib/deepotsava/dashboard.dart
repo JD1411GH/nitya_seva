@@ -42,9 +42,9 @@ class _DashboardState extends State<Dashboard> {
         }, delete: (data) async {
           if (DateTime.now().difference(_localUpdateTime).inSeconds < 1) return;
 
-          // Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
-          // DeepamSale sale = DeepamSale.fromJson(map);
-          // addLampsServed(sale, localUpdate: false);
+          Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
+          DeepamSale sale = DeepamSale.fromJson(map);
+          deleteLampsServed(sale, localUpdate: false);
         },
 
             // edit
@@ -97,6 +97,23 @@ class _DashboardState extends State<Dashboard> {
       // update amount
       _amountCollected += (sale.count * sale.costLamp);
       sale.plate ? _amountCollected += sale.costPlate : null;
+    });
+
+    if (localUpdate) {
+      _localUpdateTime = DateTime.now();
+    }
+  }
+
+  void deleteLampsServed(DeepamSale sale, {bool localUpdate = true}) {
+    setState(() {
+      _lampsIssued -= sale.count;
+      sale.plate ? _platesIssued-- : null;
+
+      _modeCount[sale.paymentMode] = _modeCount[sale.paymentMode]! - 1;
+
+      // update amount
+      _amountCollected -= (sale.count * sale.costLamp);
+      sale.plate ? _amountCollected -= sale.costPlate : null;
     });
 
     if (localUpdate) {

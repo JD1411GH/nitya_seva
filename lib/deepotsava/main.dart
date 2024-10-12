@@ -125,7 +125,7 @@ class _DeepotsavaState extends State<Deepotsava>
                     text: 'Accounting',
                     isImageLeft: false,
                     color: Colors.yellow, // Set desired card color
-                    textColor: Colors.black, // Set desired text color
+                    textColor: Colors.green, // Set desired text color
                   ),
                 ),
               ),
