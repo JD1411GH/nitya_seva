@@ -81,9 +81,8 @@ class _HMIState extends State<HMI> {
             _selectedMode = mode;
 
             // change cupertino
-            // TODO: enable the code below
-            // int currentValue = _cupertinoController.selectedItem;
-            // _cupertinoController.jumpToItem(currentValue + num);
+            int currentValue = _cupertinoController.selectedItem;
+            _cupertinoController.jumpToItem(currentValue + num);
           });
         },
         onLongPress: () {
@@ -94,6 +93,18 @@ class _HMIState extends State<HMI> {
   }
 
   Widget _createPaymentWidget(String mode) {
+    String iconFile;
+    switch (mode) {
+      case 'UPI':
+        iconFile = 'assets/images/icon_upi.png';
+      case 'Cash':
+        iconFile = 'assets/images/icon_cash.png';
+      case 'Card':
+        iconFile = 'assets/images/icon_card.png';
+      default:
+        iconFile = 'assets/images/icon_gratis.png'; // gift
+    }
+
     return Container(
       decoration: BoxDecoration(
         color: _selectedMode == mode ? _bgColor : Colors.transparent,
@@ -110,7 +121,19 @@ class _HMIState extends State<HMI> {
                     _selectedMode = mode;
                   });
                 },
-                child: Container(width: 50, child: Center(child: Text(mode))),
+                child: Container(
+                  width: 50,
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        iconFile,
+                        fit: BoxFit.contain,
+                        height: 24.0, // Adjust the height as needed
+                      ),
+                      Center(child: Text(mode)),
+                    ],
+                  ),
+                ),
               ),
               _createAmountButton(1, mode),
               _createAmountButton(2, mode),
