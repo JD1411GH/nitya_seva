@@ -3,6 +3,7 @@ import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/laddu_seva/utils.dart';
+import 'package:garuda/utils.dart';
 import 'package:synchronized/synchronized.dart';
 
 class HistoryList extends StatefulWidget {
@@ -20,7 +21,7 @@ class _HistoryListState extends State<HistoryList> {
   final _lockInit = Lock();
 
   List<Widget> _logs = [];
-  Color _primaryColor = Const().getRandomLightColor();
+  Color _primaryColor = Utils().getRandomLightColor();
 
   Future<void> _futureInit([DateTime? month]) async {
     await _lockInit.synchronized(() async {

@@ -1,12 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/const.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
 
-class LogDialog extends StatelessWidget {
+class LogDialog extends StatefulWidget {
   final DeepamSale sale;
   const LogDialog({super.key, required this.sale});
 
   @override
+  _LogDialogState createState() => _LogDialogState();
+}
+
+class _LogDialogState extends State<LogDialog> {
+  late String selectedPaymentMode;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedPaymentMode = widget.sale.paymentMode;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    List<String> paymentModes = Const().paymentModes.keys.toList();
+
     return AlertDialog(
       title: Text("Edit deepam sale"),
       content: Column(
@@ -21,7 +37,8 @@ class LogDialog extends StatelessWidget {
               Expanded(
                 child: TextField(
                   textAlign: TextAlign.center,
-                  controller: TextEditingController(text: "${sale.count}"),
+                  controller:
+                      TextEditingController(text: "${widget.sale.count}"),
                   keyboardType: TextInputType.number,
                 ),
               )
@@ -36,7 +53,8 @@ class LogDialog extends StatelessWidget {
               Expanded(
                 child: TextField(
                   textAlign: TextAlign.center,
-                  controller: TextEditingController(text: "${sale.plate}"),
+                  controller:
+                      TextEditingController(text: "${widget.sale.plate}"),
                   keyboardType: TextInputType.number,
                 ),
               )
@@ -47,14 +65,16 @@ class LogDialog extends StatelessWidget {
           Row(
             children: [
               Text("Payment mode: "),
-              SizedBox(width: 20),
+              SizedBox(width: 30),
               Expanded(
                 child: DropdownButton<String>(
-                  value: sale.paymentMode,
+                  value: selectedPaymentMode,
                   onChanged: (String? newValue) {
-                    // Handle the change in payment mode here
+                    setState(() {
+                      selectedPaymentMode = newValue!;
+                    });
                   },
-                  items: <String>['Cash', 'Card', 'Online']
+                  items: paymentModes
                       .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,

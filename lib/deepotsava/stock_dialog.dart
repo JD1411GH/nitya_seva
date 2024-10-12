@@ -3,6 +3,7 @@ import 'package:garuda/const.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/deepotsava/fbl.dart';
 import 'package:garuda/theme.dart';
+import 'package:garuda/utils.dart';
 
 class StockAddDialog extends StatefulWidget {
   final String stall;
@@ -163,7 +164,7 @@ class _StockAddDialogState extends State<StockAddDialog> {
                       padding: const EdgeInsets.all(8.0),
                       child: TextButton(
                         onPressed: () async {
-                          String username = await Const().getUserName();
+                          String username = await Utils().getUserName();
                           DeepamStock stock = DeepamStock(
                             stall: widget.stall,
                             timestamp: DateTime.now(),

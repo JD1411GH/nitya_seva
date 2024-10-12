@@ -4,6 +4,7 @@ import 'package:garuda/const.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/deepotsava/fbl.dart';
 import 'package:garuda/theme.dart';
+import 'package:garuda/utils.dart';
 
 class HMI extends StatefulWidget {
   final String stall;
@@ -48,7 +49,7 @@ class _HMIState extends State<HMI> {
       _bgColor = Colors.grey;
     }
 
-    Const().getUserName().then((value) {
+    Utils().getUserName().then((value) {
       _user = value;
     });
   }

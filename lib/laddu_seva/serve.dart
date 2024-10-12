@@ -6,6 +6,8 @@ import 'package:garuda/laddu_seva/utils.dart';
 import 'package:garuda/pushpanjali/sevaslot.dart';
 import 'package:garuda/toaster.dart';
 
+import '../utils.dart';
+
 class Serve extends StatefulWidget {
   final LadduServe? serve; // for update
   final PushpanjaliSlot? slot;
@@ -467,7 +469,7 @@ class _ServeState extends State<Serve> {
     }
     LadduServe ladduServe = LadduServe(
       timestamp: now,
-      user: await Const().getUserName(),
+      user: await Utils().getUserName(),
       packsPushpanjali: packsPushpanjali,
       packsOtherSeva: packsOtherSeva,
       packsMisc: packsMisc,

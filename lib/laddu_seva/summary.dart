@@ -4,6 +4,7 @@ import 'package:garuda/const.dart';
 import 'package:garuda/fb.dart';
 import 'package:garuda/laddu_seva/datatypes.dart';
 import 'package:garuda/laddu_seva/utils.dart';
+import 'package:garuda/utils.dart';
 import 'package:synchronized/synchronized.dart';
 
 class Summary extends StatefulWidget {
@@ -207,7 +208,7 @@ class _SummaryState extends State<Summary> {
                     barColor = Const().ticketColors['2500']!;
                     break;
                   default:
-                    barColor = Const().getRandomDarkColor();
+                    barColor = Utils().getRandomDarkColor();
                 }
 
                 // Add newline character to the labels
