@@ -52,11 +52,16 @@ class DeepamStock {
 }
 
 class DeepamSale {
+  // default data
   final String stall;
   final DateTime timestamp;
   final String user;
+
+  // config data
   final int costLamp;
   final int costPlate;
+
+  // actual data
   final int count;
   final String paymentMode;
   final bool plate; // new parameter

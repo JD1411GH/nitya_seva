@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/deepotsava/fbl.dart';
+import 'package:garuda/deepotsava/log_dialog.dart';
 
 class Log extends StatefulWidget {
   final String stall;
@@ -94,60 +95,79 @@ class _LogState extends State<Log> {
     }
 
     return SingleChildScrollView(
+      // row of tiles
       scrollDirection: Axis.horizontal,
       child: Row(
         children: cardValues.map((value) {
-          return Card(
-            color: value.plate ? bgColorPlate : Colors.white,
-            margin: const EdgeInsets.all(8.0),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: SizedBox(
-              width: 100.0,
-              height: 100.0,
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Flexible(
-                          child: Image.asset(
-                            _getPaymentIcon(value.paymentMode),
-                            height: 12,
+          return GestureDetector(
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return LogDialog(sale: value);
+                },
+              );
+            },
+            child: Card(
+              color: value.plate ? bgColorPlate : Colors.white,
+              margin: const EdgeInsets.all(8.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: SizedBox(
+                width: 100.0,
+                height: 100.0,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // top row
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // payment mode icon
+                          Flexible(
+                            child: Image.asset(
+                              _getPaymentIcon(value.paymentMode),
+                              height: 12,
+                            ),
                           ),
+
+                          SizedBox(
+                            width: 4,
+                          ),
+
+                          // time
+                          Text(
+                            "${value.timestamp.hour}:${value.timestamp.minute.toString().padLeft(2, '0')}",
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ],
+                      ),
+
+                      // centre widget for count
+                      Container(
+                        padding: EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.black),
                         ),
-                        SizedBox(
-                          width:
-                              4, // Add some spacing between the image and the text
+                        child: Text(
+                          "${value.count}",
+                          style: TextStyle(fontSize: 18),
                         ),
-                        Text(
-                          "${value.timestamp.hour}:${value.timestamp.minute.toString().padLeft(2, '0')}",
+                      ),
+
+                      // sevakarta
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Text(
+                          "${value.user}",
                           style: TextStyle(fontSize: 12),
                         ),
-                      ],
-                    ),
-                    Container(
-                      padding: EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.black),
                       ),
-                      child: Text(
-                        "${value.count}",
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Text(
-                        "${value.user}",
-                        style: TextStyle(fontSize: 12),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
