@@ -140,7 +140,18 @@ class _HMIState extends State<HMI> {
           });
         },
         onLongPress: () {
-          _addSale(num, mode);
+          DeepamSale sale = DeepamSale(
+            timestamp: DateTime.now(),
+            stall: widget.stall,
+            count: num,
+            costLamp: Const().deepotsava['lamp']['cost'] as int,
+            costPlate: Const().deepotsava['plate']['cost'] as int,
+            paymentMode: mode,
+            user: _user,
+            plate: _plate,
+          );
+
+          _addSale(sale);
         },
       ),
     );
@@ -230,30 +241,19 @@ class _HMIState extends State<HMI> {
     );
   }
 
-  void _addSale(int count, mode) {
-    if (count == 0) {
+  void _addSale(DeepamSale sale) {
+    if (sale.plate == 0 && sale.count == 0) {
       return;
     }
 
     // return if not enough stock
-    if (_stockAvailable < count) {
+    if (_stockAvailable < sale.count) {
       Toaster().error("Not enough stock");
       return;
     }
 
-    DeepamSale sale = DeepamSale(
-      timestamp: DateTime.now(),
-      stall: widget.stall,
-      count: count,
-      costLamp: Const().deepotsava['lamp']['cost'] as int,
-      costPlate: Const().deepotsava['plate']['cost'] as int,
-      paymentMode: mode,
-      user: _user,
-      plate: _plate,
-    );
-
     // update stock
-    _stockAvailable -= count;
+    _stockAvailable -= sale.count;
 
     // update all dependent widgets
     widget.callbacks.add(sale);
@@ -334,8 +334,18 @@ class _HMIState extends State<HMI> {
                     icon: Icon(Icons.send),
                     iconSize: 24.0,
                     onPressed: () {
-                      _addSale(
-                          _cupertinoController.selectedItem, _selectedMode);
+                      DeepamSale sale = DeepamSale(
+                        timestamp: DateTime.now(),
+                        stall: widget.stall,
+                        count: _cupertinoController.selectedItem,
+                        costLamp: Const().deepotsava['lamp']['cost'] as int,
+                        costPlate: Const().deepotsava['plate']['cost'] as int,
+                        paymentMode: _selectedMode,
+                        user: _user,
+                        plate: _plate,
+                      );
+
+                      _addSale(sale);
                     },
                   )
                 ],
