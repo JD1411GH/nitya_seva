@@ -399,6 +399,7 @@ class _HMIState extends State<HMI> {
                       );
 
                       _addSale(sale);
+                      _recalculateAmount();
                     },
                   )
                 ],
