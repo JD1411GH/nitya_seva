@@ -20,10 +20,11 @@ class HMI extends StatefulWidget {
 final GlobalKey<_HMIState> templateKey = GlobalKey<_HMIState>();
 
 class _HMIState extends State<HMI> {
-  int _selectedAmount = 0;
+  int _count = 0;
   String _selectedMode = "";
   String _user = "Unknown";
   int _plate = 0;
+  int _amount = 0;
 
   Color? _themeColor;
   Color? _textColor;
@@ -102,6 +103,15 @@ class _HMIState extends State<HMI> {
     });
   }
 
+  void _recalculateAmount() {
+    if (_selectedMode == "Gift") {
+      _amount = 0;
+    } else
+      _amount = (_cupertinoController.selectedItem *
+              Const().deepotsava['lamp']['cost'] as int) +
+          (_plate * Const().deepotsava['plate']['cost'] as int);
+  }
+
   void _addStock(DeepamStock stock) {
     _stockAvailable += stock.preparedLamps + stock.unpreparedLamps;
   }
@@ -115,7 +125,7 @@ class _HMIState extends State<HMI> {
               border: Border.all(color: Colors.black), // Add border here
               borderRadius:
                   BorderRadius.circular(8.0), // Make the border rounded
-              color: _selectedAmount == num && _selectedMode == mode
+              color: _count == num && _selectedMode == mode
                   ? _themeColor
                   : Colors.transparent),
           padding: EdgeInsets.all(8.0), // Add padding inside the border
@@ -123,7 +133,7 @@ class _HMIState extends State<HMI> {
             '$num',
             style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: _selectedAmount == num && _selectedMode == mode
+                color: _count == num && _selectedMode == mode
                     ? Colors.white
                     : _textColor),
           ),
@@ -131,12 +141,14 @@ class _HMIState extends State<HMI> {
         onTap: () {
           if (!mounted) return;
           setState(() {
-            _selectedAmount = num;
+            _count = num;
             _selectedMode = mode;
 
             // change cupertino
-            int currentValue = _cupertinoController.selectedItem;
-            _cupertinoController.jumpToItem(currentValue + num);
+            _cupertinoController.jumpToItem(num);
+
+            // recalculate amount
+            _recalculateAmount();
           });
         },
         onLongPress: () {
@@ -185,8 +197,10 @@ class _HMIState extends State<HMI> {
               GestureDetector(
                 onTap: () {
                   if (!mounted) return;
+
                   setState(() {
                     _selectedMode = mode;
+                    _recalculateAmount();
                   });
                 },
                 child: Container(
@@ -224,12 +238,15 @@ class _HMIState extends State<HMI> {
       scrollController: _cupertinoController,
       itemExtent: 32.0,
       onSelectedItemChanged: (int index) {
+        if (!mounted) return;
+
         if (_selectedMode == "") {
-          if (!mounted) return;
-          setState(() {
-            _selectedMode = "Cash";
-          });
+          _selectedMode = "Cash";
         }
+
+        _recalculateAmount();
+
+        setState(() {});
       },
       children: List<Widget>.generate(100, (int index) {
         return Center(
@@ -267,7 +284,7 @@ class _HMIState extends State<HMI> {
     _cupertinoController.jumpToItem(0);
     if (!mounted) return;
     setState(() {
-      _selectedAmount = 0;
+      _count = 0;
       _selectedMode = "";
       _plate = 0;
     });
@@ -286,16 +303,40 @@ class _HMIState extends State<HMI> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  // reset button
+                  IconButton(
+                    icon: Icon(Icons.refresh),
+                    iconSize: 24.0,
+                    onPressed: () {
+                      if (!mounted) return;
+
+                      setState(() {
+                        _cupertinoController.jumpToItem(0);
+                        _count = 0;
+                        _selectedMode = "";
+                        _plate = 0;
+                        _amount = 0;
+                      });
+                    },
+                  ),
+
+                  // SizedBox(width: 18),
+
                   // Plate toggle
                   GestureDetector(
                     onTap: () {
                       if (!mounted) return;
+
                       setState(() {
                         _plate = _plate > 0 ? 0 : 1;
 
-                        if (_plate > 0 && _selectedMode == "") {
-                          _selectedMode = "Cash";
+                        if (_plate > 0) {
+                          if (_selectedMode == "") {
+                            _selectedMode = "Cash";
+                          }
                         }
+
+                        _recalculateAmount();
                       });
                     },
                     child: Container(
@@ -328,8 +369,14 @@ class _HMIState extends State<HMI> {
                     child: _createCupertino(),
                   ),
 
-                  // Add padding between the picker and the button
-                  SizedBox(height: 16), // Adjust the height as needed
+                  // Amount
+                  Container(
+                    width: 50,
+                    child: Text(
+                      '₹${_amount}',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                  ),
 
                   // serve button
                   IconButton(
