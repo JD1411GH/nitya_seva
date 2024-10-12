@@ -95,6 +95,7 @@ class _LogDialogState extends State<LogDialog> {
                   controller: _platecountController
                     ..text = "${widget.sale.plate}",
                   keyboardType: TextInputType.number,
+                  readOnly: true, // Make the text field uneditable
                 ),
               )
             ],
