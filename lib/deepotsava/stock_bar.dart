@@ -56,6 +56,7 @@ class _StockBarState extends State<StockBar> {
             }
 
             await refresh();
+            if (!mounted) return;
             setState(() {});
           },
 
@@ -95,6 +96,7 @@ class _StockBarState extends State<StockBar> {
             Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
             DeepamSale sale = DeepamSale.fromJson(map);
             _deleteServe(sale, localUpdate: false);
+            if (!mounted) return;
             setState(() {});
           },
 
@@ -106,6 +108,7 @@ class _StockBarState extends State<StockBar> {
             }
 
             await refresh();
+            if (!mounted) return;
             setState(() {});
           },
         ));
@@ -120,6 +123,7 @@ class _StockBarState extends State<StockBar> {
     List<DeepamStock> stocks = await FBL().getStocks(widget.stall);
     List<DeepamSale> sales = await FBL().getSales(widget.stall);
 
+    if (!mounted) return;
     setState(() {
       // reset the label variables
       _preparedLamps = 0;
@@ -145,6 +149,7 @@ class _StockBarState extends State<StockBar> {
   }
 
   void serveLamps(DeepamSale sale, {bool localUpdate = false}) {
+    if (!mounted) return;
     setState(() {
       _currentStock -= sale.count;
     });
@@ -155,6 +160,7 @@ class _StockBarState extends State<StockBar> {
   }
 
   void _deleteServe(DeepamSale sale, {bool localUpdate = false}) {
+    if (!mounted) return;
     setState(() {
       _currentStock += sale.count;
     });
@@ -165,6 +171,7 @@ class _StockBarState extends State<StockBar> {
   }
 
   void callbackAdd(DeepamStock stock, {bool localUpdate = false}) {
+    if (!mounted) return;
     setState(() {
       // update the label variables
       _preparedLamps += stock.preparedLamps;

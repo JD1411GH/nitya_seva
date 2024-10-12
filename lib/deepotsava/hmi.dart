@@ -129,6 +129,7 @@ class _HMIState extends State<HMI> {
           ),
         ),
         onTap: () {
+          if (!mounted) return;
           setState(() {
             _selectedAmount = num;
             _selectedMode = mode;
@@ -170,6 +171,7 @@ class _HMIState extends State<HMI> {
             children: [
               GestureDetector(
                 onTap: () {
+                  if (!mounted) return;
                   setState(() {
                     _selectedMode = mode;
                   });
@@ -210,6 +212,7 @@ class _HMIState extends State<HMI> {
       itemExtent: 32.0,
       onSelectedItemChanged: (int index) {
         if (_selectedMode == "") {
+          if (!mounted) return;
           setState(() {
             _selectedMode = "Cash";
           });
@@ -260,6 +263,7 @@ class _HMIState extends State<HMI> {
 
     // reset all selections
     _cupertinoController.jumpToItem(0);
+    if (!mounted) return;
     setState(() {
       _selectedAmount = 0;
       _selectedMode = "";
@@ -283,6 +287,7 @@ class _HMIState extends State<HMI> {
                   // Plate toggle
                   GestureDetector(
                     onTap: () {
+                      if (!mounted) return;
                       setState(() {
                         _plateEnabled = !_plateEnabled;
 

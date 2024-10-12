@@ -58,6 +58,7 @@ class _DashboardState extends State<Dashboard> {
   Future<void> refresh() async {
     List<DeepamSale> sales = await FBL().getSales(widget.stall);
 
+    if (!mounted) return;
     setState(() {
       _lampsIssued = 0;
       _platesIssued = 0;
@@ -84,6 +85,7 @@ class _DashboardState extends State<Dashboard> {
   }
 
   void addLampsServed(DeepamSale sale, {bool localUpdate = true}) {
+    if (!mounted) return;
     setState(() {
       _lampsIssued += sale.count;
       sale.plate ? _platesIssued++ : null;
@@ -105,6 +107,7 @@ class _DashboardState extends State<Dashboard> {
   }
 
   void deleteLampsServed(DeepamSale sale, {bool localUpdate = true}) {
+    if (!mounted) return;
     setState(() {
       _lampsIssued -= sale.count;
       sale.plate ? _platesIssued-- : null;

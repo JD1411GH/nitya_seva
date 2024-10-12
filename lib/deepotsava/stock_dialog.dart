@@ -100,6 +100,7 @@ class _StockAddDialogState extends State<StockAddDialog> {
                             ? Icons.expand_less
                             : Icons.expand_more),
                         onPressed: () {
+                          if (!mounted) return;
                           setState(() {
                             _isExpanded =
                                 !_isExpanded; // Toggle expansion state

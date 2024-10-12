@@ -82,6 +82,7 @@ class _StockPageState extends State<StockPage> {
             }
 
             await refresh();
+            if (!mounted) return;
             setState(() {});
           },
         ));
@@ -90,6 +91,7 @@ class _StockPageState extends State<StockPage> {
   Future<void> refresh() async {
     List<DeepamStock> stocks = await FBL().getStocks(widget.stall);
 
+    if (!mounted) return;
     setState(() {
       // reset the label variables
       _preparedLamps = 0;
@@ -118,6 +120,7 @@ class _StockPageState extends State<StockPage> {
   }
 
   void callbackAdd(DeepamStock stock, {bool localUpdate = false}) {
+    if (!mounted) return;
     setState(() {
       // update the label variables
       _preparedLamps += stock.preparedLamps;

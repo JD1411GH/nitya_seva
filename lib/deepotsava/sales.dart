@@ -27,6 +27,7 @@ class _SalesState extends State<Sales> {
     await logKey.currentState!.refresh();
     await stockBarKey.currentState!.refresh();
 
+    if (!mounted) return;
     setState(() {});
   }
 

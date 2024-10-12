@@ -109,6 +109,7 @@ class _LogDialogState extends State<LogDialog> {
                 child: DropdownButton<String>(
                   value: selectedPaymentMode,
                   onChanged: (String? newValue) {
+                    if (!mounted) return;
                     setState(() {
                       selectedPaymentMode = newValue!;
                     });

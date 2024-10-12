@@ -61,12 +61,14 @@ class _LogState extends State<Log> {
             }
 
             await refresh();
+            if (!mounted) return;
             setState(() {});
           },
         ));
   }
 
   void addLog(DeepamSale sale, {bool localUpdate = false}) {
+    if (!mounted) return;
     setState(() {
       cardValues.insert(0, sale);
     });
@@ -79,6 +81,7 @@ class _LogState extends State<Log> {
   Future<void> refresh() async {
     cardValues = await FBL().getSales(widget.stall);
     cardValues.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+    if (!mounted) return;
     setState(() {});
   }
 
@@ -120,6 +123,7 @@ class _LogState extends State<Log> {
                     sale: value,
                     callbacks: LogCallbacks(
                         edit: (DeepamSale data, {bool? localUpdate}) {
+                      if (!mounted) return;
                       setState(() {
                         // update log
                         cardValues.removeWhere(
@@ -138,6 +142,7 @@ class _LogState extends State<Log> {
                       // update database
                     }, delete: (DeepamSale data, {bool? localUpdate}) {
                       // update UI
+                      if (!mounted) return;
                       setState(() {
                         cardValues.removeWhere(
                             (element) => element.timestamp == data.timestamp);
