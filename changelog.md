@@ -1,3 +1,6 @@
+# 3.2.2
+- fix: disabled plate edit
+
 # 3.2.1
 - fix: hmi UI fixes
 
