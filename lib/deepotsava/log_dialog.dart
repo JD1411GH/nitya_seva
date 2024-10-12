@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/const.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
+import 'package:garuda/utils.dart';
 
 class LogDialog extends StatefulWidget {
   final DeepamSale sale;
-  const LogDialog({super.key, required this.sale});
+  final LogCallbacks callbacks;
+  const LogDialog({super.key, required this.sale, required this.callbacks});
 
   @override
   _LogDialogState createState() => _LogDialogState();
@@ -13,10 +15,47 @@ class LogDialog extends StatefulWidget {
 class _LogDialogState extends State<LogDialog> {
   late String selectedPaymentMode;
 
+  // controllers to get values from the dialog
+  TextEditingController _lampcountController = TextEditingController();
+  TextEditingController _platecountController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     selectedPaymentMode = widget.sale.paymentMode;
+  }
+
+  void _deleteSale(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Confirm Deletion"),
+          content: Text("Are you sure you want to delete this sale?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                // delete the sale object
+                widget.callbacks.delete(widget.sale, localUpdate: true);
+
+                // close the confirmation dialog
+                Navigator.of(context).pop();
+
+                // close the main dialog
+                Navigator.of(context).pop();
+              },
+              child: Text("Delete", style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -37,8 +76,8 @@ class _LogDialogState extends State<LogDialog> {
               Expanded(
                 child: TextField(
                   textAlign: TextAlign.center,
-                  controller:
-                      TextEditingController(text: "${widget.sale.count}"),
+                  controller: _lampcountController
+                    ..text = "${widget.sale.count}",
                   keyboardType: TextInputType.number,
                 ),
               )
@@ -53,8 +92,8 @@ class _LogDialogState extends State<LogDialog> {
               Expanded(
                 child: TextField(
                   textAlign: TextAlign.center,
-                  controller:
-                      TextEditingController(text: "${widget.sale.plate}"),
+                  controller: _platecountController
+                    ..text = "${widget.sale.plate}",
                   keyboardType: TextInputType.number,
                 ),
               )
@@ -88,13 +127,51 @@ class _LogDialogState extends State<LogDialog> {
         ],
       ),
       actions: [
+        // delete button
+        TextButton(
+          onPressed: () {
+            _deleteSale(context);
+          },
+          child: Text("Delete", style: TextStyle(color: Colors.red)),
+        ),
+
+        // cancel button
         TextButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
           child: Text("Cancel"),
         ),
+
+        // update button
+        TextButton(
+          onPressed: () async {
+            // update the sale object
+            DeepamSale updatedSale = widget.sale.copyWith(
+              count: int.parse(_lampcountController.text),
+              plate: (_platecountController.text == "true" ? true : false),
+              paymentMode: selectedPaymentMode,
+            );
+
+            // call the edit callback
+            widget.callbacks.edit(updatedSale, localUpdate: true);
+
+            // close the dialog
+            Navigator.of(context).pop();
+          },
+          child: Text("Update"),
+        ),
       ],
     );
   }
+}
+
+class LogCallbacks {
+  void Function(DeepamSale data, {bool localUpdate}) edit;
+  void Function(DeepamSale data, {bool localUpdate}) delete;
+
+  LogCallbacks({
+    required this.edit,
+    required this.delete,
+  });
 }

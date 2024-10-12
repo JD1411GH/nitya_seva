@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/const.dart';
+import 'package:garuda/utils.dart';
 
 class Dist extends StatefulWidget {
   @override
@@ -9,7 +10,7 @@ class Dist extends StatefulWidget {
 final GlobalKey<_DistState> DistKey = GlobalKey<_DistState>();
 
 class _DistState extends State<Dist> {
-  final primaryColor = Const().getRandomDarkColor();
+  final primaryColor = Utils().getRandomDarkColor();
   bool isCollapsed = false;
 
   @override

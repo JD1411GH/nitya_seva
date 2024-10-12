@@ -102,4 +102,26 @@ class DeepamSale {
       'plate': plate, // new parameter
     };
   }
+
+  DeepamSale copyWith({
+    String? stall,
+    DateTime? timestamp,
+    String? user,
+    int? costLamp,
+    int? costPlate,
+    int? count,
+    String? paymentMode,
+    bool? plate,
+  }) {
+    return DeepamSale(
+      stall: stall ?? this.stall,
+      timestamp: timestamp ?? this.timestamp,
+      user: user ?? this.user,
+      costLamp: costLamp ?? this.costLamp,
+      costPlate: costPlate ?? this.costPlate,
+      count: count ?? this.count,
+      paymentMode: paymentMode ?? this.paymentMode,
+      plate: plate ?? this.plate,
+    );
+  }
 }

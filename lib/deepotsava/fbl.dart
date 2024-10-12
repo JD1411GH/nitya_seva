@@ -72,7 +72,21 @@ class FBL {
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/deepotsava/$stall/sales/');
 
-    DateTime timestamp = DateTime.now();
+    DateTime timestamp = sale.timestamp;
+    DatabaseReference ref =
+        dbRef.child(timestamp.toIso8601String().replaceAll(".", "^"));
+    try {
+      await ref.set(sale.toJson());
+    } catch (e) {
+      Toaster().error("failed to add sale: $e");
+    }
+  }
+
+  Future<void> editSale(String stall, DeepamSale sale) async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/deepotsava/$stall/sales/');
+
+    DateTime timestamp = sale.timestamp;
     DatabaseReference ref =
         dbRef.child(timestamp.toIso8601String().replaceAll(".", "^"));
     try {

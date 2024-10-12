@@ -104,7 +104,39 @@ class _LogState extends State<Log> {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return LogDialog(sale: value);
+                  return LogDialog(
+                    sale: value,
+                    callbacks: LogCallbacks(
+                        edit: (DeepamSale data, {bool? localUpdate}) async {
+                      // update database synchronously
+                      // sync update required here in order to enable other UI refresh
+                      await FBL().editSale(widget.stall, data);
+
+                      if (mounted) {
+                        setState(() {
+                          // update log
+                          cardValues.removeWhere(
+                              (element) => element.timestamp == data.timestamp);
+                          cardValues.insert(0, data);
+                          cardValues.sort(
+                              (a, b) => b.timestamp.compareTo(a.timestamp));
+
+                          // update availability
+
+                          // update dashboard
+                        });
+                      }
+                      // update database
+                    }, delete: (DeepamSale data, {bool? localUpdate}) {
+                      // update UI
+                      setState(() {
+                        cardValues.removeWhere(
+                            (element) => element.timestamp == data.timestamp);
+                      });
+
+                      // update database synchronously
+                    }),
+                  );
                 },
               );
             },
