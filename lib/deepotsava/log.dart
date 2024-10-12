@@ -116,6 +116,9 @@ class _LogState extends State<Log> {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: cardValues.map((value) {
+          int amount =
+              (value.count * value.costLamp) + (value.plate * value.costPlate);
+
           return GestureDetector(
             onTap: () {
               showDialog(
@@ -178,18 +181,6 @@ class _LogState extends State<Log> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // payment mode icon
-                          Flexible(
-                            child: Image.asset(
-                              _getPaymentIcon(value.paymentMode),
-                              height: 12,
-                            ),
-                          ),
-
-                          SizedBox(
-                            width: 4,
-                          ),
-
                           // time
                           Text(
                             "${value.timestamp.hour}:${value.timestamp.minute.toString().padLeft(2, '0')}",
@@ -199,17 +190,44 @@ class _LogState extends State<Log> {
                       ),
 
                       // centre widget for count
-                      Container(
-                        padding: EdgeInsets.all(8.0),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.black),
-                          color: value.plate > 0 ? bgColor : Colors.transparent,
-                        ),
-                        child: Text(
-                          "${value.count}",
-                          style: TextStyle(fontSize: 18),
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(8.0),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.black),
+                              color: value.plate > 0
+                                  ? bgColor
+                                  : Colors.transparent,
+                            ),
+                            child: Text(
+                              "${value.count}",
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ),
+
+                          SizedBox(width: 8),
+
+                          // payment
+                          Column(
+                            children: [
+                              // payment mode icon
+                              Image.asset(
+                                _getPaymentIcon(value.paymentMode),
+                                fit: BoxFit.scaleDown,
+                                height: 18,
+                              ),
+
+                              // amount
+                              Text(
+                                "₹$amount",
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ],
+                          )
+                        ],
                       ),
 
                       // sevakarta

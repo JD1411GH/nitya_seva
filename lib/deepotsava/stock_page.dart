@@ -153,7 +153,7 @@ class _StockPageState extends State<StockPage> {
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Sevakarta: ${stock.user}"),
+          Text("${stock.user}"),
           if (stock.plates > 0)
             Text(
               'Plates: ${stock.plates}',

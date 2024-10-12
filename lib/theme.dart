@@ -94,7 +94,7 @@ ThemeData themeDefault = ThemeData(
 
   // theme for dividor
   dividerTheme: DividerThemeData(
-    color: Colors.grey[200],
+    color: Colors.grey[400],
     thickness: 1.0,
   ),
 );
