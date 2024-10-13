@@ -1,3 +1,6 @@
+# 3.2.3
+- fix: stock UI
+
 # 3.2.2
 - fix: disabled plate edit
 

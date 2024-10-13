@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:garuda/const.dart';
 import 'package:garuda/utils.dart';
 
 class Dist extends StatefulWidget {
