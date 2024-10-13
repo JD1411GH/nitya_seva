@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:garuda/const.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/deepotsava/fbl.dart';
 import 'package:garuda/theme.dart';
@@ -85,64 +84,18 @@ class _StockAddDialogState extends State<StockAddDialog> {
                   ),
                 ),
 
-                // Expand/Collapse Button
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 0.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Show more',
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                      IconButton(
-                        icon: Icon(_isExpanded
-                            ? Icons.expand_less
-                            : Icons.expand_more),
-                        onPressed: () {
-                          if (!mounted) return;
-                          setState(() {
-                            _isExpanded =
-                                !_isExpanded; // Toggle expansion state
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-
                 // Collapsible fields
-                Visibility(
-                  visible: _isExpanded, // Show only if expanded
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 0),
-                        child: TextField(
-                          decoration: InputDecoration(labelText: 'Wicks'),
-                          controller: _wicksController,
-                          keyboardType: TextInputType.number,
-                        ),
+                Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 0),
+                      child: TextField(
+                        decoration: InputDecoration(labelText: 'Wicks'),
+                        controller: _wicksController,
+                        keyboardType: TextInputType.number,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 0),
-                        child: TextField(
-                          decoration:
-                              InputDecoration(labelText: 'Ghee packets'),
-                          controller: _gheePacketsController,
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 0),
-                        child: TextField(
-                          decoration: InputDecoration(labelText: 'Oil cans'),
-                          controller: _oilCansController,
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
 
                 // Button row
@@ -190,16 +143,8 @@ class _StockAddDialogState extends State<StockAddDialog> {
                                   ? '0'
                                   : _wicksController.text,
                             ),
-                            gheePackets: int.parse(
-                              _gheePacketsController.text.isEmpty
-                                  ? '0'
-                                  : _gheePacketsController.text,
-                            ),
-                            oilCans: int.parse(
-                              _oilCansController.text.isEmpty
-                                  ? '0'
-                                  : _oilCansController.text,
-                            ),
+                            gheePackets: 0,
+                            oilCans: 0,
                           );
 
                           widget.callbacks.add(stock, localUpdate: true);

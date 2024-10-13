@@ -116,6 +116,13 @@ class _StockPageState extends State<StockPage> {
         // add a tile for the new entry
         _addStockTile(stock);
       });
+
+      // sort the list of stock entries by timestamp
+      _stockTiles.sort((a, b) {
+        String timeA = a.title.toString();
+        String timeB = b.title.toString();
+        return timeB.compareTo(timeA);
+      });
     });
   }
 
@@ -144,16 +151,27 @@ class _StockPageState extends State<StockPage> {
     String time = DateFormat('HH:mm').format(stock.timestamp);
 
     _stockTiles.add(ListTile(
-      // title
+      // title: timetamp
       title: Text(
         '${time}',
+        style: _selectedTheme.textTheme.bodyLarge!.copyWith(
+          fontWeight: FontWeight.bold,
+        ),
       ),
 
       // body
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("${stock.user}"),
+          Text("Sevakarta: ${stock.user}"),
+          if (stock.preparedLamps > 0)
+            Text(
+              'Prepared lamps: ${stock.preparedLamps}',
+            ),
+          if (stock.unpreparedLamps > 0)
+            Text(
+              'Unprepared lamps: ${stock.unpreparedLamps}',
+            ),
           if (stock.plates > 0)
             Text(
               'Plates: ${stock.plates}',
@@ -161,14 +179,6 @@ class _StockPageState extends State<StockPage> {
           if (stock.wicks > 0)
             Text(
               'Wicks: ${stock.wicks}',
-            ),
-          if (stock.gheePackets > 0)
-            Text(
-              'Ghee packets: ${stock.gheePackets}',
-            ),
-          if (stock.oilCans > 0)
-            Text(
-              'Oil cans: ${stock.oilCans}',
             ),
         ],
       ),
