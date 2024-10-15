@@ -297,7 +297,7 @@ class _HMIState extends State<HMI> {
       child: Container(
         constraints:
             BoxConstraints(minHeight: 320), // Define minimum height here
-        child: Stack(
+        child: Column(
           children: [
             Align(
               alignment: Alignment.center,
@@ -415,33 +415,53 @@ class _HMIState extends State<HMI> {
               ),
             ),
 
+            SizedBox(height: 8),
+
             // UPI corner
-            Positioned(
-              top: 70,
-              left: 10,
-              child: _createPaymentWidget("UPI"),
-            ),
+            // Positioned(
+            //   top: 70,
+            //   left: 10,
+            //   child: _createPaymentWidget("UPI"),
+            // ),
 
             // Cash corner
-            Positioned(
-              bottom: 10,
-              left: 10,
-              child: _createPaymentWidget("Cash"),
+            // Positioned(
+            //   bottom: 10,
+            //   left: 10,
+            //   child: _createPaymentWidget("Cash"),
+            // ),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _createPaymentWidget("UPI"),
+                _createPaymentWidget("Cash"),
+              ],
+            ),
+
+            SizedBox(height: 8),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _createPaymentWidget("Card"),
+                _createPaymentWidget("Gift"),
+              ],
             ),
 
             // Card corner
-            Positioned(
-              top: 70,
-              right: 10,
-              child: _createPaymentWidget("Card"),
-            ),
+            // Positioned(
+            //   top: 70,
+            //   right: 10,
+            //   child: _createPaymentWidget("Card"),
+            // ),
 
             // Gift corner
-            Positioned(
-              bottom: 10,
-              right: 10,
-              child: _createPaymentWidget("Gift"),
-            ),
+            // Positioned(
+            //   bottom: 10,
+            //   right: 10,
+            //   child: _createPaymentWidget("Gift"),
+            // ),
 
             // dummy text to prevent crash
             Text('')
