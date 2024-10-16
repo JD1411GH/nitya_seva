@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 final primaryColorDefault = Colors.blueGrey;
-final variantColorDefault = Colors.grey[300];
+final variantColorDefault = Colors.blueGrey[50];
 final textColorDefault = Colors.blueGrey[900];
 ThemeData themeDefault = ThemeData(
   // color scheme

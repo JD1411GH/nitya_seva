@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:garuda/deepotsava/accounting.dart';
+import 'package:garuda/deepotsava/accounting/main.dart';
 import 'package:garuda/deepotsava/sales.dart';
 import 'package:garuda/theme.dart';
 import 'package:garuda/toaster.dart';

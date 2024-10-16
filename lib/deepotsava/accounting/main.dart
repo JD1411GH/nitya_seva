@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:garuda/const.dart';
+import 'package:garuda/deepotsava/accounting/pie.dart';
 import 'package:garuda/deepotsava/date_header.dart';
 import 'package:garuda/theme.dart';
 
@@ -10,22 +11,6 @@ class Accounting extends StatefulWidget {
 }
 
 class _AccountingState extends State<Accounting> {
-  Map<String, int> countMode = {
-    // {mode: count}
-    'UPI': 30,
-    'Cash': 30,
-    'Card': 20,
-    'Gift': 20,
-  };
-
-  Map<String, int> countModePercentage = {
-    // {mode: percentage}
-    'UPI': 30,
-    'Cash': 30,
-    'Card': 20,
-    'Gift': 20,
-  };
-
   @override
   initState() {
     super.initState();
@@ -35,83 +20,6 @@ class _AccountingState extends State<Accounting> {
 
   Future<void> _refresh() async {
     setState(() {});
-  }
-
-  PieChartSectionData _createPieSection(mode) {
-    Color color = Colors.grey;
-    color = Const().paymentModes[mode]?['color'] as Color;
-
-    return PieChartSectionData(
-      color: color,
-      value: countModePercentage[mode]!.toDouble(),
-      title: countMode[mode].toString(),
-      radius: 40,
-      titleStyle: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.bold,
-        color: countModePercentage[mode]! > 9
-            ? Colors.white
-            : Theme.of(context).textTheme.bodyLarge!.color,
-      ),
-      titlePositionPercentageOffset: countModePercentage[mode]! > 9 ? 0.5 : 1.2,
-    );
-  }
-
-  Widget _createPieChart(BuildContext context) {
-    if (countModePercentage['UPI'] == 0 &&
-        countModePercentage['Cash'] == 0 &&
-        countModePercentage['Card'] == 0 &&
-        countModePercentage['Gift'] == 0) {
-      return const Text("");
-    }
-
-    return PieChart(
-      PieChartData(
-        sections: [
-          // UPI
-          _createPieSection('UPI'),
-
-          // cash
-          _createPieSection('Cash'),
-
-          // card
-          _createPieSection('Card'),
-
-          // gift
-          _createPieSection('Gift'),
-        ],
-        sectionsSpace: 2,
-        centerSpaceRadius: 8,
-      ),
-    );
-  }
-
-  Widget _createPieLegends() {
-    List<Widget> children = [];
-
-    Const().paymentModes.forEach((mode, details) {
-      if (countModePercentage[mode] != 0) {
-        children.add(_createLegendItem(details['color'] as Color, mode));
-      }
-    });
-
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.start, children: children);
-  }
-
-  Widget _createLegendItem(Color color, String text) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 16,
-          height: 16,
-          color: color,
-        ),
-        const SizedBox(width: 4),
-        Text(text),
-      ],
-    );
   }
 
   Widget _createDashboard() {
@@ -180,20 +88,11 @@ class _AccountingState extends State<Accounting> {
               DateHeader(),
 
               const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 100, // Reduced width
-                    height: 100, // Reduced height
-                    child: _createPieChart(context),
-                  ),
-                  const SizedBox(width: 30), // Increased width for more padding
-                  _createPieLegends(),
-                ],
-              ),
 
-              _createDashboard(),
+              // card for pie chart
+              Pie(),
+
+              Card(child: _createDashboard()),
               // overall total
             ],
           ),
