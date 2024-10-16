@@ -3,27 +3,27 @@ import 'package:flutter/material.dart';
 
 final primaryColorDefault = Colors.blueGrey;
 final variantColorDefault = Colors.grey[300];
-final textColorDefault = Colors.black;
+final textColorDefault = Colors.blueGrey[900];
 ThemeData themeDefault = ThemeData(
   brightness: Brightness.light,
 
   // text theme
   textTheme: TextTheme(
     bodySmall: TextStyle(
-      color: Colors.black,
+      color: textColorDefault,
       fontSize: 12.0,
     ),
     bodyMedium: TextStyle(
-      color: Colors.black,
+      color: textColorDefault,
       fontSize: 16.0,
     ),
     bodyLarge: TextStyle(
-      color: Colors.black,
+      color: textColorDefault,
       fontSize: 20.0,
     ),
     headlineMedium: TextStyle(
       fontSize: 24.0,
-      color: Colors.black,
+      color: textColorDefault,
       fontWeight: FontWeight.bold,
     ),
   ),
@@ -37,7 +37,7 @@ ThemeData themeDefault = ThemeData(
 
   // app bar
   appBarTheme: AppBarTheme(
-    foregroundColor: Colors.white,
+    backgroundColor: primaryColorDefault,
     titleTextStyle: TextStyle(
       fontSize: 30.0,
       color: Colors.white,
@@ -57,21 +57,21 @@ ThemeData themeDefault = ThemeData(
     titleTextStyle: TextStyle(
       fontSize: 20.0,
       fontWeight: FontWeight.bold,
-      color: Colors.black,
+      color: textColorDefault,
     ),
     contentTextStyle: TextStyle(
       fontSize: 16.0,
-      color: Colors.black,
+      color: textColorDefault,
     ),
   ),
 
   // input decoration theme
   inputDecorationTheme: InputDecorationTheme(
     focusedBorder: UnderlineInputBorder(
-      borderSide: BorderSide(color: Colors.black),
+      borderSide: BorderSide(color: textColorDefault ?? Colors.black),
     ),
     enabledBorder: UnderlineInputBorder(
-      borderSide: BorderSide(color: Colors.black),
+      borderSide: BorderSide(color: textColorDefault ?? Colors.black),
     ),
   ),
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/deepotsava/accounting.dart';
 import 'package:garuda/deepotsava/sales.dart';
 import 'package:garuda/theme.dart';
 import 'package:garuda/toaster.dart';
@@ -61,7 +62,8 @@ class _DeepotsavaState extends State<Deepotsava>
   }
 
   void _onAccountingTap() {
-    Toaster().error("Not implemented");
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => Accounting()));
   }
 
   @override
