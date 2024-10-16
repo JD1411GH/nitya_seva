@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:garuda/const.dart';
 import 'package:garuda/deepotsava/date_header.dart';
 import 'package:garuda/theme.dart';
 
@@ -36,21 +37,23 @@ class _AccountingState extends State<Accounting> {
     setState(() {});
   }
 
-  PieChartSectionData _createPieSection(pieValue, pieText) {
+  PieChartSectionData _createPieSection(mode) {
+    Color color = Colors.grey;
+    color = Const().paymentModes[mode]?['color'] as Color;
+
     return PieChartSectionData(
-      color: Colors.orange,
-      value: pieValue.toDouble(),
-      title: pieText,
+      color: color,
+      value: countModePercentage[mode]!.toDouble(),
+      title: countMode[mode].toString(),
       radius: 40,
       titleStyle: TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.bold,
-        color: countModePercentage['UPI']! > 9
+        color: countModePercentage[mode]! > 9
             ? Colors.white
             : Theme.of(context).textTheme.bodyLarge!.color,
       ),
-      titlePositionPercentageOffset:
-          countModePercentage['UPI']! > 9 ? 0.5 : 1.2,
+      titlePositionPercentageOffset: countModePercentage[mode]! > 9 ? 0.5 : 1.2,
     );
   }
 
@@ -66,20 +69,16 @@ class _AccountingState extends State<Accounting> {
       PieChartData(
         sections: [
           // UPI
-          _createPieSection(
-              countModePercentage['UPI']!.toDouble(), '${countMode['UPI']}'),
+          _createPieSection('UPI'),
 
           // cash
-          _createPieSection(
-              countModePercentage['Cash']!.toDouble(), '${countMode['Cash']}'),
+          _createPieSection('Cash'),
 
           // card
-          _createPieSection(
-              countModePercentage['Card']!.toDouble(), '${countMode['Card']}'),
+          _createPieSection('Card'),
 
           // gift
-          _createPieSection(
-              countModePercentage['Gift']!.toDouble(), '${countMode['Gift']}'),
+          _createPieSection('Gift'),
         ],
         sectionsSpace: 2,
         centerSpaceRadius: 8,
@@ -88,20 +87,16 @@ class _AccountingState extends State<Accounting> {
   }
 
   Widget _createPieLegends() {
-    if (countModePercentage['UPI'] == 0 &&
-        countModePercentage['Cash'] == 0 &&
-        countModePercentage['Card'] == 0) {
-      return const Text("");
-    }
+    List<Widget> children = [];
+
+    Const().paymentModes.forEach((mode, details) {
+      if (countModePercentage[mode] != 0) {
+        children.add(_createLegendItem(details['color'] as Color, mode));
+      }
+    });
+
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _createLegendItem(Colors.orange, 'UPI'),
-        _createLegendItem(Colors.green, 'Cash'),
-        _createLegendItem(Colors.blue, 'Card'),
-        _createLegendItem(Colors.purple, 'Gift'),
-      ],
-    );
+        crossAxisAlignment: CrossAxisAlignment.start, children: children);
   }
 
   Widget _createLegendItem(Color color, String text) {
