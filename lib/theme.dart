@@ -5,7 +5,12 @@ final primaryColorDefault = Colors.blueGrey;
 final variantColorDefault = Colors.grey[300];
 final textColorDefault = Colors.blueGrey[900];
 ThemeData themeDefault = ThemeData(
-  brightness: Brightness.light,
+  // color scheme
+  primaryColor: primaryColorDefault,
+  colorScheme: ColorScheme.fromSwatch(
+    primarySwatch: primaryColorDefault,
+  ),
+  scaffoldBackgroundColor: const Color.fromARGB(255, 242, 251, 255),
 
   // text theme
   textTheme: TextTheme(
@@ -28,13 +33,6 @@ ThemeData themeDefault = ThemeData(
     ),
   ),
 
-  // color scheme
-  primaryColor: primaryColorDefault,
-  colorScheme: ColorScheme.fromSwatch(
-    primarySwatch: primaryColorDefault,
-  ),
-  scaffoldBackgroundColor: const Color.fromARGB(255, 242, 251, 255),
-
   // app bar
   appBarTheme: AppBarTheme(
     backgroundColor: primaryColorDefault,
@@ -42,6 +40,9 @@ ThemeData themeDefault = ThemeData(
       fontSize: 30.0,
       color: Colors.white,
       fontFamily: 'HowdyLemon',
+    ),
+    iconTheme: IconThemeData(
+      color: Colors.white, // Set the back button color to white
     ),
   ),
 
@@ -103,6 +104,13 @@ final primaryColorRKC = Colors.blue;
 final variantColorRKC = Colors.blue[50];
 final textColorRKC = Colors.blue[900];
 ThemeData themeRKC = themeDefault.copyWith(
+  // color theme
+  primaryColor: primaryColorRKC,
+  colorScheme: ColorScheme.fromSwatch(
+    primarySwatch: primaryColorRKC,
+  ),
+  scaffoldBackgroundColor: variantColorRKC,
+
   // text theme
   textTheme: themeDefault.textTheme.copyWith(
     bodySmall: themeDefault.textTheme.bodySmall?.copyWith(
@@ -118,13 +126,6 @@ ThemeData themeRKC = themeDefault.copyWith(
       color: textColorRKC,
     ),
   ),
-
-  // color theme
-  primaryColor: primaryColorRKC,
-  colorScheme: ColorScheme.fromSwatch(
-    primarySwatch: primaryColorRKC,
-  ),
-  scaffoldBackgroundColor: variantColorRKC,
 
   // app bar
   appBarTheme: themeDefault.appBarTheme.copyWith(

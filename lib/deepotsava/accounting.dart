@@ -36,9 +36,25 @@ class _AccountingState extends State<Accounting> {
     setState(() {});
   }
 
-  Widget _createPieChart(BuildContext context) {
-    double radius = 40;
+  PieChartSectionData _createPieSection(pieValue, pieText) {
+    return PieChartSectionData(
+      color: Colors.orange,
+      value: pieValue.toDouble(),
+      title: pieText,
+      radius: 40,
+      titleStyle: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        color: countModePercentage['UPI']! > 9
+            ? Colors.white
+            : Theme.of(context).textTheme.bodyLarge!.color,
+      ),
+      titlePositionPercentageOffset:
+          countModePercentage['UPI']! > 9 ? 0.5 : 1.2,
+    );
+  }
 
+  Widget _createPieChart(BuildContext context) {
     if (countModePercentage['UPI'] == 0 &&
         countModePercentage['Cash'] == 0 &&
         countModePercentage['Card'] == 0 &&
@@ -46,25 +62,14 @@ class _AccountingState extends State<Accounting> {
       return const Text("");
     }
 
+    double radius = 40;
+
     return PieChart(
       PieChartData(
         sections: [
           // UPI
-          PieChartSectionData(
-            color: Colors.orange,
-            value: countModePercentage['UPI']!.toDouble(),
-            title: '${countMode['UPI']}',
-            radius: radius,
-            titleStyle: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: countModePercentage['UPI']! > 9
-                  ? Colors.white
-                  : Theme.of(context).textTheme.bodyLarge!.color,
-            ),
-            titlePositionPercentageOffset:
-                countModePercentage['UPI']! > 9 ? 0.5 : 1.2,
-          ),
+          _createPieSection(
+              countModePercentage['UPI']!.toDouble(), '${countMode['UPI']}'),
 
           // cash
           PieChartSectionData(
