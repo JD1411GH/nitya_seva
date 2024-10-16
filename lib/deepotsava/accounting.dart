@@ -62,8 +62,6 @@ class _AccountingState extends State<Accounting> {
       return const Text("");
     }
 
-    double radius = 40;
-
     return PieChart(
       PieChartData(
         sections: [
@@ -72,55 +70,16 @@ class _AccountingState extends State<Accounting> {
               countModePercentage['UPI']!.toDouble(), '${countMode['UPI']}'),
 
           // cash
-          PieChartSectionData(
-            color: Colors.green,
-            value: countModePercentage['Cash']!.toDouble(),
-            title: '${countMode['Cash']}',
-            radius: radius,
-            titleStyle: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: countModePercentage['Cash']! > 9
-                  ? Colors.white
-                  : Theme.of(context).textTheme.bodyLarge!.color,
-            ),
-            titlePositionPercentageOffset:
-                countModePercentage['Cash']! > 9 ? 0.5 : 1.2,
-          ),
+          _createPieSection(
+              countModePercentage['Cash']!.toDouble(), '${countMode['Cash']}'),
 
           // card
-          PieChartSectionData(
-            color: Colors.blue,
-            value: countModePercentage['Card']!.toDouble(),
-            title: '${countMode['Card']}',
-            radius: radius,
-            titleStyle: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: countModePercentage['Card']! > 9
-                  ? Colors.white
-                  : Theme.of(context).textTheme.bodyLarge!.color,
-            ),
-            titlePositionPercentageOffset:
-                countModePercentage['Card']! > 9 ? 0.5 : 1.2,
-          ),
+          _createPieSection(
+              countModePercentage['Card']!.toDouble(), '${countMode['Card']}'),
 
           // gift
-          PieChartSectionData(
-            color: Colors.purple,
-            value: countModePercentage['Gift']!.toDouble(),
-            title: '${countMode['Gift']}',
-            radius: radius,
-            titleStyle: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: countModePercentage['Gift']! > 9
-                  ? Colors.white
-                  : Theme.of(context).textTheme.bodyLarge!.color,
-            ),
-            titlePositionPercentageOffset:
-                countModePercentage['Gift']! > 9 ? 0.5 : 1.2,
-          ),
+          _createPieSection(
+              countModePercentage['Gift']!.toDouble(), '${countMode['Gift']}'),
         ],
         sectionsSpace: 2,
         centerSpaceRadius: 8,
