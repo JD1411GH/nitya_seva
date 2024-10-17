@@ -45,7 +45,8 @@ class _CounterState extends State<Counter> {
                     children: _numbers
                         .map((number) => Text(
                               number.toString(),
-                              style: TextStyle(fontSize: height * 0.8),
+                              style: TextStyle(
+                                  fontSize: height, fontFamily: 'DS-DIGI'),
                             ))
                         .toList(),
                   ),

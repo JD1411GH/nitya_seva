@@ -125,6 +125,18 @@ flutter:
         - asset: assets/fonts/ConsolaMono-Bold.ttf
           weight: 700
           style: normal 
+    - family: DS-DIGI
+      fonts:
+        - asset: assets/fonts/DS-DIGIT.TTF
+          weight: 400
+          style: normal
+        - asset: assets/fonts/DS-DIGIB.TTF
+          weight: 700
+          style: normal
+        - asset: assets/fonts/DS-DIGII.TTF
+          weight: 400
+          style: italic
+        
   
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
