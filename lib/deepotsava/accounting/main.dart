@@ -22,16 +22,24 @@ class _AccountingState extends State<Accounting> {
     // listeners for RKC sales
     FBL().listenForChange(
         "deepotsava/RKC/sales",
-        FBLCallbacks(add: (data) async {
+        FBLCallbacks(
+            // add
+            add: (data) async {
           counterKey.currentState?.addToCounter(data['count']);
 
           Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
           DeepamSale sale = DeepamSale.fromJson(map);
           pieKey.currentState?.addSale(sale);
-        }, edit: () async {
+        },
+
+            // edit
+            edit: () async {
           counterKey.currentState?.refresh();
           pieKey.currentState?.refresh();
-        }, delete: (data) async {
+        },
+
+            // delete
+            delete: (data) async {
           counterKey.currentState?.removeFromCounter(data['count']);
 
           Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
