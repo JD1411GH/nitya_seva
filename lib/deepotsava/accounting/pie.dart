@@ -258,33 +258,31 @@ class _PieState extends State<Pie> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            // radio buttons
-            Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [_createRadioButtons(context)]),
-
-            const SizedBox(height: 8),
-
-            // pie chart
-            Row(
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          // radio buttons
+          Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: 100,
-                  height: 100,
-                  child: _createPieChart(context),
-                ),
-                const SizedBox(width: 50),
-                _createPieLegends(),
-              ],
-            ),
-          ],
-        ),
+              children: [_createRadioButtons(context)]),
+
+          const SizedBox(height: 8),
+
+          // pie chart
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 100,
+                height: 100,
+                child: _createPieChart(context),
+              ),
+              const SizedBox(width: 50),
+              _createPieLegends(),
+            ],
+          ),
+        ],
       ),
     );
   }
