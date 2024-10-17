@@ -118,21 +118,19 @@ class _HMIState extends State<HMI> {
 
   Widget _createAmountButton(int num, String mode) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(2.0),
       child: GestureDetector(
         child: Container(
           decoration: BoxDecoration(
+              shape: BoxShape.circle, // Make the button circular
               border: Border.all(color: Colors.black), // Add border here
-              borderRadius:
-                  BorderRadius.circular(8.0), // Make the border rounded
               color: _count == num && _selectedMode == mode
                   ? _themeColor
                   : Colors.transparent),
-          padding: EdgeInsets.all(8.0), // Add padding inside the border
+          padding: EdgeInsets.all(16.0), // Add padding inside the border
           child: Text(
             '$num',
             style: TextStyle(
-                // fontSize: 18.0,
                 fontWeight: FontWeight.bold,
                 color: _count == num && _selectedMode == mode
                     ? Colors.white
