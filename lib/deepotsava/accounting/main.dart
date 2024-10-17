@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/accounting/counter.dart';
 import 'package:garuda/deepotsava/accounting/pie.dart';
 import 'package:garuda/deepotsava/date_header.dart';
+import 'package:garuda/deepotsava/fbl.dart';
 import 'package:garuda/theme.dart';
 
 class Accounting extends StatefulWidget {
@@ -15,10 +16,33 @@ class _AccountingState extends State<Accounting> {
     super.initState();
 
     refresh();
+
+    // listeners for RKC sales
+    FBL().listenForChange(
+        "deepotsava/RKC/sales",
+        FBLCallbacks(add: (data) async {
+          counterKey.currentState?.addToCounter(data['count']);
+        }, edit: () async {
+          counterKey.currentState?.refresh();
+        }, delete: (data) async {
+          counterKey.currentState?.removeFromCounter(data['count']);
+        }));
+
+    // listeners for RRG sales
+    FBL().listenForChange(
+        "deepotsava/RRG/sales",
+        FBLCallbacks(add: (data) async {
+          counterKey.currentState?.addToCounter(data['count']);
+        }, edit: () async {
+          counterKey.currentState?.refresh();
+        }, delete: (data) async {
+          counterKey.currentState?.removeFromCounter(data['count']);
+        }));
   }
 
   Future<void> refresh() async {
     await pieKey.currentState?.refresh();
+    await counterKey.currentState?.refresh();
   }
 
   Widget _createDashboard() {

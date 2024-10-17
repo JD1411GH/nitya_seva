@@ -18,17 +18,37 @@ class _CounterState extends State<Counter> {
   void initState() {
     super.initState();
     _scrollController = FixedExtentScrollController();
-
-    refresh();
   }
 
   void setCounter(int value) {
+    _scrollController.jumpToItem(value);
+  }
+
+  void addToCounter(int value) {
+    int count = _scrollController.selectedItem + value;
+
     setState(() {
-      _scrollController.jumpToItem(value);
+      _scrollController.animateToItem(
+        count,
+        duration: Duration(seconds: 1),
+        curve: Curves.easeInOut,
+      );
     });
   }
 
-  void refresh() async {
+  void removeFromCounter(int value) {
+    int count = _scrollController.selectedItem - value;
+
+    setState(() {
+      _scrollController.animateToItem(
+        count,
+        duration: Duration(seconds: 1),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
+
+  Future<void> refresh() async {
     int counter = 0;
     DateTime beginOfYear = DateTime(DateTime.now().year, 1, 1);
     await FBL().getSales('RKC', start: beginOfYear).then((sales) {
