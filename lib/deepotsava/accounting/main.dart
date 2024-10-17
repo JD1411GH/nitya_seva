@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/deepotsava/accounting/counter.dart';
 import 'package:garuda/deepotsava/accounting/pie.dart';
 import 'package:garuda/deepotsava/date_header.dart';
 import 'package:garuda/theme.dart';
@@ -84,14 +85,9 @@ class _AccountingState extends State<Accounting> {
           child: ListView(
             children: [
               DateHeader(),
-
-              const SizedBox(height: 20),
-
-              // card for pie chart
+              Counter(key: counterKey),
               Pie(key: pieKey),
-
               Card(child: _createDashboard()),
-              // overall total
             ],
           ),
         ),
