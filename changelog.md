@@ -1,3 +1,8 @@
+# 3.3.0
+- feature: table for complete data
+- feature: overall sales counter
+- feature: pie chart in accounting page
+
 # 3.2.4
 
 # 3.2.3
