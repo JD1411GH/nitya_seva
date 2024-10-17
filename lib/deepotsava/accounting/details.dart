@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:garuda/const.dart';
 import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/deepotsava/fbl.dart';
 
@@ -43,8 +42,8 @@ class _DetailsState extends State<Details> {
 
     // RKC data
     stocksRKC.forEach((stock) {
-      _preparedLamps[0] = stock.preparedLamps;
-      _unpreparedLamps[0] = stock.unpreparedLamps;
+      _preparedLamps[0] += stock.preparedLamps;
+      _unpreparedLamps[0] += stock.unpreparedLamps;
       _totalLamps[0] = _preparedLamps[0] + _unpreparedLamps[0];
     });
     salesRKC.forEach((sale) {
@@ -67,8 +66,8 @@ class _DetailsState extends State<Details> {
 
     // RRG data
     stocksRRG.forEach((stock) {
-      _preparedLamps[1] = stock.preparedLamps;
-      _unpreparedLamps[1] = stock.unpreparedLamps;
+      _preparedLamps[1] += stock.preparedLamps;
+      _unpreparedLamps[1] += stock.unpreparedLamps;
       _totalLamps[1] = _preparedLamps[1] + _unpreparedLamps[1];
     });
     salesRRG.forEach((sale) {
