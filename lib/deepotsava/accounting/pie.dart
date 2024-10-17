@@ -15,7 +15,7 @@ GlobalKey<_PieState> pieKey = GlobalKey<_PieState>();
 
 class _PieState extends State<Pie> {
   List<bool> _selectedRadio = [true, false, false];
-  final List<String> _radioText = ['RKC', 'RRG', 'Sum'];
+  final List<String> _radioText = ['RKC', 'RRG', 'All'];
 
   Map<String, int> _pieText = {};
   Map<String, int> _pieValue = {};
@@ -49,6 +49,36 @@ class _PieState extends State<Pie> {
         _salePerMode[1][sale.paymentMode] =
             (_salePerMode[1][sale.paymentMode] ?? 0) + sale.count;
       });
+    });
+  }
+
+  void addSale(DeepamSale sale) {
+    // update individual stall
+    int index = _radioText.indexWhere((element) => element == sale.stall);
+    _salePerMode[index][sale.paymentMode] =
+        (_salePerMode[index][sale.paymentMode] ?? 0) + sale.count;
+
+    setState(() {
+      if (_selectedRadio[index]) {
+        _setPieValues(index);
+      } else {
+        _setPieValuesSum();
+      }
+    });
+  }
+
+  void removeSale(DeepamSale sale) {
+    // update individual stall
+    int index = _radioText.indexWhere((element) => element == sale.stall);
+    _salePerMode[index][sale.paymentMode] =
+        (_salePerMode[index][sale.paymentMode] ?? 0) - sale.count;
+
+    setState(() {
+      if (_selectedRadio[index]) {
+        _setPieValues(index);
+      } else {
+        _setPieValuesSum();
+      }
     });
   }
 

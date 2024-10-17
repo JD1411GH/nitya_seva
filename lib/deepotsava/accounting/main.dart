@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/accounting/counter.dart';
 import 'package:garuda/deepotsava/accounting/pie.dart';
+import 'package:garuda/deepotsava/datatypes.dart';
 import 'package:garuda/deepotsava/date_header.dart';
 import 'package:garuda/deepotsava/fbl.dart';
 import 'package:garuda/theme.dart';
@@ -22,10 +23,19 @@ class _AccountingState extends State<Accounting> {
         "deepotsava/RKC/sales",
         FBLCallbacks(add: (data) async {
           counterKey.currentState?.addToCounter(data['count']);
+
+          Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
+          DeepamSale sale = DeepamSale.fromJson(map);
+          pieKey.currentState?.addSale(sale);
         }, edit: () async {
           counterKey.currentState?.refresh();
+          pieKey.currentState?.refresh();
         }, delete: (data) async {
           counterKey.currentState?.removeFromCounter(data['count']);
+
+          Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
+          DeepamSale sale = DeepamSale.fromJson(map);
+          pieKey.currentState?.removeSale(sale);
         }));
 
     // listeners for RRG sales
@@ -33,10 +43,19 @@ class _AccountingState extends State<Accounting> {
         "deepotsava/RRG/sales",
         FBLCallbacks(add: (data) async {
           counterKey.currentState?.addToCounter(data['count']);
+
+          Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
+          DeepamSale sale = DeepamSale.fromJson(map);
+          pieKey.currentState?.addSale(sale);
         }, edit: () async {
           counterKey.currentState?.refresh();
+          pieKey.currentState?.refresh();
         }, delete: (data) async {
           counterKey.currentState?.removeFromCounter(data['count']);
+
+          Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
+          DeepamSale sale = DeepamSale.fromJson(map);
+          pieKey.currentState?.removeSale(sale);
         }));
   }
 
@@ -55,7 +74,7 @@ class _AccountingState extends State<Accounting> {
             DataColumn(label: Text('')),
             DataColumn(label: Text('RKC')),
             DataColumn(label: Text('RRG')),
-            DataColumn(label: Text('Sum')),
+            DataColumn(label: Text('All')),
           ],
           rows: [
             DataRow(cells: [
