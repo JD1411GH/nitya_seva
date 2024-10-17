@@ -28,6 +28,7 @@ class _CounterState extends State<Counter> {
     double height = 70;
 
     return CupertinoPageScaffold(
+      backgroundColor: CupertinoColors.black,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -46,7 +47,9 @@ class _CounterState extends State<Counter> {
                         .map((number) => Text(
                               number.toString(),
                               style: TextStyle(
-                                  fontSize: height, fontFamily: 'DS-DIGI'),
+                                  fontSize: height,
+                                  fontFamily: 'DS-DIGI',
+                                  color: CupertinoColors.white),
                             ))
                         .toList(),
                   ),
