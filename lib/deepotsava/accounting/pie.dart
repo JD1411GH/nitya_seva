@@ -53,6 +53,8 @@ class _PieState extends State<Pie> {
   }
 
   Future<void> refresh() async {
+    _salePerMode = [{}, {}];
+
     // read all data
     List<DeepamSale> sales = await FBL().getSales(_radioText[0]);
     sales.forEach((sale) {
@@ -68,7 +70,11 @@ class _PieState extends State<Pie> {
 
     setState(() {
       int index = _selectedRadio.indexWhere((element) => element);
-      _setPieValues(index);
+      if (index == _selectedRadio.length - 1) {
+        _setPieValuesSum();
+      } else {
+        _setPieValues(index);
+      }
     });
   }
 
