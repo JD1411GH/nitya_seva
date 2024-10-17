@@ -18,7 +18,6 @@ class _AccountingState extends State<Accounting> {
 
   Future<void> refresh() async {
     await pieKey.currentState?.refresh();
-    setState(() {});
   }
 
   Widget _createDashboard() {
