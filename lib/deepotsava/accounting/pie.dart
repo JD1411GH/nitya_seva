@@ -18,7 +18,7 @@ class _PieState extends State<Pie> {
   Map<String, int> _pieText = {};
   Map<String, int> _pieValue = {};
 
-  List<Map<String, int>> salePerMode = [{}, {}];
+  List<Map<String, int>> _salePerMode = [{}, {}];
 
   @override
   initState() {
@@ -33,29 +33,50 @@ class _PieState extends State<Pie> {
     // read all data
     FBL().getSales(_radioText[0]).then((List<DeepamSale> sales) {
       sales.forEach((sale) {
-        salePerMode[0][sale.paymentMode] =
-            (salePerMode[0][sale.paymentMode] ?? 0) + sale.count;
+        _salePerMode[0][sale.paymentMode] =
+            (_salePerMode[0][sale.paymentMode] ?? 0) + sale.count;
       });
 
       setState(() {
-        // setting some default values for chart
-        _pieText = salePerMode[0];
-
-        int sum = 0;
-        salePerMode[0].forEach((mode, count) {
-          sum += count;
-        });
-
-        salePerMode[0].forEach((mode, count) {
-          _pieValue[mode] = (count / sum * 100).round();
-        });
+        // setting initial values for chart
+        _setPieValues(0);
       });
     });
     FBL().getSales(_radioText[1]).then((List<DeepamSale> sales) {
       sales.forEach((sale) {
-        salePerMode[1][sale.paymentMode] =
-            (salePerMode[1][sale.paymentMode] ?? 0) + sale.count;
+        _salePerMode[1][sale.paymentMode] =
+            (_salePerMode[1][sale.paymentMode] ?? 0) + sale.count;
       });
+    });
+  }
+
+  void _setPieValues(int index) {
+    // exclude the sum
+    if (index >= _salePerMode.length) {
+      return;
+    }
+
+    // reset pie values
+    Const().paymentModes.forEach((mode, details) {
+      _pieText[mode] = 0;
+      _pieValue[mode] = 0;
+    });
+
+    // set the pie text
+    _pieText = Map<String, int>.from(_salePerMode[index]);
+
+    // set the pie values
+    int sum = 0;
+    _salePerMode[index].forEach((mode, count) {
+      sum += count;
+    });
+
+    _salePerMode[index].forEach((mode, count) {
+      if (sum == 0) {
+        _pieValue[mode] = 0;
+      } else {
+        _pieValue[mode] = (count / sum * 100).round();
+      }
     });
   }
 
@@ -73,6 +94,9 @@ class _PieState extends State<Pie> {
           for (int i = 0; i < _selectedRadio.length; i++) {
             _selectedRadio[i] = i == index;
           }
+
+          // change the pie chart data
+          _setPieValues(index);
         });
       },
     );
@@ -139,7 +163,7 @@ class _PieState extends State<Pie> {
           color: color,
         ),
         const SizedBox(width: 4),
-        Text(text),
+        Container(width: 50, child: Text(text)),
       ],
     );
   }
