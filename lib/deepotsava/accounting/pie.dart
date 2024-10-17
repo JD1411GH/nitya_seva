@@ -51,11 +51,6 @@ class _PieState extends State<Pie> {
   }
 
   void _setPieValues(int index) {
-    // exclude the sum
-    if (index >= _salePerMode.length) {
-      return;
-    }
-
     // reset pie values
     Const().paymentModes.forEach((mode, details) {
       _pieText[mode] = 0;
@@ -80,6 +75,37 @@ class _PieState extends State<Pie> {
     });
   }
 
+  void _setPieValuesSum() {
+    // reset pie values
+    Const().paymentModes.forEach((mode, details) {
+      _pieText[mode] = 0;
+      _pieValue[mode] = 0;
+    });
+
+    // set the pie text
+    int sum = 0;
+    _salePerMode.forEach((Map<String, int> sales) {
+      sales.forEach((mode, count) {
+        _pieText[mode] = (_pieText[mode] ?? 0) + count;
+
+        sum += count;
+      });
+    });
+
+    // set the pie values
+    _salePerMode.forEach((Map<String, int> sales) {
+      sales.forEach((mode, count) {
+        if (sum == 0) {
+          _pieValue[mode] = 0;
+        } else {
+          var value = (count / sum * 100).round();
+          _pieValue[mode] =
+              (_pieValue[mode] == null) ? value : (_pieValue[mode]! + value);
+        }
+      });
+    });
+  }
+
   Widget _createRadioButtons(BuildContext context) {
     return ToggleButtons(
       children: [
@@ -96,7 +122,11 @@ class _PieState extends State<Pie> {
           }
 
           // change the pie chart data
-          _setPieValues(index);
+          if (index < _salePerMode.length) {
+            _setPieValues(index);
+          } else {
+            _setPieValuesSum();
+          }
         });
       },
     );
