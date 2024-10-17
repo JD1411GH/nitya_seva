@@ -115,13 +115,13 @@ class FBL {
         .ref('record_db${Const().dbVersion}/deepotsava/$stall/stocks/');
 
     DateTime now = DateTime.now();
-    DateTime startOfDay = DateTime(now.year, now.month, now.day);
-    DateTime endOfDay = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
+    DateTime start = DateTime(now.year, now.month, now.day);
+    DateTime end = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
 
     final Query query = dbRef
         .orderByKey()
-        .startAt(startOfDay.toIso8601String().replaceAll(".", "^"))
-        .endAt(endOfDay.toIso8601String().replaceAll(".", "^"));
+        .startAt(start.toIso8601String().replaceAll(".", "^"))
+        .endAt(end.toIso8601String().replaceAll(".", "^"));
 
     List<DeepamStock> stocks = [];
     try {
@@ -142,18 +142,23 @@ class FBL {
     return stocks;
   }
 
-  Future<List<DeepamSale>> getSales(String stall) async {
+  Future<List<DeepamSale>> getSales(String stall,
+      {DateTime? start, DateTime? end}) async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/deepotsava/$stall/sales/');
 
     DateTime now = DateTime.now();
-    DateTime startOfDay = DateTime(now.year, now.month, now.day);
-    DateTime endOfDay = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
+    if (start == null) {
+      start = DateTime(now.year, now.month, now.day);
+    }
+    if (end == null) {
+      end = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
+    }
 
     final Query query = dbRef
         .orderByKey()
-        .startAt(startOfDay.toIso8601String().replaceAll(".", "^"))
-        .endAt(endOfDay.toIso8601String().replaceAll(".", "^"));
+        .startAt(start.toIso8601String().replaceAll(".", "^"))
+        .endAt(end.toIso8601String().replaceAll(".", "^"));
 
     List<DeepamSale> sales = [];
     try {

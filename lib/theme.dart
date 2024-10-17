@@ -2,32 +2,9 @@
 import 'package:flutter/material.dart';
 
 final primaryColorDefault = Colors.blueGrey;
-final variantColorDefault = Colors.grey[300];
-final textColorDefault = Colors.black;
+final variantColorDefault = Colors.blueGrey[50];
+final textColorDefault = Colors.blueGrey[900];
 ThemeData themeDefault = ThemeData(
-  brightness: Brightness.light,
-
-  // text theme
-  textTheme: TextTheme(
-    bodySmall: TextStyle(
-      color: Colors.black,
-      fontSize: 12.0,
-    ),
-    bodyMedium: TextStyle(
-      color: Colors.black,
-      fontSize: 16.0,
-    ),
-    bodyLarge: TextStyle(
-      color: Colors.black,
-      fontSize: 20.0,
-    ),
-    headlineMedium: TextStyle(
-      fontSize: 24.0,
-      color: Colors.black,
-      fontWeight: FontWeight.bold,
-    ),
-  ),
-
   // color scheme
   primaryColor: primaryColorDefault,
   colorScheme: ColorScheme.fromSwatch(
@@ -35,13 +12,37 @@ ThemeData themeDefault = ThemeData(
   ),
   scaffoldBackgroundColor: const Color.fromARGB(255, 242, 251, 255),
 
+  // text theme
+  textTheme: TextTheme(
+    bodySmall: TextStyle(
+      color: textColorDefault,
+      fontSize: 12.0,
+    ),
+    bodyMedium: TextStyle(
+      color: textColorDefault,
+      fontSize: 16.0,
+    ),
+    bodyLarge: TextStyle(
+      color: textColorDefault,
+      fontSize: 20.0,
+    ),
+    headlineMedium: TextStyle(
+      fontSize: 24.0,
+      color: textColorDefault,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+
   // app bar
   appBarTheme: AppBarTheme(
-    foregroundColor: Colors.white,
+    backgroundColor: primaryColorDefault,
     titleTextStyle: TextStyle(
       fontSize: 30.0,
       color: Colors.white,
       fontFamily: 'HowdyLemon',
+    ),
+    iconTheme: IconThemeData(
+      color: Colors.white, // Set the back button color to white
     ),
   ),
 
@@ -57,21 +58,21 @@ ThemeData themeDefault = ThemeData(
     titleTextStyle: TextStyle(
       fontSize: 20.0,
       fontWeight: FontWeight.bold,
-      color: Colors.black,
+      color: textColorDefault,
     ),
     contentTextStyle: TextStyle(
       fontSize: 16.0,
-      color: Colors.black,
+      color: textColorDefault,
     ),
   ),
 
   // input decoration theme
   inputDecorationTheme: InputDecorationTheme(
     focusedBorder: UnderlineInputBorder(
-      borderSide: BorderSide(color: Colors.black),
+      borderSide: BorderSide(color: textColorDefault ?? Colors.black),
     ),
     enabledBorder: UnderlineInputBorder(
-      borderSide: BorderSide(color: Colors.black),
+      borderSide: BorderSide(color: textColorDefault ?? Colors.black),
     ),
   ),
 
@@ -103,6 +104,13 @@ final primaryColorRKC = Colors.blue;
 final variantColorRKC = Colors.blue[50];
 final textColorRKC = Colors.blue[900];
 ThemeData themeRKC = themeDefault.copyWith(
+  // color theme
+  primaryColor: primaryColorRKC,
+  colorScheme: ColorScheme.fromSwatch(
+    primarySwatch: primaryColorRKC,
+  ),
+  scaffoldBackgroundColor: variantColorRKC,
+
   // text theme
   textTheme: themeDefault.textTheme.copyWith(
     bodySmall: themeDefault.textTheme.bodySmall?.copyWith(
@@ -118,13 +126,6 @@ ThemeData themeRKC = themeDefault.copyWith(
       color: textColorRKC,
     ),
   ),
-
-  // color theme
-  primaryColor: primaryColorRKC,
-  colorScheme: ColorScheme.fromSwatch(
-    primarySwatch: primaryColorRKC,
-  ),
-  scaffoldBackgroundColor: variantColorRKC,
 
   // app bar
   appBarTheme: themeDefault.appBarTheme.copyWith(

@@ -67,9 +67,9 @@ class Const {
 
   // payment modes
   final paymentModes = {
-    'UPI': {'icon': "assets/images/icon_upi.png"},
-    'Cash': {'icon': "assets/images/icon_cash.png"},
-    'Card': {'icon': "assets/images/icon_card.png"},
-    'Gift': {'icon': "assets/images/icon_gratis.png"},
+    'UPI': {'icon': "assets/images/icon_upi.png", 'color': Colors.orange},
+    'Cash': {'icon': "assets/images/icon_cash.png", 'color': Colors.green},
+    'Card': {'icon': "assets/images/icon_card.png", 'color': Colors.blue},
+    'Gift': {'icon': "assets/images/icon_gratis.png", 'color': Colors.purple},
   };
 }
