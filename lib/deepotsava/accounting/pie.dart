@@ -11,6 +11,8 @@ class Pie extends StatefulWidget {
   State<Pie> createState() => _PieState();
 }
 
+GlobalKey<_PieState> pieKey = GlobalKey<_PieState>();
+
 class _PieState extends State<Pie> {
   List<bool> _selectedRadio = [true, false, false];
   final List<String> _radioText = ['RKC', 'RRG', 'Sum'];
@@ -47,6 +49,26 @@ class _PieState extends State<Pie> {
         _salePerMode[1][sale.paymentMode] =
             (_salePerMode[1][sale.paymentMode] ?? 0) + sale.count;
       });
+    });
+  }
+
+  Future<void> refresh() async {
+    // read all data
+    List<DeepamSale> sales = await FBL().getSales(_radioText[0]);
+    sales.forEach((sale) {
+      _salePerMode[0][sale.paymentMode] =
+          (_salePerMode[0][sale.paymentMode] ?? 0) + sale.count;
+    });
+
+    sales = await FBL().getSales(_radioText[1]);
+    sales.forEach((sale) {
+      _salePerMode[1][sale.paymentMode] =
+          (_salePerMode[1][sale.paymentMode] ?? 0) + sale.count;
+    });
+
+    setState(() {
+      int index = _selectedRadio.indexWhere((element) => element);
+      _setPieValues(index);
     });
   }
 

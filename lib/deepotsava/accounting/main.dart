@@ -1,6 +1,4 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:garuda/const.dart';
 import 'package:garuda/deepotsava/accounting/pie.dart';
 import 'package:garuda/deepotsava/date_header.dart';
 import 'package:garuda/theme.dart';
@@ -15,10 +13,11 @@ class _AccountingState extends State<Accounting> {
   initState() {
     super.initState();
 
-    _refresh();
+    refresh();
   }
 
-  Future<void> _refresh() async {
+  Future<void> refresh() async {
+    await pieKey.currentState?.refresh();
     setState(() {});
   }
 
@@ -82,7 +81,7 @@ class _AccountingState extends State<Accounting> {
           title: Text('Accounting'),
         ),
         body: RefreshIndicator(
-          onRefresh: _refresh,
+          onRefresh: refresh,
           child: ListView(
             children: [
               DateHeader(),
@@ -90,7 +89,7 @@ class _AccountingState extends State<Accounting> {
               const SizedBox(height: 20),
 
               // card for pie chart
-              Pie(),
+              Pie(key: pieKey),
 
               Card(child: _createDashboard()),
               // overall total
