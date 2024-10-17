@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:garuda/deepotsava/fbl.dart';
 
 class Counter extends StatefulWidget {
   const Counter({super.key});
@@ -17,10 +18,32 @@ class _CounterState extends State<Counter> {
   void initState() {
     super.initState();
     _scrollController = FixedExtentScrollController();
+
+    refresh();
   }
 
-  void setPickerValue(int value) {
-    _scrollController.jumpToItem(value);
+  void setCounter(int value) {
+    setState(() {
+      _scrollController.jumpToItem(value);
+    });
+  }
+
+  void refresh() async {
+    int counter = 0;
+    DateTime beginOfYear = DateTime(DateTime.now().year, 1, 1);
+    await FBL().getSales('RKC', start: beginOfYear).then((sales) {
+      sales.forEach((sale) {
+        counter += sale.count;
+      });
+    });
+
+    await FBL().getSales('RRG', start: beginOfYear).then((sales) {
+      sales.forEach((sale) {
+        counter += sale.count;
+      });
+    });
+
+    setCounter(counter);
   }
 
   @override
@@ -35,6 +58,7 @@ class _CounterState extends State<Counter> {
           children: <Widget>[
             SizedBox(
               child: GestureDetector(
+                // disable swiping in picker
                 onVerticalDragUpdate: (_) {},
                 onVerticalDragStart: (_) {},
                 onVerticalDragEnd: (_) {},
