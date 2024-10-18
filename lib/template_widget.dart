@@ -1,45 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:synchronized/synchronized.dart';
 
-class Pushpanjali extends StatefulWidget {
-  const Pushpanjali({super.key});
+class Summary extends StatefulWidget {
+  const Summary({super.key});
 
   @override
-  State<Pushpanjali> createState() => _PushpanjaliState();
+  State<Summary> createState() => _SummaryState();
 }
 
-// hint: templateKey.currentState!.refresh();
-final GlobalKey<_PushpanjaliState> templateKey = GlobalKey<_PushpanjaliState>();
+GlobalKey<_SummaryState> summaryKey = GlobalKey<_SummaryState>();
 
-class _PushpanjaliState extends State<Pushpanjali> {
-  final _lockInit = Lock();
+class _SummaryState extends State<Summary> {
+  @override
+  void initState() {
+    super.initState();
 
-  Future<void> _futureInit() async {
-    await _lockInit.synchronized(() async {
-      await Future.delayed(const Duration(seconds: 2));
-    });
+    refresh();
   }
 
-  Future<void> refresh() async {
-    await _futureInit();
+  void refresh() async {
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<void>(
-      future: _futureInit(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          return const Placeholder();
-        }
-      },
-    );
+    return const Placeholder();
   }
 }
