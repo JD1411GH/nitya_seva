@@ -1,6 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:garuda/const.dart';
-import 'package:garuda/deepotsava/datatypes.dart';
+import 'package:garuda/deepotsava/sales/datatypes.dart';
 import 'package:garuda/toaster.dart';
 
 class FBL {

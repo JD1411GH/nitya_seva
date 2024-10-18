@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:garuda/deepotsava/availability.dart';
-import 'package:garuda/deepotsava/datatypes.dart';
+import 'package:garuda/deepotsava/sales/availability.dart';
+import 'package:garuda/deepotsava/sales/dashboard.dart';
+import 'package:garuda/deepotsava/sales/datatypes.dart';
 import 'package:garuda/deepotsava/fbl.dart';
-import 'package:garuda/deepotsava/stock_page.dart';
+import 'package:garuda/deepotsava/sales/stock_page.dart';
 import 'package:garuda/toaster.dart';
 
 class StockBar extends StatefulWidget {
@@ -193,6 +194,7 @@ class _StockBarState extends State<StockBar> {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
+          // availability bar
           Expanded(
               child: GestureDetector(
                   onTap: () {
@@ -208,21 +210,11 @@ class _StockBarState extends State<StockBar> {
                       currentStock: _currentStock,
                       fullStock:
                           (_preparedLamps + _unpreparedLamps).toDouble()))),
-          // ElevatedButton(
-          //   onPressed: () {
-          //     Navigator.push(
-          //         context,
-          //         MaterialPageRoute(
-          //             builder: (context) => StockPage(
-          //                   stall: widget.stall,
-          //                 )));
-          //   },
-          //   style: ElevatedButton.styleFrom(
-          //     shape: CircleBorder(),
-          //     padding: EdgeInsets.all(10),
-          //   ),
-          //   child: Icon(Icons.app_registration),
-          // ),
+
+          SizedBox(width: 10),
+
+          // lamp count
+          Dashboard(key: dashboardKey, stall: widget.stall),
         ],
       ),
     );

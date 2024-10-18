@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:garuda/const.dart';
-import 'package:garuda/deepotsava/datatypes.dart';
+import 'package:garuda/deepotsava/sales/datatypes.dart';
 import 'package:garuda/deepotsava/fbl.dart';
 import 'package:garuda/theme.dart';
 import 'package:garuda/toaster.dart';

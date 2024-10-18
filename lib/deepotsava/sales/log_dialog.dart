@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/const.dart';
-import 'package:garuda/deepotsava/datatypes.dart';
+import 'package:garuda/deepotsava/sales/datatypes.dart';
 
 class LogDialog extends StatefulWidget {
   final DeepamSale sale;
