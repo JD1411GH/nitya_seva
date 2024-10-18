@@ -1,3 +1,6 @@
+# 3.4.0
+- feature: summary of sales
+
 # 3.3.4
 - fix: hmi enter button size
 
