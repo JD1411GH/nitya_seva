@@ -28,11 +28,6 @@ class _SummaryState extends State<Summary> {
   void initState() {
     super.initState();
 
-    Const().paymentModes.keys.forEach((mode) {
-      _paymentModesCount[mode] = 0;
-      _paymentModesAmount[mode] = 0;
-    });
-
     refresh();
   }
 
@@ -41,6 +36,7 @@ class _SummaryState extends State<Summary> {
     List<DeepamSale> sales = await FBL().getSales(widget.stall);
 
     setState(() {
+      // reset everything
       _preparedLampsReceivedCount = 0;
       _unpreparedLampsReceivedCount = 0;
       _platesReceivedCount = 0;
@@ -50,17 +46,32 @@ class _SummaryState extends State<Summary> {
       _totalPlatesServedAmount = 0;
       _paymentModesCount = {};
       _paymentModesAmount = {};
+
+      // fill stock data
       stocks.forEach((stock) {
         _preparedLampsReceivedCount += stock.preparedLamps;
         _unpreparedLampsReceivedCount += stock.unpreparedLamps;
         _platesReceivedCount += stock.plates;
       });
 
+      // fill sales data
       sales.forEach((sale) {
         _totalLampsServedCount += sale.count;
         _totalLampsServedAmount += (sale.count * sale.costLamp);
         _totalPlatesServedCount += sale.plate;
         _totalPlatesServedAmount += (sale.plate * sale.costPlate);
+
+        if (_paymentModesCount.containsKey(sale.paymentMode)) {
+          _paymentModesCount[sale.paymentMode] =
+              _paymentModesCount[sale.paymentMode]! + 1;
+          _paymentModesAmount[sale.paymentMode] =
+              _paymentModesAmount[sale.paymentMode]! +
+                  (sale.costLamp * sale.count + sale.costPlate * sale.plate);
+        } else {
+          _paymentModesCount[sale.paymentMode] = 1;
+          _paymentModesAmount[sale.paymentMode] =
+              (sale.costLamp * sale.count + sale.costPlate * sale.plate);
+        }
       });
     });
   }
@@ -132,10 +143,7 @@ class _SummaryState extends State<Summary> {
                 '${_preparedLampsReceivedCount + _unpreparedLampsReceivedCount - _totalLampsServedCount}',
                 ''
               ], bold: true),
-              ...Const()
-                  .paymentModes
-                  .keys
-                  .toList()
+              ..._paymentModesCount.keys
                   .map((mode) => _createRow([
                         '$mode transactions',
                         '${_paymentModesCount[mode]}',
