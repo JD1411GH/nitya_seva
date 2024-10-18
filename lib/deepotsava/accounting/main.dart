@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/accounting/counter.dart';
 import 'package:garuda/deepotsava/accounting/details.dart';
 import 'package:garuda/deepotsava/accounting/pie.dart';
-import 'package:garuda/deepotsava/datatypes.dart';
+import 'package:garuda/deepotsava/sales/datatypes.dart';
 import 'package:garuda/deepotsava/date_header.dart';
 import 'package:garuda/deepotsava/fbl.dart';
 import 'package:garuda/theme.dart';

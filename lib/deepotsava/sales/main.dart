@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:garuda/deepotsava/datatypes.dart';
+import 'package:garuda/deepotsava/sales/datatypes.dart';
 import 'package:garuda/deepotsava/date_header.dart';
-import 'package:garuda/deepotsava/log.dart';
-import 'package:garuda/deepotsava/hmi.dart';
-import 'package:garuda/deepotsava/dashboard.dart';
-import 'package:garuda/deepotsava/stock_bar.dart';
+import 'package:garuda/deepotsava/sales/log.dart';
+import 'package:garuda/deepotsava/sales/hmi.dart';
+import 'package:garuda/deepotsava/sales/dashboard.dart';
+import 'package:garuda/deepotsava/sales/stock_bar.dart';
 import 'package:garuda/theme.dart';
 
 class Sales extends StatefulWidget {
@@ -64,7 +64,6 @@ class _SalesState extends State<Sales> {
             children: [
               DateHeader(),
               StockBar(key: stockBarKey, stall: widget.stall),
-              Dashboard(key: dashboardKey, stall: widget.stall),
               HMI(
                   stall: widget.stall,
                   callbacks: HMICallbacks(add: serveLamps)),

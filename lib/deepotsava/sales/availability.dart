@@ -37,7 +37,7 @@ class Availability extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           Container(
-            height: 50,
+            height: 40,
             decoration: BoxDecoration(
               border: Border.all(color: Colors.black),
             ),
@@ -51,7 +51,7 @@ class Availability extends StatelessWidget {
           ),
           Text(
             'Available: ${currentStock.toInt()}',
-            style: selectedTheme.textTheme.headlineMedium,
+            style: selectedTheme.textTheme.bodyLarge,
           ),
         ],
       ),

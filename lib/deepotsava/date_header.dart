@@ -15,11 +15,11 @@ final GlobalKey<_DateHeaderState> HistoryHeaderKey =
 
 class _DateHeaderState extends State<DateHeader> {
   final _lockInit = Lock();
-  String currentMonth = "";
+  String date = "";
 
   Future<void> _futureInit() async {
     await _lockInit.synchronized(() async {
-      currentMonth = DateFormat('EEE, MMM dd').format(DateTime.now());
+      date = DateFormat('EEE, MMM dd').format(DateTime.now());
     });
   }
 
@@ -45,6 +45,7 @@ class _DateHeaderState extends State<DateHeader> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // previous day button
                 IconButton(
                   icon: Transform.rotate(
                     angle: 3.14, // Rotate 180 degrees to point left
@@ -54,18 +55,22 @@ class _DateHeaderState extends State<DateHeader> {
                     // Handle previous button click
                   },
                 ),
+
+                // date
                 GestureDetector(
                   onTap: () {
                     // Handle text click
                   },
                   child: Text(
-                    currentMonth,
+                    date,
                     style: TextStyle(
-                      fontSize: 24.0,
+                      fontSize: 18.0,
                       fontWeight: FontWeight.bold,
                     ), // Adjust the font size as needed
                   ),
                 ),
+
+                // next day button
                 IconButton(
                   icon: Icon(Icons.play_arrow), // Default points right
                   onPressed: () {

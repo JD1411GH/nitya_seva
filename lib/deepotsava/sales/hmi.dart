@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:garuda/const.dart';
-import 'package:garuda/deepotsava/datatypes.dart';
+import 'package:garuda/deepotsava/sales/datatypes.dart';
 import 'package:garuda/deepotsava/fbl.dart';
 import 'package:garuda/theme.dart';
 import 'package:garuda/toaster.dart';
@@ -235,7 +235,7 @@ class _HMIState extends State<HMI> {
   Widget _createCupertino() {
     return CupertinoPicker(
       scrollController: _cupertinoController,
-      itemExtent: 32.0,
+      itemExtent: 64.0,
       onSelectedItemChanged: (int index) {
         if (!mounted) return;
 
@@ -251,8 +251,7 @@ class _HMIState extends State<HMI> {
         return Center(
           child: Text(
             index.toString(),
-            style:
-                TextStyle(fontSize: 32.0), // Increase the font size of the text
+            style: TextStyle(fontSize: 48.0),
           ),
         );
       }),
@@ -291,144 +290,140 @@ class _HMIState extends State<HMI> {
 
   @override
   Widget build(BuildContext context) {
+    double entryHeight = 50;
+
     return Card(
       child: Container(
         constraints:
             BoxConstraints(minHeight: 320), // Define minimum height here
         child: Column(
           children: [
-            Align(
-              alignment: Alignment.center,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // reset button
-                  IconButton(
-                    icon: Icon(Icons.refresh),
-                    iconSize: 24.0,
-                    onPressed: () {
-                      if (!mounted) return;
+            // button bar
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Align(
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // reset button
+                    IconButton(
+                      icon: Icon(Icons.refresh),
+                      iconSize: 24.0,
+                      onPressed: () {
+                        if (!mounted) return;
 
-                      setState(() {
-                        _cupertinoController.jumpToItem(0);
-                        _count = 0;
-                        _selectedMode = "";
-                        _plate = 0;
-                        _amount = 0;
-                      });
-                    },
-                  ),
+                        setState(() {
+                          _cupertinoController.jumpToItem(0);
+                          _count = 0;
+                          _selectedMode = "";
+                          _plate = 0;
+                          _amount = 0;
+                        });
+                      },
+                    ),
 
-                  SizedBox(width: 8),
+                    SizedBox(width: 8),
 
-                  // Plate toggle
-                  GestureDetector(
-                    onTap: () {
-                      if (!mounted) return;
+                    // Plate toggle
+                    GestureDetector(
+                      onTap: () {
+                        if (!mounted) return;
 
-                      setState(() {
-                        _plate = _plate > 0 ? 0 : 1;
+                        setState(() {
+                          _plate = _plate > 0 ? 0 : 1;
 
-                        if (_plate > 0) {
-                          if (_selectedMode == "") {
-                            _selectedMode = "Cash";
+                          if (_plate > 0) {
+                            if (_selectedMode == "") {
+                              _selectedMode = "Cash";
+                            }
                           }
-                        }
 
-                        _recalculateAmount();
-                      });
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(4.0),
-                      decoration: BoxDecoration(
-                        color: _plate > 0
-                            ? (widget.stall == "RRG"
-                                ? primaryColorRRG
-                                : primaryColorRKC)
-                            : Colors.transparent,
-                        border: Border.all(color: Colors.black),
-                        borderRadius:
-                            BorderRadius.circular(8.0), // Rounded border
-                      ),
-                      child: Text(
-                        'Plate',
-                        style: TextStyle(
+                          _recalculateAmount();
+                        });
+                      },
+                      child: Container(
+                        height: entryHeight,
+                        padding: EdgeInsets.all(4.0),
+                        decoration: BoxDecoration(
                           color: _plate > 0
-                              ? Colors.white
-                              : Theme.of(context).textTheme.bodySmall!.color,
+                              ? (widget.stall == "RRG"
+                                  ? primaryColorRRG
+                                  : primaryColorRKC)
+                              : Colors.transparent,
+                          border: Border.all(color: Colors.black),
+                          borderRadius:
+                              BorderRadius.circular(8.0), // Rounded border
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Plate',
+                            style: TextStyle(
+                              color: _plate > 0
+                                  ? Colors.white
+                                  : Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .color,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
 
-                  SizedBox(width: 8),
+                    SizedBox(width: 8),
 
-                  // count field
-                  SizedBox(
-                    width: 80,
-                    height: 60,
-                    child: _createCupertino(),
-                  ),
+                    // cupertino picker
+                    SizedBox(
+                      width: 100,
+                      height: entryHeight * 2,
+                      child: _createCupertino(),
+                    ),
 
-                  // SizedBox(width: 8),
-
-                  // Amount
-                  Container(
-                    width: 60,
-                    child: Center(
-                      child: Text(
-                        '₹${_amount}',
-                        style: Theme.of(context).textTheme.bodyLarge,
+                    // amount field
+                    Container(
+                      width: 60,
+                      child: Center(
+                        child: Text(
+                          '₹${_amount}',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
                       ),
                     ),
-                  ),
 
-                  // SizedBox(width: 8),
+                    // serve button
+                    IconButton(
+                      icon: Icon(Icons.send),
+                      iconSize: 32.0,
+                      onPressed: () {
+                        DeepamSale sale = DeepamSale(
+                          timestamp: DateTime.now(),
+                          stall: widget.stall,
+                          count: _cupertinoController.selectedItem,
+                          costLamp: _selectedMode == "Gift"
+                              ? 0
+                              : Const().deepotsava['lamp']['cost'] as int,
+                          costPlate: _selectedMode == "Gift"
+                              ? 0
+                              : Const().deepotsava['plate']['cost'] as int,
+                          paymentMode: _selectedMode,
+                          user: _user,
+                          plate: _plate,
+                        );
 
-                  // serve button
-                  IconButton(
-                    icon: Icon(Icons.send),
-                    iconSize: 24.0,
-                    onPressed: () {
-                      DeepamSale sale = DeepamSale(
-                        timestamp: DateTime.now(),
-                        stall: widget.stall,
-                        count: _cupertinoController.selectedItem,
-                        costLamp: _selectedMode == "Gift"
-                            ? 0
-                            : Const().deepotsava['lamp']['cost'] as int,
-                        costPlate: _selectedMode == "Gift"
-                            ? 0
-                            : Const().deepotsava['plate']['cost'] as int,
-                        paymentMode: _selectedMode,
-                        user: _user,
-                        plate: _plate,
-                      );
-
-                      _addSale(sale);
-                      _recalculateAmount();
-                    },
-                  )
-                ],
+                        _addSale(sale);
+                        _recalculateAmount();
+                      },
+                    )
+                  ],
+                ),
               ),
             ),
 
+            Divider(),
             SizedBox(height: 8),
 
-            // UPI corner
-            // Positioned(
-            //   top: 70,
-            //   left: 10,
-            //   child: _createPaymentWidget("UPI"),
-            // ),
-
-            // Cash corner
-            // Positioned(
-            //   bottom: 10,
-            //   left: 10,
-            //   child: _createPaymentWidget("Cash"),
-            // ),
-
+            // first row
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -439,6 +434,7 @@ class _HMIState extends State<HMI> {
 
             SizedBox(height: 8),
 
+            // second row
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -447,22 +443,7 @@ class _HMIState extends State<HMI> {
               ],
             ),
 
-            // Card corner
-            // Positioned(
-            //   top: 70,
-            //   right: 10,
-            //   child: _createPaymentWidget("Card"),
-            // ),
-
-            // Gift corner
-            // Positioned(
-            //   bottom: 10,
-            //   right: 10,
-            //   child: _createPaymentWidget("Gift"),
-            // ),
-
-            // dummy text to prevent crash
-            Text('')
+            SizedBox(height: 8),
           ],
         ),
       ),
