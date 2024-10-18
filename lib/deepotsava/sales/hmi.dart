@@ -393,10 +393,7 @@ class _HMIState extends State<HMI> {
 
                     // serve button
                     ElevatedButton(
-                      child: Text(
-                        "Enter",
-                        style: TextStyle(fontSize: 14), // Reduce font size
-                      ),
+                      child: Icon(Icons.arrow_forward),
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(
                             horizontal: 8, vertical: 4), // Reduce padding
