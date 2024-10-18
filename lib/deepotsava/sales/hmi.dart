@@ -392,9 +392,17 @@ class _HMIState extends State<HMI> {
                     ),
 
                     // serve button
-                    IconButton(
-                      icon: Icon(Icons.send),
-                      iconSize: 32.0,
+                    ElevatedButton(
+                      child: Text(
+                        "Enter",
+                        style: TextStyle(fontSize: 14), // Reduce font size
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4), // Reduce padding
+                        minimumSize:
+                            Size(entryHeight, entryHeight), // Set minimum size
+                      ),
                       onPressed: () {
                         DeepamSale sale = DeepamSale(
                           timestamp: DateTime.now(),
