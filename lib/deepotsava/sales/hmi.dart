@@ -232,10 +232,10 @@ class _HMIState extends State<HMI> {
     );
   }
 
-  Widget _createCupertino() {
+  Widget _createCupertino(double height) {
     return CupertinoPicker(
       scrollController: _cupertinoController,
-      itemExtent: 64.0,
+      itemExtent: height * 1.5,
       onSelectedItemChanged: (int index) {
         if (!mounted) return;
 
@@ -251,7 +251,7 @@ class _HMIState extends State<HMI> {
         return Center(
           child: Text(
             index.toString(),
-            style: TextStyle(fontSize: 48.0),
+            style: TextStyle(fontSize: height * 0.8),
           ),
         );
       }),
@@ -290,7 +290,7 @@ class _HMIState extends State<HMI> {
 
   @override
   Widget build(BuildContext context) {
-    double entryHeight = 50;
+    double entryHeight = 40;
 
     return Card(
       child: Container(
@@ -377,7 +377,7 @@ class _HMIState extends State<HMI> {
                     SizedBox(
                       width: 100,
                       height: entryHeight * 2,
-                      child: _createCupertino(),
+                      child: _createCupertino(entryHeight),
                     ),
 
                     // amount field
