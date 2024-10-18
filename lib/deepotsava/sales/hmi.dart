@@ -235,7 +235,7 @@ class _HMIState extends State<HMI> {
   Widget _createCupertino(double height) {
     return CupertinoPicker(
       scrollController: _cupertinoController,
-      itemExtent: height * 1.5,
+      itemExtent: height * 1.3,
       onSelectedItemChanged: (int index) {
         if (!mounted) return;
 
