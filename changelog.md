@@ -1,3 +1,6 @@
+# 3.4.1
+- fix: refresh when sale added
+
 # 3.4.0
 - feature: summary of sales
 
