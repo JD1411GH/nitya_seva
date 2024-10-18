@@ -1,3 +1,7 @@
+# 3.3.3
+- fix: entry area made larger
+- fix: merged dash with availability bar
+
 # 3.3.2
 - fix: quick buttons are now circular
 
