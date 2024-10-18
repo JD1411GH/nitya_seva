@@ -1,3 +1,6 @@
+# 3.3.4
+- fix: hmi enter button size
+
 # 3.3.3
 - fix: entry area made larger
 - fix: merged dash with availability bar
