@@ -5,6 +5,7 @@ import 'package:garuda/deepotsava/sales/log.dart';
 import 'package:garuda/deepotsava/sales/hmi.dart';
 import 'package:garuda/deepotsava/sales/dashboard.dart';
 import 'package:garuda/deepotsava/sales/stock_bar.dart';
+import 'package:garuda/deepotsava/sales/summary.dart';
 import 'package:garuda/theme.dart';
 
 class Sales extends StatefulWidget {
@@ -68,6 +69,7 @@ class _SalesState extends State<Sales> {
                   stall: widget.stall,
                   callbacks: HMICallbacks(add: serveLamps)),
               Log(key: logKey, stall: widget.stall),
+              Summary(key: summaryKey, stall: widget.stall),
             ],
           ),
         ),
