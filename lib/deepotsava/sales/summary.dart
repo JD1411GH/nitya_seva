@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:garuda/const.dart';
 import 'package:garuda/deepotsava/fbl.dart';
 import 'package:garuda/deepotsava/sales/datatypes.dart';
 
@@ -31,7 +30,7 @@ class _SummaryState extends State<Summary> {
     refresh();
   }
 
-  void refresh() async {
+  Future<void> refresh() async {
     List<DeepamStock> stocks = await FBL().getStocks(widget.stall);
     List<DeepamSale> sales = await FBL().getSales(widget.stall);
 
@@ -75,6 +74,26 @@ class _SummaryState extends State<Summary> {
       });
     });
   }
+
+  void addStock(DeepamStock stock) {}
+  void editStock() {}
+  void deleteStock(DeepamStock stock) {}
+  void addSale(DeepamSale sale) {
+    setState(() {
+      _totalLampsServedCount += sale.count;
+      _totalLampsServedAmount += (sale.count * sale.costLamp);
+      _totalPlatesServedCount += sale.plate;
+      _totalPlatesServedAmount += (sale.plate * sale.costPlate);
+      _paymentModesCount[sale.paymentMode] =
+          _paymentModesCount[sale.paymentMode]! + 1;
+      _paymentModesAmount[sale.paymentMode] =
+          _paymentModesAmount[sale.paymentMode]! +
+              (sale.costLamp * sale.count + sale.costPlate * sale.plate);
+    });
+  }
+
+  void editSale() {}
+  void deleteSale(DeepamSale sale) {}
 
   DataRow _createRow(List<String> data, {bool bold = false}) {
     return DataRow(

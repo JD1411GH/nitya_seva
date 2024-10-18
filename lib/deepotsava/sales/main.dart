@@ -27,6 +27,7 @@ class _SalesState extends State<Sales> {
     await dashboardKey.currentState!.refresh();
     await logKey.currentState!.refresh();
     await stockBarKey.currentState!.refresh();
+    await summaryKey.currentState!.refresh();
 
     if (!mounted) return;
     setState(() {});
@@ -36,6 +37,7 @@ class _SalesState extends State<Sales> {
     dashboardKey.currentState!.addLampsServed(sale);
     logKey.currentState!.addLog(sale, localUpdate: true);
     stockBarKey.currentState!.serveLamps(sale, localUpdate: true);
+    summaryKey.currentState!.addSale(sale);
   }
 
   @override
