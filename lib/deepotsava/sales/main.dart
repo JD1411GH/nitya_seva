@@ -44,7 +44,9 @@ class _SalesState extends State<Sales> {
     summaryKey.currentState!.editSale();
   }
 
-  void deleteServedLamps(DeepamSale sale) {}
+  void deleteServedLamps(DeepamSale sale) {
+    summaryKey.currentState!.deleteSale(sale);
+  }
 
   @override
   Widget build(BuildContext context) {
