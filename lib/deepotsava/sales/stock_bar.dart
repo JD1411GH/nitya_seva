@@ -160,6 +160,10 @@ class _StockBarState extends State<StockBar> {
     }
   }
 
+  void discardLamps(DeepamSale sale, {bool localUpdate = false}) {
+    serveLamps(sale, localUpdate: localUpdate);
+  }
+
   void _deleteServe(DeepamSale sale, {bool localUpdate = false}) {
     if (!mounted) return;
     setState(() {
