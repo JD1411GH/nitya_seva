@@ -231,14 +231,6 @@ class _StockPageState extends State<StockPage> {
                 'Wicks: $_wicks',
                 style: _selectedTheme.textTheme.bodyMedium,
               ),
-              Text(
-                'Ghee packets: $_gheePackets',
-                style: _selectedTheme.textTheme.bodyMedium,
-              ),
-              Text(
-                'Oil cans: $_oilCans',
-                style: _selectedTheme.textTheme.bodyMedium,
-              ),
             ],
           ),
         ),

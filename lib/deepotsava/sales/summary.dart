@@ -75,7 +75,13 @@ class _SummaryState extends State<Summary> {
     });
   }
 
-  void addStock(DeepamStock stock) {}
+  void addStock(DeepamStock stock) {
+    setState(() {
+      _preparedLampsReceivedCount += stock.preparedLamps;
+      _unpreparedLampsReceivedCount += stock.unpreparedLamps;
+      _platesReceivedCount += stock.plates;
+    });
+  }
 
   void editStock() {}
 

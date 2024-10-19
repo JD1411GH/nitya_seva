@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garuda/deepotsava/fbl.dart';
 import 'package:garuda/deepotsava/sales/datatypes.dart';
 import 'package:garuda/deepotsava/date_header.dart';
 import 'package:garuda/deepotsava/sales/log.dart';
@@ -21,6 +22,17 @@ class _SalesState extends State<Sales> {
   @override
   initState() {
     super.initState();
+
+    FBL().listenForChange(
+        "deepotsava/${widget.stall}/stocks",
+        FBLCallbacks(
+            add: (data) {
+              Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
+              DeepamStock stock = DeepamStock.fromJson(map);
+              addStock(stock);
+            },
+            edit: () {},
+            delete: (data) {}));
   }
 
   Future<void> _refresh() async {
@@ -33,7 +45,11 @@ class _SalesState extends State<Sales> {
     setState(() {});
   }
 
-  Future<void> serveLamps(DeepamSale sale) async {
+  Future<void> addStock(DeepamStock stock) async {
+    summaryKey.currentState!.addStock(stock);
+  }
+
+  Future<void> addServedLamps(DeepamSale sale) async {
     dashboardKey.currentState!.addLampsServed(sale);
     logKey.currentState!.addLog(sale, localUpdate: true);
     stockBarKey.currentState!.serveLamps(sale, localUpdate: true);
@@ -77,7 +93,7 @@ class _SalesState extends State<Sales> {
               StockBar(key: stockBarKey, stall: widget.stall),
               HMI(
                   stall: widget.stall,
-                  callbacks: HMICallbacks(add: serveLamps)),
+                  callbacks: HMICallbacks(add: addServedLamps)),
               Log(
                   key: logKey,
                   stall: widget.stall,
