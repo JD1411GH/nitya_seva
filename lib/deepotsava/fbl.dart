@@ -110,6 +110,20 @@ class FBL {
     }
   }
 
+  Future<void> discardLamps(String stall, DeepamSale sale) async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/deepotsava/$stall/discards/');
+
+    DateTime timestamp = sale.timestamp;
+    DatabaseReference ref =
+        dbRef.child(timestamp.toIso8601String().replaceAll(".", "^"));
+    try {
+      await ref.set(sale.toJson());
+    } catch (e) {
+      Toaster().error("Error writing database: $e");
+    }
+  }
+
   Future<List<DeepamStock>> getStocks(String stall) async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/deepotsava/$stall/stocks/');

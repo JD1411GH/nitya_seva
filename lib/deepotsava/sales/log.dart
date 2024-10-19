@@ -3,6 +3,7 @@ import 'package:garuda/deepotsava/sales/datatypes.dart';
 import 'package:garuda/deepotsava/fbl.dart';
 import 'package:garuda/deepotsava/sales/log_dialog.dart';
 import 'package:garuda/theme.dart';
+import 'package:garuda/toaster.dart';
 
 class Log extends StatefulWidget {
   final String stall;
@@ -130,8 +131,13 @@ class _LogState extends State<Log> {
         return 'assets/images/icon_cash.png';
       case 'Card':
         return 'assets/images/icon_card.png';
+      case 'Gift':
+        return 'assets/images/icon_gratis.png';
+      case 'Discard':
+        return 'assets/images/icon_discard.png';
       default:
-        return 'assets/images/icon_gratis.png'; // gift
+        Toaster().error("Unknown payment mode: $paymentMode");
+        return 'assets/images/icon_discard.png';
     }
   }
 

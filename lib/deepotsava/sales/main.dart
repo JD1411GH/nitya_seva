@@ -57,10 +57,15 @@ class _SalesState extends State<Sales> {
   }
 
   Future<void> addServedLamps(DeepamSale sale) async {
-    dashboardKey.currentState!.addLampsServed(sale);
-    logKey.currentState!.addLog(sale, localUpdate: true);
-    stockBarKey.currentState!.serveLamps(sale, localUpdate: true);
-    summaryKey.currentState!.addSale(sale);
+    // check if discarded lamps
+    if (sale.paymentMode == 'Discard') {
+      logKey.currentState!.addLog(sale, localUpdate: true);
+    } else {
+      dashboardKey.currentState!.addLampsServed(sale);
+      logKey.currentState!.addLog(sale, localUpdate: true);
+      stockBarKey.currentState!.serveLamps(sale, localUpdate: true);
+      summaryKey.currentState!.addSale(sale);
+    }
   }
 
   void editServedLamps(DeepamSale sale) {

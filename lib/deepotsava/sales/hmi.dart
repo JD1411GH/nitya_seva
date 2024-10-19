@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:garuda/const.dart';
 import 'package:garuda/deepotsava/sales/datatypes.dart';
 import 'package:garuda/deepotsava/fbl.dart';
@@ -32,6 +33,11 @@ class _HMIState extends State<HMI> {
 
   FixedExtentScrollController _cupertinoController =
       FixedExtentScrollController(initialItem: 0);
+
+  TextEditingController _preparedLampsDiscardedController =
+      TextEditingController();
+  TextEditingController _unpreparedLampsDiscardedController =
+      TextEditingController();
 
   int _stockAvailable = 0;
 
@@ -288,6 +294,79 @@ class _HMIState extends State<HMI> {
     });
   }
 
+  void _showDiscardDialog(BuildContext context) {
+    _preparedLampsDiscardedController.text = "";
+    _unpreparedLampsDiscardedController.text = "";
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Discard damaged lamps"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("How many lamps to discard?"),
+              TextField(
+                keyboardType: TextInputType.number,
+                controller: _preparedLampsDiscardedController,
+                decoration: InputDecoration(
+                  labelText: 'Prepared lamps',
+                  labelStyle: TextStyle(fontSize: 18.0),
+                ),
+              ),
+              TextField(
+                keyboardType: TextInputType.number,
+                controller: _unpreparedLampsDiscardedController,
+                decoration: InputDecoration(
+                  labelText: 'Unprepared lamps',
+                  labelStyle: TextStyle(fontSize: 18.0),
+                ),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text("Discard", style: TextStyle(color: Colors.red)),
+              onPressed: () {
+                int preparedLamps = int.parse(
+                    _preparedLampsDiscardedController.text.isEmpty
+                        ? "0"
+                        : _preparedLampsDiscardedController.text);
+                int unpreparedLamps = int.parse(
+                    _unpreparedLampsDiscardedController.text.isEmpty
+                        ? "0"
+                        : _unpreparedLampsDiscardedController.text);
+
+                DeepamSale sale = DeepamSale(
+                  timestamp: DateTime.now(),
+                  stall: widget.stall,
+                  count: preparedLamps + unpreparedLamps,
+                  costLamp: 0,
+                  costPlate: 0,
+                  paymentMode: "Discard",
+                  user: _user,
+                  plate: 0,
+                );
+
+                widget.callbacks.add(sale);
+                FBL().discardLamps(widget.stall, sale);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double entryHeight = 40;
@@ -307,20 +386,31 @@ class _HMIState extends State<HMI> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     // reset button
-                    IconButton(
-                      icon: Icon(Icons.refresh),
-                      iconSize: 24.0,
-                      onPressed: () {
-                        if (!mounted) return;
+                    Column(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.refresh),
+                          iconSize: 24.0,
+                          onPressed: () {
+                            if (!mounted) return;
 
-                        setState(() {
-                          _cupertinoController.jumpToItem(0);
-                          _count = 0;
-                          _selectedMode = "";
-                          _plate = 0;
-                          _amount = 0;
-                        });
-                      },
+                            setState(() {
+                              _cupertinoController.jumpToItem(0);
+                              _count = 0;
+                              _selectedMode = "";
+                              _plate = 0;
+                              _amount = 0;
+                            });
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete_forever),
+                          iconSize: 24.0,
+                          onPressed: () {
+                            _showDiscardDialog(context);
+                          },
+                        ),
+                      ],
                     ),
 
                     SizedBox(width: 8),
