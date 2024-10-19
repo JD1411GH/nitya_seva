@@ -156,6 +156,44 @@ class FBL {
     return stocks;
   }
 
+  Future<List<DeepamSale>> getDiscards(String stall,
+      {DateTime? start, DateTime? end}) async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/deepotsava/$stall/discards/');
+
+    DateTime now = DateTime.now();
+    if (start == null) {
+      start = DateTime(now.year, now.month, now.day);
+    }
+    if (end == null) {
+      end = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
+    }
+
+    final Query query = dbRef
+        .orderByKey()
+        .startAt(start.toIso8601String().replaceAll(".", "^"))
+        .endAt(end.toIso8601String().replaceAll(".", "^"));
+
+    List<DeepamSale> sales = [];
+    try {
+      DataSnapshot snapshot = await query.get();
+      if (snapshot.value == null) {
+        return sales;
+      }
+
+      Map<dynamic, dynamic> values = snapshot.value as Map;
+      values.forEach((key, value) {
+        Map<String, dynamic> v = Map<String, dynamic>.from(value as Map);
+        DeepamSale sale = DeepamSale.fromJson(v);
+        sales.add(sale);
+      });
+    } catch (e) {
+      Toaster().error("failed to get sales: $e");
+    }
+
+    return sales;
+  }
+
   Future<List<DeepamSale>> getSales(String stall,
       {DateTime? start, DateTime? end}) async {
     final DatabaseReference dbRef = FirebaseDatabase.instance

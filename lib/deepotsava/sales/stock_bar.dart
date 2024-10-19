@@ -123,6 +123,7 @@ class _StockBarState extends State<StockBar> {
   Future<void> refresh() async {
     List<DeepamStock> stocks = await FBL().getStocks(widget.stall);
     List<DeepamSale> sales = await FBL().getSales(widget.stall);
+    List<DeepamSale> discards = await FBL().getDiscards(widget.stall);
 
     if (!mounted) return;
     setState(() {
@@ -144,6 +145,11 @@ class _StockBarState extends State<StockBar> {
 
       // update the availability bar variables for sales
       sales.forEach((sale) {
+        _currentStock -= sale.count;
+      });
+
+      // update the availability bar variables for discards
+      discards.forEach((sale) {
         _currentStock -= sale.count;
       });
     });

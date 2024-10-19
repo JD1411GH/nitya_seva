@@ -64,12 +64,12 @@ class _SummaryState extends State<Summary> {
 
         if (_paymentModesCount.containsKey(sale.paymentMode)) {
           _paymentModesCount[sale.paymentMode] =
-              _paymentModesCount[sale.paymentMode]! + 1;
+              _paymentModesCount[sale.paymentMode]! + sale.count;
           _paymentModesAmount[sale.paymentMode] =
               _paymentModesAmount[sale.paymentMode]! +
                   (sale.costLamp * sale.count + sale.costPlate * sale.plate);
         } else {
-          _paymentModesCount[sale.paymentMode] = 1;
+          _paymentModesCount[sale.paymentMode] = sale.count;
           _paymentModesAmount[sale.paymentMode] =
               (sale.costLamp * sale.count + sale.costPlate * sale.plate);
         }
@@ -102,12 +102,12 @@ class _SummaryState extends State<Summary> {
 
       if (_paymentModesCount.containsKey(sale.paymentMode)) {
         _paymentModesCount[sale.paymentMode] =
-            _paymentModesCount[sale.paymentMode]! + 1;
+            _paymentModesCount[sale.paymentMode]! + sale.count;
         _paymentModesAmount[sale.paymentMode] =
             _paymentModesAmount[sale.paymentMode]! +
                 (sale.costLamp * sale.count + sale.costPlate * sale.plate);
       } else {
-        _paymentModesCount[sale.paymentMode] = 1;
+        _paymentModesCount[sale.paymentMode] = sale.count;
         _paymentModesAmount[sale.paymentMode] =
             (sale.costLamp * sale.count + sale.costPlate * sale.plate);
       }
@@ -209,7 +209,7 @@ class _SummaryState extends State<Summary> {
               ], bold: true),
               ..._paymentModesCount.keys
                   .map((mode) => _createRow([
-                        '$mode transactions',
+                        '$mode sales',
                         '${_paymentModesCount[mode]}',
                         '₹${_paymentModesAmount[mode]}'
                       ]))
