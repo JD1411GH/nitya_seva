@@ -458,8 +458,6 @@ class _HMIState extends State<HMI> {
 
 class HMICallbacks {
   void Function(DeepamSale) add;
-  // void Function(DeepamStock data) edit;
-  // void Function(DeepamStock data) delete;
 
   HMICallbacks({
     required this.add,

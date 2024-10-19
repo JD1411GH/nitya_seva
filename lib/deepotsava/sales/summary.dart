@@ -75,25 +75,57 @@ class _SummaryState extends State<Summary> {
     });
   }
 
-  void addStock(DeepamStock stock) {}
+  void addStock(DeepamStock stock) {
+    setState(() {
+      _preparedLampsReceivedCount += stock.preparedLamps;
+      _unpreparedLampsReceivedCount += stock.unpreparedLamps;
+      _platesReceivedCount += stock.plates;
+    });
+  }
+
   void editStock() {}
+
   void deleteStock(DeepamStock stock) {}
+
   void addSale(DeepamSale sale) {
     setState(() {
       _totalLampsServedCount += sale.count;
       _totalLampsServedAmount += (sale.count * sale.costLamp);
       _totalPlatesServedCount += sale.plate;
       _totalPlatesServedAmount += (sale.plate * sale.costPlate);
-      _paymentModesCount[sale.paymentMode] =
-          _paymentModesCount[sale.paymentMode]! + 1;
-      _paymentModesAmount[sale.paymentMode] =
-          _paymentModesAmount[sale.paymentMode]! +
-              (sale.costLamp * sale.count + sale.costPlate * sale.plate);
+
+      if (_paymentModesCount.containsKey(sale.paymentMode)) {
+        _paymentModesCount[sale.paymentMode] =
+            _paymentModesCount[sale.paymentMode]! + 1;
+        _paymentModesAmount[sale.paymentMode] =
+            _paymentModesAmount[sale.paymentMode]! +
+                (sale.costLamp * sale.count + sale.costPlate * sale.plate);
+      } else {
+        _paymentModesCount[sale.paymentMode] = 1;
+        _paymentModesAmount[sale.paymentMode] =
+            (sale.costLamp * sale.count + sale.costPlate * sale.plate);
+      }
     });
   }
 
-  void editSale() {}
-  void deleteSale(DeepamSale sale) {}
+  void editSale() {
+    refresh();
+  }
+
+  void deleteSale(DeepamSale sale) {
+    setState(() {
+      _totalLampsServedCount -= sale.count;
+      _totalLampsServedAmount -= (sale.count * sale.costLamp);
+      _totalPlatesServedCount -= sale.plate;
+      _totalPlatesServedAmount -= (sale.plate * sale.costPlate);
+
+      _paymentModesCount[sale.paymentMode] =
+          _paymentModesCount[sale.paymentMode]! - 1;
+      _paymentModesAmount[sale.paymentMode] =
+          _paymentModesAmount[sale.paymentMode]! -
+              (sale.costLamp * sale.count + sale.costPlate * sale.plate);
+    });
+  }
 
   DataRow _createRow(List<String> data, {bool bold = false}) {
     return DataRow(
