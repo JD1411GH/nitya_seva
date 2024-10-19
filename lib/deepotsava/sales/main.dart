@@ -31,7 +31,9 @@ class _SalesState extends State<Sales> {
               DeepamStock stock = DeepamStock.fromJson(map);
               addStock(stock);
             },
-            edit: () {},
+            edit: () {
+              _refresh();
+            },
             delete: (data) {}));
   }
 
@@ -45,7 +47,7 @@ class _SalesState extends State<Sales> {
     setState(() {});
   }
 
-  Future<void> addStock(DeepamStock stock) async {
+  void addStock(DeepamStock stock) {
     summaryKey.currentState!.addStock(stock);
   }
 

@@ -83,8 +83,6 @@ class _SummaryState extends State<Summary> {
     });
   }
 
-  void editStock() {}
-
   void deleteStock(DeepamStock stock) {}
 
   void addSale(DeepamSale sale) {
