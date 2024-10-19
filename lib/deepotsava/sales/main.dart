@@ -25,16 +25,17 @@ class _SalesState extends State<Sales> {
 
     FBL().listenForChange(
         "deepotsava/${widget.stall}/stocks",
-        FBLCallbacks(
-            add: (data) {
-              Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
-              DeepamStock stock = DeepamStock.fromJson(map);
-              addStock(stock);
-            },
-            edit: () {
-              _refresh();
-            },
-            delete: (data) {}));
+        FBLCallbacks(add: (data) {
+          Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
+          DeepamStock stock = DeepamStock.fromJson(map);
+          addStock(stock);
+        }, edit: () {
+          _refresh();
+        }, delete: (data) {
+          Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
+          DeepamStock stock = DeepamStock.fromJson(map);
+          deleteStock(stock);
+        }));
   }
 
   Future<void> _refresh() async {
@@ -49,6 +50,10 @@ class _SalesState extends State<Sales> {
 
   void addStock(DeepamStock stock) {
     summaryKey.currentState!.addStock(stock);
+  }
+
+  void deleteStock(DeepamStock stock) {
+    summaryKey.currentState!.deleteStock(stock);
   }
 
   Future<void> addServedLamps(DeepamSale sale) async {
