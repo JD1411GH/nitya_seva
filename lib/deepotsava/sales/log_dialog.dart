@@ -4,7 +4,7 @@ import 'package:garuda/deepotsava/sales/datatypes.dart';
 
 class LogDialog extends StatefulWidget {
   final DeepamSale sale;
-  final LogCallbacks callbacks;
+  final LogDialogCallbacks callbacks;
   const LogDialog({super.key, required this.sale, required this.callbacks});
 
   @override
@@ -167,11 +167,11 @@ class _LogDialogState extends State<LogDialog> {
   }
 }
 
-class LogCallbacks {
+class LogDialogCallbacks {
   void Function(DeepamSale data, {bool localUpdate}) edit;
   void Function(DeepamSale data, {bool localUpdate}) delete;
 
-  LogCallbacks({
+  LogDialogCallbacks({
     required this.edit,
     required this.delete,
   });

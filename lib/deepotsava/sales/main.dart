@@ -40,6 +40,12 @@ class _SalesState extends State<Sales> {
     summaryKey.currentState!.addSale(sale);
   }
 
+  void editServedLamps(DeepamSale sale) {
+    summaryKey.currentState!.editSale();
+  }
+
+  void deleteServedLamps(DeepamSale sale) {}
+
   @override
   Widget build(BuildContext context) {
     // Select theme based on the value of stall
@@ -70,7 +76,11 @@ class _SalesState extends State<Sales> {
               HMI(
                   stall: widget.stall,
                   callbacks: HMICallbacks(add: serveLamps)),
-              Log(key: logKey, stall: widget.stall),
+              Log(
+                  key: logKey,
+                  stall: widget.stall,
+                  callbacks: LogCallbacks(
+                      edit: editServedLamps, delete: deleteServedLamps)),
               Summary(key: summaryKey, stall: widget.stall),
             ],
           ),

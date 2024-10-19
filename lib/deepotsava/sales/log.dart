@@ -6,8 +6,9 @@ import 'package:garuda/theme.dart';
 
 class Log extends StatefulWidget {
   final String stall;
+  final LogCallbacks callbacks;
 
-  const Log({super.key, required this.stall});
+  const Log({super.key, required this.stall, required this.callbacks});
 
   @override
   State<Log> createState() => _LogState();
@@ -79,6 +80,41 @@ class _LogState extends State<Log> {
     }
   }
 
+  void editLog(DeepamSale data, {bool? localUpdate}) {
+    if (!mounted) return;
+    setState(() {
+      // update log
+      cardValues.removeWhere((element) => element.timestamp == data.timestamp);
+      cardValues.insert(0, data);
+      cardValues.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+      // update database
+      FBL().editSale(widget.stall, data);
+
+      // due to complexity, not adding any extra logic to locally update other widgets.
+      // this will be handled by the FBL callback
+    });
+
+    widget.callbacks.edit(data);
+  }
+
+  void deleteLog(DeepamSale data, {bool? localUpdate}) {
+    // update UI
+    if (!mounted) return;
+    setState(() {
+      cardValues.removeWhere((element) => element.timestamp == data.timestamp);
+    });
+
+    // update database
+    FBL().deleteSale(widget.stall, data);
+
+    // design decision:
+    // due to complexity, not adding any extra logic to locally update other widgets.
+    // this will be handled by the FBL callback
+
+    widget.callbacks.delete(data);
+  }
+
   Future<void> refresh() async {
     cardValues = await FBL().getSales(widget.stall);
     cardValues.sort((a, b) => b.timestamp.compareTo(a.timestamp));
@@ -126,39 +162,8 @@ class _LogState extends State<Log> {
                 builder: (BuildContext context) {
                   return LogDialog(
                     sale: value,
-                    callbacks: LogCallbacks(
-                        edit: (DeepamSale data, {bool? localUpdate}) {
-                      if (!mounted) return;
-                      setState(() {
-                        // update log
-                        cardValues.removeWhere(
-                            (element) => element.timestamp == data.timestamp);
-                        cardValues.insert(0, data);
-                        cardValues
-                            .sort((a, b) => b.timestamp.compareTo(a.timestamp));
-
-                        // update database
-                        FBL().editSale(widget.stall, data);
-
-                        // due to complexity, not adding any extra logic to locally update other widgets.
-                        // this will be handled by the FBL callback
-                      });
-
-                      // update database
-                    }, delete: (DeepamSale data, {bool? localUpdate}) {
-                      // update UI
-                      if (!mounted) return;
-                      setState(() {
-                        cardValues.removeWhere(
-                            (element) => element.timestamp == data.timestamp);
-                      });
-
-                      // update database
-                      FBL().deleteSale(widget.stall, data);
-
-                      // due to complexity, not adding any extra logic to locally update other widgets.
-                      // this will be handled by the FBL callback
-                    }),
+                    callbacks:
+                        LogDialogCallbacks(edit: editLog, delete: deleteLog),
                   );
                 },
               );
@@ -248,4 +253,14 @@ class _LogState extends State<Log> {
       ),
     );
   }
+}
+
+class LogCallbacks {
+  void Function(DeepamSale data) edit;
+  void Function(DeepamSale data) delete;
+
+  LogCallbacks({
+    required this.edit,
+    required this.delete,
+  });
 }

@@ -76,7 +76,10 @@ class _SummaryState extends State<Summary> {
   }
 
   void addStock(DeepamStock stock) {}
-  void editStock() {}
+  void editStock() {
+    refresh();
+  }
+
   void deleteStock(DeepamStock stock) {}
   void addSale(DeepamSale sale) {
     setState(() {
@@ -84,15 +87,25 @@ class _SummaryState extends State<Summary> {
       _totalLampsServedAmount += (sale.count * sale.costLamp);
       _totalPlatesServedCount += sale.plate;
       _totalPlatesServedAmount += (sale.plate * sale.costPlate);
-      _paymentModesCount[sale.paymentMode] =
-          _paymentModesCount[sale.paymentMode]! + 1;
-      _paymentModesAmount[sale.paymentMode] =
-          _paymentModesAmount[sale.paymentMode]! +
-              (sale.costLamp * sale.count + sale.costPlate * sale.plate);
+
+      if (_paymentModesCount.containsKey(sale.paymentMode)) {
+        _paymentModesCount[sale.paymentMode] =
+            _paymentModesCount[sale.paymentMode]! + 1;
+        _paymentModesAmount[sale.paymentMode] =
+            _paymentModesAmount[sale.paymentMode]! +
+                (sale.costLamp * sale.count + sale.costPlate * sale.plate);
+      } else {
+        _paymentModesCount[sale.paymentMode] = 1;
+        _paymentModesAmount[sale.paymentMode] =
+            (sale.costLamp * sale.count + sale.costPlate * sale.plate);
+      }
     });
   }
 
-  void editSale() {}
+  void editSale() {
+    refresh();
+  }
+
   void deleteSale(DeepamSale sale) {}
 
   DataRow _createRow(List<String> data, {bool bold = false}) {
