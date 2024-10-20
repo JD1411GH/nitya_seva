@@ -3,6 +3,7 @@ import 'package:garuda/deepotsava/sales/datatypes.dart';
 import 'package:garuda/deepotsava/fbl.dart';
 import 'package:garuda/deepotsava/sales/log_dialog.dart';
 import 'package:garuda/theme.dart';
+import 'package:garuda/toaster.dart';
 
 class Log extends StatefulWidget {
   final String stall;
@@ -80,22 +81,26 @@ class _LogState extends State<Log> {
     }
   }
 
-  void editLog(DeepamSale data, {bool? localUpdate}) {
+  void editLog(DeepamSale sale, {bool? localUpdate}) {
     if (!mounted) return;
     setState(() {
       // update log
-      cardValues.removeWhere((element) => element.timestamp == data.timestamp);
-      cardValues.insert(0, data);
+      cardValues.removeWhere((element) => element.timestamp == sale.timestamp);
+      cardValues.insert(0, sale);
       cardValues.sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
       // update database
-      FBL().editSale(widget.stall, data);
+      if (sale.paymentMode == 'Discard') {
+        FBL().editDiscard(widget.stall, sale);
+      } else {
+        FBL().editSale(widget.stall, sale);
+      }
 
       // due to complexity, not adding any extra logic to locally update other widgets.
       // this will be handled by the FBL callback
     });
 
-    widget.callbacks.edit(data);
+    widget.callbacks.edit(sale);
   }
 
   void deleteLog(DeepamSale data, {bool? localUpdate}) {
@@ -117,6 +122,10 @@ class _LogState extends State<Log> {
 
   Future<void> refresh() async {
     cardValues = await FBL().getSales(widget.stall);
+
+    List<DeepamSale> discardValues = await FBL().getDiscards(widget.stall);
+    cardValues.addAll(discardValues);
+
     cardValues.sort((a, b) => b.timestamp.compareTo(a.timestamp));
     if (!mounted) return;
     setState(() {});
@@ -130,8 +139,13 @@ class _LogState extends State<Log> {
         return 'assets/images/icon_cash.png';
       case 'Card':
         return 'assets/images/icon_card.png';
+      case 'Gift':
+        return 'assets/images/icon_gratis.png';
+      case 'Discard':
+        return 'assets/images/icon_discard.png';
       default:
-        return 'assets/images/icon_gratis.png'; // gift
+        Toaster().error("Unknown payment mode: $paymentMode");
+        return 'assets/images/icon_discard.png';
     }
   }
 

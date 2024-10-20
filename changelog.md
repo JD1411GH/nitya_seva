@@ -1,3 +1,6 @@
+# 3.5.0
+- feature: discard damaged lamps
+
 # 3.4.2
 
 # 3.4.1

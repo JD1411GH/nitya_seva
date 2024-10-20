@@ -18,6 +18,7 @@ class _SummaryState extends State<Summary> {
   int _platesReceivedCount = 0;
   int _totalLampsServedCount = 0;
   int _totalLampsServedAmount = 0;
+  int _discardedLampsCount = 0;
   int _totalPlatesServedCount = 0;
   int _totalPlatesServedAmount = 0;
   Map<String, int> _paymentModesCount = {};
@@ -33,6 +34,7 @@ class _SummaryState extends State<Summary> {
   Future<void> refresh() async {
     List<DeepamStock> stocks = await FBL().getStocks(widget.stall);
     List<DeepamSale> sales = await FBL().getSales(widget.stall);
+    List<DeepamSale> discards = await FBL().getDiscards(widget.stall);
 
     setState(() {
       // reset everything
@@ -41,6 +43,7 @@ class _SummaryState extends State<Summary> {
       _platesReceivedCount = 0;
       _totalLampsServedCount = 0;
       _totalLampsServedAmount = 0;
+      _discardedLampsCount = 0;
       _totalPlatesServedCount = 0;
       _totalPlatesServedAmount = 0;
       _paymentModesCount = {};
@@ -62,15 +65,20 @@ class _SummaryState extends State<Summary> {
 
         if (_paymentModesCount.containsKey(sale.paymentMode)) {
           _paymentModesCount[sale.paymentMode] =
-              _paymentModesCount[sale.paymentMode]! + 1;
+              _paymentModesCount[sale.paymentMode]! + sale.count;
           _paymentModesAmount[sale.paymentMode] =
               _paymentModesAmount[sale.paymentMode]! +
                   (sale.costLamp * sale.count + sale.costPlate * sale.plate);
         } else {
-          _paymentModesCount[sale.paymentMode] = 1;
+          _paymentModesCount[sale.paymentMode] = sale.count;
           _paymentModesAmount[sale.paymentMode] =
               (sale.costLamp * sale.count + sale.costPlate * sale.plate);
         }
+      });
+
+      // fill discarded data
+      discards.forEach((sale) {
+        _discardedLampsCount += sale.count;
       });
     });
   }
@@ -83,9 +91,13 @@ class _SummaryState extends State<Summary> {
     });
   }
 
-  void editStock() {}
-
-  void deleteStock(DeepamStock stock) {}
+  void deleteStock(DeepamStock stock) {
+    setState(() {
+      _preparedLampsReceivedCount -= stock.preparedLamps;
+      _unpreparedLampsReceivedCount -= stock.unpreparedLamps;
+      _platesReceivedCount -= stock.plates;
+    });
+  }
 
   void addSale(DeepamSale sale) {
     setState(() {
@@ -96,15 +108,21 @@ class _SummaryState extends State<Summary> {
 
       if (_paymentModesCount.containsKey(sale.paymentMode)) {
         _paymentModesCount[sale.paymentMode] =
-            _paymentModesCount[sale.paymentMode]! + 1;
+            _paymentModesCount[sale.paymentMode]! + sale.count;
         _paymentModesAmount[sale.paymentMode] =
             _paymentModesAmount[sale.paymentMode]! +
                 (sale.costLamp * sale.count + sale.costPlate * sale.plate);
       } else {
-        _paymentModesCount[sale.paymentMode] = 1;
+        _paymentModesCount[sale.paymentMode] = sale.count;
         _paymentModesAmount[sale.paymentMode] =
             (sale.costLamp * sale.count + sale.costPlate * sale.plate);
       }
+    });
+  }
+
+  void discardLamps(DeepamSale sale) {
+    setState(() {
+      _discardedLampsCount += sale.count;
     });
   }
 
@@ -184,6 +202,7 @@ class _SummaryState extends State<Summary> {
                 '$_totalLampsServedCount',
                 '₹$_totalLampsServedAmount'
               ]),
+              _createRow(['Discarded lamps', '$_discardedLampsCount', '']),
               _createRow([
                 'Total plates served',
                 '$_totalPlatesServedCount',
@@ -196,7 +215,7 @@ class _SummaryState extends State<Summary> {
               ], bold: true),
               ..._paymentModesCount.keys
                   .map((mode) => _createRow([
-                        '$mode transactions',
+                        '$mode sales',
                         '${_paymentModesCount[mode]}',
                         '₹${_paymentModesAmount[mode]}'
                       ]))

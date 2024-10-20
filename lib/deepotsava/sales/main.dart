@@ -25,14 +25,17 @@ class _SalesState extends State<Sales> {
 
     FBL().listenForChange(
         "deepotsava/${widget.stall}/stocks",
-        FBLCallbacks(
-            add: (data) {
-              Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
-              DeepamStock stock = DeepamStock.fromJson(map);
-              addStock(stock);
-            },
-            edit: () {},
-            delete: (data) {}));
+        FBLCallbacks(add: (data) {
+          Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
+          DeepamStock stock = DeepamStock.fromJson(map);
+          addStock(stock);
+        }, edit: () {
+          _refresh();
+        }, delete: (data) {
+          Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
+          DeepamStock stock = DeepamStock.fromJson(map);
+          deleteStock(stock);
+        }));
   }
 
   Future<void> _refresh() async {
@@ -45,23 +48,42 @@ class _SalesState extends State<Sales> {
     setState(() {});
   }
 
-  Future<void> addStock(DeepamStock stock) async {
+  void addStock(DeepamStock stock) {
     summaryKey.currentState!.addStock(stock);
   }
 
+  void deleteStock(DeepamStock stock) {
+    summaryKey.currentState!.deleteStock(stock);
+  }
+
   Future<void> addServedLamps(DeepamSale sale) async {
-    dashboardKey.currentState!.addLampsServed(sale);
-    logKey.currentState!.addLog(sale, localUpdate: true);
-    stockBarKey.currentState!.serveLamps(sale, localUpdate: true);
-    summaryKey.currentState!.addSale(sale);
+    if (sale.paymentMode == 'Discard') {
+      logKey.currentState!.addLog(sale, localUpdate: true);
+      stockBarKey.currentState!.discardLamps(sale, localUpdate: true);
+      summaryKey.currentState!.discardLamps(sale);
+    } else {
+      dashboardKey.currentState!.addLampsServed(sale);
+      logKey.currentState!.addLog(sale, localUpdate: true);
+      stockBarKey.currentState!.serveLamps(sale, localUpdate: true);
+      summaryKey.currentState!.addSale(sale);
+    }
   }
 
   void editServedLamps(DeepamSale sale) {
-    summaryKey.currentState!.editSale();
+    if (sale.paymentMode == 'Discard') {
+      stockBarKey.currentState!.refresh();
+      logKey.currentState!.refresh();
+      summaryKey.currentState!.refresh();
+    } else {
+      summaryKey.currentState!.editSale();
+    }
   }
 
   void deleteServedLamps(DeepamSale sale) {
-    summaryKey.currentState!.deleteSale(sale);
+    if (sale.paymentMode == 'Discard') {
+    } else {
+      summaryKey.currentState!.deleteSale(sale);
+    }
   }
 
   @override

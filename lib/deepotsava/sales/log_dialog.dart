@@ -70,7 +70,9 @@ class _LogDialogState extends State<LogDialog> {
           // lamps served
           Row(
             children: [
-              Text("Lamps served: "),
+              (widget.sale.paymentMode == 'Discard')
+                  ? Text("Lamps discarded: ")
+                  : Text("Lamps served: "),
               Spacer(),
               Expanded(
                 child: TextField(
@@ -84,57 +86,60 @@ class _LogDialogState extends State<LogDialog> {
           ),
 
           // plates served
-          Row(
-            children: [
-              Text("Plates served: "),
-              Spacer(),
-              Expanded(
-                child: TextField(
-                  textAlign: TextAlign.center,
-                  controller: _platecountController
-                    ..text = "${widget.sale.plate}",
-                  keyboardType: TextInputType.number,
-                  readOnly: true, // Make the text field uneditable
-                ),
-              )
-            ],
-          ),
+          if (widget.sale.paymentMode != 'Discard')
+            Row(
+              children: [
+                Text("Plates served: "),
+                Spacer(),
+                Expanded(
+                  child: TextField(
+                    textAlign: TextAlign.center,
+                    controller: _platecountController
+                      ..text = "${widget.sale.plate}",
+                    keyboardType: TextInputType.number,
+                    readOnly: true, // Make the text field uneditable
+                  ),
+                )
+              ],
+            ),
 
           // payment mode
-          Row(
-            children: [
-              Text("Payment mode: "),
-              SizedBox(width: 30),
-              Expanded(
-                child: DropdownButton<String>(
-                  value: selectedPaymentMode,
-                  onChanged: (String? newValue) {
-                    if (!mounted) return;
-                    setState(() {
-                      selectedPaymentMode = newValue!;
-                    });
-                  },
-                  items: paymentModes
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
+          if (widget.sale.paymentMode != 'Discard')
+            Row(
+              children: [
+                Text("Payment mode: "),
+                SizedBox(width: 30),
+                Expanded(
+                  child: DropdownButton<String>(
+                    value: selectedPaymentMode,
+                    onChanged: (String? newValue) {
+                      if (!mounted) return;
+                      setState(() {
+                        selectedPaymentMode = newValue!;
+                      });
+                    },
+                    items: paymentModes
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
                 ),
-              ),
-            ],
-          )
+              ],
+            )
         ],
       ),
       actions: [
         // delete button
-        TextButton(
-          onPressed: () {
-            _deleteSale(context);
-          },
-          child: Text("Delete", style: TextStyle(color: Colors.red)),
-        ),
+        if (widget.sale.paymentMode != 'Discard')
+          TextButton(
+            onPressed: () {
+              _deleteSale(context);
+            },
+            child: Text("Delete", style: TextStyle(color: Colors.red)),
+          ),
 
         // cancel button
         TextButton(
