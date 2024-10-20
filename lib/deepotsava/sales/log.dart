@@ -81,22 +81,26 @@ class _LogState extends State<Log> {
     }
   }
 
-  void editLog(DeepamSale data, {bool? localUpdate}) {
+  void editLog(DeepamSale sale, {bool? localUpdate}) {
     if (!mounted) return;
     setState(() {
       // update log
-      cardValues.removeWhere((element) => element.timestamp == data.timestamp);
-      cardValues.insert(0, data);
+      cardValues.removeWhere((element) => element.timestamp == sale.timestamp);
+      cardValues.insert(0, sale);
       cardValues.sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
       // update database
-      FBL().editSale(widget.stall, data);
+      if (sale.paymentMode == 'Discard') {
+        FBL().editDiscard(widget.stall, sale);
+      } else {
+        FBL().editSale(widget.stall, sale);
+      }
 
       // due to complexity, not adding any extra logic to locally update other widgets.
       // this will be handled by the FBL callback
     });
 
-    widget.callbacks.edit(data);
+    widget.callbacks.edit(sale);
   }
 
   void deleteLog(DeepamSale data, {bool? localUpdate}) {
@@ -118,6 +122,10 @@ class _LogState extends State<Log> {
 
   Future<void> refresh() async {
     cardValues = await FBL().getSales(widget.stall);
+
+    List<DeepamSale> discardValues = await FBL().getDiscards(widget.stall);
+    cardValues.addAll(discardValues);
+
     cardValues.sort((a, b) => b.timestamp.compareTo(a.timestamp));
     if (!mounted) return;
     setState(() {});

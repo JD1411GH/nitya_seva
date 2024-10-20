@@ -344,6 +344,11 @@ class _HMIState extends State<HMI> {
                         ? "0"
                         : _unpreparedLampsDiscardedController.text);
 
+                if (_stockAvailable < preparedLamps + unpreparedLamps) {
+                  Toaster().error("Not enough stock");
+                  return;
+                }
+
                 DeepamSale sale = DeepamSale(
                   timestamp: DateTime.now(),
                   stall: widget.stall,

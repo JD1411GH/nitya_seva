@@ -82,6 +82,20 @@ class FBL {
     }
   }
 
+  Future<void> editDiscard(String stall, DeepamSale sale) async {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .ref('record_db${Const().dbVersion}/deepotsava/$stall/discards/');
+
+    DateTime timestamp = sale.timestamp;
+    DatabaseReference ref =
+        dbRef.child(timestamp.toIso8601String().replaceAll(".", "^"));
+    try {
+      await ref.set(sale.toJson());
+    } catch (e) {
+      Toaster().error("failed to edit discard: $e");
+    }
+  }
+
   Future<void> editSale(String stall, DeepamSale sale) async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/deepotsava/$stall/sales/');

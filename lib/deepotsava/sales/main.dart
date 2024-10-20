@@ -70,11 +70,20 @@ class _SalesState extends State<Sales> {
   }
 
   void editServedLamps(DeepamSale sale) {
-    summaryKey.currentState!.editSale();
+    if (sale.paymentMode == 'Discard') {
+      stockBarKey.currentState!.refresh();
+      logKey.currentState!.refresh();
+      summaryKey.currentState!.refresh();
+    } else {
+      summaryKey.currentState!.editSale();
+    }
   }
 
   void deleteServedLamps(DeepamSale sale) {
-    summaryKey.currentState!.deleteSale(sale);
+    if (sale.paymentMode == 'Discard') {
+    } else {
+      summaryKey.currentState!.deleteSale(sale);
+    }
   }
 
   @override

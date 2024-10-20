@@ -34,6 +34,7 @@ class _SummaryState extends State<Summary> {
   Future<void> refresh() async {
     List<DeepamStock> stocks = await FBL().getStocks(widget.stall);
     List<DeepamSale> sales = await FBL().getSales(widget.stall);
+    List<DeepamSale> discards = await FBL().getDiscards(widget.stall);
 
     setState(() {
       // reset everything
@@ -73,6 +74,11 @@ class _SummaryState extends State<Summary> {
           _paymentModesAmount[sale.paymentMode] =
               (sale.costLamp * sale.count + sale.costPlate * sale.plate);
         }
+      });
+
+      // fill discarded data
+      discards.forEach((sale) {
+        _discardedLampsCount += sale.count;
       });
     });
   }
