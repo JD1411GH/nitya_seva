@@ -23,33 +23,39 @@ class _AccountingState extends State<Accounting> {
       refresh();
     });
 
-    // listeners for sales
-    for (String stall in ["RKC", "RRG"]) {
-      FBL().listenForChange(
-          "deepotsava/$stall/sales",
-          FBLCallbacks(
-              // add
-              add: (data) async {
-            counterKey.currentState!.addToCounter(data['count']);
-            await detailsKey.currentState!.refresh();
+    // listeners
+    for (String service in ["sales", "stocks", "discards"]) {
+      for (String stall in ["RKC", "RRG"]) {
+        FBL().listenForChange(
+            "deepotsava/$stall/$service",
+            FBLCallbacks(
+                // add
+                add: (data) async {
+              if (service == "sales")
+                counterKey.currentState!.addToCounter(data['count']);
 
-            if (mounted) setState(() {});
-          },
+              await detailsKey.currentState!.refresh();
 
-              // edit
-              edit: () async {
-            await counterKey.currentState!.refresh();
-            await detailsKey.currentState!.refresh();
+              if (mounted) setState(() {});
+            },
 
-            if (mounted) setState(() {});
-          },
+                // edit
+                edit: () async {
+              await counterKey.currentState!.refresh();
+              await detailsKey.currentState!.refresh();
 
-              // delete
-              delete: (data) async {
-            counterKey.currentState!.removeFromCounter(data['count']);
-            await detailsKey.currentState!.refresh();
-            setState(() {});
-          }));
+              if (mounted) setState(() {});
+            },
+
+                // delete
+                delete: (data) async {
+              if (service == "sales")
+                counterKey.currentState!.removeFromCounter(data['count']);
+
+              await detailsKey.currentState!.refresh();
+              setState(() {});
+            }));
+      }
     }
   }
 
