@@ -138,13 +138,18 @@ class FBL {
     }
   }
 
-  Future<List<DeepamStock>> getStocks(String stall) async {
+  Future<List<DeepamStock>> getStocks(String stall,
+      {DateTime? start, DateTime? end}) async {
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .ref('record_db${Const().dbVersion}/deepotsava/$stall/stocks/');
 
     DateTime now = DateTime.now();
-    DateTime start = DateTime(now.year, now.month, now.day);
-    DateTime end = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
+    if (start == null) {
+      start = DateTime(now.year, now.month, now.day);
+    }
+    if (end == null) {
+      end = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
+    }
 
     final Query query = dbRef
         .orderByKey()

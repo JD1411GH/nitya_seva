@@ -28,7 +28,7 @@ class _DetailsState extends State<Details> {
     super.initState();
   }
 
-  Future<void> refresh() async {
+  Future<void> refresh({DateTime? start, DateTime? end}) async {
     // clear everything before updating
     _rows.clear();
     _preparedLamps = [0, 0, 0];
@@ -41,10 +41,14 @@ class _DetailsState extends State<Details> {
     _amountPerModeRRG = {}; // 'UPI': 10, 'Cash': 20
 
     // read from FB
-    List<DeepamStock> stocksRKC = await FBL().getStocks('RKC');
-    List<DeepamStock> stocksRRG = await FBL().getStocks('RRG');
-    List<DeepamSale> salesRKC = await FBL().getSales('RKC');
-    List<DeepamSale> salesRRG = await FBL().getSales('RRG');
+    List<DeepamStock> stocksRKC =
+        await FBL().getStocks('RKC', start: start, end: end);
+    List<DeepamStock> stocksRRG =
+        await FBL().getStocks('RRG', start: start, end: end);
+    List<DeepamSale> salesRKC =
+        await FBL().getSales('RKC', start: start, end: end);
+    List<DeepamSale> salesRRG =
+        await FBL().getSales('RRG', start: start, end: end);
 
     // RKC data
     stocksRKC.forEach((stock) {
