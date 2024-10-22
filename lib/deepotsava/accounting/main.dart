@@ -73,6 +73,13 @@ class _AccountingState extends State<Accounting> {
     });
   }
 
+  void dateChange(DateTime date) {
+    _start = DateTime(date.year, date.month, date.day);
+    _end = DateTime(date.year, date.month, date.day, 23, 59, 59, 999);
+
+    refresh();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Theme(
@@ -87,7 +94,8 @@ class _AccountingState extends State<Accounting> {
               onRefresh: refresh,
               child: ListView(
                 children: [
-                  DateHeader(),
+                  DateHeader(
+                      callbacks: DateHeaderCallbacks(change: dateChange)),
                   Counter(key: counterKey),
                   Details(key: detailsKey),
                 ],

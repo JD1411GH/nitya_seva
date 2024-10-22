@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:synchronized/synchronized.dart';
 
 class DateHeader extends StatefulWidget {
-  const DateHeader({super.key});
+  final DateHeaderCallbacks? callbacks;
+
+  const DateHeader({super.key, this.callbacks});
 
   @override
   State<DateHeader> createState() => _DateHeaderState();
@@ -14,7 +15,6 @@ final GlobalKey<_DateHeaderState> HistoryHeaderKey =
     GlobalKey<_DateHeaderState>();
 
 class _DateHeaderState extends State<DateHeader> {
-  final _lockInit = Lock();
   DateTime _date = DateTime.now();
 
   @override
@@ -45,6 +45,10 @@ class _DateHeaderState extends State<DateHeader> {
               setState(() {
                 _date = _date.subtract(Duration(days: 1));
               });
+
+              if (widget.callbacks != null) {
+                widget.callbacks!.change(_date);
+              }
             },
           ),
 
@@ -54,6 +58,10 @@ class _DateHeaderState extends State<DateHeader> {
               setState(() {
                 _date = DateTime.now();
               });
+
+              if (widget.callbacks != null) {
+                widget.callbacks!.change(_date);
+              }
             },
             child: Container(
               width: 120.0,
@@ -75,10 +83,22 @@ class _DateHeaderState extends State<DateHeader> {
               setState(() {
                 _date = _date.add(Duration(days: 1));
               });
+
+              if (widget.callbacks != null) {
+                widget.callbacks!.change(_date);
+              }
             },
           ),
         ],
       ),
     );
   }
+}
+
+class DateHeaderCallbacks {
+  void Function(DateTime) change;
+
+  DateHeaderCallbacks({
+    required this.change,
+  });
 }
