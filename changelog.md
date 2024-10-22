@@ -1,3 +1,6 @@
+# 3.6.1
+- fix: accounting table refresh
+
 # 3.6.0
 - feature: scroll dates in accounting
 
