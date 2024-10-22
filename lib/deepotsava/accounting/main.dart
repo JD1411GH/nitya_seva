@@ -13,10 +13,16 @@ class Accounting extends StatefulWidget {
 
 class _AccountingState extends State<Accounting> {
   bool _isLoading = true;
+  late DateTime _start;
+  late DateTime _end;
 
   @override
   initState() {
     super.initState();
+
+    DateTime now = DateTime.now();
+    _start = DateTime(now.year, now.month, now.day);
+    _end = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       refresh();
@@ -33,15 +39,15 @@ class _AccountingState extends State<Accounting> {
               if (service == "sales")
                 counterKey.currentState!.addToCounter(data['count']);
 
-              await detailsKey.currentState!.refresh();
+              await detailsKey.currentState!.refresh(start: _start, end: _end);
 
               if (mounted) setState(() {});
             },
 
                 // edit
                 edit: () async {
-              await counterKey.currentState!.refresh();
-              await detailsKey.currentState!.refresh();
+              await counterKey.currentState!.refresh(start: _start, end: _end);
+              await detailsKey.currentState!.refresh(start: _start, end: _end);
 
               if (mounted) setState(() {});
             },
@@ -51,7 +57,7 @@ class _AccountingState extends State<Accounting> {
               if (service == "sales")
                 counterKey.currentState!.removeFromCounter(data['count']);
 
-              await detailsKey.currentState!.refresh();
+              await detailsKey.currentState!.refresh(start: _start, end: _end);
               setState(() {});
             }));
       }
@@ -59,8 +65,8 @@ class _AccountingState extends State<Accounting> {
   }
 
   Future<void> refresh() async {
-    await counterKey.currentState!.refresh();
-    await detailsKey.currentState!.refresh();
+    await counterKey.currentState!.refresh(start: _start, end: _end);
+    await detailsKey.currentState!.refresh(start: _start, end: _end);
 
     setState(() {
       _isLoading = false;

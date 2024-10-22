@@ -190,9 +190,9 @@ class _DetailsState extends State<Details> {
     // Total amount
     _rows.add(_createRow([
       'Total amount',
-      totalAmount[0].toString(),
-      totalAmount[1].toString(),
-      totalAmount[2].toString()
+      "₹${totalAmount[0].toString()}",
+      "₹${totalAmount[1].toString()}",
+      "₹${totalAmount[2].toString()}"
     ], bold: true));
 
     setState(() {});
