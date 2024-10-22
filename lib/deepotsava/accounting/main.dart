@@ -12,58 +12,21 @@ class Accounting extends StatefulWidget {
 }
 
 class _AccountingState extends State<Accounting> {
+  bool _isLoading = true;
+
   @override
   initState() {
     super.initState();
-
-    // listeners for RKC sales
-    // FBL().listenForChange(
-    //     "deepotsava/RKC/sales",
-    //     FBLCallbacks(
-    //         // add
-    //         add: (data) async {
-    //       counterKey.currentState?.addToCounter(data['count']);
-    //     },
-
-    //         // edit
-    //         edit: () async {
-    //       counterKey.currentState?.refresh();
-    //       pieKey.currentState?.refresh();
-    //     },
-
-    //         // delete
-    //         delete: (data) async {
-    //       counterKey.currentState?.removeFromCounter(data['count']);
-
-    //       Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
-    //       DeepamSale sale = DeepamSale.fromJson(map);
-    //       pieKey.currentState?.removeSale(sale);
-    //     }));
-
-    // listeners for RRG sales
-    // FBL().listenForChange(
-    //     "deepotsava/RRG/sales",
-    //     FBLCallbacks(add: (data) async {
-    //       counterKey.currentState?.addToCounter(data['count']);
-
-    //       Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
-    //       DeepamSale sale = DeepamSale.fromJson(map);
-    //       pieKey.currentState?.addSale(sale);
-    //     }, edit: () async {
-    //       counterKey.currentState?.refresh();
-    //       pieKey.currentState?.refresh();
-    //     }, delete: (data) async {
-    //       counterKey.currentState?.removeFromCounter(data['count']);
-
-    //       Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
-    //       DeepamSale sale = DeepamSale.fromJson(map);
-    //       pieKey.currentState?.removeSale(sale);
-    //     }));
+    refresh();
   }
 
   Future<void> refresh() async {
     await counterKey.currentState?.refresh();
     await detailsKey.currentState?.refresh();
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -74,15 +37,30 @@ class _AccountingState extends State<Accounting> {
         appBar: AppBar(
           title: Text('Accounting'),
         ),
-        body: RefreshIndicator(
-          onRefresh: refresh,
-          child: ListView(
-            children: [
-              DateHeader(),
-              Counter(key: counterKey),
-              Details(key: detailsKey),
-            ],
-          ),
+        body: Stack(
+          children: [
+            RefreshIndicator(
+              onRefresh: refresh,
+              child: ListView(
+                children: [
+                  DateHeader(),
+                  Counter(key: counterKey),
+                  Details(key: detailsKey),
+                ],
+              ),
+            ),
+            if (_isLoading)
+              ModalBarrier(
+                color: Colors.black.withOpacity(0.5),
+                dismissible: false,
+              ),
+            if (_isLoading)
+              Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              ),
+          ],
         ),
       ),
     );
