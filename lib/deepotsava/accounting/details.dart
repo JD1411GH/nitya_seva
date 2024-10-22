@@ -155,7 +155,7 @@ class _DetailsState extends State<Details> {
     _amountPerModeRKC.forEach((mode, amount) {
       List<String> row = [];
       row.add('Amount through $mode');
-      row.add(amount.toString());
+      row.add("₹${amount.toString()}");
       totalAmount[0] += amount;
 
       int rrgValue = 0;
@@ -163,10 +163,10 @@ class _DetailsState extends State<Details> {
         rrgValue = _amountPerModeRRG[mode]!;
         _amountPerModeRRG.remove(mode);
       }
-      row.add(rrgValue.toString());
+      row.add("₹${rrgValue.toString()}");
       totalAmount[1] += rrgValue;
 
-      row.add((amount + rrgValue).toString());
+      row.add("₹${(amount + rrgValue).toString()}");
       totalAmount[2] += (amount + rrgValue);
 
       _rows.add(_createRow(row));
@@ -176,9 +176,9 @@ class _DetailsState extends State<Details> {
     _amountPerModeRRG.forEach((mode, amount) {
       List<String> row = [];
       row.add('Amount through $mode');
-      row.add('0');
-      row.add(amount.toString());
-      row.add(amount.toString());
+      row.add('₹0');
+      row.add("₹${amount.toString()}");
+      row.add("₹${amount.toString()}");
 
       _rows.add(_createRow(row));
     });

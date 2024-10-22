@@ -18,9 +18,39 @@ class _AccountingState extends State<Accounting> {
   @override
   initState() {
     super.initState();
+
     SchedulerBinding.instance.addPostFrameCallback((_) {
       refresh();
     });
+
+    // listeners for sales
+    for (String stall in ["RKC", "RRG"]) {
+      FBL().listenForChange(
+          "deepotsava/$stall/sales",
+          FBLCallbacks(
+              // add
+              add: (data) async {
+            counterKey.currentState!.addToCounter(data['count']);
+            await detailsKey.currentState!.refresh();
+
+            if (mounted) setState(() {});
+          },
+
+              // edit
+              edit: () async {
+            await counterKey.currentState!.refresh();
+            await detailsKey.currentState!.refresh();
+
+            if (mounted) setState(() {});
+          },
+
+              // delete
+              delete: (data) async {
+            counterKey.currentState!.removeFromCounter(data['count']);
+            await detailsKey.currentState!.refresh();
+            setState(() {});
+          }));
+    }
   }
 
   Future<void> refresh() async {
