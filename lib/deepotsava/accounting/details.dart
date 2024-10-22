@@ -27,8 +27,6 @@ class _DetailsState extends State<Details> {
   @override
   initState() {
     super.initState();
-
-    refresh();
   }
 
   Future<void> refresh() async {

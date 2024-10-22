@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/accounting/counter.dart';
 import 'package:garuda/deepotsava/accounting/details.dart';
-import 'package:garuda/deepotsava/accounting/pie.dart';
 import 'package:garuda/deepotsava/sales/datatypes.dart';
 import 'package:garuda/deepotsava/date_header.dart';
 import 'package:garuda/deepotsava/fbl.dart';
@@ -17,60 +16,54 @@ class _AccountingState extends State<Accounting> {
   initState() {
     super.initState();
 
-    refresh();
-
     // listeners for RKC sales
-    FBL().listenForChange(
-        "deepotsava/RKC/sales",
-        FBLCallbacks(
-            // add
-            add: (data) async {
-          counterKey.currentState?.addToCounter(data['count']);
+    // FBL().listenForChange(
+    //     "deepotsava/RKC/sales",
+    //     FBLCallbacks(
+    //         // add
+    //         add: (data) async {
+    //       counterKey.currentState?.addToCounter(data['count']);
+    //     },
 
-          Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
-          DeepamSale sale = DeepamSale.fromJson(map);
-          pieKey.currentState?.addSale(sale);
-        },
+    //         // edit
+    //         edit: () async {
+    //       counterKey.currentState?.refresh();
+    //       pieKey.currentState?.refresh();
+    //     },
 
-            // edit
-            edit: () async {
-          counterKey.currentState?.refresh();
-          pieKey.currentState?.refresh();
-        },
+    //         // delete
+    //         delete: (data) async {
+    //       counterKey.currentState?.removeFromCounter(data['count']);
 
-            // delete
-            delete: (data) async {
-          counterKey.currentState?.removeFromCounter(data['count']);
-
-          Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
-          DeepamSale sale = DeepamSale.fromJson(map);
-          pieKey.currentState?.removeSale(sale);
-        }));
+    //       Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
+    //       DeepamSale sale = DeepamSale.fromJson(map);
+    //       pieKey.currentState?.removeSale(sale);
+    //     }));
 
     // listeners for RRG sales
-    FBL().listenForChange(
-        "deepotsava/RRG/sales",
-        FBLCallbacks(add: (data) async {
-          counterKey.currentState?.addToCounter(data['count']);
+    // FBL().listenForChange(
+    //     "deepotsava/RRG/sales",
+    //     FBLCallbacks(add: (data) async {
+    //       counterKey.currentState?.addToCounter(data['count']);
 
-          Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
-          DeepamSale sale = DeepamSale.fromJson(map);
-          pieKey.currentState?.addSale(sale);
-        }, edit: () async {
-          counterKey.currentState?.refresh();
-          pieKey.currentState?.refresh();
-        }, delete: (data) async {
-          counterKey.currentState?.removeFromCounter(data['count']);
+    //       Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
+    //       DeepamSale sale = DeepamSale.fromJson(map);
+    //       pieKey.currentState?.addSale(sale);
+    //     }, edit: () async {
+    //       counterKey.currentState?.refresh();
+    //       pieKey.currentState?.refresh();
+    //     }, delete: (data) async {
+    //       counterKey.currentState?.removeFromCounter(data['count']);
 
-          Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
-          DeepamSale sale = DeepamSale.fromJson(map);
-          pieKey.currentState?.removeSale(sale);
-        }));
+    //       Map<String, dynamic> map = Map<String, dynamic>.from(data as Map);
+    //       DeepamSale sale = DeepamSale.fromJson(map);
+    //       pieKey.currentState?.removeSale(sale);
+    //     }));
   }
 
   Future<void> refresh() async {
-    await pieKey.currentState?.refresh();
     await counterKey.currentState?.refresh();
+    await detailsKey.currentState?.refresh();
   }
 
   @override
@@ -87,8 +80,6 @@ class _AccountingState extends State<Accounting> {
             children: [
               DateHeader(),
               Counter(key: counterKey),
-              SizedBox(height: 10),
-              Pie(key: pieKey),
               Details(key: detailsKey),
             ],
           ),
