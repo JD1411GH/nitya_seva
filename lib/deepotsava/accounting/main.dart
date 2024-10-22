@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:garuda/deepotsava/accounting/counter.dart';
 import 'package:garuda/deepotsava/accounting/details.dart';
@@ -15,6 +17,7 @@ class _AccountingState extends State<Accounting> {
   bool _isLoading = true;
   late DateTime _start;
   late DateTime _end;
+  Timer? _debounce;
 
   @override
   initState() {
@@ -39,15 +42,24 @@ class _AccountingState extends State<Accounting> {
               if (service == "sales")
                 counterKey.currentState!.addToCounter(data['count']);
 
-              await detailsKey.currentState!.refresh(start: _start, end: _end);
+              if (_debounce?.isActive ?? false) _debounce!.cancel();
+              _debounce = Timer(const Duration(milliseconds: 500), () async {
+                await detailsKey.currentState!
+                    .refresh(start: _start, end: _end);
+              });
 
               if (mounted) setState(() {});
             },
 
                 // edit
                 edit: () async {
-              await counterKey.currentState!.refresh(start: _start, end: _end);
-              await detailsKey.currentState!.refresh(start: _start, end: _end);
+              if (_debounce?.isActive ?? false) _debounce!.cancel();
+              _debounce = Timer(const Duration(milliseconds: 500), () async {
+                await counterKey.currentState!
+                    .refresh(start: _start, end: _end);
+                await detailsKey.currentState!
+                    .refresh(start: _start, end: _end);
+              });
 
               if (mounted) setState(() {});
             },
@@ -57,7 +69,12 @@ class _AccountingState extends State<Accounting> {
               if (service == "sales")
                 counterKey.currentState!.removeFromCounter(data['count']);
 
-              await detailsKey.currentState!.refresh(start: _start, end: _end);
+              if (_debounce?.isActive ?? false) _debounce!.cancel();
+              _debounce = Timer(const Duration(milliseconds: 500), () async {
+                await detailsKey.currentState!
+                    .refresh(start: _start, end: _end);
+              });
+
               setState(() {});
             }));
       }
