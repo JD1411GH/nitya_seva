@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:synchronized/synchronized.dart';
 
 class Summary extends StatefulWidget {
   const Summary({super.key});
@@ -10,6 +11,8 @@ class Summary extends StatefulWidget {
 GlobalKey<_SummaryState> summaryKey = GlobalKey<_SummaryState>();
 
 class _SummaryState extends State<Summary> {
+  final Lock _lock = Lock();
+
   @override
   void initState() {
     super.initState();
@@ -18,6 +21,10 @@ class _SummaryState extends State<Summary> {
   }
 
   void refresh() async {
+    await _lock.synchronized(() async {
+      // all you need to do
+    });
+
     setState(() {});
   }
 
