@@ -20,7 +20,6 @@ class _DetailsState extends State<Details> {
   List<int> _lampSale = [0, 0, 0];
   List<int> _plateSale = [0, 0, 0];
   List<int> _remainingLamps = [0, 0, 0];
-
   Map<String, int> _amountPerModeRKC = {}; // 'UPI': 10, 'Cash': 20
   Map<String, int> _amountPerModeRRG = {}; // 'UPI': 10, 'Cash': 20
 
@@ -30,7 +29,16 @@ class _DetailsState extends State<Details> {
   }
 
   Future<void> refresh() async {
+    // clear everything before updating
     _rows.clear();
+    _preparedLamps = [0, 0, 0];
+    _unpreparedLamps = [0, 0, 0];
+    _totalLamps = [0, 0, 0];
+    _lampSale = [0, 0, 0];
+    _plateSale = [0, 0, 0];
+    _remainingLamps = [0, 0, 0];
+    _amountPerModeRKC = {}; // 'UPI': 10, 'Cash': 20
+    _amountPerModeRRG = {}; // 'UPI': 10, 'Cash': 20
 
     // read from FB
     List<DeepamStock> stocksRKC = await FBL().getStocks('RKC');

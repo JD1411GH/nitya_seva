@@ -5,6 +5,7 @@ import 'package:garuda/deepotsava/sales/datatypes.dart';
 import 'package:garuda/deepotsava/date_header.dart';
 import 'package:garuda/deepotsava/fbl.dart';
 import 'package:garuda/theme.dart';
+import 'package:flutter/scheduler.dart';
 
 class Accounting extends StatefulWidget {
   @override
@@ -17,12 +18,14 @@ class _AccountingState extends State<Accounting> {
   @override
   initState() {
     super.initState();
-    refresh();
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      refresh();
+    });
   }
 
   Future<void> refresh() async {
-    await counterKey.currentState?.refresh();
-    await detailsKey.currentState?.refresh();
+    await counterKey.currentState!.refresh();
+    await detailsKey.currentState!.refresh();
 
     setState(() {
       _isLoading = false;
