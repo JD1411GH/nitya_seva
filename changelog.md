@@ -1,3 +1,6 @@
+# 3.6.0
+- feature: scroll dates in accounting
+
 # 3.5.0
 - feature: discard damaged lamps
 

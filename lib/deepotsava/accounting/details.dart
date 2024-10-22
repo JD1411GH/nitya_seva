@@ -20,25 +20,35 @@ class _DetailsState extends State<Details> {
   List<int> _lampSale = [0, 0, 0];
   List<int> _plateSale = [0, 0, 0];
   List<int> _remainingLamps = [0, 0, 0];
-
   Map<String, int> _amountPerModeRKC = {}; // 'UPI': 10, 'Cash': 20
   Map<String, int> _amountPerModeRRG = {}; // 'UPI': 10, 'Cash': 20
 
   @override
   initState() {
     super.initState();
-
-    refresh();
   }
 
-  Future<void> refresh() async {
+  Future<void> refresh({DateTime? start, DateTime? end}) async {
+    // clear everything before updating
     _rows.clear();
+    _preparedLamps = [0, 0, 0];
+    _unpreparedLamps = [0, 0, 0];
+    _totalLamps = [0, 0, 0];
+    _lampSale = [0, 0, 0];
+    _plateSale = [0, 0, 0];
+    _remainingLamps = [0, 0, 0];
+    _amountPerModeRKC = {}; // 'UPI': 10, 'Cash': 20
+    _amountPerModeRRG = {}; // 'UPI': 10, 'Cash': 20
 
     // read from FB
-    List<DeepamStock> stocksRKC = await FBL().getStocks('RKC');
-    List<DeepamStock> stocksRRG = await FBL().getStocks('RRG');
-    List<DeepamSale> salesRKC = await FBL().getSales('RKC');
-    List<DeepamSale> salesRRG = await FBL().getSales('RRG');
+    List<DeepamStock> stocksRKC =
+        await FBL().getStocks('RKC', start: start, end: end);
+    List<DeepamStock> stocksRRG =
+        await FBL().getStocks('RRG', start: start, end: end);
+    List<DeepamSale> salesRKC =
+        await FBL().getSales('RKC', start: start, end: end);
+    List<DeepamSale> salesRRG =
+        await FBL().getSales('RRG', start: start, end: end);
 
     // RKC data
     stocksRKC.forEach((stock) {
@@ -149,7 +159,7 @@ class _DetailsState extends State<Details> {
     _amountPerModeRKC.forEach((mode, amount) {
       List<String> row = [];
       row.add('Amount through $mode');
-      row.add(amount.toString());
+      row.add("₹${amount.toString()}");
       totalAmount[0] += amount;
 
       int rrgValue = 0;
@@ -157,10 +167,10 @@ class _DetailsState extends State<Details> {
         rrgValue = _amountPerModeRRG[mode]!;
         _amountPerModeRRG.remove(mode);
       }
-      row.add(rrgValue.toString());
+      row.add("₹${rrgValue.toString()}");
       totalAmount[1] += rrgValue;
 
-      row.add((amount + rrgValue).toString());
+      row.add("₹${(amount + rrgValue).toString()}");
       totalAmount[2] += (amount + rrgValue);
 
       _rows.add(_createRow(row));
@@ -170,9 +180,9 @@ class _DetailsState extends State<Details> {
     _amountPerModeRRG.forEach((mode, amount) {
       List<String> row = [];
       row.add('Amount through $mode');
-      row.add('0');
-      row.add(amount.toString());
-      row.add(amount.toString());
+      row.add('₹0');
+      row.add("₹${amount.toString()}");
+      row.add("₹${amount.toString()}");
 
       _rows.add(_createRow(row));
     });
@@ -180,9 +190,9 @@ class _DetailsState extends State<Details> {
     // Total amount
     _rows.add(_createRow([
       'Total amount',
-      totalAmount[0].toString(),
-      totalAmount[1].toString(),
-      totalAmount[2].toString()
+      "₹${totalAmount[0].toString()}",
+      "₹${totalAmount[1].toString()}",
+      "₹${totalAmount[2].toString()}"
     ], bold: true));
 
     setState(() {});
@@ -194,7 +204,8 @@ class _DetailsState extends State<Details> {
           .map((e) => DataCell(Text(
                 e,
                 style: TextStyle(
-                    fontWeight: bold ? FontWeight.bold : FontWeight.normal),
+                  fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+                ),
               )))
           .toList(),
     );

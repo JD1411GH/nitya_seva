@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:garuda/deepotsava/fbl.dart';
+import 'package:garuda/deepotsava/sales/datatypes.dart';
 
 class Counter extends StatefulWidget {
   const Counter({super.key});
@@ -48,19 +49,18 @@ class _CounterState extends State<Counter> {
     });
   }
 
-  Future<void> refresh() async {
+  Future<void> refresh({DateTime? start, DateTime? end}) async {
     int counter = 0;
-    DateTime beginOfYear = DateTime(DateTime.now().year, 1, 1);
-    await FBL().getSales('RKC', start: beginOfYear).then((sales) {
-      sales.forEach((sale) {
-        counter += sale.count;
-      });
-    });
 
-    await FBL().getSales('RRG', start: beginOfYear).then((sales) {
-      sales.forEach((sale) {
-        counter += sale.count;
-      });
+    // today's sale
+    List<DeepamSale> sales =
+        await FBL().getSales('RKC', start: start, end: end);
+    sales.forEach((sale) {
+      counter += sale.count;
+    });
+    sales = await FBL().getSales('RRG', start: start, end: end);
+    sales.forEach((sale) {
+      counter += sale.count;
     });
 
     setCounter(counter);
