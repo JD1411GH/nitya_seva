@@ -80,6 +80,12 @@ class _DateHeaderState extends State<DateHeader> {
           IconButton(
             icon: Icon(Icons.play_arrow), // Default points right
             onPressed: () {
+              if (_date.year == DateTime.now().year &&
+                  _date.month == DateTime.now().month &&
+                  _date.day == DateTime.now().day) {
+                return;
+              }
+
               setState(() {
                 _date = _date.add(Duration(days: 1));
               });

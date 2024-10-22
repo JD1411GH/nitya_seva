@@ -204,7 +204,8 @@ class _DetailsState extends State<Details> {
           .map((e) => DataCell(Text(
                 e,
                 style: TextStyle(
-                    fontWeight: bold ? FontWeight.bold : FontWeight.normal),
+                  fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+                ),
               )))
           .toList(),
     );
