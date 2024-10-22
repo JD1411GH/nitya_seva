@@ -1,3 +1,6 @@
+# 3.6.2
+- fix: auto refresh issue with counter
+
 # 3.6.1
 - fix: accounting table refresh
 

@@ -18,6 +18,7 @@ class _AccountingState extends State<Accounting> {
   late DateTime _start;
   late DateTime _end;
   Timer? _debounce;
+  bool _isFirstLoad = true;
 
   @override
   initState() {
@@ -40,10 +41,12 @@ class _AccountingState extends State<Accounting> {
                 // add
                 add: (data) async {
               if (service == "sales")
-                counterKey.currentState!.addToCounter(data['count']);
+              // counterKey.currentState!.addToCounter(data['count']);
 
               if (_debounce?.isActive ?? false) _debounce!.cancel();
               _debounce = Timer(const Duration(milliseconds: 500), () async {
+                await counterKey.currentState!
+                    .refresh(start: _start, end: _end);
                 await detailsKey.currentState!
                     .refresh(start: _start, end: _end);
               });
@@ -67,10 +70,12 @@ class _AccountingState extends State<Accounting> {
                 // delete
                 delete: (data) async {
               if (service == "sales")
-                counterKey.currentState!.removeFromCounter(data['count']);
+              // counterKey.currentState!.removeFromCounter(data['count']);
 
               if (_debounce?.isActive ?? false) _debounce!.cancel();
               _debounce = Timer(const Duration(milliseconds: 500), () async {
+                await counterKey.currentState!
+                    .refresh(start: _start, end: _end);
                 await detailsKey.currentState!
                     .refresh(start: _start, end: _end);
               });
@@ -78,6 +83,16 @@ class _AccountingState extends State<Accounting> {
               setState(() {});
             }));
       }
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_isFirstLoad) {
+      _isFirstLoad = false;
+    } else {
+      refresh();
     }
   }
 
